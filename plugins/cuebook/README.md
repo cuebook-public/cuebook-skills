@@ -58,11 +58,11 @@ and MCP coverage lives in
 
 ## Install
 
-After the plugin and marketplace manifest are committed and tagged:
+Install the published plugin:
 
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \
-  --ref <release-tag> \
+  --ref v0.2.0 \
   --sparse .agents/plugins \
   --sparse plugins/cuebook
 

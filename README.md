@@ -13,11 +13,11 @@ entrypoints. Create may call Query; Query never calls Create.
 
 ## Install
 
-After a release tag is available:
+Install the current release:
 
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \
-  --ref <release-tag> \
+  --ref v0.2.0 \
   --sparse .agents/plugins \
   --sparse plugins/cuebook
 
