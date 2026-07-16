@@ -196,39 +196,63 @@ async function captureReliable(browser, htmlPath, width, height, scaleFactor, ou
   throw lastError;
 }
 
-async function captureViewpoint(htmlArg, outputArg, browserOverride = null) {
-  const htmlPath = path.resolve(htmlArg);
-  const outputDir = path.resolve(outputArg);
+function readNetworkFreeHtml(htmlPath, requiredWidth, requiredHeight) {
   if (!fs.existsSync(htmlPath)) throw new Error(`HTML does not exist: ${htmlPath}`);
   const html = fs.readFileSync(htmlPath, "utf8");
-  if (!html.includes("data-cuebook-viewpoint") || !html.includes('data-width="1340"') || !html.includes('data-height="528"')) {
-    throw new Error("HTML does not satisfy the Cuebook canvas contract.");
+  if (
+    !html.includes("data-cuebook-viewpoint")
+    || !html.includes(`data-width="${requiredWidth}"`)
+    || !html.includes(`data-height="${requiredHeight}"`)
+  ) {
+    throw new Error(`HTML does not satisfy the ${requiredWidth} x ${requiredHeight} Cuebook canvas contract.`);
   }
   if (/(?:src|href)=["']https?:\/\//i.test(html)) throw new Error("Direction HTML must be network-free.");
+  return html;
+}
+
+async function captureViewpoint(htmlArg, outputArg, browserOverride = null, ogHtmlArg = null) {
+  const htmlPath = path.resolve(htmlArg);
+  const outputDir = path.resolve(outputArg);
+  const html = readNetworkFreeHtml(htmlPath, 1244, 528);
+  const ogHtmlPath = ogHtmlArg ? path.resolve(ogHtmlArg) : null;
+  let ogAllowDark = false;
+  if (ogHtmlPath) {
+    const ogHtml = readNetworkFreeHtml(ogHtmlPath, 1200, 630);
+    ogAllowDark = /data-theme=["']dark["']/i.test(ogHtml);
+  }
   const allowDark = /data-theme=["']dark["']/i.test(html);
   const browser = browserOverride || browserExecutable();
   if (!browser) throw new Error("No supported Chromium executable found.");
   fs.mkdirSync(outputDir, { recursive: true });
   const workDir = path.join(outputDir, `.capture-${process.pid}`);
   fs.mkdirSync(workDir);
-  const full = path.join(outputDir, "viewpoint-2680.png");
-  const compact = path.join(outputDir, "viewpoint-670.png");
+  const full = path.join(outputDir, "viewpoint-2488.png");
+  const compact = path.join(outputDir, "viewpoint-622.png");
+  const og = path.join(outputDir, "og-1200x630.png");
   const startedAt = Date.now();
   try {
-    const [fullPaint, compactPaint] = await Promise.all([
-      captureReliable(browser, htmlPath, 1340, 528, 2, full, workDir, allowDark),
-      captureReliable(browser, htmlPath, 670, 264, 1, compact, workDir, allowDark),
-    ]);
+    const captures = [
+      captureReliable(browser, htmlPath, 1244, 528, 2, full, workDir, allowDark),
+      captureReliable(browser, htmlPath, 622, 264, 1, compact, workDir, allowDark),
+    ];
+    if (ogHtmlPath) captures.push(captureReliable(browser, ogHtmlPath, 1200, 630, 1, og, workDir, ogAllowDark));
+    const [fullPaint, compactPaint, ogPaint] = await Promise.all(captures);
+    const derivatives = [
+      { kind: "full", ref: path.basename(full), width: 2488, height: 1056, sha256: sha256(fs.readFileSync(full)), painted_ratio: Number(fullPaint.paintedRatio.toFixed(6)) },
+      { kind: "compact_622", ref: path.basename(compact), width: 622, height: 264, sha256: sha256(fs.readFileSync(compact)), painted_ratio: Number(compactPaint.paintedRatio.toFixed(6)) },
+    ];
+    if (ogHtmlPath) {
+      derivatives.push({ kind: "og", ref: path.basename(og), source: path.basename(ogHtmlPath), width: 1200, height: 630, sha256: sha256(fs.readFileSync(og)), painted_ratio: Number(ogPaint.paintedRatio.toFixed(6)) });
+    }
     const report = {
       schema_version: "viewpoint-html-capture-v1",
       source: path.basename(htmlPath),
       source_sha256: sha256(fs.readFileSync(htmlPath)),
+      og_source: ogHtmlPath ? path.basename(ogHtmlPath) : null,
+      og_source_sha256: ogHtmlPath ? sha256(fs.readFileSync(ogHtmlPath)) : null,
       capture_mode: "parallel_sizes",
       duration_ms: Date.now() - startedAt,
-      derivatives: [
-        { kind: "full", ref: path.basename(full), width: 2680, height: 1056, sha256: sha256(fs.readFileSync(full)), painted_ratio: Number(fullPaint.paintedRatio.toFixed(6)) },
-        { kind: "compact_670", ref: path.basename(compact), width: 670, height: 264, sha256: sha256(fs.readFileSync(compact)), painted_ratio: Number(compactPaint.paintedRatio.toFixed(6)) },
-      ],
+      derivatives,
     };
     fs.writeFileSync(path.join(outputDir, "capture-report.json"), `${JSON.stringify(report, null, 2)}\n`);
     return { outputDir, report };
@@ -238,9 +262,9 @@ async function captureViewpoint(htmlArg, outputArg, browserOverride = null) {
 }
 
 async function main() {
-  const [htmlArg, outputArg] = process.argv.slice(2);
-  if (!htmlArg || !outputArg) throw new Error("Usage: capture_html_viewpoint.cjs <direction.html> <output-dir>");
-  const result = await captureViewpoint(htmlArg, outputArg);
+  const [htmlArg, outputArg, ogArg] = process.argv.slice(2);
+  if (!htmlArg || !outputArg) throw new Error("Usage: capture_html_viewpoint.cjs <direction.html> <output-dir> [og-1200x630.html]");
+  const result = await captureViewpoint(htmlArg, outputArg, null, ogArg || null);
   process.stdout.write(`${result.outputDir}\n`);
 }
 

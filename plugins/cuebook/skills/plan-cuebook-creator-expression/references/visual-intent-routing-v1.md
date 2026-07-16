@@ -73,7 +73,7 @@ The route is a request plan, not proof that a tool ran. Actual result refs remai
 | Owner | May use | Must not do |
 | --- | --- | --- |
 | `plan-cuebook-creator-expression` | semantics, route registry, supplied artifact metadata | run MCP reads or choose final pixels |
-| `query-cuebook` | exact registered MCP tools such as `search_assets`, `search_market_evidence`, `query_fundamental_metrics`, `query_market_series`, `compute_market_metrics`, `get_market_state`, and `resolve_settlement_binding` | author the creator's judgment or design a visual |
+| `query-cuebook` | exact registered MCP tools such as `search_assets`, `search_news`, `list_filings`, `get_candles`, `compute_market_metrics`, `get_market_state`, and `resolve_settlement_binding` | author the creator's judgment or design a visual |
 | `assemble-cuebook-viewpoint-data` | frozen Query result refs and deterministic transforms | browse, widen the thesis, or invent geometry |
 | `direct-cuebook-viewpoint-visual` | locked jobs, evidence shapes, data bundle, palette and expression registries | reclassify intent, fetch data, or render settlement internals |
 | `render-cuebook-viewpoint-visual` | approved HTML-native direction, deterministic capture and audit tools | alter the meaning fingerprint or evidence selection |

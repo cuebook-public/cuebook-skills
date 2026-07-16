@@ -325,7 +325,7 @@ def audit_html(html: str) -> dict[str, Any]:
         r"height\s*:\s*26px",
         r"color\s*:\s*#(?:F2F3F4|101411)",
     )):
-        errors.append(issue("WORDMARK_GEOMETRY", "Canonical wordmark must use the fixed 136 x 26 bottom-right geometry on the 1340 x 528 authoring canvas."))
+        errors.append(issue("WORDMARK_GEOMETRY", "Canonical wordmark must use the fixed 136 x 26 bottom-right geometry on the 1244 x 528 authoring canvas."))
     if not role_text["claim"]:
         errors.append(issue("CLAIM_REQUIRED", "One visible claim role is required."))
     if parser.unknown_roles:

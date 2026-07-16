@@ -31,10 +31,10 @@ Deduplicate requests across all three publishing candidates. Search or fetch ind
 
 | Request class | Preferred Cuebook tool | Minimum returned basis |
 | --- | --- | --- |
-| `news_anchor`, `official_event` | `search_market_evidence` | entity, event topic, source class, title, publisher, public URL, publication time, observed time, supported fact refs |
-| `valuation_metric`, `comparison_metric` | `query_fundamental_metrics` | subject, metric, numeric or `N/M` state, numerator, denominator, period, accounting basis, currency treatment, share class, comparability, as-of, source refs, N/M reason |
+| `news_anchor`, `official_event` | `search_news` | entity, event topic, source class, title, publisher, public URL, publication time, observed time, supported fact refs |
+| `valuation_metric`, `comparison_metric` | `list_filings` | subject, metric, numeric or `N/M` state, numerator, denominator, period, accounting basis, currency treatment, share class, comparability, as-of, source refs, N/M reason |
 | current quote | `get_market_state` | venue, session, quote type, value, currency, observed time |
-| `market_series`, `price_level` | `query_market_series` | durable instrument, venue, interval, timezone, sealed/forming state, source refs |
+| `market_series`, `price_level` | `get_candles` | durable instrument, venue, interval, timezone, sealed/forming state, source refs |
 | derived return, spread, or trigger | `compute_market_metrics` | formula, inputs, synchronized window, sealing state, source refs |
 
 The agent may use approved web research to satisfy the same contract when an MCP provider is unavailable. Preserve the URL and retrieval time. A search snippet alone is not an evidence anchor.

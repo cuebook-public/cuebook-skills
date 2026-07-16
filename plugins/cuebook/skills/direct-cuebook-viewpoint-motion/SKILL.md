@@ -15,7 +15,7 @@ Turn one approved viewpoint visual into motion that explains the trade logic. Mo
 3. Read `references/huashu-adaptation-v1.md`. Use its content-derived form, continuous hero, uneven rhythm, hold frames, deterministic keyframes, and critique discipline.
 4. Answer six motion questions:
    - **Role**: conviction, evidence, mechanism, strategy, or settlement?
-   - **Distance**: 670px Feed preview, expanded Feed, or exported social clip?
+   - **Distance**: 622px Feed preview, expanded Feed, or exported social clip?
    - **Temperature**: urgent, skeptical, calm, analytical, or contrarian?
    - **Capacity**: what can move while the claim remains readable at every keyframe?
    - **Motif**: which visual relationship belongs to this thesis alone?
@@ -57,7 +57,7 @@ python3 scripts/validate_viewpoint_motion_spec.py viewpoint-motion-spec-v1.json
 - No infinite loops, decorative cursor choreography, fake loading, or motion that delays the claim.
 - `prefers-reduced-motion` must resolve to the complete static poster or final readable frame.
 - External time control is mandatory so screenshots and video frames are deterministic.
-- Every keyframe must remain understandable at 670 x 264, and the static publication poster must remain exactly 2680 x 1056.
+- Every keyframe must remain understandable at 622 x 264, and the static publication poster must remain exactly 2488 x 1056.
 
 ## Resources
 

@@ -23,13 +23,13 @@ BROWSERS = [
 
 def html(content: str) -> str:
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>
-*{{box-sizing:border-box}}html,body{{margin:0;width:1340px;height:528px;overflow:hidden;background:#f7f8fa;color:#111418}}
-main{{position:relative;width:1340px;height:528px;overflow:hidden;transform-origin:top left}}
+*{{box-sizing:border-box}}html,body{{margin:0;width:1244px;height:528px;overflow:hidden;background:#f7f8fa;color:#111418}}
+main{{position:relative;width:1244px;height:528px;overflow:hidden;transform-origin:top left}}
 .claim{{position:absolute;left:72px;top:58px;width:850px;font:800 86px/1.06 -apple-system,sans-serif}}
 .proof{{position:absolute;left:76px;top:290px;width:720px;font:650 38px/1.2 -apple-system,sans-serif;color:#315fd0}}
 .field{{position:absolute;right:60px;top:48px;width:290px;height:382px;background:#dce5ff;border-left:16px solid #315fd0}}
-@media(max-width:1000px){{html,body{{width:670px;height:264px}}main{{transform:scale(.5)}}}}
-</style></head><body><main data-cuebook-viewpoint data-width="1340" data-height="528">{content}</main></body></html>"""
+@media(max-width:1000px){{html,body{{width:622px;height:264px}}main{{transform:scale(.5)}}}}
+</style></head><body><main data-cuebook-viewpoint data-width="1244" data-height="528">{content}</main></body></html>"""
 
 
 def png_dimensions(path: Path) -> tuple[int, int]:
@@ -66,8 +66,8 @@ class CaptureViewpointTests(unittest.TestCase):
         completed, output, temporary = self.run_capture(source)
         try:
             self.assertEqual(completed.returncode, 0, completed.stderr)
-            self.assertEqual(png_dimensions(output / "viewpoint-2680.png"), (2680, 1056))
-            self.assertEqual(png_dimensions(output / "viewpoint-670.png"), (670, 264))
+            self.assertEqual(png_dimensions(output / "viewpoint-2488.png"), (2488, 1056))
+            self.assertEqual(png_dimensions(output / "viewpoint-622.png"), (622, 264))
         finally:
             temporary.cleanup()
 

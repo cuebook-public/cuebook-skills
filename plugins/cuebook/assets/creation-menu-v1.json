@@ -15,8 +15,8 @@
           "option_id": "news",
           "label": "新闻",
           "mcp_tools": [
-            "list_asset_stories",
-            "get_story"
+            "list_asset_cues",
+            "get_cues"
           ],
           "availability": "available"
         },
@@ -32,7 +32,7 @@
           "option_id": "narrative",
           "label": "Cuebook 叙事",
           "mcp_tools": [
-            "list_asset_narratives"
+            "list_asset_cues"
           ],
           "availability": "backend_required"
         },
@@ -83,7 +83,7 @@
             "build-market-research-pack"
           ],
           "mcp_tools": [
-            "search_market_evidence"
+            "search_news"
           ],
           "availability": "backend_required"
         },
@@ -117,7 +117,7 @@
             "compute-cuebook-market-indicators"
           ],
           "mcp_tools": [
-            "query_market_series"
+            "get_candles"
           ],
           "availability": "backend_required"
         },
@@ -129,8 +129,8 @@
             "render-cuebook-thesis-chart"
           ],
           "mcp_tools": [
-            "query_fundamental_metrics",
-            "query_market_series"
+            "list_filings",
+            "get_candles"
           ],
           "availability": "backend_required"
         },
@@ -141,7 +141,7 @@
             "build-market-research-pack"
           ],
           "mcp_tools": [
-            "query_fundamental_metrics"
+            "list_filings"
           ],
           "availability": "backend_required"
         },
@@ -245,7 +245,7 @@
             "render-cuebook-thesis-chart"
           ],
           "mcp_tools": [
-            "query_market_series"
+            "get_candles"
           ],
           "availability": "backend_required"
         },

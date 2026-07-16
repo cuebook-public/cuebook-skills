@@ -735,11 +735,11 @@ def validate(
                 meta = type_scale.get("meta_px_canvas")
                 ratio = type_scale.get("hero_body_ratio")
                 if not finite_number(hero) or not 64 <= float(hero) <= 120:
-                    errors.append(issue("TYPE_SCALE_VALUE", f"{path}.layout_system.type_scale.hero_px_canvas", "Hero type must be 64-120px on the 1340px authoring canvas."))
+                    errors.append(issue("TYPE_SCALE_VALUE", f"{path}.layout_system.type_scale.hero_px_canvas", "Hero type must be 64-120px on the 1244px authoring canvas."))
                 if not finite_number(body) or not 28 <= float(body) <= 52:
-                    errors.append(issue("TYPE_SCALE_VALUE", f"{path}.layout_system.type_scale.body_px_canvas", "Body type must be 28-52px on the 1340px authoring canvas."))
+                    errors.append(issue("TYPE_SCALE_VALUE", f"{path}.layout_system.type_scale.body_px_canvas", "Body type must be 28-52px on the 1244px authoring canvas."))
                 if not finite_number(meta) or not 18 <= float(meta) <= 30:
-                    errors.append(issue("TYPE_SCALE_VALUE", f"{path}.layout_system.type_scale.meta_px_canvas", "Meta type must be 18-30px on the 1340px authoring canvas."))
+                    errors.append(issue("TYPE_SCALE_VALUE", f"{path}.layout_system.type_scale.meta_px_canvas", "Meta type must be 18-30px on the 1244px authoring canvas."))
                 if not finite_number(ratio) or not 1.5 <= float(ratio) <= 5:
                     errors.append(issue("TYPE_SCALE_VALUE", f"{path}.layout_system.type_scale.hero_body_ratio", "Hero/body ratio must be 1.5-5."))
                 elif finite_number(hero) and finite_number(body) and abs(float(ratio) - float(hero) / float(body)) > 0.08:
@@ -775,7 +775,7 @@ def validate(
                 if not isinstance(compact_type, dict):
                     errors.append(issue("CRAFT_COMPACT_TYPE", f"{path}.layout_system.craft_system.compact_type_scale", "Compact type scale is required."))
                 else:
-                    for key, minimum, maximum in (("hero_px_670", 32, 60), ("body_px_670", 14, 26), ("meta_px_670", 11, 18)):
+                    for key, minimum, maximum in (("hero_px_622", 32, 60), ("body_px_622", 14, 26), ("meta_px_622", 11, 18)):
                         value = compact_type.get(key)
                         if not finite_number(value) or not minimum <= float(value) <= maximum:
                             errors.append(issue("CRAFT_COMPACT_TYPE", f"{path}.layout_system.craft_system.compact_type_scale.{key}", f"{key} must be {minimum}-{maximum}px."))
@@ -839,7 +839,7 @@ def validate(
                     errors.append(issue("COLOR_REDUNDANCY", f"{path}.layout_system.color_system.redundant_cues", "Color needs one to four supported redundant cues."))
             responsive_rule = layout.get("responsive_rule")
             if not isinstance(responsive_rule, str) or not 8 <= len(responsive_rule.strip()) <= 240:
-                errors.append(issue("RESPONSIVE_RULE", f"{path}.layout_system.responsive_rule", "Explain how hierarchy survives at 670 x 264."))
+                errors.append(issue("RESPONSIVE_RULE", f"{path}.layout_system.responsive_rule", "Explain how hierarchy survives at 622 x 264."))
             signature = json.dumps(
                 {"hierarchy": hierarchy, "grid": grid, "alignment": alignment, "density": density},
                 ensure_ascii=True,
@@ -1219,7 +1219,7 @@ def validate(
                         errors.append(issue("PREVIEW_MISSING", f"{path}.{key}", f"Missing preview: {ref}"))
                     else:
                         preview_paths[key] = preview_path
-                        expected_dimensions = (2680, 1056) if key == "preview_ref" else (670, 264)
+                        expected_dimensions = (2488, 1056) if key == "preview_ref" else (622, 264)
                         dimensions = png_dimensions(preview_path)
                         if dimensions != expected_dimensions:
                             errors.append(issue("PREVIEW_FORMAT", f"{path}.{key}", f"Expected a valid {expected_dimensions[0]} x {expected_dimensions[1]} PNG."))
@@ -1235,7 +1235,7 @@ def validate(
                     errors.append(issue("CAPTURE_REPORT_SOURCE", f"{path}.capture_report_ref", "Capture report must match the current HTML hash."))
                 derivatives = capture_report.get("derivatives")
                 by_kind = {item.get("kind"): item for item in derivatives if isinstance(item, dict)} if isinstance(derivatives, list) else {}
-                for key, kind, dimensions in (("preview_ref", "full", (2680, 1056)), ("compact_preview_ref", "compact_670", (670, 264))):
+                for key, kind, dimensions in (("preview_ref", "full", (2488, 1056)), ("compact_preview_ref", "compact_622", (622, 264))):
                     derivative = by_kind.get(kind)
                     preview_path = preview_paths.get(key)
                     if not isinstance(derivative, dict) or derivative.get("width") != dimensions[0] or derivative.get("height") != dimensions[1]:
@@ -1265,8 +1265,8 @@ def validate(
                 viewport_reports = render_audit.get("viewports")
                 viewport_map = {(item.get("width"), item.get("height")): item for item in viewport_reports if isinstance(item, dict)} if isinstance(viewport_reports, list) else {}
                 viewport_expectations = (
-                    ((1340, 528), visible_steps, set(used_refs)),
-                    ((670, 264), compact_steps, compact_required_bindings | selected_material_binding_ids),
+                    ((1244, 528), visible_steps, set(used_refs)),
+                    ((622, 264), compact_steps, compact_required_bindings | selected_material_binding_ids),
                 )
                 for dimensions, expected_steps, expected_bindings in viewport_expectations:
                     viewport_report = viewport_map.get(dimensions)

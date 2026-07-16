@@ -19,7 +19,7 @@ Build the selected Cuebook motion direction as a production-compatible React com
    - `autoplay?: boolean` for Feed behavior;
    - `reducedMotion?: boolean` for explicit testing.
 5. Keep one persistent hero element across beats. Animate state changes inside the approved `layout_system` and spatial skeleton; preserve its grid, type scale, density, alignment, and reading order.
-6. Preserve the selected 1340 x 528 authoring composition, exact 2680 x 1056 poster, and 670 x 264 compact composition. Text must remain readable throughout, including intermediate keyframes.
+6. Preserve the selected 1244 x 528 authoring composition, exact 2488 x 1056 poster, and 622 x 264 compact composition. Text must remain readable throughout, including intermediate keyframes.
 7. Capture 4-7 keyframes with `scripts/capture_motion_keyframes.cjs`. Inspect pixels at both sizes.
 8. Keep the approved `ViewpointVisualV1` PNG as poster and reduced-motion fallback.
 9. For video export, use `assets/CuebookRemotionAdapter.tsx` to drive the same component by frame time. Export H.264 MP4 by default; add WebM only when the destination needs it.
@@ -59,7 +59,7 @@ Do not use GIF as the canonical asset. Lottie is suitable only for isolated deco
 - Reject missing first, decisive, or final keyframes.
 - Reject a final frame that is blank, mid-transition, or less readable than the poster.
 - Reject animation that changes numbers, dates, line shape, hierarchy, or causal meaning without a binding change.
-- Reject autoplay audio, infinite loops, unreadable 670px states, and external network assets in frozen outputs.
+- Reject autoplay audio, infinite loops, unreadable 622px states, and external network assets in frozen outputs.
 - Keep motion optional in release recipes. A static viewpoint remains fully publishable.
 
 ## Resources

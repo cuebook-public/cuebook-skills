@@ -227,11 +227,11 @@
                   "compact_type_scale": {
                     "type": "object",
                     "additionalProperties": false,
-                    "required": ["hero_px_670", "body_px_670", "meta_px_670"],
+                    "required": ["hero_px_622", "body_px_622", "meta_px_622"],
                     "properties": {
-                      "hero_px_670": {"type": "number", "minimum": 32, "maximum": 60},
-                      "body_px_670": {"type": "number", "minimum": 14, "maximum": 26},
-                      "meta_px_670": {"type": "number", "minimum": 11, "maximum": 18}
+                      "hero_px_622": {"type": "number", "minimum": 32, "maximum": 60},
+                      "body_px_622": {"type": "number", "minimum": 14, "maximum": 26},
+                      "meta_px_622": {"type": "number", "minimum": 11, "maximum": 18}
                     }
                   }
                 }

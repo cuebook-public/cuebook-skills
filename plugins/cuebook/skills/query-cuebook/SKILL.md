@@ -15,14 +15,14 @@ Provide one read-only entrance for everything the user wants to see in Cuebook. 
 2. Resolve named assets with Cuebook `search_assets` before requesting asset-bound data. Never guess a canonical asset from a display ticker.
 3. Use only read tools declared as `module: query` in `../../assets/mcp-capability-map-v1.json`.
 4. Select the smallest query path that answers the request:
-   - latest story: `list_asset_stories`, then `get_story` only for selected details;
-   - narrative library: `list_asset_narratives`; never relabel News Story records as narrative-library records;
+   - latest story: `list_asset_cues`, then `get_cues` only for selected details;
+   - narrative library: `list_asset_cues`; never relabel News Story records as narrative-library records;
    - current snapshot: `get_market_state`;
-   - evidence or valuation: `search_market_evidence`, `query_fundamental_metrics`, and `$build-market-research-pack` when synthesis is requested;
-   - curves or triggers: `query_market_series`, `compute_market_metrics`, and `$compute-cuebook-market-indicators` when deterministic local indicators are needed;
+   - evidence or valuation: `search_news`, `list_filings`, and `$build-market-research-pack` when synthesis is requested;
+   - curves or triggers: `get_candles`, `compute_market_metrics`, and `$compute-cuebook-market-indicators` when deterministic local indicators are needed;
    - owned feed: `get_creator_feed`, then `$normalize-cuebook-creator-feed`;
    - settlement preparation: `resolve_settlement_binding`; return the read-only binding and never register a claim from Query;
-   - outcomes and receipts: `get_settlement_outcome`, `get_publication_receipt`, and `$reconcile-market-content-history` when a history ledger is requested;
+   - outcomes and receipts: `list_settlements`, `get_publication_receipt`, and `$reconcile-market-content-history` when a history ledger is requested;
    - public account or media study: the authorized corpus and distillation skills.
 5. Preserve provider timestamps, sealed/forming state, source identity, metric basis, and capability gaps. A missing backend tool produces a partial result, never an invented value.
 6. Return `CuebookQueryBundleV1`, then answer the user from that bundle. Include sources and freshness near the claims they support.

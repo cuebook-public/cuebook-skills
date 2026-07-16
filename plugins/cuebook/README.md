@@ -29,7 +29,7 @@ claims, save artifacts, or publish.
 seed and authorship, calls Query when a current claim needs evidence or market
 data, and returns exactly three calibrated candidates through
 `CuebookCreationBundleV1`. The underlying workflow can produce text, exact
-2680 x 1056 static visuals, and an optional settlement claim and formula.
+2488 x 1056 static visuals, and an optional settlement claim and formula.
 
 Saving, settlement registration, and external publication remain explicit,
 authorized MCP writes. Create never places trades or silently publishes.

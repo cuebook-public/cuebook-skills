@@ -20,7 +20,7 @@ def html(extra_css: str = "") -> str:
     return f"""<!doctype html>
 <html><head><meta charset=\"utf-8\"><style>
 *{{box-sizing:border-box}} html,body{{margin:0;width:100%;height:100%;overflow:hidden;background:#f7f9fc;color:#11151b}}
-main{{position:relative;width:1340px;height:528px;transform-origin:top left;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-variant-numeric:tabular-nums}}
+main{{position:relative;width:1244px;height:528px;transform-origin:top left;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-variant-numeric:tabular-nums}}
 .claim,.evidence,.condition{{position:absolute;letter-spacing:0}}
 .claim{{left:74px;top:48px;width:1040px;font-size:96px;line-height:1.08;font-weight:750;text-wrap:balance}}
 .evidence{{left:78px;top:244px;width:800px;font-size:44px;line-height:1.2;font-weight:650}}
@@ -28,7 +28,7 @@ main{{position:relative;width:1340px;height:528px;transform-origin:top left;font
 @media(max-width:1000px){{main{{transform:scale(.5)}}}}
 {extra_css}
 </style></head><body>
-<main data-cuebook-viewpoint data-width=\"1340\" data-height=\"528\">
+<main data-cuebook-viewpoint data-width=\"1244\" data-height=\"528\">
   <h1 class=\"claim\" data-role=\"claim\" data-visual-level=\"1\" data-logic-step-id=\"LSTEP_CLAIM\">HOOD 进入重估窗口</h1>
   <div class=\"evidence\" data-role=\"evidence\" data-visual-level=\"2\" data-logic-step-id=\"LSTEP_MECH\" data-binding-ref=\"BIND_MECH\">分发、交易与结算开始合流</div>
   <div class=\"condition\" data-role=\"condition\" data-visual-level=\"3\" data-logic-step-id=\"LSTEP_ACTION\">下一步看使用与收入</div>
@@ -82,11 +82,11 @@ class RenderAuditTests(unittest.TestCase):
     def test_real_reflow_uses_contract_scale_for_brand_safe_zone(self) -> None:
         responsive = html().replace(
             "@media(max-width:1000px){main{transform:scale(.5)}}",
-            "@media(max-width:1000px){main{width:670px;height:264px;transform:none}.claim{left:26px;top:18px;width:610px;font-size:48px}.evidence{left:26px;top:126px;width:480px;font-size:22px}.condition{left:430px;top:202px;width:90px;font-size:18px}}",
+            "@media(max-width:1000px){main{width:622px;height:264px;transform:none}.claim{left:26px;top:18px;width:570px;font-size:48px}.evidence{left:26px;top:126px;width:480px;font-size:22px}.condition{left:410px;top:202px;width:90px;font-size:18px}}",
         ).replace("下一步看使用与收入", "持有")
         completed, report = self.run_audit(responsive)
         self.assertEqual(completed.returncode, 0, report["errors"])
-        compact = next(item for item in report["viewports"] if item["width"] == 670)
+        compact = next(item for item in report["viewports"] if item["width"] == 622)
         self.assertEqual(compact["transform_scale"], 1)
         self.assertEqual(compact["contract_scale"], 0.5)
 
@@ -105,7 +105,7 @@ class RenderAuditTests(unittest.TestCase):
 
     def test_text_crossing_a_border_line_fails(self) -> None:
         bracket = html(
-            ".bracket{position:absolute;left:900px;top:430px;width:130px;height:20px;"
+            ".bracket{position:absolute;left:700px;top:430px;width:130px;height:20px;"
             "border-right:2px solid #223;border-bottom:2px solid #223}"
             ".bracket span{position:absolute;left:100px;top:0;font-size:24px;white-space:nowrap}"
         ).replace(

@@ -45,7 +45,7 @@ async function inspectViewport(page, width, height) {
       if (loadedNoiFaces.length === 0) errors.push({ code: "NOI_FONT_NOT_LOADED", message: "Cuebook Noi was declared but no face loaded in the browser." });
     }
     const transformScale = root.offsetWidth ? rootRect.width / root.offsetWidth : 1;
-    const authoredWidth = Number(root.dataset.width || 1340);
+    const authoredWidth = Number(root.dataset.width || 1244);
     const authoredHeight = Number(root.dataset.height || 528);
     const contractScale = Math.min(rootRect.width / authoredWidth, rootRect.height / authoredHeight);
     const tolerance = 0.75;
@@ -187,7 +187,7 @@ async function inspectViewport(page, width, height) {
         if (metric.contrast !== null && metric.contrast < (largeText ? 3 : 4.5)) errors.push({ code: "TEXT_CONTRAST", element: metricId, message: `Local contrast ${metric.contrast.toFixed(2)}:1 is too low.` });
         if (/\d/.test(metric.text) && !metric.style.fontVariantNumeric.includes("tabular-nums")) errors.push({ code: "TABULAR_NUMBERS", element: metricId, message: "Numeric content must use tabular numerals." });
       }
-      if (role === "claim" && lineCount > (viewportWidth <= 670 ? 3 : 2)) errors.push({ code: "CLAIM_LINES", element: id, message: `Claim uses ${lineCount} lines at ${viewportWidth}px.` });
+      if (role === "claim" && lineCount > (viewportWidth <= 622 ? 3 : 2)) errors.push({ code: "CLAIM_LINES", element: id, message: `Claim uses ${lineCount} lines at ${viewportWidth}px.` });
 
       elements.push({
         id,
@@ -459,7 +459,7 @@ async function inspectViewport(page, width, height) {
   }, { viewportWidth: width, viewportHeight: height });
 }
 
-async function auditRenderedViewpoint(htmlArg, outputArg, browserOverride = null) {
+async function auditRenderedViewpoint(htmlArg, outputArg, browserOverride = null, profile = "wide") {
   const htmlPath = path.resolve(htmlArg);
   const outputDir = path.resolve(outputArg);
   if (!fs.existsSync(htmlPath)) throw new Error(`HTML does not exist: ${htmlPath}`);
@@ -467,12 +467,13 @@ async function auditRenderedViewpoint(htmlArg, outputArg, browserOverride = null
   if (!browserPath) throw new Error("No supported Chromium executable found.");
   const { chromium } = loadPlaywright();
   fs.mkdirSync(outputDir, { recursive: true });
+  const profileViewports = profile === "og" ? [[1200, 630]] : [[1244, 528], [622, 264]];
   const browser = await chromium.launch({ executablePath: browserPath, headless: true });
   try {
-    const page = await browser.newPage({ viewport: { width: 1340, height: 528 } });
+    const page = await browser.newPage({ viewport: { width: profileViewports[0][0], height: profileViewports[0][1] } });
     await page.goto(pathToFileURL(htmlPath).href, { waitUntil: "load" });
     const viewports = [];
-    for (const [width, height] of [[1340, 528], [670, 264]]) viewports.push(await inspectViewport(page, width, height));
+    for (const [width, height] of profileViewports) viewports.push(await inspectViewport(page, width, height));
     const errors = viewports.flatMap((viewport) => viewport.errors.map((item) => ({ ...item, viewport: `${viewport.width}x${viewport.height}` })));
     const warnings = viewports.flatMap((viewport) => viewport.warnings.map((item) => ({ ...item, viewport: `${viewport.width}x${viewport.height}` })));
     const full = viewports[0];
@@ -514,9 +515,13 @@ async function auditRenderedViewpoint(htmlArg, outputArg, browserOverride = null
 }
 
 async function main() {
-  const [htmlArg, outputArg] = process.argv.slice(2);
-  if (!htmlArg || !outputArg) throw new Error("Usage: audit_rendered_viewpoint.cjs <direction.html> <output-dir>");
-  const result = await auditRenderedViewpoint(htmlArg, outputArg);
+  const args = process.argv.slice(2).filter((value) => value !== "--profile" && value !== "og" && value !== "wide");
+  const profileIndex = process.argv.indexOf("--profile");
+  const profile = profileIndex === -1 ? "wide" : process.argv[profileIndex + 1];
+  if (!["wide", "og"].includes(profile)) throw new Error("Supported profiles: wide (default), og.");
+  const [htmlArg, outputArg] = args;
+  if (!htmlArg || !outputArg) throw new Error("Usage: audit_rendered_viewpoint.cjs <direction.html> <output-dir> [--profile wide|og]");
+  const result = await auditRenderedViewpoint(htmlArg, outputArg, null, profile);
   process.stdout.write(`${result.reportPath}\n`);
   if (!result.report.valid) process.exitCode = 1;
 }

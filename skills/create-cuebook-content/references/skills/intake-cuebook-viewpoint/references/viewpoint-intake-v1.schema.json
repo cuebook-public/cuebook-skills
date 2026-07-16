@@ -8,7 +8,7 @@
   "properties": {
     "schema_version": {"const": "viewpoint-intake-v1"},
     "intake_id": {"type": "string", "pattern": "^VINT_[A-Za-z0-9_:-]{6,}$"},
-    "state": {"enum": ["triaged", "eliciting", "verified", "handed_back", "query_routed", "abandoned"]},
+    "state": {"enum": ["triaged", "eliciting", "verified", "handed_back", "query_routed", "abandoned", "blocked"]},
     "raw_input": {
       "type": "object",
       "additionalProperties": false,
@@ -32,7 +32,7 @@
     "fields": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["asset", "direction", "horizon", "price_anchor"],
+      "required": ["asset", "direction", "horizon", "price_anchor", "settlement"],
       "properties": {
         "asset": {
           "type": "object",
@@ -40,6 +40,18 @@
           "required": ["value", "provenance"],
           "properties": {
             "value": {"type": ["string", "null"], "minLength": 1, "maxLength": 120, "description": "Canonical Cuebook asset ref resolved via search_assets; never a guessed display ticker."},
+            "display": {"type": ["string", "null"], "maxLength": 80},
+            "candidates": {"type": "array", "maxItems": 6, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 120}},
+            "provenance": {"enum": ["stated", "elicited", "inferred_confirmed", "missing"]}
+          }
+        },
+        "pair_asset": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["value", "provenance"],
+          "description": "Second leg for pair settlement families; required when the view is relative (A over B).",
+          "properties": {
+            "value": {"type": ["string", "null"], "minLength": 1, "maxLength": 120},
             "display": {"type": ["string", "null"], "maxLength": 80},
             "candidates": {"type": "array", "maxItems": 6, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 120}},
             "provenance": {"enum": ["stated", "elicited", "inferred_confirmed", "missing"]}
@@ -57,10 +69,39 @@
         "horizon": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["value", "end_date", "provenance"],
+          "required": ["value", "intent", "provenance"],
           "properties": {
-            "value": {"type": ["string", "null"], "minLength": 1, "maxLength": 40, "description": "Human window such as 7D, 30D, or 'to FOMC'."},
-            "end_date": {"type": ["string", "null"], "format": "date", "description": "Absolute end of the window; relative phrasing is absolutized against received_at."},
+            "value": {"type": ["string", "null"], "minLength": 1, "maxLength": 40, "description": "Human window such as 48H, 30D, or 'to FOMC'."},
+            "intent": {
+              "type": ["object", "null"],
+              "description": "HorizonIntentV1-compatible shape. Bounds: at least 1 hour, at most 6 months from received_at.",
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kind", "value", "unit", "creator_timezone", "session_policy"],
+                  "properties": {
+                    "kind": {"const": "duration"},
+                    "value": {"type": "integer", "minimum": 1},
+                    "unit": {"enum": ["hour", "calendar_day", "market_session"]},
+                    "creator_timezone": {"type": "string", "minLength": 1, "maxLength": 60},
+                    "session_policy": {"enum": ["at_instant", "next_eligible_close"]}
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kind", "requested_settle_at", "creator_timezone", "session_policy"],
+                  "properties": {
+                    "kind": {"const": "instant"},
+                    "requested_settle_at": {"type": "string", "format": "date-time"},
+                    "creator_timezone": {"type": "string", "minLength": 1, "maxLength": 60},
+                    "session_policy": {"enum": ["at_instant", "next_eligible_close"]}
+                  }
+                },
+                {"type": "null"}
+              ]
+            },
             "provenance": {"enum": ["stated", "elicited", "inferred_confirmed", "missing"]}
           }
         },
@@ -71,7 +112,19 @@
           "properties": {
             "value": {"type": ["number", "null"]},
             "currency": {"type": ["string", "null"], "maxLength": 12},
-            "kind": {"enum": ["entry", "trigger", "reference", null]},
+            "kind": {"enum": ["entry", "trigger", "target", "reference", null]},
+            "operator": {"enum": ["gt", "gte", "lt", "lte", null], "description": "Target comparison; long targets use gt/gte, short targets use lt/lte."},
+            "provenance": {"enum": ["stated", "elicited", "inferred_confirmed", "missing"]}
+          }
+        },
+        "settlement": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["family", "provenance"],
+          "description": "Launch settlement family choice. Null family = non-settleable expression (watch/explain/avoid/neutral) that can only be stored, never published as a market_view Frame.",
+          "properties": {
+            "family": {"enum": ["single_asset_direction", "single_asset_price_target", "pair_asset_direction", "pair_asset_price_targets", null]},
+            "threshold_bps": {"type": ["string", "null"], "pattern": "^-?\\d+(\\.\\d+)?$", "description": "Explicit decimal string; a default of 0 must still be stated as \"0\"."},
             "provenance": {"enum": ["stated", "elicited", "inferred_confirmed", "missing"]}
           }
         }
@@ -86,7 +139,7 @@
         "required": ["round", "asked", "prompt_text"],
         "properties": {
           "round": {"type": "integer", "minimum": 1, "maximum": 6},
-          "asked": {"type": "array", "minItems": 1, "maxItems": 2, "uniqueItems": true, "items": {"enum": ["asset", "direction", "horizon", "price_anchor"]}},
+          "asked": {"type": "array", "minItems": 1, "maxItems": 2, "uniqueItems": true, "items": {"enum": ["asset", "pair_asset", "direction", "horizon", "price_anchor", "settlement"]}},
           "prompt_text": {"type": "string", "minLength": 2, "maxLength": 300},
           "answered_verbatim": {"type": ["string", "null"], "maxLength": 600}
         }
@@ -95,7 +148,7 @@
     "verification": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["asset_resolution", "horizon_validity", "direction_consistency", "price_sanity"],
+      "required": ["asset_resolution", "horizon_validity", "direction_consistency", "price_sanity", "target_direction"],
       "properties": {
         "asset_resolution": {
           "type": "object",
@@ -136,6 +189,17 @@
             "deviation_pct": {"type": ["number", "null"]},
             "note": {"type": ["string", "null"], "maxLength": 240}
           }
+        },
+        "target_direction": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status"],
+          "description": "A long target must sit above the reference price and a short target below it. A conflict triggers one clarifying question (是不是想做空/做多?); an unresolved conflict blocks the intake.",
+          "properties": {
+            "status": {"enum": ["pass", "fail", "skipped", "unavailable", "pending"]},
+            "reference_price": {"type": ["number", "null"]},
+            "note": {"type": ["string", "null"], "maxLength": 240}
+          }
         }
       }
     },
@@ -159,15 +223,18 @@
         "seed": {
           "type": ["object", "null"],
           "additionalProperties": false,
-          "required": ["claim_gist", "asset_ref", "direction", "horizon_end_date"],
+          "required": ["claim_gist", "asset_ref", "direction", "horizon_intent", "settlement_family"],
           "properties": {
             "claim_gist": {"type": "string", "minLength": 2, "maxLength": 200},
             "because_gist": {"type": ["string", "null"], "maxLength": 300},
             "asset_ref": {"type": "string", "minLength": 1, "maxLength": 120},
+            "pair_asset_ref": {"type": ["string", "null"], "maxLength": 120},
             "direction": {"enum": ["long", "short", "relative", "avoid", "watch", "explain", "neutral"]},
-            "horizon_end_date": {"type": "string", "format": "date"},
-            "price_anchor": {"type": ["number", "null"]},
-            "price_anchor_kind": {"enum": ["entry", "trigger", "reference", null]}
+            "horizon_intent": {"type": "object", "description": "HorizonIntentV1-compatible; validated by the fields.horizon.intent shape."},
+            "settlement_family": {"enum": ["single_asset_direction", "single_asset_price_target", "pair_asset_direction", "pair_asset_price_targets", null]},
+            "threshold_bps": {"type": ["string", "null"], "pattern": "^-?\\d+(\\.\\d+)?$"},
+            "target_price": {"type": ["number", "null"]},
+            "target_operator": {"enum": ["gt", "gte", "lt", "lte", null]}
           }
         },
         "blockers": {"type": "array", "maxItems": 8, "items": {"type": "string", "minLength": 2, "maxLength": 240}}

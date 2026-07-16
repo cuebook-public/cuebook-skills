@@ -12,7 +12,7 @@ Any failure here forces revision:
 - No curve or quantitative magnitude is invented.
 - The creator's direction and condition are unchanged.
 - All eleven kernel pre-flight checks are true for previewed or selected directions.
-- The capture report and rendered audit match the current HTML, the publication PNG is exactly 2680 x 1056, and audits pass at both 1340 x 528 and 670 x 264.
+- The capture report and rendered audit match the current HTML, the publication PNG is exactly 2488 x 1056, and audits pass at both 1244 x 528 and 622 x 264.
 - Every declared compact logic route still exposes support, a reasoning bridge, and the conclusion.
 - The selected chart answers the declared market relationship and the visible mechanism explains why the evidence matters to the traded asset.
 - A proof candidate gives evidence more visual weight than headline typography, and every label remains attached to its mark at both sizes.
@@ -26,7 +26,7 @@ Score each dimension from 0 to 10.
 | Dimension | Question | Weight |
 |---|---|---:|
 | concept | Does the visual form come from this exact thesis? | 20% |
-| three_second | Can a reader state the claim after three seconds at 670px? | 20% |
+| three_second | Can a reader state the claim after three seconds at 622px? | 20% |
 | hierarchy | Does the eye follow a complete financial argument from evidence or event, through mechanism, to judgment and implication? | 15% |
 | data_integrity | Does geometry respect what the data can actually support? | 15% |
 | color_logic | Does every hue carry market meaning while hierarchy survives grayscale? | 10% |

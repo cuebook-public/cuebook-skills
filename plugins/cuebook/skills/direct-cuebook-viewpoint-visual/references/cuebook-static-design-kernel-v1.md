@@ -16,7 +16,7 @@ The kernel does not define one visual style. It defines how a creator-owned mark
 | [Jakub Krehel skills](https://github.com/jakubkrehel/skills) | perceptual OKLCH color, local contrast, semantic type scale, deliberate wrapping, tabular numbers, optical alignment, coherent surface geometry | palette registry, type-scale contract, HTML linter, rendered craft review |
 | [Emil Kowalski skills](https://github.com/emilkowalski/skills) | small details compound, every effect needs a purpose, optical correctness outranks mechanical sameness, perceived quality comes from the whole path | craft pass, reverse deletion, optical checks, static-only restraint |
 
-Cuebook keeps the methods and replaces their generic web-page assumptions with market meaning, source binding, creator voice, a 1340 x 528 authoring canvas, an exact 2680 x 1056 publication raster, and a 670 x 264 reading test.
+Cuebook keeps the methods and replaces their generic web-page assumptions with market meaning, source binding, creator voice, a 1244 x 528 authoring canvas, an exact 2488 x 1056 publication raster, and a 622 x 264 reading test.
 
 ## Fixed Execution Order
 
@@ -56,14 +56,14 @@ Read `finance-visual-argument-system-v1.md`. Select one primary `market_relation
 - The relationship answers what the reader needs to compare or understand.
 - The archetype explains why that relationship matters to a trader.
 - The evidence contract determines which geometry is honest.
-- The composition archetype determines how the argument reads at 670 x 264.
+- The composition archetype determines how the argument reads at 622 x 264.
 
 If the evidence gate fails, downgrade or return upstream. Do not select a chart merely to increase visual variety.
 
 ### 4. Answer the five form questions
 
 1. **Role**: conviction, evidence, explanation, comparison, strategy, or tracking?
-2. **Distance**: what remains legible and meaningful at 670 x 264?
+2. **Distance**: what remains legible and meaningful at 622 x 264?
 3. **Temperature**: urgent, skeptical, calm, analytical, contrarian, or promotional?
 4. **Capacity**: how many groups fit before hierarchy collapses?
 5. **Motif**: which relationship belongs to this thesis and would fail for another one?
@@ -115,7 +115,7 @@ Temporarily remove every visible group. Restore it only when its absence changes
 
 ### 10. Render, inspect, repair
 
-Capture 2680 x 1056 and 670 x 264; audit DOM geometry at 1340 x 528 and 670 x 264. Inspect actual pixels for:
+Capture 2488 x 1056 and 622 x 264; audit DOM geometry at 1244 x 528 and 622 x 264. Inspect actual pixels for:
 
 - three-second comprehension;
 - complete logic route;
@@ -145,7 +145,7 @@ Cuebook taste is a decision system, not one visual skin:
 - evidence geometry is earned by sourced data;
 - one hero and at most two supporting relationships carry the argument;
 - creator voice and thesis temperature influence palette and composition without changing semantic color meaning;
-- the visual remains legible at 670 x 264 and precise at 2680 x 1056;
+- the visual remains legible at 622 x 264 and precise at 2488 x 1056;
 - observed material, conditional rules, and future space remain visually distinct;
 - three candidates differ by reader job, evidence entrance, spatial skeleton, and palette strategy, while preserving one meaning fingerprint.
 

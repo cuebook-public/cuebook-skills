@@ -83,7 +83,7 @@ Choose the archetype that explains why the fact matters to a trader.
 
 ## 4. Choose A Composition Archetype
 
-Composition answers how the argument is read at 670 x 264. It must not override chart integrity.
+Composition answers how the argument is read at 622 x 264. It must not override chart integrity.
 
 | Composition | Use when | Required spatial behavior |
 | --- | --- | --- |
@@ -174,7 +174,7 @@ Do not rely on red/green alone. Use direction, labels, or a turn in the reading 
 
 ## 6. Compact-First Layout Contract
 
-Compose the 670 x 264 reading first, then author the 1340 x 528 version with the same hierarchy.
+Compose the 622 x 264 reading first, then author the 1244 x 528 version with the same hierarchy.
 
 - Claim: 1-2 lines, normally 14-23% of canvas height.
 - Evidence field: normally 55-72% of usable area for a proof-led visual.

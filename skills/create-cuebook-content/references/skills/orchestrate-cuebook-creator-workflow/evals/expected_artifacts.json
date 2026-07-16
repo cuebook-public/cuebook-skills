@@ -8,7 +8,7 @@
     "Every resolved installed skill has exactly one catalog-matching recipe version pin.",
     "MarketViewSemanticsV1 precedes CreatorExpressionPlanV1; post and viewpoint data are parallel descendants of that plan.",
     "ViewpointVisualV1 descends from both CreatorExpressionPlanV1 and ViewpointDataBundleV1.",
-    "Every selected static direction registers an exact 2680 x 1056 publication preview and a 670 x 264 compact preview before ViewpointVisualV1 is frozen.",
+    "Every selected static direction registers an exact 2488 x 1056 publication preview and a 622 x 264 compact preview before ViewpointVisualV1 is frozen.",
     "ResearchPackV1, CreatorExpressionPlanV1, ViewpointDataBundleV1, and PublishCandidateSetV1 registry entries carry normalized quality decision, artifact state, and unresolved material request count summaries.",
     "A ready, running, or completed render/candidate descendant has only release-safe gate-bearing ancestors with zero unresolved material requests; registry locators are never dereferenced to decide this.",
     "Source-only non-trade runs may omit TradeLogicProfileV1, TradingThesisV1, and SettlementClaimV1.",

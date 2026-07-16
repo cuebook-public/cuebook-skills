@@ -35,7 +35,7 @@ The registration request carries the complete canonical formula or an immutable 
 
 ## Resolve
 
-`get_settlement_outcome` returns `SettlementOutcomeV1`:
+`list_settlements` returns `SettlementOutcomeV1`:
 
 ```json
 {

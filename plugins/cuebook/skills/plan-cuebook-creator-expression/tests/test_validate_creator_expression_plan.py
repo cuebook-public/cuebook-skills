@@ -241,9 +241,9 @@ EVIDENCE_SHAPE_BY_DATA_KIND = {
 }
 
 QUERY_ROUTE_BY_REQUEST_CLASS = {
-    "qualitative_evidence": ("market_evidence", ["search_assets", "search_market_evidence"]),
-    "valuation_metric": ("fundamental_metrics", ["search_assets", "query_fundamental_metrics"]),
-    "market_series": ("market_series", ["search_assets", "query_market_series"]),
+    "qualitative_evidence": ("market_evidence", ["search_assets", "search_news"]),
+    "valuation_metric": ("fundamental_metrics", ["search_assets", "list_filings"]),
+    "market_series": ("market_series", ["search_assets", "get_candles"]),
 }
 
 
@@ -809,7 +809,7 @@ class CreatorExpressionPlanTests(unittest.TestCase):
             {
                 "requirement_ref": "D2",
                 "capability_id": "market_evidence",
-                "tool_ids": ["search_assets", "search_market_evidence"],
+                "tool_ids": ["search_assets", "search_news"],
                 "run_policy": "reuse_or_query_gap",
             }
         )
@@ -879,7 +879,7 @@ class CreatorExpressionPlanTests(unittest.TestCase):
         plan["visual_plan"]["execution_route"]["query_requests"][0].update(
             {
                 "capability_id": "market_evidence",
-                "tool_ids": ["search_assets", "search_market_evidence"],
+                "tool_ids": ["search_assets", "search_news"],
             }
         )
         for candidate in plan["visual_plan"]["intent"]["candidate_jobs"]:

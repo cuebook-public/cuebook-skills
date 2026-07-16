@@ -572,7 +572,7 @@
           "minItems": 2,
           "maxItems": 3,
           "uniqueItems": true,
-          "items": {"enum": ["search_assets", "search_market_evidence", "get_story", "list_asset_narratives", "query_fundamental_metrics", "query_market_series", "compute_market_metrics", "get_market_state", "resolve_settlement_binding"]}
+          "items": {"enum": ["search_assets", "search_news", "get_cues", "list_asset_cues", "list_filings", "get_candles", "compute_market_metrics", "get_market_state", "resolve_settlement_binding"]}
         },
         "run_policy": {"const": "reuse_or_query_gap"}
       }

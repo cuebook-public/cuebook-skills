@@ -45,10 +45,10 @@ Prefer 55-95 total characters. Use the remaining budget only for a data-led comp
 - Mark the root `data-cuebook-visual-contract="launch-v1"`.
 - Mark every visible text container with `data-role="claim|evidence|condition|context|brand"`.
 - Do not place `<br>` inside the claim. Use `text-wrap: balance`, a deliberate width, and natural wrapping.
-- Keep the claim to two lines at 1340 x 528 and at most three lines in the 670 x 264 compact composition.
+- Keep the claim to two lines at 1244 x 528 and at most three lines in the 622 x 264 compact composition.
 - Keep verb-object phrases, ticker-action phrases, dates, values, and units together.
 - Reject orphan lines made only of a connector, modal, or short verb such as `拿到`, `因为`, `所以`, or `但是`.
-- Rewrite before reducing the claim below 64px at the 1340 canvas.
+- Rewrite before reducing the claim below 64px at the 1244 canvas.
 
 ## Composition
 
@@ -66,10 +66,10 @@ Prefer 55-95 total characters. Use the remaining budget only for a data-led comp
 ## Final Brand Lock
 
 - The last HTML mutation is `scripts/stamp_cuebook_wordmark.py`.
-- Use the exact canonical SVG at `right: 41px`, `bottom: 34px`, `width: 136px`, and `height: 26px` on the 1340 x 528 authoring canvas.
+- Use the exact canonical SVG at `right: 41px`, `bottom: 34px`, `width: 136px`, and `height: 26px` on the 1244 x 528 authoring canvas.
 - Use `#F2F3F4` on dark local backgrounds and `#101411` on light local backgrounds.
 - Do not add visible `Cuebook` text, a `C` badge, pill, plate, border, or shadow.
-- The 2x publication capture yields a 272 x 52 mark. At 670 x 264, scale or override all four geometry values by exactly one half.
+- The 2x publication capture yields a 272 x 52 mark. At 622 x 264, scale or override all four geometry values by exactly one half.
 - After brand lock, run the launch linter and production capture. A later design mutation invalidates the lock.
 
 ## Automatic Reduction Order

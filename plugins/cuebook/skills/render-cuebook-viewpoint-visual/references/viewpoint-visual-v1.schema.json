@@ -8,7 +8,7 @@
   "properties": {
     "schema_version": {"const": "viewpoint-visual-v1"},
     "visual_id": {"type": "string", "pattern": "^VVIS_[A-Za-z0-9_:-]{8,}$"},
-    "render_profile": {"enum": ["wide_2680", "legacy_720"]},
+    "render_profile": {"enum": ["wide_2488", "legacy_720"]},
     "spec_ref": {"type": "string", "pattern": "^(?:VDIR|VVSPEC)_[A-Za-z0-9_:-]{8,}$"},
     "grammar": {"$ref": "#/$defs/grammar"},
     "payload_mode": {"enum": ["qualitative", "key_numbers", "series", "mixed"]},
@@ -20,7 +20,7 @@
       "additionalProperties": false,
       "required": ["width", "height"],
       "properties": {
-        "width": {"enum": [720, 2680]},
+        "width": {"enum": [720, 2488]},
         "height": {"enum": [420, 1056]}
       }
     },
@@ -72,14 +72,14 @@
   },
   "allOf": [
     {
-      "if": {"properties": {"render_profile": {"const": "wide_2680"}}, "required": ["render_profile"]},
+      "if": {"properties": {"render_profile": {"const": "wide_2488"}}, "required": ["render_profile"]},
       "then": {
         "properties": {
           "spec_ref": {"pattern": "^VDIR_[A-Za-z0-9_:-]{8,}$"},
           "grammar": {"enum": ["reaction_test", "event_transmission", "expectation_revision", "valuation_reframe", "relative_value", "cycle_rotation", "flow_pressure", "technical_trigger", "scenario_branch", "strategy_ladder", "custom"]},
           "visual_job": {"const": "render_selected_direction"},
           "theme": {"pattern": "^[a-z0-9]+(?:-[a-z0-9]+){1,5}$"},
-          "dimensions": {"properties": {"width": {"const": 2680}, "height": {"const": 1056}}},
+          "dimensions": {"properties": {"width": {"const": 2488}, "height": {"const": 1056}}},
           "asset": {"required": ["font_manifest"], "properties": {"html": {"$ref": "#/$defs/assetRef"}, "svg": {"type": "null"}, "font_manifest": {"$ref": "#/$defs/assetRef"}}}
         }
       }
@@ -117,9 +117,9 @@
       "additionalProperties": false,
       "required": ["kind", "ref", "width", "height", "sha256"],
       "properties": {
-        "kind": {"enum": ["full", "compact_670", "compact_360"]},
+        "kind": {"enum": ["full", "compact_622", "compact_360"]},
         "ref": {"$ref": "#/$defs/nonemptyString"},
-        "width": {"enum": [360, 670, 720, 2680]},
+        "width": {"enum": [360, 622, 720, 2488]},
         "height": {"enum": [210, 264, 420, 1056]},
         "sha256": {"$ref": "#/$defs/hash"}
       }

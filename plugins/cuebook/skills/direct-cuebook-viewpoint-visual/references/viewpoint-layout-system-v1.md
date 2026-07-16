@@ -45,8 +45,8 @@ Remove a block when it repeats another block without adding meaning. For selecta
 3. **Grid**: choose the spatial relationship that expresses the argument.
 4. **Alignment**: establish one dominant reading axis.
 5. **Type scale**: make hierarchy visible in grayscale without relying on color.
-6. **Density**: match the number of blocks to the 1340 x 528 authoring canvas.
-7. **Responsive rule**: define how the hierarchy survives at 670 x 264.
+6. **Density**: match the number of blocks to the 1244 x 528 authoring canvas.
+7. **Responsive rule**: define how the hierarchy survives at 622 x 264.
 
 Choose the `composition_archetype` from `finance-visual-argument-system-v1.md` before choosing a grid family. The composition expresses the financial relationship; the grid implements it.
 
@@ -66,7 +66,7 @@ Choose the `composition_archetype` from `finance-visual-argument-system-v1.md` b
 - Use the fixed `cuebook-noi-v1` profile for launch HTML. Noi carries Latin, tickers, punctuation, and numerals; `PingFang SC`, `Noto Sans CJK SC`, then `Microsoft YaHei` carry missing CJK glyphs at the same requested weight.
 - Use only original renderer-local font files staged by `scripts/stage_noi_font_assets.py`. A Trial file is evaluation-only and cannot enter a release artifact.
 - Start with hierarchy ratios, then choose pixels.
-- At 1340px, hero text normally occupies 64-120px; body/supporting text 28-52px; metadata 18-30px.
+- At 1244px, hero text normally occupies 64-120px; body/supporting text 28-52px; metadata 18-30px.
 - Hero-to-body ratio should normally be at least 2.0. Small canvases may use weight, position, and whitespace in addition to size.
 - Letter spacing remains 0 and font synthesis remains disabled. Use the declared Noi-plus-CJK stack rather than introducing another display family.
 - Use four or fewer type sizes and four or fewer weights in a launch visual.
@@ -90,7 +90,7 @@ Choose the `composition_archetype` from `finance-visual-argument-system-v1.md` b
 
 ## Compact-First Geometry
 
-Sketch the 670 x 264 state first, then expand to 1340 x 528.
+Sketch the 622 x 264 state first, then expand to 1244 x 528.
 
 - Claim normally occupies 14-23% of canvas height and one or two lines.
 - Evidence normally owns the largest contiguous field in proof-led compositions.
@@ -102,11 +102,11 @@ Sketch the 670 x 264 state first, then expand to 1340 x 528.
 
 - `quiet`: 1 hero + 1 support. Best for conviction, key numbers, and contrarian statements.
 - `balanced`: 1 hero + 2 supports. Default for Cuebook Feed.
-- `dense`: 1 hero + 3 compact supports. Use only when the supports remain legible at 670px.
+- `dense`: 1 hero + 3 compact supports. Use only when the supports remain legible at 622px.
 
 ## Responsive Rule
 
-Audit 1340 x 528 and 670 x 264 as two authored states, then export the publication raster at exactly 2680 x 1056.
+Audit 1244 x 528 and 622 x 264 as two authored states, then export the publication raster at exactly 2488 x 1056.
 
 - Preserve the same first, second, and third reading order.
 - Scale type and spacing with the container, not viewport-width font rules.

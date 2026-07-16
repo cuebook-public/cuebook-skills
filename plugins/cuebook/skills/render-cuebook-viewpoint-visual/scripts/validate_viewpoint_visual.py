@@ -1024,11 +1024,11 @@ def validate_manifest(payload: Any, asset_root: Path | None = None) -> dict[str,
         errors.append(issue("VISUAL_ID", "$.visual_id", "Invalid viewpoint visual ID."))
     render_profile = payload.get("render_profile")
     profile_contracts = {
-        "wide_2680": {
+        "wide_2488": {
             "source_kind": "html",
             "spec_pattern": r"VDIR_[A-Za-z0-9_:-]{8,}",
-            "dimensions": {"width": 2680, "height": 1056},
-            "derivatives": {"full": (2680, 1056), "compact_670": (670, 264)},
+            "dimensions": {"width": 2488, "height": 1056},
+            "derivatives": {"full": (2488, 1056), "compact_622": (622, 264)},
         },
         "legacy_720": {
             "source_kind": "svg",
@@ -1039,12 +1039,12 @@ def validate_manifest(payload: Any, asset_root: Path | None = None) -> dict[str,
     }
     profile_contract = profile_contracts.get(render_profile)
     if profile_contract is None:
-        errors.append(issue("RENDER_PROFILE", "$.render_profile", "Expected wide_2680 or legacy_720."))
+        errors.append(issue("RENDER_PROFILE", "$.render_profile", "Expected wide_2488 or legacy_720."))
     elif not re.fullmatch(profile_contract["spec_pattern"], str(payload.get("spec_ref") or "")):
         errors.append(issue("SPEC_REF", "$.spec_ref", f"Invalid source ref for {render_profile}."))
     grammar = payload.get("grammar")
     payload_mode = payload.get("payload_mode")
-    if render_profile == "wide_2680":
+    if render_profile == "wide_2488":
         if grammar not in WIDE_GRAMMARS:
             errors.append(issue("GRAMMAR", "$.grammar", "Unsupported wide viewpoint argument pattern."))
         if payload.get("visual_job") != "render_selected_direction":
@@ -1067,7 +1067,7 @@ def validate_manifest(payload: Any, asset_root: Path | None = None) -> dict[str,
         expected = profile_contract["dimensions"]
         errors.append(issue("DIMENSIONS", "$.dimensions", f"{render_profile} visuals use {expected['width']} x {expected['height']}."))
     theme = payload.get("theme")
-    if render_profile == "wide_2680":
+    if render_profile == "wide_2488":
         if not isinstance(theme, str) or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+){1,5}", theme):
             errors.append(issue("THEME", "$.theme", "Wide viewpoints bind a registered lowercase hyphenated palette preset."))
     elif theme != "cuebook_accessible_light":
@@ -1094,7 +1094,7 @@ def validate_manifest(payload: Any, asset_root: Path | None = None) -> dict[str,
         errors.append(issue("WATERMARK", "$.content.watermark", "Cuebook watermark is required."))
 
     asset_fields = {"html", "svg", "font_manifest", "png_derivatives", "derivative_bundle_hash"}
-    required_asset_fields = asset_fields if render_profile == "wide_2680" else asset_fields - {"font_manifest"}
+    required_asset_fields = asset_fields if render_profile == "wide_2488" else asset_fields - {"font_manifest"}
     asset = check_object(payload.get("asset"), "$.asset", required_asset_fields, asset_fields, errors)
     source_kind = profile_contract["source_kind"] if profile_contract is not None else "html"
     alternate_kind = "svg" if source_kind == "html" else "html"
@@ -1104,7 +1104,7 @@ def validate_manifest(payload: Any, asset_root: Path | None = None) -> dict[str,
     if not HASH_PATTERN.fullmatch(str(primary_asset.get("sha256") or "")):
         errors.append(issue("ASSET_HASH_FORMAT", f"$.asset.{source_kind}.sha256", "Expected sha256:<64 lowercase hex characters>."))
     font_manifest_asset: dict[str, Any] = {}
-    if render_profile == "wide_2680":
+    if render_profile == "wide_2488":
         font_manifest_asset = check_object(asset.get("font_manifest"), "$.asset.font_manifest", {"ref", "sha256"}, {"ref", "sha256"}, errors)
         if not HASH_PATTERN.fullmatch(str(font_manifest_asset.get("sha256") or "")):
             errors.append(issue("ASSET_HASH_FORMAT", "$.asset.font_manifest.sha256", "Expected sha256:<64 lowercase hex characters>."))
@@ -1112,7 +1112,7 @@ def validate_manifest(payload: Any, asset_root: Path | None = None) -> dict[str,
     if not isinstance(derivatives, list) or len(derivatives) not in {0, 2}:
         errors.append(issue("DERIVATIVE_PAIR", "$.asset.png_derivatives", "PNG derivatives must be absent or contain the full atomic pair."))
         derivatives = []
-    if render_profile == "wide_2680" and not derivatives:
+    if render_profile == "wide_2488" and not derivatives:
         errors.append(issue("DERIVATIVE_REQUIRED", "$.asset.png_derivatives", "The launch wide profile requires both final PNG derivatives."))
     expected_sizes = profile_contract["derivatives"] if profile_contract is not None else {}
     seen_kinds: set[str] = set()
@@ -1138,7 +1138,7 @@ def validate_manifest(payload: Any, asset_root: Path | None = None) -> dict[str,
         errors.append(issue("DERIVATIVE_BUNDLE_HASH", "$.asset.derivative_bundle_hash", "Bundle hash must be null without derivatives."))
 
     if asset_root is not None:
-        if render_profile == "wide_2680":
+        if render_profile == "wide_2488":
             font_manifest_path = safe_asset_path(font_manifest_asset.get("ref"), asset_root, "$.asset.font_manifest.ref", errors)
             if font_manifest_path is not None and HASH_PATTERN.fullmatch(str(font_manifest_asset.get("sha256") or "")):
                 font_manifest_data = verify_hash(font_manifest_path, font_manifest_asset.get("sha256"), "$.asset.font_manifest.sha256", errors)

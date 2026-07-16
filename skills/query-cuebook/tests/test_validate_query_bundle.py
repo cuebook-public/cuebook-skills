@@ -73,7 +73,7 @@ def test_source_refs_resolve() -> None:
 
 
 def test_partial_when_capability_is_unavailable() -> None:
-    item = bundle(); item["unavailable_capabilities"] = ["query_market_series"]
+    item = bundle(); item["unavailable_capabilities"] = ["get_candles"]
     assert "UNAVAILABLE_COMPLETE" in {error["code"] for error in VALIDATOR.validate(item)["errors"]}
     item["state"] = "partial"
     assert VALIDATOR.validate(item)["valid"]

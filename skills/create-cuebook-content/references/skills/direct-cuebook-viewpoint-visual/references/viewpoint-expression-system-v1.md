@@ -42,7 +42,7 @@ Choose the system candidate from the thesis:
 - Bind one visual group to one semantic role. Do not repeat the same fact as a number, label, and footer.
 - Let geometry do real work: position for sequence, length for measured magnitude, area for a reconciled whole, enclosure for grouping, stroke state for observed versus conditional.
 - Use direct labels. Legends are a fallback when several series cannot be labeled without collision.
-- Recompose at 670 x 264. Remove secondary supports before shrinking the hero below legibility.
+- Recompose at 622 x 264. Remove secondary supports before shrinking the hero below legibility.
 - Proof candidates give 55-72% of usable area to evidence geometry. A large number cannot replace a valid comparison, term structure, series, distribution, or threshold.
 
 ## Data Gates

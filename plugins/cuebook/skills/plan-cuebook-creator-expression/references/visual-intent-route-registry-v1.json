@@ -32,27 +32,27 @@
   "query_capabilities": [
     {
       "capability_id": "market_evidence",
-      "tool_ids": ["search_assets", "search_market_evidence"],
+      "tool_ids": ["search_assets", "search_news"],
       "request_classes": ["qualitative_evidence", "news_anchor", "official_event"]
     },
     {
       "capability_id": "published_story",
-      "tool_ids": ["search_assets", "get_story"],
+      "tool_ids": ["search_assets", "get_cues"],
       "request_classes": ["qualitative_evidence", "news_anchor"]
     },
     {
       "capability_id": "asset_narrative",
-      "tool_ids": ["search_assets", "list_asset_narratives"],
+      "tool_ids": ["search_assets", "list_asset_cues"],
       "request_classes": ["qualitative_evidence"]
     },
     {
       "capability_id": "fundamental_metrics",
-      "tool_ids": ["search_assets", "query_fundamental_metrics"],
+      "tool_ids": ["search_assets", "list_filings"],
       "request_classes": ["valuation_metric", "comparison_metric"]
     },
     {
       "capability_id": "market_series",
-      "tool_ids": ["search_assets", "query_market_series"],
+      "tool_ids": ["search_assets", "get_candles"],
       "request_classes": ["comparison_metric", "market_series", "price_level"]
     },
     {

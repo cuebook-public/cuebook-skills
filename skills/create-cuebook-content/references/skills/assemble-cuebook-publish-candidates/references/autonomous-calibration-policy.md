@@ -75,7 +75,7 @@ Each candidate should contain one judgment, one reason, one consequence or next 
 
 ## Visual Budget
 
-Use one dominant visual idea, one proof, and an optional condition. Keep total visible image copy at or below 120 characters and prefer 55-95. Disclosures, sources, settlement prose, and research-completeness notes stay outside the image. Preserve the same first-three-second reading order at the 1340 x 528 authoring canvas and 670 x 264 preview; publish only the exact 2680 x 1056 raster.
+Use one dominant visual idea, one proof, and an optional condition. Keep total visible image copy at or below 120 characters and prefer 55-95. Disclosures, sources, settlement prose, and research-completeness notes stay outside the image. Preserve the same first-three-second reading order at the 1244 x 528 authoring canvas and 622 x 264 preview; publish only the exact 2488 x 1056 raster.
 
 ## Selection Semantics
 

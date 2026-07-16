@@ -8,12 +8,19 @@
   },
   "module_rules": {
     "query": {
-      "allowed_access": ["read"],
+      "allowed_access": [
+        "read"
+      ],
       "may_invoke": []
     },
     "create": {
-      "allowed_access": ["write", "external_write"],
-      "may_invoke": ["query"]
+      "allowed_access": [
+        "write",
+        "external_write"
+      ],
+      "may_invoke": [
+        "query"
+      ]
     }
   },
   "available_tools": [
@@ -23,143 +30,486 @@
       "authorization_scope": "cuebook.query",
       "access": "read",
       "purpose": "Resolve creator language to a canonical Cuebook asset.",
-      "used_by": ["query-cuebook", "validate-cuebook-projection"]
+      "used_by": [
+        "query-cuebook",
+        "validate-cuebook-projection"
+      ]
     },
     {
       "tool": "get_market_state",
       "module": "query",
       "authorization_scope": "cuebook.query",
       "access": "read",
-      "purpose": "Read a bounded latest market snapshot and session state.",
-      "used_by": ["query-cuebook", "build-market-research-pack"]
+      "purpose": "Bounded latest market snapshot, freshness, and session state per canonical ticker.",
+      "used_by": [
+        "query-cuebook",
+        "build-market-research-pack"
+      ]
     },
     {
-      "tool": "list_asset_stories",
+      "tool": "list_asset_cues",
       "module": "query",
       "authorization_scope": "cuebook.query",
       "access": "read",
-      "purpose": "Enumerate published Cuebook News Story records for one canonical asset; this is distinct from the narrative library.",
-      "used_by": ["query-cuebook", "normalize-cuebook-creator-feed"]
+      "purpose": "Published Cuebook thesis cards one asset participates in, newest first with keyset cursor.",
+      "used_by": [
+        "query-cuebook"
+      ]
     },
     {
-      "tool": "get_story",
+      "tool": "get_cues",
       "module": "query",
       "authorization_scope": "cuebook.query",
       "access": "read",
-      "purpose": "Read one published story with source lineage and citations.",
-      "used_by": ["query-cuebook", "build-market-research-pack"]
+      "purpose": "Single cue detail with narrative summary and license-gated citations.",
+      "used_by": [
+        "query-cuebook"
+      ]
+    },
+    {
+      "tool": "list_cues_timeline",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Platform-wide published thesis cards newest first (discover-equivalent).",
+      "used_by": [
+        "query-cuebook"
+      ]
+    },
+    {
+      "tool": "get_paper_portfolio",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "User simulated portfolio (cash, equity, positions); source marked SIMULATED.",
+      "used_by": [
+        "query-cuebook"
+      ]
+    },
+    {
+      "tool": "preview_paper_order",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Read-only market-order preview against the persisted price snapshot; never places an order.",
+      "used_by": [
+        "query-cuebook"
+      ]
+    },
+    {
+      "tool": "place_paper_order",
+      "module": "create",
+      "authorization_scope": "cuebook.create.write",
+      "access": "write",
+      "purpose": "Submit a simulated market order with mandatory idempotency key; grant-scoped attribution.",
+      "used_by": [
+        "create-cuebook-content"
+      ]
+    },
+    {
+      "tool": "close_paper_position",
+      "module": "create",
+      "authorization_scope": "cuebook.create.write",
+      "access": "write",
+      "purpose": "Reduce-only convenience close of an open simulated position via the same order command path.",
+      "used_by": [
+        "create-cuebook-content"
+      ]
+    },
+    {
+      "tool": "list_paper_orders",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "User fill history newest first with placedBy attribution.",
+      "used_by": [
+        "query-cuebook"
+      ]
+    },
+    {
+      "tool": "get_candles",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Sealed OHLCV history (never the forming tip); prices as decimal strings.",
+      "used_by": [
+        "query-cuebook",
+        "build-market-research-pack",
+        "compute-cuebook-market-indicators"
+      ],
+      "content_kind": "market_history",
+      "default_enabled": false
+    },
+    {
+      "tool": "list_market_calendar",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Macro and earnings anchors in a bounded lookback/horizon window with revision dedupe.",
+      "used_by": [
+        "query-cuebook",
+        "build-market-research-pack"
+      ],
+      "content_kind": "calendar",
+      "default_enabled": false
+    },
+    {
+      "tool": "list_filings",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Surviving filing artifact versions with license-gated evidence and fact attachments.",
+      "used_by": [
+        "query-cuebook",
+        "build-market-research-pack"
+      ],
+      "content_kind": "filings",
+      "default_enabled": false
+    },
+    {
+      "tool": "list_asset_disclosures",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Five-provider disclosure co-location records with exact amount payload text.",
+      "used_by": [
+        "query-cuebook",
+        "build-market-research-pack"
+      ],
+      "content_kind": "market_intel",
+      "default_enabled": false
+    },
+    {
+      "tool": "get_positioning",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Grounding snapshots per topic: options, crypto derivatives, analyst ratings, leverage ratio.",
+      "used_by": [
+        "query-cuebook",
+        "build-market-research-pack"
+      ],
+      "content_kind": "market_intel",
+      "default_enabled": false
+    },
+    {
+      "tool": "list_asset_events",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Token unlocks, onchain security, and breakout events per asset with per-item license tagging.",
+      "used_by": [
+        "query-cuebook",
+        "build-market-research-pack"
+      ],
+      "content_kind": "market_intel",
+      "default_enabled": false
+    },
+    {
+      "tool": "list_prediction_markets",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Latest prediction-market snapshots in a clamped 8-day window; resolved markets excluded.",
+      "used_by": [
+        "query-cuebook",
+        "build-market-research-pack"
+      ],
+      "content_kind": "prediction_market",
+      "default_enabled": false
+    },
+    {
+      "tool": "get_news_cluster",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Publication-attached membership of one news story with per-member license gate.",
+      "used_by": [
+        "query-cuebook",
+        "build-market-research-pack"
+      ],
+      "content_kind": "news",
+      "default_enabled": false
+    },
+    {
+      "tool": "list_market_briefings",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Published market briefings with fail-closed revision gate; Cuebook interpretation tagged.",
+      "used_by": [
+        "query-cuebook"
+      ],
+      "content_kind": "news",
+      "default_enabled": false
+    },
+    {
+      "tool": "list_themes",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Qualified theme aggregation with 180-day channel disclosure window.",
+      "used_by": [
+        "query-cuebook"
+      ],
+      "content_kind": "noesis_research",
+      "default_enabled": false
+    },
+    {
+      "tool": "get_cues_detail",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Narrative head and legs with optional price reactions; alive+published gate.",
+      "used_by": [
+        "query-cuebook"
+      ],
+      "content_kind": "noesis_research",
+      "default_enabled": false
+    },
+    {
+      "tool": "get_reasoning_graph",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Bounded reasoning graph; judge internals and unpublished lineage never leave.",
+      "used_by": [
+        "query-cuebook"
+      ],
+      "content_kind": "noesis_research",
+      "default_enabled": false
+    },
+    {
+      "tool": "list_settlements",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Settlement outcomes for ever-published narratives (deliberately not alive-gated).",
+      "used_by": [
+        "query-cuebook",
+        "reconcile-market-content-history"
+      ],
+      "content_kind": "noesis_research",
+      "default_enabled": false
     }
   ],
   "required_tools": [
     {
-      "tool": "search_market_evidence",
-      "module": "query",
-      "authorization_scope": "cuebook.query",
-      "phase": "r1",
-      "access": "read",
-      "purpose": "Search source-linked current news, company PR, filings, regulator or exchange notices, and independent reporting by canonical entity, event topic, source class, and freshness window.",
-      "input_contract": "MarketEvidenceQueryV1",
-      "output_contract": "MarketEvidenceSearchResultV1",
-      "used_by": ["query-cuebook", "build-market-research-pack"]
+      "tool": "create_frame_draft",
+      "module": "create",
+      "authorization_scope": "cuebook.create.write",
+      "phase": "frame_phase_b",
+      "access": "write",
+      "purpose": "Save a Skill-compiled FrameDraftV1 for the resource owner.",
+      "used_by": [
+        "create-cuebook-content",
+        "intake-cuebook-viewpoint"
+      ],
+      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
     },
     {
-      "tool": "query_fundamental_metrics",
-      "module": "query",
-      "authorization_scope": "cuebook.query",
-      "phase": "r1",
-      "access": "read",
-      "purpose": "Return source-linked reported fundamentals and valuation metrics with numerator, denominator, accounting basis, trailing or forward period, currency, share class, as-of time, and explicit not-meaningful states.",
-      "input_contract": "FundamentalMetricQueryV1",
-      "output_contract": "FundamentalMetricBundleV1",
-      "used_by": ["query-cuebook", "build-market-research-pack"]
+      "tool": "update_frame_draft",
+      "module": "create",
+      "authorization_scope": "cuebook.create.write",
+      "phase": "frame_phase_b",
+      "access": "write",
+      "purpose": "Revise a draft under optimistic concurrency.",
+      "used_by": [
+        "create-cuebook-content",
+        "intake-cuebook-viewpoint"
+      ],
+      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
     },
     {
-      "tool": "list_asset_narratives",
+      "tool": "begin_frame_media_upload",
+      "module": "create",
+      "authorization_scope": "cuebook.create.write",
+      "phase": "frame_phase_b",
+      "access": "write",
+      "purpose": "Create a quarantine upload reservation with a signed HTTPS target.",
+      "used_by": [
+        "create-cuebook-content",
+        "intake-cuebook-viewpoint"
+      ],
+      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
+    },
+    {
+      "tool": "complete_frame_media_upload",
+      "module": "create",
+      "authorization_scope": "cuebook.create.write",
+      "phase": "frame_phase_b",
+      "access": "write",
+      "purpose": "Confirm an upload and trigger idempotent processing.",
+      "used_by": [
+        "create-cuebook-content",
+        "intake-cuebook-viewpoint"
+      ],
+      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
+    },
+    {
+      "tool": "get_frame_media",
       "module": "query",
       "authorization_scope": "cuebook.query",
-      "phase": "r1",
+      "phase": "frame_phase_b",
       "access": "read",
-      "purpose": "Return source-linked Cuebook narrative records separately from published News Story records, including visibility and reuse-rights metadata.",
-      "input_contract": "AssetNarrativeQueryV1",
-      "output_contract": "AssetNarrativeListV1",
-      "used_by": ["query-cuebook", "normalize-cuebook-creator-feed"]
+      "purpose": "Read media processing status and rendition receipts.",
+      "used_by": [
+        "query-cuebook"
+      ],
+      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
+    },
+    {
+      "tool": "prepare_frame_publish",
+      "module": "create",
+      "authorization_scope": "cuebook.create.write",
+      "phase": "frame_phase_b",
+      "access": "write",
+      "purpose": "Validate assets, media, horizon, and formula intent; issue a publish token.",
+      "used_by": [
+        "create-cuebook-content",
+        "intake-cuebook-viewpoint"
+      ],
+      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
+    },
+    {
+      "tool": "publish_frame",
+      "module": "create",
+      "authorization_scope": "cuebook.create.write",
+      "phase": "frame_phase_b",
+      "access": "write",
+      "purpose": "Freeze Frame and Settlement Contract in one atomic transaction.",
+      "used_by": [
+        "create-cuebook-content",
+        "intake-cuebook-viewpoint"
+      ],
+      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
+    },
+    {
+      "tool": "create_frame_correction_draft",
+      "module": "create",
+      "authorization_scope": "cuebook.create.write",
+      "phase": "frame_phase_b",
+      "access": "write",
+      "purpose": "Copy-only correction draft; never accepts settlement intent.",
+      "used_by": [
+        "create-cuebook-content",
+        "intake-cuebook-viewpoint"
+      ],
+      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
+    },
+    {
+      "tool": "publish_frame_correction",
+      "module": "create",
+      "authorization_scope": "cuebook.create.write",
+      "phase": "frame_phase_b",
+      "access": "write",
+      "purpose": "Publish a new content release reusing the frozen contract.",
+      "used_by": [
+        "create-cuebook-content",
+        "intake-cuebook-viewpoint"
+      ],
+      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
+    },
+    {
+      "tool": "get_frame",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "phase": "frame_phase_b",
+      "access": "read",
+      "purpose": "Read a public Frame, releases, media, and settlement state.",
+      "used_by": [
+        "query-cuebook"
+      ],
+      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
+    },
+    {
+      "tool": "withdraw_frame",
+      "module": "create",
+      "authorization_scope": "cuebook.create.write",
+      "phase": "frame_phase_b",
+      "access": "write",
+      "purpose": "Stop public distribution without deleting settlement audit.",
+      "used_by": [
+        "create-cuebook-content",
+        "intake-cuebook-viewpoint"
+      ],
+      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
+    },
+    {
+      "tool": "search_news",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "phase": "pr8",
+      "access": "read",
+      "purpose": "Lexical news search; semantic mode returns unavailable until PR9.",
+      "used_by": [
+        "query-cuebook",
+        "build-market-research-pack"
+      ]
     },
     {
       "tool": "get_creator_feed",
       "module": "query",
       "authorization_scope": "cuebook.query",
-      "phase": "r1",
+      "phase": "r2",
       "access": "read",
-      "purpose": "Return news, calendar events, narratives, creator trade ideas, and authorized trade history as CreatorFeedV1.",
-      "input_contract": "CreatorFeedQueryV1",
-      "output_contract": "CreatorFeedV1",
-      "used_by": ["query-cuebook", "normalize-cuebook-creator-feed"]
-    },
-    {
-      "tool": "query_market_series",
-      "module": "query",
-      "authorization_scope": "cuebook.query",
-      "phase": "r1",
-      "access": "read",
-      "purpose": "Return bounded, source-linked OHLCV with sealed/forming state as MarketSeriesBatchV1.",
-      "input_contract": "MarketSeriesQueryV1",
-      "output_contract": "MarketSeriesBatchV1",
-      "used_by": ["query-cuebook", "compute-cuebook-market-indicators"]
+      "purpose": "Owned feed of news, calendar, narratives, trade ideas, and authorized trade history.",
+      "used_by": [
+        "query-cuebook",
+        "normalize-cuebook-creator-feed"
+      ]
     },
     {
       "tool": "compute_market_metrics",
       "module": "query",
       "authorization_scope": "cuebook.query",
-      "phase": "r1",
+      "phase": "r2",
       "access": "read",
-      "purpose": "Return versioned derived metrics and same-bar composite trigger signals with numerator, denominator, source bars, sealing state, and computation policy.",
-      "input_contract": "MarketMetricQueryV1",
-      "output_contract": "MarketMetricBundleV1",
-      "used_by": ["query-cuebook", "compute-cuebook-market-indicators"]
+      "purpose": "Versioned derived metrics and composite trigger signals.",
+      "used_by": [
+        "query-cuebook",
+        "compute-cuebook-market-indicators"
+      ]
     },
     {
       "tool": "resolve_settlement_binding",
       "module": "query",
       "authorization_scope": "cuebook.query",
-      "phase": "r1",
+      "phase": "superseded_review",
       "access": "read",
-      "purpose": "Resolve one or two creator-selected assets into stable Cuebook asset/provider identities plus persisted entry snapshots, symbol-period lineage, quote currencies, supported sealed outcome bases, and explicit settlement blockers without choosing the creator's claim semantics.",
-      "input_contract": "SettlementBindingQueryV1",
-      "output_contract": "SettlementBindingBundleV1",
-      "used_by": ["query-cuebook"]
+      "purpose": "Legacy settlement binding resolution; superseded by the Frame prepare/publish flow.",
+      "used_by": [
+        "query-cuebook"
+      ],
+      "superseded_by": "prepare_frame_publish"
     },
     {
       "tool": "save_creator_artifact",
       "module": "create",
       "authorization_scope": "cuebook.create.write",
-      "phase": "r1",
+      "phase": "superseded_review",
       "access": "write",
-      "purpose": "Persist versioned recipes, semantics, expression plans, posts, visuals, cards, and release bundles with hash lineage.",
-      "input_contract": "CreatorArtifactWriteV1",
-      "output_contract": "CreatorArtifactReceiptV1",
-      "used_by": ["orchestrate-cuebook-creator-workflow", "assemble-cuebook-viewpoint-card", "prepare-market-content-release"]
+      "purpose": "Legacy artifact persistence; superseded by the Frame draft/publish tool family.",
+      "used_by": [
+        "orchestrate-cuebook-creator-workflow",
+        "assemble-cuebook-viewpoint-card",
+        "prepare-market-content-release"
+      ],
+      "superseded_by": "create_frame_draft"
     },
     {
       "tool": "register_settlement_claim",
       "module": "create",
       "authorization_scope": "cuebook.create.write",
-      "phase": "r1",
+      "phase": "superseded_review",
       "access": "write",
-      "purpose": "Atomically validate and register one hash-linked, frozen SettlementClaimV1 and canonical SettlementFormulaV1, including its constrained execution profile, without scoring its outcome at write time.",
-      "input_contract": "SettlementRegistrationV1",
-      "output_contract": "SettlementRegistrationReceiptV1",
-      "used_by": ["compile-cuebook-settlement-claim", "compile-cuebook-settlement-formula", "orchestrate-cuebook-creator-workflow"]
-    },
-    {
-      "tool": "get_settlement_outcome",
-      "module": "query",
-      "authorization_scope": "cuebook.query",
-      "phase": "r2",
-      "access": "read",
-      "purpose": "Return the deterministic lifecycle state, eligible sealed observations, evaluated formula branches, and score result for a registered settlement protocol.",
-      "input_contract": "SettlementOutcomeQueryV1",
-      "output_contract": "SettlementOutcomeV1",
-      "used_by": ["query-cuebook", "reconcile-market-content-history"]
+      "purpose": "Legacy settlement registration; folded into publish_frame's atomic transaction.",
+      "used_by": [
+        "compile-cuebook-settlement-claim",
+        "compile-cuebook-settlement-formula",
+        "orchestrate-cuebook-creator-workflow"
+      ],
+      "superseded_by": "publish_frame"
     },
     {
       "tool": "publish_release",
@@ -167,10 +517,10 @@
       "authorization_scope": "cuebook.publish",
       "phase": "r2",
       "access": "external_write",
-      "purpose": "Send one approved and frozen ReleaseBundleV1 through an authorized official platform connector.",
-      "input_contract": "PublicationRequestV1",
-      "output_contract": "PublicationAttemptV1",
-      "used_by": ["prepare-market-content-release"]
+      "purpose": "Send an approved frozen ReleaseBundleV1 through an official platform connector.",
+      "used_by": [
+        "prepare-market-content-release"
+      ]
     },
     {
       "tool": "get_publication_receipt",
@@ -178,10 +528,11 @@
       "authorization_scope": "cuebook.query",
       "phase": "r2",
       "access": "read",
-      "purpose": "Resolve an acknowledged platform operation into a verified publication receipt or an explicit unknown state.",
-      "input_contract": "PublicationReceiptQueryV1",
-      "output_contract": "PublicationReceiptV1",
-      "used_by": ["query-cuebook", "reconcile-market-content-history"]
+      "purpose": "Resolve a platform operation into a verified publication receipt or explicit unknown.",
+      "used_by": [
+        "query-cuebook",
+        "reconcile-market-content-history"
+      ]
     }
   ],
   "release_rules": {
@@ -201,5 +552,6 @@
     "material_news_requires_linked_evidence": true,
     "source_rights_required_for_creation": true,
     "valuation_comparisons_require_compatible_basis": true
-  }
+  },
+  "notes": "Data-expansion tools ship with content_kind default_enabled=false; a disabled tool stays in tools/list and returns unavailable until admin app_config enables it. search_news lands in PR8. Frame tool family activates in Phase B after OAuth owner/client consent."
 }

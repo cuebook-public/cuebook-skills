@@ -160,8 +160,8 @@ def build_manifest(
         if isinstance(item, dict)
     }
     expected = {
-        "full": (direction["preview_ref"], 2680, 1056, sha256_bytes(full_bytes)),
-        "compact_670": (direction["compact_preview_ref"], 670, 264, sha256_bytes(compact_bytes)),
+        "full": (direction["preview_ref"], 2488, 1056, sha256_bytes(full_bytes)),
+        "compact_622": (direction["compact_preview_ref"], 622, 264, sha256_bytes(compact_bytes)),
     }
     if capture.get("source_sha256") != sha256_bytes(html_bytes):
         raise RuntimeError("Capture report does not bind the selected HTML bytes.")
@@ -196,14 +196,14 @@ def build_manifest(
     return {
         "schema_version": "viewpoint-visual-v1",
         "visual_id": f"VVIS_{visual_suffix}_{html_digest[-12:]}",
-        "render_profile": "wide_2680",
+        "render_profile": "wide_2488",
         "spec_ref": direction_id,
         "grammar": grammar,
         "payload_mode": payload_mode(bindings),
         "visual_job": "render_selected_direction",
         "state": state,
         "generated_at": generated_at,
-        "dimensions": {"width": 2680, "height": 1056},
+        "dimensions": {"width": 2488, "height": 1056},
         "theme": color_system["preset_id"],
         "lineage": {
             "input_artifact_refs": unique([direction_set["direction_set_id"], *direction_set["input_refs"]]),

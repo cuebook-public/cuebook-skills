@@ -82,11 +82,11 @@ def base_payload(state: str = "draft") -> dict:
                     "surface_separation": ("whitespace", "divider", "mixed")[index - 1],
                     "optical_priority": ("claim wrap and proof alignment", "comparison seam and evidence lockup", "causal path terminal alignment")[index - 1],
                     "compact_mode": ("reflow", "recompose", "reflow")[index - 1],
-                    "compact_type_scale": {"hero_px_670": type_scale["hero_px_canvas"] / 2, "body_px_670": type_scale["body_px_canvas"] / 2, "meta_px_670": max(11, type_scale["meta_px_canvas"] / 2)},
+                    "compact_type_scale": {"hero_px_622": type_scale["hero_px_canvas"] / 2, "body_px_622": type_scale["body_px_canvas"] / 2, "meta_px_622": max(11, type_scale["meta_px_canvas"] / 2)},
                 },
                 "color_system": color_system,
                 "data_role": "support",
-                "responsive_rule": "Preserve the first three beats and stack support below the hero at 670px.",
+                "responsive_rule": "Preserve the first three beats and stack support below the hero at 622px.",
             },
             "route": route,
             "logic_route": (
@@ -143,7 +143,7 @@ def base_payload(state: str = "draft") -> dict:
             "spatial_skeleton": ("oversized type interrupted by pressure", "asymmetric collision around one seam", "diagonal processional to action")[index - 1],
             "html_ref": f"direction-{index}.html",
             "preview_ref": f"direction-{index}.png",
-            "compact_preview_ref": f"direction-{index}-670.png",
+            "compact_preview_ref": f"direction-{index}-622.png",
             "capture_report_ref": None,
             "render_audit_ref": None,
             "binding_refs": ["BIND_VIEW_01", "BIND_OBS_01", "BIND_REL_01", "BIND_ACTION_01"],
@@ -587,7 +587,7 @@ class DirectionSetTests(unittest.TestCase):
                     f'<span data-logic-step-id="LSTEP_MECH"{mechanism_binding}>机制</span></span>'
                 )
                 (root / direction["html_ref"]).write_text(
-                    f'<style>.claim{{text-wrap:balance}}[data-binding-ref]{{font-variant-numeric:tabular-nums}}.cuebook-wordmark{{right:41px;bottom:34px;width:136px;height:26px;color:#101411}}</style><main data-cuebook-viewpoint data-width="1340" data-height="528" data-cuebook-visual-contract="launch-v1" data-direction-id="{direction["direction_id"]}" '
+                    f'<style>.claim{{text-wrap:balance}}[data-binding-ref]{{font-variant-numeric:tabular-nums}}.cuebook-wordmark{{right:41px;bottom:34px;width:136px;height:26px;color:#101411}}</style><main data-cuebook-viewpoint data-width="1244" data-height="528" data-cuebook-visual-contract="launch-v1" data-direction-id="{direction["direction_id"]}" '
                     f'data-design-variance="8" data-visual-density="5" data-layout-grid="{grid}" data-entry-role="{entry_role}" data-color-system="semantic-v1" data-palette-family="{palette_family}" data-palette-strategy="{palette_strategy}" data-palette-preset="{palette_preset}"><h1 class="claim" data-role="claim" data-visual-level="{claim_level}" data-logic-step-id="LSTEP_CLAIM" data-binding-ref="BIND_VIEW_01">观点判断</h1>{evidence}<span data-role="condition" data-visual-level="3" data-logic-step-id="LSTEP_ACTION" data-binding-ref="BIND_ACTION_01">行动</span>{hidden_binding}{WORDMARK}</main>',
                     encoding="utf-8",
                 )

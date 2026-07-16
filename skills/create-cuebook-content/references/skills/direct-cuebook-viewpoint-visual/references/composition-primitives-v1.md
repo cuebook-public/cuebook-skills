@@ -72,7 +72,7 @@ When a route has no valid data, change the route. Never fill the absence with a 
 
 ## Three-second language
 
-At 670 x 264, a reader should be able to say one of these:
+At 622 x 264, a reader should be able to say one of these:
 
 - “Bad news landed, but price did not react.”
 - “The product launch is only a catalyst; earnings and price confirm.”

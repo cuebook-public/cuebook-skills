@@ -126,7 +126,7 @@ def candidate(index, label, angle, headline, body, close):
             "direction_ref": f"VDIR_HOOD_{index}",
             "html_ref": f"candidate-{index}/viewpoint.html",
             "preview_ref": f"candidate-{index}/viewpoint.png",
-            "compact_preview_ref": f"candidate-{index}/viewpoint-670.png",
+            "compact_preview_ref": f"candidate-{index}/viewpoint-622.png",
             "visible_char_count": 2,
             "alt_text": f"HOOD candidate {index}",
         },

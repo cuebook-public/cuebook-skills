@@ -27,14 +27,14 @@ Rules:
 - Use two to four levels; do not make all groups equally loud.
 - Separate adjacent levels with at least two cues from size, weight, occupied area, position, whitespace, and contrast. Color alone never establishes a level.
 - Give one block the largest area. When a number is level 1, the claim becomes level 2; when the claim is level 1, the number or curve becomes level 2.
-- Preserve the same entry point and reading order at 1340 x 528 and 670 x 264. Remove level 4 before shrinking level 1 or 2.
+- Preserve the same entry point and reading order at 1244 x 528 and 622 x 264. Remove level 4 before shrinking level 1 or 2.
 - Run a grayscale test and a squint test. If the entry point or reading order disappears without hue, revise the geometry or type scale.
 
 ## Type Roles
 
 Use the system UI stack so Chinese and Latin text remain native and quiet. Use no more than one family in a launch image unless a sourced quote requires a second family.
 
-| Role | 1340 px starting range | Weight | Line height |
+| Role | 1244 px starting range | Weight | Line height |
 | --- | ---: | ---: | ---: |
 | level-1 claim | 46-64 px | 700-850 | 1.04-1.12 |
 | level-1 number | 52-76 px | 700-850 | 0.96-1.04 |
@@ -45,7 +45,7 @@ Use the system UI stack so Chinese and Latin text remain native and quiet. Use n
 - Keep `letter-spacing: 0` for every role.
 - Apply `font-variant-numeric: tabular-nums` to prices, percentages, dates, and changing market values.
 - Use `text-wrap: balance` for claims and `text-wrap: pretty` for short explanations.
-- Keep claims to two lines at 1340 px. Rewrite before reducing the claim below 64 px.
+- Keep claims to two lines at 1244 px. Rewrite before reducing the claim below 64 px.
 - Hide expendable level-4 copy in the compact state when it would render below a comfortable reading size.
 - Do not use thin weights for colored text. Small colored copy needs more weight or a darker lightness value.
 

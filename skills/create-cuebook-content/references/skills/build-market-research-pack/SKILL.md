@@ -28,8 +28,8 @@ Proceed with a conditional pack when non-critical fields are missing. Ask a ques
 
 ## Provider Routing
 
-- Use Cuebook `search_market_evidence` for a creator's current news, PR, filing, regulator, or exchange premise. Fall back to authorized web research only when that runtime explicitly permits it.
-- Use `query_fundamental_metrics` for reported financials and valuation requests. Use `get_market_state` for bounded current quote context, `query_market_series` for OHLCV or synchronized returns, and `compute_market_metrics` for declared derived calculations.
+- Use Cuebook `search_news` for a creator's current news, PR, filing, regulator, or exchange premise. Fall back to authorized web research only when that runtime explicitly permits it.
+- Use `list_filings` for reported financials and valuation requests. Use `get_market_state` for bounded current quote context, `get_candles` for OHLCV or synchronized returns, and `compute_market_metrics` for declared derived calculations.
 - The renderer never calls providers. Research and data assembly resolve, source, and cache the inputs before copy or layout begins.
 - Missing provider capability is a named backend requirement. It cannot be disguised as a successful qualitative result when the premise is material.
 

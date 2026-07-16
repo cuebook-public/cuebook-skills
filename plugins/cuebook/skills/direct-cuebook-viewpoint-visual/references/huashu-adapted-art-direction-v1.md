@@ -29,7 +29,7 @@ Every unresolved viewpoint receives three real HTML previews. Use the same messa
 
 - Render before choosing. Text-only style labels are not evidence.
 - Keep skeletons structurally different; color swaps do not count.
-- Compare at 1340 x 528 and 670 x 264, then verify the 2680 x 1056 publication capture.
+- Compare at 1244 x 528 and 622 x 264, then verify the 2488 x 1056 publication capture.
 - Score concept, three-second comprehension, hierarchy, data integrity, craft, and originality.
 - A mixed direction becomes a new rendered direction with its own critique and bindings.
 

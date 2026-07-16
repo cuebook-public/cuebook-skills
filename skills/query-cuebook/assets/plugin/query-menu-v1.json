@@ -13,8 +13,8 @@
       ],
       "mcp_tools": [
         "search_assets",
-        "list_asset_stories",
-        "get_story"
+        "list_asset_cues",
+        "get_cues"
       ],
       "availability": "available"
     },
@@ -26,7 +26,7 @@
         "query-cuebook"
       ],
       "mcp_tools": [
-        "get_story"
+        "get_cues"
       ],
       "availability": "available"
     },
@@ -39,7 +39,7 @@
       ],
       "mcp_tools": [
         "search_assets",
-        "list_asset_narratives"
+        "list_asset_cues"
       ],
       "availability": "backend_required"
     },
@@ -65,7 +65,7 @@
         "build-market-research-pack"
       ],
       "mcp_tools": [
-        "search_market_evidence"
+        "search_news"
       ],
       "availability": "backend_required"
     },
@@ -78,7 +78,7 @@
         "build-market-research-pack"
       ],
       "mcp_tools": [
-        "query_fundamental_metrics"
+        "list_filings"
       ],
       "availability": "backend_required"
     },
@@ -90,7 +90,7 @@
         "query-cuebook"
       ],
       "mcp_tools": [
-        "query_market_series"
+        "get_candles"
       ],
       "availability": "backend_required"
     },
@@ -103,7 +103,7 @@
         "compute-cuebook-market-indicators"
       ],
       "mcp_tools": [
-        "query_market_series",
+        "get_candles",
         "compute_market_metrics"
       ],
       "availability": "backend_required"
@@ -142,7 +142,7 @@
         "reconcile-market-content-history"
       ],
       "mcp_tools": [
-        "get_settlement_outcome"
+        "list_settlements"
       ],
       "availability": "backend_required"
     },

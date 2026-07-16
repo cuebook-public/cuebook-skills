@@ -566,11 +566,11 @@ class ViewpointVisualTests(unittest.TestCase):
             placeholder_hash = "sha256:" + "1" * 64
             manifest.update(
                 {
-                    "render_profile": "wide_2680",
+                    "render_profile": "wide_2488",
                     "spec_ref": "VDIR_parallelcontrast20260714",
                     "grammar": "event_transmission",
                     "visual_job": "render_selected_direction",
-                    "dimensions": {"width": 2680, "height": 1056},
+                    "dimensions": {"width": 2488, "height": 1056},
                     "theme": "quiet-cobalt",
                 }
             )
@@ -579,8 +579,8 @@ class ViewpointVisualTests(unittest.TestCase):
                 "svg": None,
                 "font_manifest": {"ref": "fonts/font-assets-v1.json", "sha256": placeholder_hash},
                 "png_derivatives": [
-                    {"kind": "full", "ref": "viewpoint-2680.png", "width": 2680, "height": 1056, "sha256": placeholder_hash},
-                    {"kind": "compact_670", "ref": "viewpoint-670.png", "width": 670, "height": 264, "sha256": placeholder_hash},
+                    {"kind": "full", "ref": "viewpoint-2488.png", "width": 2488, "height": 1056, "sha256": placeholder_hash},
+                    {"kind": "compact_622", "ref": "viewpoint-622.png", "width": 622, "height": 264, "sha256": placeholder_hash},
                 ],
                 "derivative_bundle_hash": placeholder_hash,
             }
@@ -635,10 +635,10 @@ class ViewpointVisualTests(unittest.TestCase):
             def fake_png(width: int, height: int) -> bytes:
                 return b"\x89PNG\r\n\x1a\n" + struct.pack(">I", 13) + b"IHDR" + struct.pack(">II", width, height)
 
-            full = fake_png(2680, 1056)
-            compact = fake_png(670, 264)
-            (root / "viewpoint-2680.png").write_bytes(full)
-            (root / "viewpoint-670.png").write_bytes(compact)
+            full = fake_png(2488, 1056)
+            compact = fake_png(622, 264)
+            (root / "viewpoint-2488.png").write_bytes(full)
+            (root / "viewpoint-622.png").write_bytes(compact)
             html_hash = "sha256:" + hashlib.sha256(html.encode("utf-8")).hexdigest()
             full_hash = "sha256:" + hashlib.sha256(full).hexdigest()
             compact_hash = "sha256:" + hashlib.sha256(compact).hexdigest()
@@ -646,8 +646,8 @@ class ViewpointVisualTests(unittest.TestCase):
                 "schema_version": "viewpoint-html-capture-v1",
                 "source_sha256": html_hash,
                 "derivatives": [
-                    {"kind": "full", "ref": "viewpoint-2680.png", "width": 2680, "height": 1056, "sha256": full_hash, "painted_ratio": 0.08},
-                    {"kind": "compact_670", "ref": "viewpoint-670.png", "width": 670, "height": 264, "sha256": compact_hash, "painted_ratio": 0.10},
+                    {"kind": "full", "ref": "viewpoint-2488.png", "width": 2488, "height": 1056, "sha256": full_hash, "painted_ratio": 0.08},
+                    {"kind": "compact_622", "ref": "viewpoint-622.png", "width": 622, "height": 264, "sha256": compact_hash, "painted_ratio": 0.10},
                 ],
             }
             (root / "capture.json").write_text(json.dumps(capture), encoding="utf-8")
@@ -670,8 +670,8 @@ class ViewpointVisualTests(unittest.TestCase):
                     "direction_id": "VDIR_finalizer20260715",
                     "binding_refs": ["BIND_FACT", "BIND_VIEW"],
                     "html_ref": "direction.html",
-                    "preview_ref": "viewpoint-2680.png",
-                    "compact_preview_ref": "viewpoint-670.png",
+                    "preview_ref": "viewpoint-2488.png",
+                    "compact_preview_ref": "viewpoint-622.png",
                     "capture_report_ref": "capture.json",
                     "route": "claim_first",
                     "layout_system": {"color_system": {"preset_id": "quiet-cobalt"}},
@@ -687,10 +687,10 @@ class ViewpointVisualTests(unittest.TestCase):
             )
             validation = VALIDATOR.validate_manifest(manifest, root)
             self.assertTrue(validation["valid"], validation["errors"])
-            self.assertEqual(manifest["render_profile"], "wide_2680")
+            self.assertEqual(manifest["render_profile"], "wide_2488")
             self.assertEqual(manifest["theme"], "quiet-cobalt")
             self.assertEqual(manifest["asset"]["font_manifest"]["ref"], "fonts/font-assets-v1.json")
-            self.assertEqual({item["kind"] for item in manifest["asset"]["png_derivatives"]}, {"full", "compact_670"})
+            self.assertEqual({item["kind"] for item in manifest["asset"]["png_derivatives"]}, {"full", "compact_622"})
 
     def test_asset_hash_tampering_is_detected(self):
         with tempfile.TemporaryDirectory(dir=TEST_TMP) as directory:
