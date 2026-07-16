@@ -17,6 +17,7 @@ Any failure here forces revision:
 - The selected chart answers the declared market relationship and the visible mechanism explains why the evidence matters to the traded asset.
 - A proof candidate gives evidence more visual weight than headline typography, and every label remains attached to its mark at both sizes.
 - No value labeled on the proof geometry is restated as a display-scale number in another group, and no text crosses a rendered rule, bracket, or axis stroke.
+- No CJK semantic word, ticker phrase, or value-unit pair is split across a line break in any rendered raster, including the OG share card.
 - Every background track or remainder bar has a reconciled denominator, and a materially unequal tenor or time gap is visible or explicitly declared ordinal.
 
 ## Scorecard

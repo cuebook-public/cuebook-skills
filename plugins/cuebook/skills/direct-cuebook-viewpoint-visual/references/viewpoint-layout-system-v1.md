@@ -74,6 +74,7 @@ Choose the `composition_archetype` from `finance-visual-argument-system-v1.md` b
 - Apply tabular numerals to market values and dates.
 - A key number may exceed the headline size when the number is the claim.
 - Use balanced natural wrapping for claims. Manual line breaks are invalid in launch visuals because they produce orphan verbs and unstable compact layouts.
+- Segment CJK copy into semantic nowrap phrase spans so balancing chooses break points between words, never inside one; see the line-breaking contract in `launch-visual-copy-v1.md`.
 
 ## Data Placement
 

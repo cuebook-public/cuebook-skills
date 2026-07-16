@@ -47,6 +47,9 @@ Prefer 55-95 total characters. Use the remaining budget only for a data-led comp
 - Do not place `<br>` inside the claim. Use `text-wrap: balance`, a deliberate width, and natural wrapping.
 - Keep the claim to two lines at 1244 x 528 and at most three lines in the 622 x 264 compact composition.
 - Keep verb-object phrases, ticker-action phrases, dates, values, and units together.
+- CJK text breaks between any two characters by default, so `text-wrap: balance` alone cannot protect a word. Segment every visible CJK string — claim, evidence, and condition alike — into semantic phrase spans (`<span class="w">` with `white-space: nowrap`) so lines can break only between phrases.
+- A CJK semantic word — a market term such as `油价`, `库存`, or `增产`, a proper name, a ticker phrase, or a value with its unit — must never split across lines at any rendered size, including the OG share card.
+- Attach trailing punctuation to the preceding phrase span. No rendered line may start with a closing punctuation mark or end with an opening one.
 - Reject orphan lines made only of a connector, modal, or short verb such as `拿到`, `因为`, `所以`, or `但是`.
 - Rewrite before reducing the claim below 64px at the 1244 canvas.
 

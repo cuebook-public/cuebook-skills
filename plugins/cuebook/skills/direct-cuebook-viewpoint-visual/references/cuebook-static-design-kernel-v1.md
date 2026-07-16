@@ -91,6 +91,7 @@ Use three different composition archetypes. At most one may be an editorial stat
 - Level 4 is expendable context.
 - Four or fewer type sizes and weights.
 - Claims use natural balanced wrapping. Supporting copy uses natural pretty wrapping.
+- CJK copy is segmented into nowrap phrase spans before any wrapping rule applies; a semantic word or value-unit pair never splits across lines. Balanced wrapping chooses between phrases, never inside one.
 - Market numbers use tabular numerals.
 - Letter spacing stays at zero for stable Chinese and bilingual rendering.
 - The grayscale image must retain the same reading order.
@@ -122,7 +123,7 @@ Capture 2488 x 1056 and 622 x 264; audit DOM geometry at 1244 x 528 and 622 x 26
 - visible selected material bindings with declared upstream lineage;
 - grayscale hierarchy;
 - local color contrast;
-- natural wrapping and no orphan words;
+- natural wrapping, no orphan words, and no CJK word split across a line break;
 - optical alignment and surface consistency;
 - no clipping, overlap, placeholders, or external dependencies;
 - real structural difference across the three directions.
