@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cuebook Market Indicators"
+  short_description: "Compute sourced indicators from Cuebook OHLCV"
+  default_prompt: "Compute only the indicators that can test this Cuebook viewpoint, preserve their lookbacks and as-of times, and return an IndicatorPackV1."

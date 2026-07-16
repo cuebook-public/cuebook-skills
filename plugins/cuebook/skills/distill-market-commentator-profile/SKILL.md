@@ -1,6 +1,7 @@
 ---
 name: distill-market-commentator-profile
 description: Deeply distill a public finance or investment commentator from a handle, author name, URL set, authorized export, or CorpusV1 into an evidence-backed ProfileV1 covering sources, attention, reasoning, writing mechanics, risks, and Cuebook bridge rules. Use for account research, cross-web commentator analysis, or reusable method extraction. Do not use for private-data collection, access-control bypass, living-author imitation, catchphrase cloning, or market-post drafting.
+license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Distill Market Commentator Profile

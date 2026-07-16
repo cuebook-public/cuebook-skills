@@ -1,6 +1,7 @@
 ---
 name: direct-cuebook-viewpoint-motion
 description: Direct an approved Cuebook viewpoint visual into a short, continuous, data-bound motion narrative as ViewpointMotionSpecV1. Use when a selected VisualDirectionSetV1 or ViewpointVisualV1 should become an animated React Feed card, motion graphic, social clip, or deterministic keyframe sequence. Preserve the creator's thesis and source bindings; do not invent curves, turn every element into a transition, force audio, or animate before a static visual direction has been approved.
+license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Direct Cuebook Viewpoint Motion

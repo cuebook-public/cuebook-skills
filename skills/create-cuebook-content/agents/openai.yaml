@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create With Cuebook"
+  short_description: "Turn a trading idea into sourced text, visuals, and settlement candidates"
+  default_prompt: "Create three Cuebook publishing candidates from this trading idea. Query Cuebook first for every missing material current premise, preserve creator authorship, and bind text, visual, and optional settlement output to the same meaning."

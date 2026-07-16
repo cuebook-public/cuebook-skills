@@ -1,0 +1,88 @@
+{
+  "schema_version": "cuebook-release-skills-manifest-v1",
+  "catalog_version": "1.27.0",
+  "plugin_version": "0.2.0",
+  "bundles": [
+    {
+      "skill": "query-cuebook",
+      "closure": [
+        "query-cuebook",
+        "build-market-research-pack",
+        "compute-cuebook-market-indicators",
+        "normalize-cuebook-creator-feed",
+        "reconcile-market-content-history",
+        "validate-cuebook-projection",
+        "route-cuebook-narrative"
+      ],
+      "bundled_internal_skills": 6,
+      "plugin_assets": [
+        "cuebook-modules-v1.json",
+        "mcp-capability-map-v1.json",
+        "query-menu-v1.json"
+      ],
+      "vendored_shared_validators": [
+        "scripts/validate_query_bundle.py",
+        "scripts/validate_query_request.py"
+      ],
+      "valid": true
+    },
+    {
+      "skill": "create-cuebook-content",
+      "closure": [
+        "create-cuebook-content",
+        "intake-cuebook-viewpoint",
+        "compose-cuebook-content-recipe",
+        "orchestrate-cuebook-creator-workflow",
+        "query-cuebook",
+        "compile-cuebook-market-view-semantics",
+        "normalize-cuebook-creator-feed",
+        "validate-cuebook-projection",
+        "route-cuebook-narrative",
+        "classify-cuebook-trading-logic",
+        "compose-cuebook-trading-thesis",
+        "plan-cuebook-creator-expression",
+        "plan-market-content-program",
+        "render-cuebook-market-post",
+        "assemble-cuebook-viewpoint-data",
+        "render-cuebook-market-figure",
+        "direct-cuebook-viewpoint-visual",
+        "render-cuebook-viewpoint-visual",
+        "render-cuebook-thesis-chart",
+        "assemble-cuebook-publish-candidates",
+        "prepare-market-content-release",
+        "reconcile-market-content-history",
+        "build-market-research-pack",
+        "compute-cuebook-market-indicators",
+        "render-cuebook-market-media",
+        "assemble-cuebook-viewpoint-card",
+        "compile-cuebook-settlement-claim",
+        "compile-cuebook-visual-argument",
+        "optimize-cuebook-market-seo",
+        "optimize-cuebook-market-geo",
+        "render-cuebook-logic-card",
+        "render-cuebook-market-signal",
+        "compile-cuebook-settlement-formula",
+        "collect-market-commentator-corpus",
+        "distill-market-commentator-profile"
+      ],
+      "bundled_internal_skills": 34,
+      "plugin_assets": [
+        "creation-menu-v1.json",
+        "cuebook-modules-v1.json",
+        "mcp-capability-map-v1.json",
+        "plugin-index-v1.json",
+        "query-menu-v1.json"
+      ],
+      "vendored_shared_validators": [
+        "references/skills/intake-cuebook-viewpoint/scripts/validate_viewpoint_intake.py",
+        "references/skills/query-cuebook/scripts/validate_query_bundle.py",
+        "references/skills/query-cuebook/scripts/validate_query_request.py",
+        "scripts/validate_creation_bundle.py",
+        "scripts/validate_creator_seed.py"
+      ],
+      "valid": true
+    }
+  ],
+  "valid": true,
+  "errors": []
+}

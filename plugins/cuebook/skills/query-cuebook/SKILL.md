@@ -1,6 +1,8 @@
 ---
 name: query-cuebook
 description: Query, inspect, compare, visualize, or explain Cuebook market intelligence without creating publishable creator content or causing writes. Use whenever the user asks to 看、查、搜、读取、列出、比较 or verify Cuebook assets, stories, market state, news, evidence, fundamentals, valuation, OHLCV, indicators, data tables or factual curves, creator feed records, settlement outcomes, publication receipts, commentator profiles, or media patterns. Return a source-linked CuebookQueryBundleV1 and a concise human answer. Do not draft market posts, design creator viewpoint graphics, compile settlement claims, save artifacts, publish, or call any write tool. An explicit request for a post, creator viewpoint graphic, settlement protocol, or publishing candidate belongs to create-cuebook-content.
+license: Proprietary. Cuebook internal; see the repository README for terms.
+compatibility: Requires a connected Cuebook MCP server for asset resolution and market data; degrades to partial results, never invented values, when tools are unavailable. Python 3.11+ for validators.
 ---
 
 # Query Cuebook

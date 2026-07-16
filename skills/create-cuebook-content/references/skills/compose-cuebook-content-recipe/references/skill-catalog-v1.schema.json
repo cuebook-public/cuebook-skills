@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/skill-catalog-v1.schema.json",
+  "title": "SkillCatalogV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "catalog_id", "catalog_version", "generated_at", "default_locale", "categories", "skills", "presets", "extension_points", "maintenance_policy"],
+  "properties": {
+    "schema_version": {"const": "skill-catalog-v1"},
+    "catalog_id": {"type": "string", "pattern": "^CAT_[a-z0-9_:-]+$"},
+    "catalog_version": {"$ref": "#/$defs/semver"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "default_locale": {"type": "string", "minLength": 2},
+    "categories": {"type": "array", "items": {"$ref": "#/$defs/category"}, "minItems": 1},
+    "skills": {"type": "array", "items": {"$ref": "#/$defs/skill"}, "minItems": 1},
+    "presets": {"type": "array", "items": {"$ref": "#/$defs/preset"}},
+    "extension_points": {"type": "array", "items": {"$ref": "#/$defs/extensionPoint"}},
+    "maintenance_policy": {"$ref": "#/$defs/maintenancePolicy"}
+  },
+  "$defs": {
+    "semver": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "skillId": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "mode": {"enum": ["plan_only", "single", "batch", "event_lifecycle", "postmortem", "correction", "library"]},
+    "channel": {"anyOf": [{"enum": ["x", "telegram", "xiaohongshu", "reddit", "owned_web", "seeking_alpha_internal", "buy_side_note", "short_video", "douyin", "generic", "all"]}, {"type": "string", "pattern": "^custom:[a-z0-9-]+$"}]},
+    "category": {
+      "type": "object", "additionalProperties": false,
+      "required": ["category_id", "label", "description", "order"],
+      "properties": {
+        "category_id": {"type": "string", "pattern": "^category-[a-z0-9-]+$"},
+        "label": {"type": "string", "minLength": 1},
+        "description": {"type": "string", "minLength": 1},
+        "order": {"type": "integer", "minimum": 1}
+      }
+    },
+    "skill": {
+      "type": "object", "additionalProperties": false,
+      "required": ["skill_id", "version", "display_name", "description", "category_id", "status", "visibility", "execution", "user_selectable", "default_enabled", "capabilities", "input_contracts", "output_contract", "requires_all", "supported_modes", "supported_channels", "ui", "maintenance", "replaced_by"],
+      "properties": {
+        "skill_id": {"$ref": "#/$defs/skillId"},
+        "version": {"$ref": "#/$defs/semver"},
+        "display_name": {"type": "string", "minLength": 1},
+        "description": {"type": "string", "minLength": 1},
+        "category_id": {"type": "string", "pattern": "^category-[a-z0-9-]+$"},
+        "status": {"enum": ["stable", "beta", "experimental", "deprecated", "disabled"]},
+        "visibility": {"enum": ["selectable", "automatic", "internal"]},
+        "execution": {"enum": ["installed", "external", "deferred"]},
+        "user_selectable": {"type": "boolean"},
+        "default_enabled": {"type": "boolean"},
+        "capabilities": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9-]+$"}, "minItems": 1, "uniqueItems": true},
+        "input_contracts": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "output_contract": {"type": "string", "minLength": 1},
+        "requires_all": {"type": "array", "items": {"$ref": "#/$defs/skillId"}, "uniqueItems": true},
+        "supported_modes": {"type": "array", "items": {"$ref": "#/$defs/mode"}, "minItems": 1, "uniqueItems": true},
+        "supported_channels": {"type": "array", "items": {"$ref": "#/$defs/channel"}, "uniqueItems": true},
+        "ui": {"$ref": "#/$defs/ui"},
+        "maintenance": {"$ref": "#/$defs/maintenance"},
+        "replaced_by": {"type": ["string", "null"], "pattern": "^[a-z0-9-]+$"}
+      }
+    },
+    "ui": {
+      "type": "object", "additionalProperties": false,
+      "required": ["surface", "group", "order", "control_type", "icon", "summary"],
+      "properties": {
+        "surface": {"enum": ["query", "creator", "library", "admin", "internal"]},
+        "group": {"type": "string", "minLength": 1},
+        "order": {"type": "integer", "minimum": 1},
+        "control_type": {"enum": ["toggle", "single_select", "multi_select", "hidden"]},
+        "icon": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "summary": {"type": "string", "minLength": 1}
+      }
+    },
+    "maintenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["owner", "stability", "last_verified_at", "skill_path", "schema_refs", "validator_refs", "test_refs"],
+      "properties": {
+        "owner": {"type": "string", "minLength": 1},
+        "stability": {"enum": ["stable", "beta", "experimental"]},
+        "last_verified_at": {"type": "string", "format": "date-time"},
+        "skill_path": {"type": ["string", "null"]},
+        "schema_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "validator_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "test_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    },
+    "range": {
+      "type": "object", "additionalProperties": false,
+      "required": ["min", "max"],
+      "properties": {"min": {"type": "integer", "minimum": 0}, "max": {"type": "integer", "minimum": 0}}
+    },
+    "ingredientLimits": {
+      "type": "object", "additionalProperties": false,
+      "required": ["news_refs", "calendar_refs", "narrative_refs", "trade_idea_refs", "trade_history_refs"],
+      "properties": {
+        "news_refs": {"$ref": "#/$defs/range"},
+        "calendar_refs": {"$ref": "#/$defs/range"},
+        "narrative_refs": {"$ref": "#/$defs/range"},
+        "trade_idea_refs": {"$ref": "#/$defs/range"},
+        "trade_history_refs": {"$ref": "#/$defs/range"}
+      }
+    },
+    "presetOutput": {
+      "type": "object", "additionalProperties": false,
+      "required": ["channel", "format", "count", "length"],
+      "properties": {
+        "channel": {"$ref": "#/$defs/channel"},
+        "format": {"type": "string", "pattern": "^[a-z0-9_-]+$"},
+        "count": {"type": "integer", "minimum": 1, "maximum": 20},
+        "length": {"enum": ["short", "standard", "long"]}
+      }
+    },
+    "preset": {
+      "type": "object", "additionalProperties": false,
+      "required": ["preset_id", "name", "description", "state", "selection_mode", "default_execution_mode", "ingredient_limits", "default_analysis_lenses", "default_outputs", "required_skill_ids", "optional_skill_ids"],
+      "properties": {
+        "preset_id": {"type": "string", "pattern": "^preset-[a-z0-9-]+$"},
+        "name": {"type": "string", "minLength": 1},
+        "description": {"type": "string", "minLength": 1},
+        "state": {"enum": ["active", "deprecated"]},
+        "selection_mode": {"enum": ["ingredient_first", "opportunity_first", "preset_auto"]},
+        "default_execution_mode": {"$ref": "#/$defs/mode"},
+        "ingredient_limits": {"$ref": "#/$defs/ingredientLimits"},
+        "default_analysis_lenses": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9-]+$"}, "minItems": 1, "uniqueItems": true},
+        "default_outputs": {"type": "array", "items": {"$ref": "#/$defs/presetOutput"}, "minItems": 1},
+        "required_skill_ids": {"type": "array", "items": {"$ref": "#/$defs/skillId"}, "uniqueItems": true},
+        "optional_skill_ids": {"type": "array", "items": {"$ref": "#/$defs/skillId"}, "uniqueItems": true}
+      }
+    },
+    "extensionPoint": {
+      "type": "object", "additionalProperties": false,
+      "required": ["extension_point", "display_name", "contract", "status", "multiple", "provider_required", "config_schema_ref"],
+      "properties": {
+        "extension_point": {"enum": ["feed_adapter", "research_source", "market_data", "media_asset", "policy", "publisher", "analytics", "custom_renderer"]},
+        "display_name": {"type": "string", "minLength": 1},
+        "contract": {"type": "string", "minLength": 1},
+        "status": {"enum": ["available", "deferred"]},
+        "multiple": {"type": "boolean"},
+        "provider_required": {"type": "boolean"},
+        "config_schema_ref": {"type": ["string", "null"]}
+      }
+    },
+    "maintenancePolicy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["catalog_owner", "compatibility_policy", "deprecation_min_days", "require_schema", "require_validator", "require_tests"],
+      "properties": {
+        "catalog_owner": {"type": "string", "minLength": 1},
+        "compatibility_policy": {"const": "semver"},
+        "deprecation_min_days": {"type": "integer", "minimum": 0},
+        "require_schema": {"type": "boolean"},
+        "require_validator": {"type": "boolean"},
+        "require_tests": {"type": "boolean"}
+      }
+    }
+  }
+}

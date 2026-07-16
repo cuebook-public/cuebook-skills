@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.xyz/schemas/creator-seed-v1.schema.json",
+  "title": "CreatorSeedV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "seed_id", "seed_text", "deliverable", "requested_outputs", "material_current_claims", "stance_source", "source_claim_refs", "adoption_confirmed"],
+  "properties": {
+    "schema_version": {"const": "creator-seed-v1"},
+    "seed_id": {"type": "string", "pattern": "^SEED_[A-Za-z0-9_-]+$"},
+    "seed_text": {"type": "string", "minLength": 1},
+    "deliverable": {"enum": ["market_post", "viewpoint_visual", "settlement_protocol", "release_bundle", "mixed"]},
+    "requested_outputs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["text", "visual", "settlement", "release"]}},
+    "material_current_claims": {"type": "boolean"},
+    "stance_source": {"enum": ["creator_seed", "cuebook_synthesis", "source_commentator"]},
+    "source_claim_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "adoption_confirmed": {"type": "boolean"}
+  }
+}

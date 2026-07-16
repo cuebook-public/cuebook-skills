@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cuebook Market Figure"
+  short_description: "Show a trade view through one meaningful curve"
+  default_prompt: "Use $render-cuebook-market-figure to show what the creator is betting on, why price should move, where capital may go, and the one sourced curve or comparison that matters. Add readable trading-logic tags and keep evidence states private."

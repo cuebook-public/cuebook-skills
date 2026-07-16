@@ -1,6 +1,7 @@
 ---
 name: compose-cuebook-trading-thesis
 description: Compose a MarketViewSemanticsV1 with genuine avoid, conditional, or explicit trade intent, CreatorViewIntentV1, creator seed, Cuebook reasoning, validated ResearchPackV1, or selected opportunity into a versioned TradingThesisV1 with attributable idea development, evidence, countercase, action state, invalidation, disclosures, and a precommitted resolution contract. Skip pure observations, sentiment witnesses, and source anecdotes; they go from semantics to expression without a thesis. Do not use for final prose, order execution, settlement, reputation scoring, feed ranking, or imitation.
+license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Compose Cuebook Trading Thesis

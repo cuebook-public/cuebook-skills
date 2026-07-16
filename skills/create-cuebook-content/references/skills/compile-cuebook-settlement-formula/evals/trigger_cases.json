@@ -1,0 +1,9 @@
+[
+  {"prompt": "把这份已经确认的结算观点编译成后端可以执行的数学公式", "should_trigger": true},
+  {"prompt": "BTC 站上 65000 且放量后看多到下次减半，给我变量、触发公式和成功公式", "should_trigger": true},
+  {"prompt": "这个相对跑赢观点到底怎么算，两个标的的收益率公式展开", "should_trigger": true},
+  {"prompt": "给结算服务生成公式 AST 和未触发生命周期", "should_trigger": true},
+  {"prompt": "把这条观点写成一条自然的推文", "should_trigger": false},
+  {"prompt": "查询 BTC 当前价格", "should_trigger": false},
+  {"prompt": "直接告诉我这条观点最后赢没赢", "should_trigger": false}
+]

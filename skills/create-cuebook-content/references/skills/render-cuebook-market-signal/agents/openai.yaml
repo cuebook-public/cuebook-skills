@@ -1,0 +1,4 @@
+interface:
+  display_name: "Render Cuebook Market Signal"
+  short_description: "Turn one news item or number into a trade view"
+  default_prompt: "Render this sourced number or news item as a decisive Cuebook creator view: what I would do, why price should move, the horizon, and readable strategy tags. Keep evidence states private."

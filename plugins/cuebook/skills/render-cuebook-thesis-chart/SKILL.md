@@ -1,6 +1,8 @@
 ---
 name: render-cuebook-thesis-chart
 description: Render a Cuebook PostV1, CreatorViewIntentV1, TradingThesisV1, SettlementClaimV1, ResearchPackV1, or explicit creator view into a sourced ThesisChartV1 plus a Cuebook-branded Feed chart. Use for adaptive price candles, sealed-versus-forming bars, aligned volume confirmation, open-ended price triggers, publication cutoffs, viewpoint-to-settlement timelines, targets, invalidations, event reactions, range bands, or normalized relative-performance comparisons. Do not use for unsupported technical levels, fabricated future paths, deep TradingView replay, order execution, or decorative charts detached from a thesis.
+license: Proprietary. Cuebook internal; see the repository README for terms.
+compatibility: Requires Python 3.11+ for validators and Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
 ---
 
 # Render Cuebook Thesis Chart

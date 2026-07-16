@@ -1,0 +1,4 @@
+interface:
+  display_name: "Orchestrate Cuebook Creator Workflow"
+  short_description: "Run Cuebook's evidence-first cached creator workflow"
+  default_prompt: "Resolve this ContentRecipeV1 against the pinned SkillCatalogV1. Compile material creator premises first, fetch linked news and same-basis metrics, then batch text, visual, and settlement branches and return three finished frontend choices."

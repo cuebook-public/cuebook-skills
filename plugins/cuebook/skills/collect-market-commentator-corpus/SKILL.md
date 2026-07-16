@@ -1,6 +1,7 @@
 ---
 name: collect-market-commentator-corpus
 description: Normalize public or explicitly authorized market-commentator material into the CorpusV1 contract. Use when Codex receives JSON, JSONL, or CSV exports of posts, articles, newsletters, or transcripts and must preserve Chinese text, links, entities, metrics availability, deduplication evidence, and provenance before downstream analysis. Do not use this skill to profile an author, infer a persona, imitate a living person, or draft market content.
+license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Collect Market Commentator Corpus

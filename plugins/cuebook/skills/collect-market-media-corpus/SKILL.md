@@ -1,6 +1,7 @@
 ---
 name: collect-market-media-corpus
 description: Normalize public or explicitly authorized market articles, Reddit threads, Xiaohongshu image notes, short videos, transcripts, OCR, comments, and supplied media manifests into MediaCorpusV1. Use before cross-media format distillation when the input contains sections, cards, frames, audio, subtitles, community context, or interactions that CorpusV1 cannot represent. Do not use for scraping bypass, private data, account profiling, format analysis, publishing, or writing new market content.
+license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Collect Market Media Corpus

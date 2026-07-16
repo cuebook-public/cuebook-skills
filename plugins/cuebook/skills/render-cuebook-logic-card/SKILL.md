@@ -1,6 +1,8 @@
 ---
 name: render-cuebook-logic-card
 description: Render a validated Cuebook VisualArgumentV1 into a branded LogicCardV1 and Feed-ready SVG using causal-chain, metric-thesis, scenario-tree, evidence-balance, or comparison grammar. Use when a trading narrative should become an explanatory opinion graphic rather than a market-price chart. Preserve observed, derived, conditional, countercase, creator-ownership, source, and settlement states. Use render-cuebook-thesis-chart for candles, relative-return lines, price levels, and viewpoint-to-expiry market timelines. Do not research facts, invent causal links, calculate indicators, imitate a creator, publish, or place trades.
+license: Proprietary. Cuebook internal; see the repository README for terms.
+compatibility: Requires Python 3.11+ for validators and Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
 ---
 
 # Render Cuebook Logic Card

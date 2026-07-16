@@ -1,0 +1,7 @@
+[
+  {"prompt": "把这几条最终稿整理成发布包，先不要真的发", "should_trigger": true},
+  {"prompt": "检查这些 X 和 Telegram 稿件能不能定时发布", "should_trigger": true},
+  {"prompt": "给小红书做一个人工发布交接清单", "should_trigger": true},
+  {"prompt": "直接登录我的账号把它发掉", "should_trigger": false},
+  {"prompt": "先研究这家公司再写稿", "should_trigger": false}
+]

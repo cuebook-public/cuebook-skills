@@ -1,6 +1,7 @@
 ---
 name: compile-cuebook-settlement-claim
 description: Compile a settlement-eligible CreatorExpressionPlanV1, finalized Cuebook market post, PostV1, or TradingThesisV1 into one primary, machine-settleable SettlementClaimV1 plus a readable summary and one-line footer. Supports fixed deadlines and trigger-activated views whose horizon ends at a sourced protocol event such as the next Bitcoin halving. Use after the expression fingerprint is locked or after content writing when the semantics contain a creator-owned forward commitment with an asset, direction, and horizon. Return not_applicable for pure observations, sentiment witnesses, anecdotes, or retrospective attribution. Do not fetch outcomes, score reputation, place trades, invent missing fields, or rewrite a frozen thesis.
+license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Compile Cuebook Settlement Claim

@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/viewpoint-intake-v1.schema.json",
+  "title": "ViewpointIntakeV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "intake_id", "state", "raw_input", "triage", "fields", "elicitation_log", "verification", "confirmation", "handback"],
+  "properties": {
+    "schema_version": {"const": "viewpoint-intake-v1"},
+    "intake_id": {"type": "string", "pattern": "^VINT_[A-Za-z0-9_:-]{6,}$"},
+    "state": {"enum": ["triaged", "eliciting", "verified", "handed_back", "query_routed", "abandoned"]},
+    "raw_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "received_at"],
+      "properties": {
+        "text": {"type": "string", "minLength": 1, "maxLength": 4000},
+        "language": {"type": ["string", "null"], "maxLength": 16},
+        "received_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "triage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["intent", "reason"],
+      "properties": {
+        "intent": {"enum": ["express_view", "query_only", "mixed", "unclear"]},
+        "query_route": {"enum": ["query-cuebook", null]},
+        "reason": {"type": "string", "minLength": 4, "maxLength": 240}
+      }
+    },
+    "fields": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset", "direction", "horizon", "price_anchor"],
+      "properties": {
+        "asset": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value", "provenance"],
+          "properties": {
+            "value": {"type": ["string", "null"], "minLength": 1, "maxLength": 120, "description": "Canonical Cuebook asset ref resolved via search_assets; never a guessed display ticker."},
+            "display": {"type": ["string", "null"], "maxLength": 80},
+            "candidates": {"type": "array", "maxItems": 6, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 120}},
+            "provenance": {"enum": ["stated", "elicited", "inferred_confirmed", "missing"]}
+          }
+        },
+        "direction": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value", "provenance"],
+          "properties": {
+            "value": {"enum": ["long", "short", "relative", "avoid", "watch", "explain", "neutral", null]},
+            "provenance": {"enum": ["stated", "elicited", "inferred_confirmed", "missing"]}
+          }
+        },
+        "horizon": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value", "end_date", "provenance"],
+          "properties": {
+            "value": {"type": ["string", "null"], "minLength": 1, "maxLength": 40, "description": "Human window such as 7D, 30D, or 'to FOMC'."},
+            "end_date": {"type": ["string", "null"], "format": "date", "description": "Absolute end of the window; relative phrasing is absolutized against received_at."},
+            "provenance": {"enum": ["stated", "elicited", "inferred_confirmed", "missing"]}
+          }
+        },
+        "price_anchor": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value", "provenance"],
+          "properties": {
+            "value": {"type": ["number", "null"]},
+            "currency": {"type": ["string", "null"], "maxLength": 12},
+            "kind": {"enum": ["entry", "trigger", "reference", null]},
+            "provenance": {"enum": ["stated", "elicited", "inferred_confirmed", "missing"]}
+          }
+        }
+      }
+    },
+    "elicitation_log": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["round", "asked", "prompt_text"],
+        "properties": {
+          "round": {"type": "integer", "minimum": 1, "maximum": 6},
+          "asked": {"type": "array", "minItems": 1, "maxItems": 2, "uniqueItems": true, "items": {"enum": ["asset", "direction", "horizon", "price_anchor"]}},
+          "prompt_text": {"type": "string", "minLength": 2, "maxLength": 300},
+          "answered_verbatim": {"type": ["string", "null"], "maxLength": 600}
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset_resolution", "horizon_validity", "direction_consistency", "price_sanity"],
+      "properties": {
+        "asset_resolution": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status"],
+          "properties": {
+            "status": {"enum": ["pass", "fail", "unavailable", "pending"]},
+            "method": {"type": ["string", "null"], "maxLength": 60},
+            "resolved_ref": {"type": ["string", "null"], "maxLength": 120},
+            "note": {"type": ["string", "null"], "maxLength": 240}
+          }
+        },
+        "horizon_validity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status"],
+          "properties": {
+            "status": {"enum": ["pass", "fail", "pending"]},
+            "note": {"type": ["string", "null"], "maxLength": 240}
+          }
+        },
+        "direction_consistency": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status"],
+          "properties": {
+            "status": {"enum": ["pass", "fail", "pending"]},
+            "note": {"type": ["string", "null"], "maxLength": 240}
+          }
+        },
+        "price_sanity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status"],
+          "properties": {
+            "status": {"enum": ["pass", "warn", "fail", "skipped", "unavailable", "pending"]},
+            "reference_price": {"type": ["number", "null"]},
+            "deviation_pct": {"type": ["number", "null"]},
+            "note": {"type": ["string", "null"], "maxLength": 240}
+          }
+        }
+      }
+    },
+    "confirmation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["card_text", "confirmed"],
+      "properties": {
+        "card_text": {"type": ["string", "null"], "maxLength": 400},
+        "confirmed": {"type": "boolean"},
+        "confirmed_at": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "handback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "eligible", "seed", "blockers"],
+      "properties": {
+        "target": {"enum": ["create-cuebook-content", "compile-cuebook-market-view-semantics", "store_only", "none"]},
+        "eligible": {"type": "boolean"},
+        "seed": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["claim_gist", "asset_ref", "direction", "horizon_end_date"],
+          "properties": {
+            "claim_gist": {"type": "string", "minLength": 2, "maxLength": 200},
+            "because_gist": {"type": ["string", "null"], "maxLength": 300},
+            "asset_ref": {"type": "string", "minLength": 1, "maxLength": 120},
+            "direction": {"enum": ["long", "short", "relative", "avoid", "watch", "explain", "neutral"]},
+            "horizon_end_date": {"type": "string", "format": "date"},
+            "price_anchor": {"type": ["number", "null"]},
+            "price_anchor_kind": {"enum": ["entry", "trigger", "reference", null]}
+          }
+        },
+        "blockers": {"type": "array", "maxItems": 8, "items": {"type": "string", "minLength": 2, "maxLength": 240}}
+      }
+    }
+  }
+}

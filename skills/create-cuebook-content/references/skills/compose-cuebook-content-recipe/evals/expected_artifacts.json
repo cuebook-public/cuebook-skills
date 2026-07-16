@@ -1,0 +1,15 @@
+{
+  "schema_version": "content-recipe-v1",
+  "required_sections": ["anchor", "ingredients", "preparation", "flavor", "plating", "execution", "extensions", "validation_report"],
+  "invariants": [
+    "The recipe pins one SkillCatalogV1 version.",
+    "User-selected skills remain separate from automatic and internal resolved skills.",
+    "Every selected feed record resolves in the declared ingredient category.",
+    "ingredient_first identifies a selected primary ingredient.",
+    "opportunity_first identifies a selected opportunity.",
+    "Trade history has one explicit permitted use and respects cutoff and reuse rights.",
+    "Every output channel and format has a registered renderer.",
+    "Resolved skills include every mandatory evidence and governance dependency.",
+    "A saved recipe revision is reproducible and contains no credentials."
+  ]
+}

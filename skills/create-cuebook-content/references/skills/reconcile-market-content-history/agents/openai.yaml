@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reconcile Market Content History"
+  short_description: "Reconcile publishing, corrections, and outcomes"
+  default_prompt: "Reconcile publication receipts, content revisions, corrections, engagement outcomes, and authorized trade-history claims without confusing prepared content with published content or engagement with investment validity."

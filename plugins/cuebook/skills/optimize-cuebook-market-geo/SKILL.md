@@ -1,6 +1,7 @@
 ---
 name: optimize-cuebook-market-geo
 description: Plan or preflight answer-engine readiness, design compliant monitoring, or review supplied samples for Cuebook finance and investment content as MarketGEOPackV1. Use when a Cuebook cue, ResearchPackV1, MarketSEOPackV1, owned-web article, methodology page, data page, or knowledge asset needs entity and alias normalization, evidence-backed fact cards, answer-engine question mapping, extractable answer units, claim-to-source citation support, crawler-policy observations, prompt versioning, AI-answer sample integrity, or a correction loop. Use optimize-cuebook-market-seo for crawl, index, canonical, sitemap, and structured-data eligibility. Do not use for factual research, article rewriting, living-author imitation, citation guarantees, synthetic samples presented as live, unauthorized platform crawling, anti-bot evasion, mass mention campaigns, personalized investment advice, credentials, or external publishing.
+license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Optimize Cuebook Market GEO

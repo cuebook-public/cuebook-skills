@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/indicator-pack-v1.schema.json",
+  "title": "IndicatorPackV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "pack_id", "request_ref", "source_ref", "computed_at", "interval", "include_forming", "results", "quality_report"],
+  "properties": {
+    "schema_version": {"const": "indicator-pack-v1"},
+    "pack_id": {"type": "string", "pattern": "^INDPACK_[A-Za-z0-9_:-]{8,}$"},
+    "request_ref": {"type": "string", "minLength": 1},
+    "source_ref": {"type": "string", "minLength": 1},
+    "computed_at": {"type": "string", "format": "date-time"},
+    "interval": {"type": "string", "minLength": 1},
+    "include_forming": {"type": "boolean"},
+    "results": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "series_refs", "lookback_bars", "value", "unit", "observed_at", "bar_state", "formula", "status", "source_ref"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^I[1-9][0-9]*$"},
+          "kind": {"enum": ["return_pct", "relative_strength_pct", "sma_distance_pct", "ema_distance_pct", "rsi", "atr_pct", "volume_ratio", "drawdown_pct", "vwap_distance_pct", "breakout_distance_pct"]},
+          "series_refs": {"type": "array", "minItems": 1, "maxItems": 2, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "lookback_bars": {"anyOf": [{"type": "null"}, {"type": "integer", "minimum": 1}]},
+          "value": {"anyOf": [{"type": "null"}, {"type": "number"}]},
+          "unit": {"type": "string", "minLength": 1},
+          "observed_at": {"anyOf": [{"type": "null"}, {"type": "string", "format": "date-time"}]},
+          "bar_state": {"enum": ["sealed", "forming", "mixed", "unavailable"]},
+          "formula": {"type": "string", "minLength": 1},
+          "status": {"enum": ["ready", "provisional", "insufficient_data"]},
+          "source_ref": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "quality_report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "warnings", "hard_failures"],
+      "properties": {
+        "decision": {"enum": ["ready", "conditional", "blocked"]},
+        "warnings": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "hard_failures": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}

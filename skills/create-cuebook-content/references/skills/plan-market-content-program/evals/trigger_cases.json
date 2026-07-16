@@ -1,0 +1,7 @@
+[
+  {"prompt": "把一篇研究拆成 X、小红书和抖音的一组内容，先给我节目单，不写稿", "should_trigger": true},
+  {"prompt": "规划一个财报发布前后四阶段的内容序列", "should_trigger": true},
+  {"prompt": "帮我把这条推文直接发出去", "should_trigger": false},
+  {"prompt": "研究一下这家公司是否值得买", "should_trigger": false},
+  {"prompt": "照着某个博主的口头禅写十条", "should_trigger": false}
+]

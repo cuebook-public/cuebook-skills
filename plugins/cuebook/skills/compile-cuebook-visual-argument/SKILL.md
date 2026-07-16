@@ -2,6 +2,7 @@
 name: compile-cuebook-visual-argument
 description: >-
   Compile a Cuebook PostV1, selected public CorpusV1 item, CreatorViewIntentV1, TradingThesisV1, ResearchPackV1, SettlementClaimV1, or bounded creator narrative into VisualArgumentV1: an evidence-linked graph of events, mechanisms, actor actions, market effects, metrics, conditions, countercases, price levels, scenarios, and settlement semantics. Use before turning narrative logic or a verified commentator-post idea into Cuebook causal cards, metric panels, scenario maps, evidence balances, comparison visuals, or thesis charts. Do not render graphics, invent links, imitate a commentator, rewrite creator ownership, calculate market data, publish content, or place trades.
+license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Compile Cuebook Visual Argument

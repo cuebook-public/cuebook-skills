@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Market Research Pack"
+  short_description: "Resolve creator claims into linked news, metrics, and finance research"
+  default_prompt: "Compile the exact evidence requests in this Cuebook cue or creator claim, resolve material current news and same-basis numbers, and return an evidence-backed ResearchPackV1."

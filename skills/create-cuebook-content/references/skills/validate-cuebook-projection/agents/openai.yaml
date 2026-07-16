@@ -1,0 +1,6 @@
+interface:
+  display_name: "Validate Cuebook Projection"
+  short_description: "Check evidence-to-asset integrity before routing"
+  default_prompt: "Use $validate-cuebook-projection to verify that a Cuebook cue's evidence supports its asset, direction, and claims."
+policy:
+  allow_implicit_invocation: false

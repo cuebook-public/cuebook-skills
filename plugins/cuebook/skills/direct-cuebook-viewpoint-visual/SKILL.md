@@ -1,6 +1,8 @@
 ---
 name: direct-cuebook-viewpoint-visual
 description: Execute a locked Cuebook visual intent route as three real, structurally different HTML-native financial arguments. Route the thesis through a market relationship, trading argument archetype, evidence contract, chart grammar, and composition archetype; preserve source-linked reasoning; derive creator-adaptive hierarchy and color; author at 1340 x 528; export the exact 2680 x 1056 publication image plus a 670 x 264 preview; and return VisualDirectionSetV1. Use when a market thesis, KOL idea, VisualArgumentV1, MarketViewSemanticsV1, creator note, or CreatorExpressionPlanV1 needs a clear static visual argument without making every creator look alike. Own grid, type, whitespace, semantic color, logic-route placement, and the presentation of numbers, curves, news, comparisons, term structures, and reasoning. Do not reclassify a valid upstream intent route, research missing market facts, change the creator's thesis, invent chart data, or render settlement backend fields.
+license: Proprietary. Cuebook internal; see the repository README for terms.
+compatibility: Requires Python 3.11+ for validators and Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
 ---
 
 # Compose Cuebook Viewpoint Layout
@@ -165,7 +167,10 @@ Every `binding_ref` is a display promise. A selected material binding must appea
 - Do not let a style reference override Cuebook's content, brand, or finance-specific readability.
 - Do not invent a one-off palette inside a render. Add it to the preset registry with fit metadata and tests first.
 - Do not publish a preview with overflow, clipped text, unresolved placeholders, external assets, or a three-second score below 7.
-- Do not let a rule, axis, connector, marker, curve, or bar press into sibling copy. Keep at least 8 authored pixels of clear space around text; labels intentionally placed inside their own geometry are allowed only when contrast and padding pass at both sizes.
+- Do not let a rule, axis, connector, marker, curve, or bar press into sibling copy. Keep at least 8 authored pixels of clear space around text; labels intentionally placed inside their own geometry are allowed only when contrast and padding pass at both sizes. Text crossing a rendered border, bracket, or axis stroke fails the rendered audit.
+- Do not restate a value that the evidence geometry already labels as a display-scale number in another group; the hero slot carries the judgment or the derived transform result. `data-value-restate-ok` covers only a claim value whose geometry proves composition, not the same scalar.
+- Do not draw a background track or remainder bar without a reconciled denominator binding.
+- Do not let equal spacing hide a materially unequal tenor or time gap; declare `axis_integrity` (time_scaled, ordinal_gap_marked, uniform_true) for maturity, term-structure, and revision grammars.
 - Do not release launch HTML without `data-font-profile="cuebook-noi-v1"`, production license mode, a staged font manifest, and a render audit showing at least one loaded Cuebook Noi face.
 - Do not package Trial fonts, silently fall back from Cuebook Noi, load remote fonts, or use Robinhood brand fonts or brand surface elements.
 - Do not accept either raster when fewer than 0.6% of pixels differ materially from the canvas corner color; an empty template or logo-only image is not a viewpoint.

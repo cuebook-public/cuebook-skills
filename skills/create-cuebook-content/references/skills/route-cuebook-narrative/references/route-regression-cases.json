@@ -1,0 +1,19 @@
+[
+  {"name":"GME guidance","expected":"company-guidance","cue":{"id":"gme","title":"GameStop expects $600M EBITDA","source_content":"GameStop expects FY2026 adjusted EBITDA above $600M."}},
+  {"name":"SPCX notes","expected":"credit-financing","cue":{"id":"spcx","title":"SpaceX debt issuance","source_content":"SpaceX issues $25B senior unsecured notes across five maturities."}},
+  {"name":"UNG storage","expected":"inventory-print","cue":{"id":"ung","title":"Natural gas storage surprise","source_content":"USA Natural Gas Storage 76B Vs 67B Est."}},
+  {"name":"LINK Russell","expected":"mechanical-flow","cue":{"id":"link","observable_type":"analyst_action","source_content":"Interlink selected for inclusion in the Russell Microcap Index."}},
+  {"name":"ICFI buyback","expected":"mechanical-flow","cue":{"id":"icfi","observable_type":"analyst_action","source_content":"ICF expands buyback authorization by $100M."}},
+  {"name":"FTRE guidance","expected":"company-guidance","cue":{"id":"ftre","observable_type":"analyst_action","source_content":"Fortrea reiterates FY26 revenue guidance."}},
+  {"name":"SPY Fed","expected":"macro-policy","cue":{"id":"spy","source_content":"Fed official discusses core CPI and services inflation, not oil-related goods."}},
+  {"name":"USO Hormuz","expected":"geopolitical-risk","cue":{"id":"uso","source_content":"Ships outside designated Strait of Hormuz lanes lose safe passage guarantees."}},
+  {"name":"RKLB level","expected":"technical-level","cue":{"id":"rklb","title":"RKLB broke its 20-day low by 2.9%."}},
+  {"name":"SPY odds","expected":"prediction-market","cue":{"id":"spy-odds","title":"SPY close odds collapsed 46pp on Polymarket."}},
+  {"name":"GEO contract","expected":"government-contract","cue":{"id":"geo","title":"GEO wins $85M annual government contract."}},
+  {"name":"CPK investment","expected":"capital-investment","cue":{"id":"cpk","title":"Chesapeake Utilities announces $1.2B investment plan."}},
+  {"name":"PSKY lawsuit","expected":"legal-regulatory","cue":{"id":"psky","title":"Multiple states sue PSKY."}},
+  {"name":"STLA shipments","expected":"operating-data","cue":{"id":"stla","title":"Stellantis shipments rise 10% year over year."}},
+  {"name":"Korean leverage","expected":"crowded-positioning","cue":{"id":"kospi","title":"韩股熔断后五倍杠杆账户爆仓。"}},
+  {"name":"source_events earnings","expected":"earnings-result","cue":{"id":"source-events","source_events":[{"content":"Company reported EPS and revenue in quarterly results."}]}},
+  {"name":"sourceEvents buyback","expected":"mechanical-flow","cue":{"id":"sourceEvents","sourceEvents":[{"text":"Board approved a new $500M share buyback."}]}}
+]

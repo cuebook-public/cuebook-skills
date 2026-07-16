@@ -1,6 +1,7 @@
 ---
 name: render-cuebook-market-media
 description: Render a validated CreatorExpressionPlanV1, ContentRecipeV1 structured-media output, ContentProgramV1 item, TradingThesisV1, Cuebook cue, or ResearchPackV1 into a policy-checked MediaPackageV1 for an article, Reddit post or comment, Xiaohongshu carousel, or finance short-video script. Use when the deliverable needs sections, cards, a bound ViewpointVisualV1, community rules, timed beats, voiceover, on-screen text, disclosures, or MediaFormatV1 rules while preserving a locked creator viewpoint. Do not use for plain X or Telegram posts, research without rendering, corpus collection, living-creator imitation, automated publishing, or personalized trading instructions.
+license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Render Cuebook Market Media

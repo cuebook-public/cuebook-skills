@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plan Cuebook Creator Expression"
+  short_description: "Lock meaning, voice, evidence, and visual execution routes"
+  default_prompt: "Use $plan-cuebook-creator-expression to reconstruct this trading idea into a semantically locked text and visual plan, preserve ownership, route every material requirement to the right Cuebook Query capability, and lock the minimum valid visual Skill and renderer path."

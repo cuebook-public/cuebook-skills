@@ -1,6 +1,7 @@
 ---
 name: render-cuebook-market-post
 description: Render a validated CreatorExpressionPlanV1, MarketViewSemanticsV1, ContentRecipeV1 output, selected opportunity, TradingThesisV1, Cuebook cue, or ResearchPackV1 into original, reasoning-complete finance text for X, Telegram, Xiaohongshu, or a buy-side note. Use for one final post or three meaning-locked PostV1 siblings consumed by assemble-cuebook-publish-candidates when the product must offer finished choices without conversational revision. Preserve authorship, evidence, rhetoric, and internal assistance provenance while expressing the trading idea directly; derive compact selector copy separately instead of shrinking the final post into a preview. Use compile-cuebook-settlement-claim for a separate settleable viewpoint and prepare-market-content-release after approval. Do not use for research without writing, corpus collection, commentator profiling, copying a living author's voice, automated publishing, or invented market facts.
+license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Render Cuebook Market Post

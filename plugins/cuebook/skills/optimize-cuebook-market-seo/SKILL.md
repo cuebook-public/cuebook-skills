@@ -1,6 +1,7 @@
 ---
 name: optimize-cuebook-market-seo
 description: Plan, preflight, audit, or compare SEO for Cuebook-owned finance and investment web pages as MarketSEOPackV1. Use when a Cuebook cue, ResearchPackV1, ContentProgramV1, market article, methodology page, event page, company analysis, sector analysis, or data page needs search-intent mapping, crawl and index eligibility checks, canonical and sitemap review, initial-HTML review, internal links, visible-fact-bound structured data, or testable SEO recommendations. Use optimize-cuebook-market-geo separately for answer-engine entities, questions, citation support, and monitoring. Do not use for factual research, general social posts, keyword stuffing, mass page generation, backlink manipulation, guaranteed rankings, credential collection, private-network crawling, or external publishing.
+license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Optimize Cuebook Market SEO

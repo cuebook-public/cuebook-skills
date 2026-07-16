@@ -1,0 +1,4 @@
+interface:
+  display_name: "Optimize Cuebook Market SEO"
+  short_description: "Plan and audit owned-web search eligibility"
+  default_prompt: "Build a Cuebook-specific SEO pack for an owned market-content page with evidence-bound query mapping, technical gates, structured data, and testable recommendations."

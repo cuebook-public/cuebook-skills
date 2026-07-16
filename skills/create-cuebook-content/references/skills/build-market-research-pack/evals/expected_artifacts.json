@@ -1,0 +1,25 @@
+{
+  "schema_version": "research-pack-v1",
+  "required_sections": [
+    "brief",
+    "source_register",
+    "fact_ledger",
+    "comparator_table",
+    "market_context",
+    "thesis",
+    "scenarios",
+    "catalysts",
+    "gaps",
+    "quality_report"
+  ],
+  "invariants": [
+    "Every source and fact ID is unique.",
+    "Every source or fact reference resolves.",
+    "Current and verified-live facts have timestamps.",
+    "Actual, consensus, and prior values preserve period, unit, and basis.",
+    "A ready directional thesis contains counterevidence and at least two scenarios.",
+    "A ready trade watch contains liquidity context.",
+    "Hard failures force a blocked decision.",
+    "No order execution or credential handling is included."
+  ]
+}

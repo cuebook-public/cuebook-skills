@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.xyz/schemas/cuebook-creation-bundle-v1.schema.json",
+  "title": "CuebookCreationBundleV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "module_id", "creation_id", "state", "created_at", "creator_request", "query_binding", "workflow_run_ref", "candidate_set_ref", "candidate_refs", "settlement_claim_ref", "release_bundle_ref", "quality_report"],
+  "properties": {
+    "schema_version": {"const": "cuebook-creation-bundle-v1"},
+    "module_id": {"const": "create"},
+    "creation_id": {"type": "string", "pattern": "^CREATE_[A-Za-z0-9_-]+$"},
+    "state": {"enum": ["ready", "conditional", "blocked"]},
+    "created_at": {"type": "string", "format": "date-time"},
+    "creator_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["seed_text", "authorship_mode", "stance_source", "adopted_claim_refs", "adoption_confirmed", "material_current_claims", "requested_outputs"],
+      "properties": {
+        "seed_text": {"type": "string", "minLength": 1},
+        "authorship_mode": {"enum": ["creator_led", "cuebook_assisted", "cuebook_generated"]},
+        "stance_source": {"enum": ["creator_seed", "cuebook_synthesis", "source_commentator"]},
+        "adopted_claim_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "adoption_confirmed": {"type": "boolean"},
+        "material_current_claims": {"type": "boolean"},
+        "requested_outputs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["text", "visual", "settlement", "release"]}}
+      }
+    },
+    "query_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "status", "query_bundle_ref", "query_bundle_hash", "query_state", "result_refs", "as_of", "freshness", "warnings"],
+      "properties": {
+        "required": {"type": "boolean"},
+        "status": {"enum": ["not_required", "reused", "executed", "unavailable"]},
+        "query_bundle_ref": {"type": ["string", "null"]},
+        "query_bundle_hash": {"type": ["string", "null"], "pattern": "^sha256:[a-f0-9]{64}$"},
+        "query_state": {"enum": ["not_applicable", "complete", "partial", "blocked"]},
+        "result_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^RES_[A-Za-z0-9_-]+$"}},
+        "as_of": {"type": ["string", "null"], "format": "date-time"},
+        "freshness": {"enum": ["unknown", "fresh", "accepted_stale", "expired"]},
+        "warnings": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "workflow_run_ref": {"type": "string", "minLength": 1},
+    "candidate_set_ref": {"type": ["string", "null"], "minLength": 1},
+    "candidate_refs": {"type": "array", "maxItems": 3, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "settlement_claim_ref": {"type": ["string", "null"]},
+    "release_bundle_ref": {"type": ["string", "null"]},
+    "quality_report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["warnings", "hard_failures"],
+      "properties": {
+        "warnings": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "hard_failures": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}

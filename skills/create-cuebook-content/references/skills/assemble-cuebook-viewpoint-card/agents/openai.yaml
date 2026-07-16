@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cuebook Viewpoint Card"
+  short_description: "Assemble evidence-rich Cuebook viewpoint cards"
+  default_prompt: "Assemble this creator intent and its validated text, news, chart, indicators, and settlement into a product-native Cuebook viewpoint card without changing the creator claim."

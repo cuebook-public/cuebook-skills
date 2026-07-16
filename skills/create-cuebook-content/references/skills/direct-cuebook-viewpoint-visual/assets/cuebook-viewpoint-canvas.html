@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cuebook viewpoint direction</title>
+<link rel="stylesheet" href="./fonts/cuebook-noi-fonts.css">
+<style>
+  :root {
+    --font-stack: "Cuebook Noi", "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+    --paper: #f7f8fa;
+    --paper: oklch(0.977 0.004 250);
+    --surface: #eef1f5;
+    --surface: oklch(0.948 0.008 250);
+    --ink: #111418;
+    --ink: oklch(0.205 0.008 250);
+    --muted: #5d6470;
+    --muted: oklch(0.500 0.018 250);
+    --line: #d7dce2;
+    --line: oklch(0.880 0.010 250);
+    --accent-a: #315fd0;
+    --accent-b: #16836a;
+    --accent-c: #b87308;
+    --risk: #c64e47;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1340px; height: 528px; overflow: hidden; background: var(--paper); }
+  body { font-family: var(--font-stack); color: var(--ink); -webkit-font-smoothing: antialiased; font-synthesis: none; letter-spacing: 0; }
+  .cuebook-canvas { position: relative; width: 1340px; height: 528px; overflow: hidden; background: var(--paper); transform-origin: top left; }
+  [data-role="claim"] { text-wrap: balance; line-break: strict; }
+  [data-role="evidence"], [data-role="condition"] { text-wrap: pretty; }
+  [data-binding-ref] { font-variant-numeric: tabular-nums; }
+  @media (max-width: 1000px) {
+    html, body { width: 670px; height: 264px; }
+    .cuebook-canvas { transform: scale(.5); transform-origin: top left; }
+  }
+</style>
+</head>
+<body>
+<!-- Stage licensed Noi files into ./fonts before release. Trial files are local-evaluation-only. Replace the fallback palette tokens, set the direction metadata, and put each binding on visible role/logic text or geometry. The final brand-lock script injects the canonical wordmark. -->
+<main class="cuebook-canvas" data-cuebook-viewpoint data-cuebook-visual-contract="launch-v1" data-width="1340" data-height="528" data-direction-id="VDIR_REPLACE_ME" data-entry-role="claim" data-color-system="semantic-v1" data-palette-family="quiet-cobalt" data-palette-strategy="creator_native" data-palette-preset="quiet-cobalt" data-font-profile="cuebook-noi-v1" data-font-license-mode="production" data-font-manifest-ref="fonts/font-assets-v1.json">
+</main>
+</body>
+</html>

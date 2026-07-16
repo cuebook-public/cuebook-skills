@@ -1,6 +1,8 @@
 ---
 name: render-cuebook-market-signal
 description: "Render one sourced Cuebook market signal into a restrained 720 x 420 Feed SVG and MarketSignalV1 manifest. Use when a creator can express a decisive trade from one market number or one verified news item: what happened, what I would do, why the price should move, and the strategy tags hidden inside the idea. Route multi-step causal arguments to render-cuebook-logic-card or render-cuebook-market-figure, and price/settlement timelines to render-cuebook-thesis-chart. Keep evidence states in metadata; do not invent a curve, pad a weak signal with generic prose, research missing facts, or publish."
+license: Proprietary. Cuebook internal; see the repository README for terms.
+compatibility: Requires Python 3.11+ for validators and Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
 ---
 
 # Render Cuebook Market Signal

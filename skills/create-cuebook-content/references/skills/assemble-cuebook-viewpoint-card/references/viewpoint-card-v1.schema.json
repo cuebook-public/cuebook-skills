@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/viewpoint-card-v1.schema.json",
+  "title": "ViewpointCardV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "card_id", "revision", "state", "lineage", "creator", "header", "thesis", "blocks", "settlement", "disclosures", "quality_report"],
+  "properties": {
+    "schema_version": {"const": "viewpoint-card-v1"},
+    "card_id": {"type": "string", "pattern": "^VIEWCARD_[A-Za-z0-9_:-]{8,}$"},
+    "revision": {"type": "integer", "minimum": 1},
+    "state": {"enum": ["draft", "conditional", "ready", "frozen"]},
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_artifact_refs", "creator_intent_ref", "thesis_ref", "post_ref", "logic_card_ref", "chart_ref", "indicator_pack_ref", "settlement_claim_ref"],
+      "properties": {
+        "input_artifact_refs": {"$ref": "#/$defs/stringSet"},
+        "creator_intent_ref": {"$ref": "#/$defs/nonemptyString"},
+        "thesis_ref": {"$ref": "#/$defs/nullableString"},
+        "post_ref": {"$ref": "#/$defs/nullableString"},
+        "logic_card_ref": {"$ref": "#/$defs/nullableString"},
+        "market_figure_ref": {"$ref": "#/$defs/nullableString"},
+        "viewpoint_visual_ref": {"$ref": "#/$defs/nullableString"},
+        "chart_ref": {"$ref": "#/$defs/nullableString"},
+        "indicator_pack_ref": {"$ref": "#/$defs/nullableString"},
+        "settlement_claim_ref": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "creator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["creator_ref", "display_name", "handle", "author_type", "decision_owner"],
+      "properties": {
+        "creator_ref": {"$ref": "#/$defs/nonemptyString"},
+        "display_name": {"$ref": "#/$defs/nonemptyString"},
+        "handle": {"$ref": "#/$defs/nullableString"},
+        "author_type": {"enum": ["human", "ai", "hybrid"]},
+        "decision_owner": {"const": "creator"}
+      }
+    },
+    "header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["instrument_id", "ticker", "direction", "direction_label", "benchmark_instrument_id", "benchmark_ticker", "deadline_at", "deadline_label", "status_label"],
+      "properties": {
+        "instrument_id": {"$ref": "#/$defs/nonemptyString"},
+        "ticker": {"$ref": "#/$defs/nonemptyString"},
+        "direction": {"enum": ["long", "short", "outperform", "underperform", "range", "neutral", "observe", "custom"]},
+        "direction_label": {"$ref": "#/$defs/nonemptyString"},
+        "benchmark_instrument_id": {"$ref": "#/$defs/nullableString"},
+        "benchmark_ticker": {"$ref": "#/$defs/nullableString"},
+        "deadline_at": {"anyOf": [{"type": "null"}, {"type": "string", "format": "date-time"}]},
+        "deadline_label": {"$ref": "#/$defs/nullableString"},
+        "status_label": {"$ref": "#/$defs/nonemptyString"}
+      }
+    },
+    "thesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["headline", "body", "creator_text", "creator_text_preserved", "content_ref"],
+      "properties": {
+        "headline": {"$ref": "#/$defs/nonemptyString"},
+        "body": {"$ref": "#/$defs/nonemptyString"},
+        "creator_text": {"$ref": "#/$defs/nonemptyString"},
+        "creator_text_preserved": {"type": "boolean"},
+        "content_ref": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "blocks": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": {"$ref": "#/$defs/block"}
+    },
+    "settlement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["settleable", "claim_ref", "one_line", "state"],
+      "properties": {
+        "settleable": {"type": "boolean"},
+        "claim_ref": {"$ref": "#/$defs/nullableString"},
+        "one_line": {"$ref": "#/$defs/nullableString"},
+        "state": {"enum": ["not_applicable", "draft", "needs_confirmation", "ready", "frozen"]}
+      }
+    },
+    "disclosures": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["position_status", "commercial_status", "identity_status", "ai_assistance_status", "public_lines"],
+      "properties": {
+        "position_status": {"enum": ["known", "none", "unknown"]},
+        "commercial_status": {"enum": ["known", "none", "unknown"]},
+        "identity_status": {"enum": ["known", "unknown"]},
+        "ai_assistance_status": {"enum": ["disclosed", "not_used", "unknown"]},
+        "public_lines": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "quality_report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "warnings", "hard_failures"],
+      "properties": {
+        "decision": {"enum": ["ready", "conditional", "blocked"]},
+        "warnings": {"$ref": "#/$defs/stringSet"},
+        "hard_failures": {"$ref": "#/$defs/stringSet"}
+      }
+    }
+  },
+  "$defs": {
+    "nonemptyString": {"type": "string", "minLength": 1},
+    "nullableString": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/nonemptyString"}]},
+    "stringSet": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}},
+    "block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "order", "kind", "role", "state", "title", "summary", "artifact_ref", "fact_refs", "source_refs", "display_variant"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^B[1-9][0-9]*$"},
+        "order": {"type": "integer", "minimum": 1},
+        "kind": {"enum": ["creator_text", "news", "viewpoint_visual", "logic_card", "market_figure", "chart", "indicator", "metric", "countercase", "settlement"]},
+        "role": {"enum": ["supports", "challenges", "context", "settles"]},
+        "state": {"enum": ["ready", "conditional", "blocked"]},
+        "title": {"$ref": "#/$defs/nonemptyString"},
+        "summary": {"$ref": "#/$defs/nonemptyString"},
+        "artifact_ref": {"$ref": "#/$defs/nullableString"},
+        "fact_refs": {"$ref": "#/$defs/stringSet"},
+        "source_refs": {"$ref": "#/$defs/stringSet"},
+        "display_variant": {"enum": ["plain_text", "source_card", "viewpoint_visual", "logic_card", "market_figure", "thesis_chart", "indicator_strip", "metric_panel", "countercase_note", "settlement_footer"]}
+      }
+    }
+  }
+}

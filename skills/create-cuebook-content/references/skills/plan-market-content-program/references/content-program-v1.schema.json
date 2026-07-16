@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://market-content.local/schemas/content-program-v1.schema.json",
+  "title": "ContentProgramV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "program_id", "generated_at", "brief", "topology", "items", "release_strategy", "measurement_plan", "quality_report"],
+  "properties": {
+    "schema_version": {"const": "content-program.v1"},
+    "program_id": {"type": "string", "pattern": "^content_program_[a-f0-9]{16}$"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "brief": {"$ref": "#/$defs/brief"},
+    "topology": {"$ref": "#/$defs/topology"},
+    "items": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/item"}},
+    "release_strategy": {"$ref": "#/$defs/releaseStrategy"},
+    "measurement_plan": {"$ref": "#/$defs/measurementPlan"},
+    "quality_report": {"$ref": "#/$defs/qualityReport"}
+  },
+  "$defs": {
+    "nullableString": {"type": ["string", "null"]},
+    "stringSet": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "brief": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["objective", "audience", "language", "content_class", "horizon_start", "horizon_end", "source_refs", "requested_platforms", "excluded_actions"],
+      "properties": {
+        "objective": {"type": "string", "minLength": 1},
+        "audience": {"type": "string", "minLength": 1},
+        "language": {"type": "string", "minLength": 1},
+        "content_class": {"enum": ["market_commentary", "financial_education", "investment_analysis", "product_marketing"]},
+        "horizon_start": {"$ref": "#/$defs/nullableString"},
+        "horizon_end": {"$ref": "#/$defs/nullableString"},
+        "source_refs": {"$ref": "#/$defs/stringSet"},
+        "requested_platforms": {"$ref": "#/$defs/stringSet"},
+        "excluded_actions": {"$ref": "#/$defs/stringSet"}
+      }
+    },
+    "topology": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "anchor_item_id", "event_expiry", "rationale"],
+      "properties": {
+        "mode": {"enum": ["single", "anchor_and_derivatives", "serial", "event_lifecycle", "community_loop", "evergreen_series"]},
+        "anchor_item_id": {"$ref": "#/$defs/nullableString"},
+        "event_expiry": {"$ref": "#/$defs/nullableString"},
+        "rationale": {"type": "string", "minLength": 1}
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["item_id", "role", "editorial_job", "platform", "format", "renderer", "temporal_mode", "target_context", "source_refs", "parent_item_id", "depends_on", "asset_jobs", "interaction_job", "semantic_reuse_allowed", "wording_reuse_allowed", "status"],
+      "properties": {
+        "item_id": {"type": "string", "pattern": "^content_item_[A-Za-z0-9_-]+$"},
+        "role": {"enum": ["anchor", "derivative", "update", "explainer", "discussion", "reply", "recap"]},
+        "editorial_job": {"type": "string", "minLength": 1},
+        "platform": {"enum": ["generic", "website", "x", "telegram", "reddit", "xiaohongshu", "douyin", "seeking_alpha", "buy_side"]},
+        "format": {"type": "string", "minLength": 1},
+        "renderer": {"enum": ["compact_text", "structured_media", "manual_authoring"]},
+        "optimization_modules": {"type": "array", "uniqueItems": true, "items": {"enum": ["seo", "geo"]}},
+        "temporal_mode": {"enum": ["realtime", "historical_replay", "evergreen"]},
+        "target_context": {"$ref": "#/$defs/nullableString"},
+        "source_refs": {"$ref": "#/$defs/stringSet"},
+        "parent_item_id": {"$ref": "#/$defs/nullableString"},
+        "depends_on": {"$ref": "#/$defs/stringSet"},
+        "asset_jobs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "interaction_job": {"type": "string"},
+        "semantic_reuse_allowed": {"type": "boolean"},
+        "wording_reuse_allowed": {"const": false},
+        "status": {"const": "planned"}
+      }
+    },
+    "releaseStrategy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "relative_order", "cadence_notes", "trigger_rules", "execution_assumption"],
+      "properties": {
+        "mode": {"enum": ["single_channel", "staggered", "synchronized", "anchor_then_derivatives", "event_triggered"]},
+        "relative_order": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "cadence_notes": {"type": "string"},
+        "trigger_rules": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "execution_assumption": {"enum": ["manual_handoff", "mixed", "unknown"]}
+      }
+    },
+    "measurementQuestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["question_id", "question", "item_ids", "metric_class"],
+      "properties": {
+        "question_id": {"type": "string", "pattern": "^measure_[A-Za-z0-9_-]+$"},
+        "question": {"type": "string", "minLength": 1},
+        "item_ids": {"$ref": "#/$defs/stringSet"},
+        "metric_class": {"enum": ["content_quality", "distribution", "audience_response", "market_outcome"]}
+      }
+    },
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "offset_hours"],
+      "properties": {
+        "label": {"type": "string", "minLength": 1},
+        "offset_hours": {"type": "number", "minimum": 0}
+      }
+    },
+    "measurementPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["questions", "windows", "notes"],
+      "properties": {
+        "questions": {"type": "array", "items": {"$ref": "#/$defs/measurementQuestion"}},
+        "windows": {"type": "array", "items": {"$ref": "#/$defs/window"}},
+        "notes": {"type": "string"}
+      }
+    },
+    "qualityReport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scores", "hard_failures", "revisions"],
+      "properties": {
+        "scores": {"type": "object"},
+        "hard_failures": {"type": "array"},
+        "revisions": {"type": "array"}
+      }
+    }
+  }
+}

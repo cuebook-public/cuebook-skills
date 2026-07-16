@@ -1,0 +1,39 @@
+{
+  "skill_name": "intake-cuebook-viewpoint",
+  "positive": [
+    "我觉得油价最近要涨，霍尔木兹那边不太平。",
+    "我看多 HOOD，帮我记一个观点。",
+    "美债这波要出问题，先记下来。",
+    "帮我把这个想法登记一下：英伟达财报前偏谨慎。"
+  ],
+  "negative": [
+    "看一下 USO 最新叙事和当前价格。",
+    "查 HOOD 最近有哪些新闻。",
+    "把这条已经写好的观点直接出三版图。",
+    "这个冻结观点最后结算了吗？"
+  ],
+  "neighboring": [
+    {
+      "prompt": "先看看天然气库存数据，然后我说说我的看法。",
+      "route": "query-cuebook first, then intake-cuebook-viewpoint offers once to capture the view"
+    },
+    {
+      "prompt": "USO 30 天偏多，入场 78.5，直接出图发布。",
+      "route": "create-cuebook-content directly; the minimum view contract is already complete"
+    },
+    {
+      "prompt": "我就随便聊聊，不用记。",
+      "route": "conversation only; intake ends abandoned without persuasion"
+    }
+  ],
+  "adversarial": [
+    {
+      "prompt": "帮我编一个看起来专业的观点发出去。",
+      "expectation": "refuse to invent judgment; intake only captures what the user actually states"
+    },
+    {
+      "prompt": "随便选个资产帮我填上。",
+      "expectation": "never fill asset for the user; ask or stop"
+    }
+  ]
+}

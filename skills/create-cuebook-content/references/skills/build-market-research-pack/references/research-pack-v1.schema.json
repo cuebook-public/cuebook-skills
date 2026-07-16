@@ -1,0 +1,386 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/research-pack-v1.schema.json",
+  "title": "Cuebook ResearchPackV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "brief",
+    "source_register",
+    "fact_ledger",
+    "comparator_table",
+    "market_context",
+    "thesis",
+    "scenarios",
+    "catalysts",
+    "gaps",
+    "quality_report"
+  ],
+  "properties": {
+    "schema_version": {"const": "research-pack-v1"},
+    "brief": {"$ref": "#/$defs/brief"},
+    "source_register": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/source"}
+    },
+    "fact_ledger": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/fact"}
+    },
+    "comparator_table": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/comparator"}
+    },
+    "market_context": {"$ref": "#/$defs/marketContext"},
+    "thesis": {"$ref": "#/$defs/thesis"},
+    "scenarios": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/scenario"}
+    },
+    "catalysts": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/catalyst"}
+    },
+    "gaps": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "quality_report": {"$ref": "#/$defs/qualityReport"}
+  },
+  "$defs": {
+    "nonemptyString": {"type": "string", "minLength": 1},
+    "nullableDateTime": {
+      "anyOf": [
+        {"type": "string", "format": "date-time"},
+        {"type": "null"}
+      ]
+    },
+    "stringSet": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "nonemptyStringSet": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "value": {
+      "type": ["number", "string", "null"]
+    },
+    "brief": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subject", "assets", "question", "decision_use", "horizon", "as_of", "freshness_window"],
+      "properties": {
+        "subject": {"$ref": "#/$defs/nonemptyString"},
+        "assets": {"$ref": "#/$defs/stringSet"},
+        "question": {"$ref": "#/$defs/nonemptyString"},
+        "decision_use": {
+          "enum": ["public_content", "investment_research", "trade_watch", "risk_review"]
+        },
+        "horizon": {"$ref": "#/$defs/nonemptyString"},
+        "as_of": {"type": "string", "format": "date-time"},
+        "freshness_window": {"$ref": "#/$defs/nonemptyString"},
+        "cue_id": {"type": "string"}
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "url", "publisher", "source_type", "published_at", "observed_at", "access"],
+      "anyOf": [
+        {
+          "properties": {"url": {"type": "string", "format": "uri"}}
+        },
+        {
+          "required": ["locator"],
+          "properties": {"locator": {"$ref": "#/$defs/nonemptyString"}}
+        }
+      ],
+      "allOf": [
+        {
+          "if": {
+            "required": ["source_type"],
+            "properties": {
+              "source_type": {"enum": ["company_release", "reputable_news"]}
+            }
+          },
+          "then": {
+            "required": ["title", "fact_refs"],
+            "properties": {
+              "title": {"$ref": "#/$defs/nonemptyString"},
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https?://"
+              },
+              "publisher": {"$ref": "#/$defs/nonemptyString"},
+              "published_at": {"type": "string", "format": "date-time"},
+              "access": {"const": "public"},
+              "fact_refs": {"$ref": "#/$defs/nonemptyStringSet"}
+            }
+          }
+        }
+      ],
+      "properties": {
+        "id": {"type": "string", "pattern": "^S[1-9][0-9]*$"},
+        "title": {"$ref": "#/$defs/nonemptyString"},
+        "url": {"type": ["string", "null"], "format": "uri"},
+        "locator": {"type": "string", "minLength": 1},
+        "publisher": {"$ref": "#/$defs/nonemptyString"},
+        "source_type": {
+          "enum": [
+            "official_filing",
+            "company_release",
+            "official_data",
+            "exchange",
+            "market_data",
+            "consensus_data",
+            "transcript",
+            "reputable_news",
+            "specialist_research",
+            "social",
+            "user_supplied"
+          ]
+        },
+        "published_at": {"$ref": "#/$defs/nullableDateTime"},
+        "observed_at": {"type": "string", "format": "date-time"},
+        "access": {"enum": ["public", "authorized"]},
+        "fact_refs": {"$ref": "#/$defs/stringSet"},
+        "notes": {"type": "string"}
+      }
+    },
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "claim", "evidence_class", "source_ids", "as_of", "freshness", "confidence"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^F[1-9][0-9]*$"},
+        "claim": {"$ref": "#/$defs/nonemptyString"},
+        "evidence_class": {"enum": ["source", "verified-live", "derived", "hypothesis"]},
+        "source_ids": {"$ref": "#/$defs/stringSet"},
+        "as_of": {"type": ["string", "null"], "format": "date-time"},
+        "freshness": {"enum": ["current", "stale", "unknown"]},
+        "confidence": {"enum": ["low", "medium", "high"]},
+        "basis": {"type": "string"},
+        "period": {"type": "string"}
+      }
+    },
+    "comparator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric", "period", "actual", "consensus", "prior", "unit", "basis", "evidence_ids", "value_evidence", "interpretation"],
+      "properties": {
+        "metric": {"$ref": "#/$defs/nonemptyString"},
+        "period": {"$ref": "#/$defs/nonemptyString"},
+        "actual": {"$ref": "#/$defs/value"},
+        "consensus": {"$ref": "#/$defs/value"},
+        "prior": {"$ref": "#/$defs/value"},
+        "unit": {"$ref": "#/$defs/nonemptyString"},
+        "basis": {"$ref": "#/$defs/nonemptyString"},
+        "evidence_ids": {"$ref": "#/$defs/stringSet"},
+        "value_evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["actual", "consensus", "prior"],
+          "properties": {
+            "actual": {"$ref": "#/$defs/stringSet"},
+            "consensus": {"$ref": "#/$defs/stringSet"},
+            "prior": {"$ref": "#/$defs/stringSet"}
+          }
+        },
+        "interpretation": {"$ref": "#/$defs/nonemptyString"}
+      }
+    },
+    "priceReaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset", "window", "return_pct", "benchmark", "benchmark_return_pct", "excess_return_pct", "as_of", "data_delay", "evidence_ids"],
+      "properties": {
+        "asset": {"$ref": "#/$defs/nonemptyString"},
+        "window": {"$ref": "#/$defs/nonemptyString"},
+        "return_pct": {"type": "number"},
+        "benchmark": {"type": ["string", "null"]},
+        "benchmark_return_pct": {"type": ["number", "null"]},
+        "excess_return_pct": {"type": ["number", "null"]},
+        "as_of": {"type": "string", "format": "date-time"},
+        "data_delay": {"$ref": "#/$defs/nonemptyString"},
+        "evidence_ids": {"$ref": "#/$defs/stringSet"}
+      }
+    },
+    "marketMetric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "value", "unit", "as_of", "data_delay", "evidence_ids"],
+      "properties": {
+        "label": {"$ref": "#/$defs/nonemptyString"},
+        "value": {"$ref": "#/$defs/value"},
+        "unit": {"$ref": "#/$defs/nonemptyString"},
+        "as_of": {"type": "string", "format": "date-time"},
+        "data_delay": {"$ref": "#/$defs/nonemptyString"},
+        "evidence_ids": {"$ref": "#/$defs/stringSet"}
+      }
+    },
+    "valuationMetric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject",
+        "label",
+        "value_state",
+        "value",
+        "unit",
+        "numerator",
+        "denominator",
+        "period",
+        "accounting_basis",
+        "currency_treatment",
+        "share_class",
+        "comparability",
+        "as_of",
+        "data_delay",
+        "source_refs",
+        "evidence_ids",
+        "not_meaningful_reason"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "required": ["value_state"],
+            "properties": {"value_state": {"const": "numeric"}}
+          },
+          "then": {
+            "properties": {
+              "value": {"type": "number"},
+              "not_meaningful_reason": {"type": "null"}
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["value_state"],
+            "properties": {"value_state": {"const": "N/M"}}
+          },
+          "then": {
+            "properties": {
+              "value": {"type": "null"},
+              "comparability": {"enum": ["not_comparable", "not_applicable"]},
+              "not_meaningful_reason": {"$ref": "#/$defs/nonemptyString"}
+            }
+          }
+        }
+      ],
+      "properties": {
+        "subject": {"$ref": "#/$defs/nonemptyString"},
+        "label": {"$ref": "#/$defs/nonemptyString"},
+        "value_state": {"enum": ["numeric", "N/M"]},
+        "value": {"type": ["number", "null"]},
+        "unit": {"$ref": "#/$defs/nonemptyString"},
+        "numerator": {"$ref": "#/$defs/nonemptyString"},
+        "denominator": {"$ref": "#/$defs/nonemptyString"},
+        "period": {"$ref": "#/$defs/nonemptyString"},
+        "accounting_basis": {"$ref": "#/$defs/nonemptyString"},
+        "currency_treatment": {"$ref": "#/$defs/nonemptyString"},
+        "share_class": {"$ref": "#/$defs/nonemptyString"},
+        "comparability": {"enum": ["comparable", "not_comparable", "not_applicable"]},
+        "as_of": {"type": "string", "format": "date-time"},
+        "data_delay": {"$ref": "#/$defs/nonemptyString"},
+        "source_refs": {"$ref": "#/$defs/nonemptyStringSet"},
+        "evidence_ids": {"$ref": "#/$defs/stringSet"},
+        "not_meaningful_reason": {
+          "anyOf": [
+            {"$ref": "#/$defs/nonemptyString"},
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "marketContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["price_reaction", "positioning", "liquidity", "valuation"],
+      "properties": {
+        "price_reaction": {"type": "array", "items": {"$ref": "#/$defs/priceReaction"}},
+        "positioning": {"type": "array", "items": {"$ref": "#/$defs/marketMetric"}},
+        "liquidity": {"type": "array", "items": {"$ref": "#/$defs/marketMetric"}},
+        "valuation": {"type": "array", "items": {"$ref": "#/$defs/valuationMetric"}}
+      }
+    },
+    "mechanism": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["step", "claim", "status", "evidence_ids"],
+      "properties": {
+        "step": {"type": "integer", "minimum": 1},
+        "claim": {"$ref": "#/$defs/nonemptyString"},
+        "status": {"enum": ["sourced", "derived", "hypothesis"]},
+        "evidence_ids": {"$ref": "#/$defs/stringSet"}
+      }
+    },
+    "thesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stance", "claim", "horizon", "confidence", "mechanisms", "forced_actors", "evidence_ids", "counterevidence_ids", "invalidation"],
+      "properties": {
+        "stance": {"enum": ["positive", "negative", "mixed", "watch", "no-view"]},
+        "claim": {"$ref": "#/$defs/nonemptyString"},
+        "horizon": {"$ref": "#/$defs/nonemptyString"},
+        "confidence": {"enum": ["low", "medium", "high"]},
+        "mechanisms": {"type": "array", "items": {"$ref": "#/$defs/mechanism"}},
+        "forced_actors": {"$ref": "#/$defs/stringSet"},
+        "evidence_ids": {"$ref": "#/$defs/stringSet"},
+        "counterevidence_ids": {"$ref": "#/$defs/stringSet"},
+        "invalidation": {"$ref": "#/$defs/nonemptyString"}
+      }
+    },
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "condition", "path", "signposts", "invalidation", "evidence_ids"],
+      "properties": {
+        "name": {"$ref": "#/$defs/nonemptyString"},
+        "condition": {"$ref": "#/$defs/nonemptyString"},
+        "path": {"$ref": "#/$defs/nonemptyString"},
+        "signposts": {"$ref": "#/$defs/stringSet"},
+        "invalidation": {"$ref": "#/$defs/nonemptyString"},
+        "evidence_ids": {"$ref": "#/$defs/stringSet"}
+      }
+    },
+    "catalyst": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event", "expected_at", "evidence_ids"],
+      "properties": {
+        "event": {"$ref": "#/$defs/nonemptyString"},
+        "expected_at": {"$ref": "#/$defs/nullableDateTime"},
+        "evidence_ids": {"$ref": "#/$defs/stringSet"}
+      }
+    },
+    "sourceCoverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary_source_present", "live_market_data_present", "independent_sources"],
+      "properties": {
+        "primary_source_present": {"type": "boolean"},
+        "live_market_data_present": {"type": "boolean"},
+        "independent_sources": {"type": "integer", "minimum": 0}
+      }
+    },
+    "qualityReport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "hard_failures", "warnings", "checks", "data_freshness", "source_coverage"],
+      "properties": {
+        "decision": {"enum": ["ready", "conditional", "blocked"]},
+        "hard_failures": {"type": "array", "items": {"type": "string"}},
+        "warnings": {"type": "array", "items": {"type": "string"}},
+        "checks": {"type": "array"},
+        "data_freshness": {"enum": ["current", "stale", "mixed", "unknown"]},
+        "source_coverage": {"$ref": "#/$defs/sourceCoverage"}
+      }
+    }
+  }
+}

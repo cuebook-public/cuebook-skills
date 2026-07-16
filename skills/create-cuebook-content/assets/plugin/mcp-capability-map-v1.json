@@ -1,0 +1,205 @@
+{
+  "schema_version": "cuebook-mcp-capability-map-v1",
+  "server": {
+    "id": "cuebook",
+    "url": "https://cuebook.xyz/mcp",
+    "transport": "http",
+    "authentication": "oauth"
+  },
+  "module_rules": {
+    "query": {
+      "allowed_access": ["read"],
+      "may_invoke": []
+    },
+    "create": {
+      "allowed_access": ["write", "external_write"],
+      "may_invoke": ["query"]
+    }
+  },
+  "available_tools": [
+    {
+      "tool": "search_assets",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Resolve creator language to a canonical Cuebook asset.",
+      "used_by": ["query-cuebook", "validate-cuebook-projection"]
+    },
+    {
+      "tool": "get_market_state",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Read a bounded latest market snapshot and session state.",
+      "used_by": ["query-cuebook", "build-market-research-pack"]
+    },
+    {
+      "tool": "list_asset_stories",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Enumerate published Cuebook News Story records for one canonical asset; this is distinct from the narrative library.",
+      "used_by": ["query-cuebook", "normalize-cuebook-creator-feed"]
+    },
+    {
+      "tool": "get_story",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "access": "read",
+      "purpose": "Read one published story with source lineage and citations.",
+      "used_by": ["query-cuebook", "build-market-research-pack"]
+    }
+  ],
+  "required_tools": [
+    {
+      "tool": "search_market_evidence",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "phase": "r1",
+      "access": "read",
+      "purpose": "Search source-linked current news, company PR, filings, regulator or exchange notices, and independent reporting by canonical entity, event topic, source class, and freshness window.",
+      "input_contract": "MarketEvidenceQueryV1",
+      "output_contract": "MarketEvidenceSearchResultV1",
+      "used_by": ["query-cuebook", "build-market-research-pack"]
+    },
+    {
+      "tool": "query_fundamental_metrics",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "phase": "r1",
+      "access": "read",
+      "purpose": "Return source-linked reported fundamentals and valuation metrics with numerator, denominator, accounting basis, trailing or forward period, currency, share class, as-of time, and explicit not-meaningful states.",
+      "input_contract": "FundamentalMetricQueryV1",
+      "output_contract": "FundamentalMetricBundleV1",
+      "used_by": ["query-cuebook", "build-market-research-pack"]
+    },
+    {
+      "tool": "list_asset_narratives",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "phase": "r1",
+      "access": "read",
+      "purpose": "Return source-linked Cuebook narrative records separately from published News Story records, including visibility and reuse-rights metadata.",
+      "input_contract": "AssetNarrativeQueryV1",
+      "output_contract": "AssetNarrativeListV1",
+      "used_by": ["query-cuebook", "normalize-cuebook-creator-feed"]
+    },
+    {
+      "tool": "get_creator_feed",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "phase": "r1",
+      "access": "read",
+      "purpose": "Return news, calendar events, narratives, creator trade ideas, and authorized trade history as CreatorFeedV1.",
+      "input_contract": "CreatorFeedQueryV1",
+      "output_contract": "CreatorFeedV1",
+      "used_by": ["query-cuebook", "normalize-cuebook-creator-feed"]
+    },
+    {
+      "tool": "query_market_series",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "phase": "r1",
+      "access": "read",
+      "purpose": "Return bounded, source-linked OHLCV with sealed/forming state as MarketSeriesBatchV1.",
+      "input_contract": "MarketSeriesQueryV1",
+      "output_contract": "MarketSeriesBatchV1",
+      "used_by": ["query-cuebook", "compute-cuebook-market-indicators"]
+    },
+    {
+      "tool": "compute_market_metrics",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "phase": "r1",
+      "access": "read",
+      "purpose": "Return versioned derived metrics and same-bar composite trigger signals with numerator, denominator, source bars, sealing state, and computation policy.",
+      "input_contract": "MarketMetricQueryV1",
+      "output_contract": "MarketMetricBundleV1",
+      "used_by": ["query-cuebook", "compute-cuebook-market-indicators"]
+    },
+    {
+      "tool": "resolve_settlement_binding",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "phase": "r1",
+      "access": "read",
+      "purpose": "Resolve one or two creator-selected assets into stable Cuebook asset/provider identities plus persisted entry snapshots, symbol-period lineage, quote currencies, supported sealed outcome bases, and explicit settlement blockers without choosing the creator's claim semantics.",
+      "input_contract": "SettlementBindingQueryV1",
+      "output_contract": "SettlementBindingBundleV1",
+      "used_by": ["query-cuebook"]
+    },
+    {
+      "tool": "save_creator_artifact",
+      "module": "create",
+      "authorization_scope": "cuebook.create.write",
+      "phase": "r1",
+      "access": "write",
+      "purpose": "Persist versioned recipes, semantics, expression plans, posts, visuals, cards, and release bundles with hash lineage.",
+      "input_contract": "CreatorArtifactWriteV1",
+      "output_contract": "CreatorArtifactReceiptV1",
+      "used_by": ["orchestrate-cuebook-creator-workflow", "assemble-cuebook-viewpoint-card", "prepare-market-content-release"]
+    },
+    {
+      "tool": "register_settlement_claim",
+      "module": "create",
+      "authorization_scope": "cuebook.create.write",
+      "phase": "r1",
+      "access": "write",
+      "purpose": "Atomically validate and register one hash-linked, frozen SettlementClaimV1 and canonical SettlementFormulaV1, including its constrained execution profile, without scoring its outcome at write time.",
+      "input_contract": "SettlementRegistrationV1",
+      "output_contract": "SettlementRegistrationReceiptV1",
+      "used_by": ["compile-cuebook-settlement-claim", "compile-cuebook-settlement-formula", "orchestrate-cuebook-creator-workflow"]
+    },
+    {
+      "tool": "get_settlement_outcome",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "phase": "r2",
+      "access": "read",
+      "purpose": "Return the deterministic lifecycle state, eligible sealed observations, evaluated formula branches, and score result for a registered settlement protocol.",
+      "input_contract": "SettlementOutcomeQueryV1",
+      "output_contract": "SettlementOutcomeV1",
+      "used_by": ["query-cuebook", "reconcile-market-content-history"]
+    },
+    {
+      "tool": "publish_release",
+      "module": "create",
+      "authorization_scope": "cuebook.publish",
+      "phase": "r2",
+      "access": "external_write",
+      "purpose": "Send one approved and frozen ReleaseBundleV1 through an authorized official platform connector.",
+      "input_contract": "PublicationRequestV1",
+      "output_contract": "PublicationAttemptV1",
+      "used_by": ["prepare-market-content-release"]
+    },
+    {
+      "tool": "get_publication_receipt",
+      "module": "query",
+      "authorization_scope": "cuebook.query",
+      "phase": "r2",
+      "access": "read",
+      "purpose": "Resolve an acknowledged platform operation into a verified publication receipt or an explicit unknown state.",
+      "input_contract": "PublicationReceiptQueryV1",
+      "output_contract": "PublicationReceiptV1",
+      "used_by": ["query-cuebook", "reconcile-market-content-history"]
+    }
+  ],
+  "release_rules": {
+    "credentials_live_in_mcp_connector": true,
+    "skills_must_not_collect_credentials": true,
+    "server_enforces_authorization_scopes": true,
+    "query_scope_cannot_call_write_tools": true,
+    "write_tools_require_idempotency_key": true,
+    "write_tools_require_explicit_approval": true,
+    "external_write_requires_exact_artifact_hash": true,
+    "external_write_requires_release_approval": true,
+    "publish_success_requires_verified_receipt": true,
+    "forming_market_bars_cannot_settle": true,
+    "protocol_event_horizons_require_authoritative_source": true,
+    "registered_claim_requires_formula_hash": true,
+    "settlement_outcomes_require_sealed_observations": true,
+    "material_news_requires_linked_evidence": true,
+    "source_rights_required_for_creation": true,
+    "valuation_comparisons_require_compatible_basis": true
+  }
+}

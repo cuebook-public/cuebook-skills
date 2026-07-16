@@ -1,6 +1,7 @@
 ---
 name: assemble-cuebook-publish-candidates
 description: Assemble one locked Cuebook market view into exactly three fully calibrated, frontend-ready publishing candidates. Each candidate pairs a reasoning-complete PostV1 with a compact selector excerpt, a distinct validated static visual, and the same optional settlement semantics. Use when the product must generate finished choices in one pass without conversational revision, including creator Feed posts, KOL-style market commentary, trading views, and settleable viewpoint cards. Do not research a new thesis, change the meaning fingerprint, freeze unconfirmed settlement fields, publish externally, or expose failed drafts and internal calibration to users.
+license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Assemble Cuebook Publish Candidates

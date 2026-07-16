@@ -1,6 +1,8 @@
 ---
 name: render-cuebook-market-figure
 description: Compile and render a Cuebook market viewpoint into a compact, sourced Feed figure led by one meaningful curve or instrument map, one judgment, one dominant number, an optional news anchor, and an optional settlement rule; an editorial variant can retain secondary evidence. Use for event-reaction, relative-strength, expectation-revision, fundamental-driver, positioning-pressure, sensitivity/payoff, multi-vehicle risk-versus-exposure graphics, and clearly disclosed redraws of authorized source charts. Do not use for decorative trend lines, unsupported forecasts, generic logic diagrams, personalized allocation advice, or a standalone settlement price chart.
+license: Proprietary. Cuebook internal; see the repository README for terms.
+compatibility: Requires Python 3.11+ for validators and Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
 ---
 
 # Render Cuebook Market Figure

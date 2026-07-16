@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/gate-v1.schema.json",
+  "title": "GateV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "cue_id", "decision", "publishable", "checks", "source_asset", "claim_basis", "repairs", "closer_assets", "provenance"],
+  "properties": {
+    "schema_version": {"const": "gate-v1"},
+    "cue_id": {"type": "string"},
+    "decision": {"enum": ["pass", "caution", "reject"]},
+    "publishable": {"type": "boolean"},
+    "checks": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["code", "severity", "message", "evidence"], "properties": {"code": {"type": "string"}, "severity": {"enum": ["caution", "reject"]}, "message": {"type": "string"}, "evidence": {"type": "array", "items": {"type": "string"}}}}},
+    "source_asset": {"type": "object", "additionalProperties": false, "required": ["card_assets", "source_assets", "match"], "properties": {"card_assets": {"type": "array", "items": {"type": "string"}}, "source_assets": {"type": "array", "items": {"type": "string"}}, "match": {"enum": ["match", "proxy", "mismatch", "unverified"]}}},
+    "claim_basis": {"type": "object", "additionalProperties": false, "required": ["sourced_facts", "derived_claims", "unsupported_claims"], "properties": {"sourced_facts": {"type": "array", "items": {"type": "string"}}, "derived_claims": {"type": "array", "items": {"type": "string"}}, "unsupported_claims": {"type": "array", "items": {"type": "string"}}}},
+    "repairs": {"type": "array", "items": {"type": "string"}},
+    "closer_assets": {"type": "array", "items": {"type": "string"}},
+    "provenance": {"type": "object", "additionalProperties": false, "required": ["source_urls", "observed_at"], "properties": {"source_urls": {"type": "array", "items": {"type": "string"}}, "observed_at": {"type": "array", "items": {"type": "string"}}}}
+  }
+}

@@ -1,6 +1,7 @@
 ---
 name: build-market-research-pack
 description: Build an evidence-backed ResearchPackV1 from a selected ContentOpportunitySetV1 candidate, validated ContentRecipeV1, CreatorFeedV1 records, Cuebook cue, creator claim, company or asset question, earnings event, source set, transcript, or trade-watch request. Use when finance content needs current news or PR anchors, source provenance, requested numbers, metric-basis checks, actual-versus-consensus comparisons, estimate revisions, price reaction, valuation, positioning, liquidity, scenarios, catalysts, and falsifiable thesis logic before rendering. Do not use for opportunity ranking, personal budgeting, portfolio execution, order placement, commentator profiling, or publication-ready social copy.
+license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Build Market Research Pack

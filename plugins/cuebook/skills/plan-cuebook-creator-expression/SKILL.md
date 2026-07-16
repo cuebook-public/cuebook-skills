@@ -1,6 +1,7 @@
 ---
 name: plan-cuebook-creator-expression
 description: Plan a required MarketViewSemanticsV1 plus optional ResearchPackV1, TradingThesisV1, TradeLogicProfileV1, and ProfileV1 into CreatorExpressionPlanV1, the semantically locked shared bridge for original text and visual expression. Use after market-view meaning and ownership are known and before drafting a Cuebook post, thread, memo, article, caption, logic card, market figure, signal, or thesis chart; use especially to reconstruct a creator's trading logic, identify missing support, select a narrative engine, preserve internal authorship provenance, set VoiceSpec and anti-AI-language controls, build text and visual blueprints, or assess settlement eligibility. Do not use to research missing facts, create or adopt a trade, compile or settle a claim, render final copy or art, imitate a living commentator, or relabel an external source view as the current creator's experience.
+license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Plan Cuebook Creator Expression

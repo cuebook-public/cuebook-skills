@@ -1,6 +1,7 @@
 ---
 name: compose-cuebook-content-recipe
 description: Compose, validate, revise, or resolve a frontend-selected Cuebook content recipe from news, calendar events, narratives, trade ideas, trade history, creator profiles, media formats, output channels, and optional creator skills. Use when a user wants to pick a few items from each Cuebook category like ingredients, apply a saved preset, choose analysis and voice controls, or turn those choices into a versioned ContentRecipeV1 before research and drafting. Do not use to write final copy, bypass evidence gates, place trades, or publish externally.
+license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Compose Cuebook Content Recipe

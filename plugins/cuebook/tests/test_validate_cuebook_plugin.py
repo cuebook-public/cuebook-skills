@@ -35,7 +35,7 @@ def rewrite(path: Path, mutate) -> None:
 def test_valid_plugin_package() -> None:
     result = VALIDATOR.validate(PLUGIN_ROOT)
     assert result["valid"], result
-    assert result["stats"]["module_skill_counts"] == {"create": 28, "query": 11}
+    assert result["stats"]["module_skill_counts"] == {"create": 29, "query": 11}
     modules = json.loads((PLUGIN_ROOT / "assets" / "cuebook-modules-v1.json").read_text(encoding="utf-8"))
     assert "factual_chart" in modules["routing_rules"]["query_deliverables"]
     assert "creator_viewpoint_graphic" in modules["routing_rules"]["create_deliverables"]

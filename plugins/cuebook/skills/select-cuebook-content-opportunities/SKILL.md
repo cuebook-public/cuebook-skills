@@ -1,6 +1,7 @@
 ---
 name: select-cuebook-content-opportunities
 description: Select, deduplicate, classify, and prioritize evidence-ready creator opportunities from CreatorFeedV1, optionally constrained by an ingredient-first or automatic ContentRecipeV1, as ContentOpportunitySetV1. Use when a Cuebook creator or workflow asks what is worth researching or publishing from a batch of news, calendar events, narratives, trade ideas, and authorized trade history, including daily desks, frontend ingredient selections, event lifecycles, corrections, postmortems, and evergreen ideas. Do not use to draft copy, research missing facts, predict engagement or returns, place trades, or approve publication.
+license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Select Cuebook Content Opportunities

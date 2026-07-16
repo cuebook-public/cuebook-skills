@@ -1,6 +1,7 @@
 ---
 name: plan-market-content-program
 description: Plan a validated ContentRecipeV1, selected ContentOpportunitySetV1 candidates, ResearchPackV1 or TradingThesisV1 artifacts, or bounded finance and investment source material into ContentProgramV1 before drafting. Use when the user wants a cross-platform content plan, saved recipe, series, editorial calendar, one research item or frozen thesis repurposed across channels, an anchor-and-derivatives package, an event update sequence, a community discussion loop, or clear responsibilities for owned websites, X, Telegram, Reddit, Xiaohongshu, Douyin, long-form, and buy-side formats. Do not use for opportunity ranking, market research, factual claim generation, final copy, media rendering, account scheduling, external publishing, performance claims, or living-creator imitation.
+license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Plan Market Content Program

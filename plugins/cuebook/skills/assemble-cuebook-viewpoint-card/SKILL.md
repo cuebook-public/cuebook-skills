@@ -1,6 +1,7 @@
 ---
 name: assemble-cuebook-viewpoint-card
 description: Assemble a creator's structured market intent, preserved free text, locked expression plan, unified ViewpointVisualV1, selected evidence, optional full chart, countercase, and optional settlement claim into one product-native ViewpointCardV1 for Cuebook authoring preview and Feed display. Use for the two-step viewpoint flow, block recommendations, preview generation, observation-only posts, and settleable trading views. Do not use to research facts, draw charts, rewrite creator ownership, settle outcomes, publish externally, or place trades.
+license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Assemble Cuebook Viewpoint Card

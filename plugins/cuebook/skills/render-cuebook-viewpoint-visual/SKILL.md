@@ -1,6 +1,8 @@
 ---
 name: render-cuebook-viewpoint-visual
 description: Render an explicit creator market judgment as a readable Cuebook Feed visual. Default to an approved HTML-native VisualDirectionSetV1 direction so typography, hierarchy, composition, curves, numbers, causal logic, timelines, comparisons, and strategy maps can adapt to the actual thesis. Use the deterministic ViewpointVisualSpecV1 SVG renderer only for locked batch-compatible grammar output. Do not research missing inputs, invent market data, expose workflow or settlement backend text, or replace a full OHLC chart.
+license: Proprietary. Cuebook internal; see the repository README for terms.
+compatibility: Requires Python 3.11+ for validators and Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
 ---
 
 # Render Cuebook Viewpoint Visual

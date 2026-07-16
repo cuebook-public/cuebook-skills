@@ -56,13 +56,27 @@ is frozen in [`assets/cuebook-modules-v1.json`](assets/cuebook-modules-v1.json),
 and MCP coverage lives in
 [`assets/mcp-capability-map-v1.json`](assets/mcp-capability-map-v1.json).
 
+## Platform Support
+
+| Platform | Status | Notes |
+| --- | --- | --- |
+| Codex (plugin) | Tested | Primary distribution; see [docs/platforms/codex.md](docs/platforms/codex.md) |
+| Claude Code (plugin) | Planned | Same plugin layout loads; MCP + heavy-runtime skills unverified; see [docs/platforms/claude-code.md](docs/platforms/claude-code.md) |
+| Generic `.agents/skills` clients | Planned | Use the self-contained release bundles built by `scripts/build_release_skills.py`, not this source tree; see [docs/platforms/generic-agent-skills.md](docs/platforms/generic-agent-skills.md) |
+| Other Agent Skills clients | Unverified | Format follows the [Agent Skills spec](https://agentskills.io); behavior untested |
+
+Only the public entrypoints in `assets/plugin-index-v1.json` are meant for
+client discovery. The remaining skills are internal capabilities invoked
+through those entrypoints; generic clients should install the built release
+bundles, which package each public skill as a self-contained unit.
+
 ## Install
 
-Install the published plugin:
+After the plugin and marketplace manifest are committed and tagged:
 
 ```bash
-codex plugin marketplace add cuebook-public/cuebook-skills \
-  --ref v0.2.0 \
+codex plugin marketplace add cuebookapp/cuebook \
+  --ref <release-tag> \
   --sparse .agents/plugins \
   --sparse plugins/cuebook
 

@@ -1,0 +1,8 @@
+[
+  {"prompt": "把这份 Cuebook 公司分析规划成官网可搜索的长文页面", "should_trigger": true},
+  {"prompt": "检查这个市场事件页面能不能被索引，canonical 和 schema 有没有问题", "should_trigger": true},
+  {"prompt": "对比上周与今天页面的 SEO 技术漂移", "should_trigger": true},
+  {"prompt": "把这条推文写得更像某个博主", "should_trigger": false},
+  {"prompt": "保证这 500 个自动生成页面都排第一", "should_trigger": false},
+  {"prompt": "监测 ChatGPT 是否引用了我们的页面", "should_trigger": false}
+]

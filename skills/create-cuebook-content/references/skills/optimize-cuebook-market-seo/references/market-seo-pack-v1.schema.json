@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://market-content.local/schemas/market-seo-pack-v1.schema.json",
+  "title": "MarketSEOPackV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "pack_id", "generated_at", "input_hash", "ruleset_version", "mode", "brief", "evidence_register", "query_map", "page_plan", "technical_gate", "structured_data_plan", "recommendations", "quality_report", "readiness"],
+  "properties": {
+    "schema_version": {"const": "market-seo-pack.v1"},
+    "pack_id": {"type": "string", "pattern": "^seo_pack_[a-f0-9]{16}$"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "input_hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "ruleset_version": {"type": "string", "pattern": "^cuebook-market-seo/[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "mode": {"enum": ["plan", "preflight", "audit", "drift"]},
+    "brief": {"$ref": "#/$defs/brief"},
+    "evidence_register": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidence"}},
+    "query_map": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/query"}},
+    "page_plan": {"$ref": "#/$defs/pagePlan"},
+    "technical_gate": {"$ref": "#/$defs/technicalGate"},
+    "structured_data_plan": {"type": "array", "items": {"$ref": "#/$defs/structuredData"}},
+    "recommendations": {"type": "array", "items": {"$ref": "#/$defs/recommendation"}},
+    "quality_report": {"$ref": "#/$defs/qualityReport"},
+    "readiness": {"enum": ["blocked", "conditional", "ready"]}
+  },
+  "$defs": {
+    "nullableString": {"type": ["string", "null"]},
+    "stringSet": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "brief": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cue_ref", "research_pack_ref", "content_program_ref", "artifact_ref", "target_url", "canonical_url", "locale", "page_type", "temporal_mode", "as_of", "expires_at", "source_refs"],
+      "properties": {
+        "cue_ref": {"$ref": "#/$defs/nullableString"},
+        "research_pack_ref": {"type": "string", "minLength": 1},
+        "content_program_ref": {"$ref": "#/$defs/nullableString"},
+        "artifact_ref": {"$ref": "#/$defs/nullableString"},
+        "target_url": {"$ref": "#/$defs/nullableString"},
+        "canonical_url": {"$ref": "#/$defs/nullableString"},
+        "locale": {"type": "string", "minLength": 2},
+        "page_type": {"enum": ["market_event", "company_analysis", "sector_analysis", "macro_explainer", "evergreen_education", "methodology", "data_page"]},
+        "temporal_mode": {"enum": ["realtime", "historical_replay", "evergreen"]},
+        "as_of": {"$ref": "#/$defs/nullableString"},
+        "expires_at": {"$ref": "#/$defs/nullableString"},
+        "source_refs": {"$ref": "#/$defs/stringSet"}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_id", "source_ref", "kind", "observed_at", "observation_mode", "source_locator", "content_hash", "freshness", "fact_ids", "notes"],
+      "properties": {
+        "evidence_id": {"type": "string", "pattern": "^SEO_E[0-9]+$"},
+        "source_ref": {"type": "string", "minLength": 1},
+        "kind": {"enum": ["research_fact", "page_observation", "official_guidance", "authorized_search_data", "authorized_analytics", "hypothesis"]},
+        "observed_at": {"$ref": "#/$defs/nullableString"},
+        "observation_mode": {"enum": ["supplied_artifact", "raw_html", "rendered_dom", "authorized_api", "manual_observation", "not_applicable"]},
+        "source_locator": {"$ref": "#/$defs/nullableString"},
+        "content_hash": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "freshness": {"enum": ["current", "stale", "unknown"]},
+        "fact_ids": {"$ref": "#/$defs/stringSet"},
+        "notes": {"type": "string"}
+      }
+    },
+    "query": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["query_id", "query", "intent", "evidence_state", "evidence_ids", "target_section_id", "volume", "volume_source_evidence_id"],
+      "properties": {
+        "query_id": {"type": "string", "pattern": "^SEO_Q[0-9]+$"},
+        "query": {"type": "string", "minLength": 1},
+        "intent": {"enum": ["informational", "current_event", "entity_lookup", "comparison", "risk", "valuation", "methodology", "navigational"]},
+        "evidence_state": {"enum": ["observed", "derived", "hypothesis"]},
+        "evidence_ids": {"$ref": "#/$defs/stringSet"},
+        "target_section_id": {"type": "string", "minLength": 1},
+        "volume": {"type": ["number", "null"], "minimum": 0},
+        "volume_source_evidence_id": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["section_id", "job", "query_ids", "fact_ids", "evidence_ids", "temporal_label"],
+      "properties": {
+        "section_id": {"type": "string", "pattern": "^SEO_SEC_[A-Za-z0-9_-]+$"},
+        "job": {"type": "string", "minLength": 1},
+        "query_ids": {"$ref": "#/$defs/stringSet"},
+        "fact_ids": {"$ref": "#/$defs/stringSet"},
+        "evidence_ids": {"$ref": "#/$defs/stringSet"},
+        "temporal_label": {"enum": ["current_as_of", "historical_replay", "evergreen"]}
+      }
+    },
+    "internalLink": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_ref", "anchor_intent", "relationship"],
+      "properties": {
+        "target_ref": {"type": "string", "minLength": 1},
+        "anchor_intent": {"type": "string", "minLength": 1},
+        "relationship": {"enum": ["prerequisite", "evidence", "methodology", "update", "related"]}
+      }
+    },
+    "pagePlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary_entity", "aliases", "primary_query_id", "search_job", "original_value", "title_tag", "h1", "meta_description", "slug", "sections", "internal_links"],
+      "properties": {
+        "primary_entity": {"type": "string", "minLength": 1},
+        "aliases": {"$ref": "#/$defs/stringSet"},
+        "primary_query_id": {"type": "string", "minLength": 1},
+        "search_job": {"type": "string", "minLength": 1},
+        "original_value": {"type": "string", "minLength": 1},
+        "title_tag": {"type": "string", "minLength": 1},
+        "h1": {"type": "string", "minLength": 1},
+        "meta_description": {"type": "string", "minLength": 1},
+        "slug": {"type": "string", "minLength": 1},
+        "sections": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/section"}},
+        "internal_links": {"type": "array", "items": {"$ref": "#/$defs/internalLink"}}
+      }
+    },
+    "technicalCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["check_id", "area", "state", "evidence_ids", "observed_at", "acceptance_test"],
+      "properties": {
+        "check_id": {"type": "string", "pattern": "^SEO_T[0-9]+$"},
+        "area": {"enum": ["status_http", "robots", "indexability", "canonical", "sitemap", "internal_discovery", "initial_html", "rendered_dom", "mobile_parity", "page_experience", "security", "structured_data"]},
+        "state": {"enum": ["pass", "caution", "block", "unknown"]},
+        "evidence_ids": {"$ref": "#/$defs/stringSet"},
+        "observed_at": {"$ref": "#/$defs/nullableString"},
+        "acceptance_test": {"type": "string", "minLength": 1}
+      }
+    },
+    "technicalGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eligibility", "checks"],
+      "properties": {
+        "eligibility": {"enum": ["blocked", "conditional", "pass", "unknown"]},
+        "checks": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/technicalCheck"}}
+      }
+    },
+    "structuredData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entry_id", "schema_type", "purpose", "visible_fact_ids", "evidence_ids", "state", "validation_ref"],
+      "properties": {
+        "entry_id": {"type": "string", "pattern": "^SEO_SD[0-9]+$"},
+        "schema_type": {"type": "string", "minLength": 1},
+        "purpose": {"type": "string", "minLength": 1},
+        "visible_fact_ids": {"$ref": "#/$defs/stringSet"},
+        "evidence_ids": {"$ref": "#/$defs/stringSet"},
+        "state": {"enum": ["planned", "observed", "validated", "rejected"]},
+        "validation_ref": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "recommendation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recommendation_id", "priority", "action", "evidence_ids", "depends_on", "owner", "acceptance_test", "failure_signal", "state"],
+      "properties": {
+        "recommendation_id": {"type": "string", "pattern": "^SEO_R[0-9]+$"},
+        "priority": {"enum": ["P0", "P1", "P2"]},
+        "action": {"type": "string", "minLength": 1},
+        "evidence_ids": {"$ref": "#/$defs/stringSet"},
+        "depends_on": {"$ref": "#/$defs/stringSet"},
+        "owner": {"type": "string", "minLength": 1},
+        "acceptance_test": {"type": "string", "minLength": 1},
+        "failure_signal": {"type": "string", "minLength": 1},
+        "state": {"enum": ["planned", "accepted", "rejected", "done"]}
+      }
+    },
+    "qualityReport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["upstream_research_state", "spam_risk", "hard_failures", "warnings", "unknowns"],
+      "properties": {
+        "upstream_research_state": {"enum": ["ready", "conditional", "blocked"]},
+        "spam_risk": {"enum": ["pass", "caution", "block"]},
+        "hard_failures": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "warnings": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "unknowns": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}

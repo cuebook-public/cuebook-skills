@@ -1,0 +1,4 @@
+interface:
+  display_name: "Intake Cuebook Viewpoint"
+  short_description: "Triage a fresh visitor, complete and verify a viewpoint, or route a lookup"
+  default_prompt: "Triage the visitor's input, extract asset, direction, horizon, and optional price anchor from what was said, elicit missing fields at most two per round, verify against Cuebook, confirm one recap card, and return a validated ViewpointIntakeV1. Route pure lookups to query-cuebook; never force creation or invent fields."

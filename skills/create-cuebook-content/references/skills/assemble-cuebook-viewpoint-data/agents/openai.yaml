@@ -1,0 +1,4 @@
+interface:
+  display_name: "Assemble Cuebook Viewpoint Data"
+  short_description: "Resolve exact curves, news, distributions, flows, and payoff evidence"
+  default_prompt: "Assemble only the sourced primitives selected for this Cuebook expression. Preserve every upstream requirement and source, validate news clusters, samples, quantiles, reconciled compositions or flows, and payoff terms, then block unsupported geometry or any degradation of a material creator premise."
