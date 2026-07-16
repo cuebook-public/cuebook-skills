@@ -50,6 +50,8 @@ Remove a block when it repeats another block without adding meaning. For selecta
 
 Choose the `composition_archetype` from `finance-visual-argument-system-v1.md` before choosing a grid family. The composition expresses the financial relationship; the grid implements it.
 
+Then hold the layout to `canvas-craft-v1.md`: the 2.36:1 canvas is short, not small — compose in full-height seams, bleeding evidence fields, and horizontal bands; declare one scale extreme; build depth planes from the preset surfaces instead of floating elements on one flat ground.
+
 ## Grid Families
 
 | Grid | Best for |

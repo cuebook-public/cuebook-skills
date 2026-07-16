@@ -82,6 +82,8 @@ The three directions also use the three palette strategies exactly once. Design 
 
 Use three different composition archetypes. At most one may be an editorial statement. A quantitative thesis includes at least one proof-led direction where evidence geometry owns roughly 55-72% of usable area.
 
+Read `canvas-craft-v1.md` before authoring. Score the set on its five diversity axes — entry corner, dominant axis, ground value, scale-extreme type, evidence integration — and require at least three axes of difference between every pair. The default "copy column beside a graphic on a flat ground" arrangement may appear at most once per set.
+
 ### 6. Build hierarchy before color
 
 - One entry group only.
@@ -103,6 +105,7 @@ Choose palette expression after hierarchy. Keep 70-85% neutral and use one to th
 
 ### 8. Complete the static craft pass
 
+- Run the `canvas-craft-v1.md` self-check: name the scale extreme (>=3x its runner-up), the active-field share (>=80%), the single deliberate void's meaning, and the depth planes (or the reason flat is the choice).
 - Align optically where geometric centering looks wrong.
 - Use one radius and surface rule; nested radii are concentric when nested surfaces are genuinely needed.
 - Use separators, area, and whitespace before decorative cards or borders.
