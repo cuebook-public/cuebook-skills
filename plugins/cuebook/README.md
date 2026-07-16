@@ -60,9 +60,9 @@ and MCP coverage lives in
 
 | Platform | Status | Notes |
 | --- | --- | --- |
-| Codex (plugin) | Tested | Primary distribution; see [docs/platforms/codex.md](docs/platforms/codex.md) |
-| Claude Code (plugin) | Planned | Same plugin layout loads; MCP + heavy-runtime skills unverified; see [docs/platforms/claude-code.md](docs/platforms/claude-code.md) |
-| Generic `.agents/skills` clients | Planned | Use the self-contained release bundles built by `scripts/build_release_skills.py`, not this source tree; see [docs/platforms/generic-agent-skills.md](docs/platforms/generic-agent-skills.md) |
+| Codex (plugin) | Tested | Primary distribution; see [platforms/codex.md](platforms/codex.md) |
+| Claude Code (plugin) | Planned | Same plugin layout loads; MCP + heavy-runtime skills unverified; see [platforms/claude-code.md](platforms/claude-code.md) |
+| Generic `.agents/skills` clients | Planned | Use the self-contained release bundles built by `scripts/build_release_skills.py`, not this source tree; see [platforms/generic-agent-skills.md](platforms/generic-agent-skills.md) |
 | Other Agent Skills clients | Unverified | Format follows the [Agent Skills spec](https://agentskills.io); behavior untested |
 
 Only the public entrypoints in `assets/plugin-index-v1.json` are meant for

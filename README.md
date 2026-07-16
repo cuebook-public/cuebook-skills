@@ -23,7 +23,7 @@ Query; Query never calls Create.
 | Other Agent Skills clients | Unverified |
 
 Per-platform install, MCP configuration, dependency, and smoke-test notes
-live in `plugins/cuebook/docs/platforms/`.
+live in `plugins/cuebook/platforms/`.
 
 ## Install
 
