@@ -1,0 +1,4 @@
+interface:
+  display_name: "Query Cuebook"
+  short_description: "Search and inspect Cuebook data without creating content"
+  default_prompt: "Query Cuebook for the requested assets, stories, market data, evidence, or history. Return a sourced read-only answer and CuebookQueryBundleV1; do not draft or publish content."

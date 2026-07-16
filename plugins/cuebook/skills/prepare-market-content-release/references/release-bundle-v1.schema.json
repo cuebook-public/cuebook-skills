@@ -1,0 +1,232 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://market-content.local/schemas/release-bundle-v1.schema.json",
+  "title": "ReleaseBundleV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "release_id", "prepared_at", "operation", "program_ref", "items", "quality_report", "release_state"],
+  "properties": {
+    "schema_version": {"const": "release-bundle.v1"},
+    "release_id": {"type": "string", "pattern": "^release_[a-f0-9]{16}$"},
+    "prepared_at": {"type": "string", "format": "date-time"},
+    "operation": {"const": "prepare_only"},
+    "program_ref": {"$ref": "#/$defs/nullableString"},
+    "items": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/releaseItem"}},
+    "quality_report": {"$ref": "#/$defs/qualityReport"},
+    "release_state": {"enum": ["blocked", "needs_approval", "ready"]}
+  },
+  "$defs": {
+    "nullableString": {"type": ["string", "null"]},
+    "stringSet": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "settlementClaimRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "schema_version", "canonical_hash", "state"],
+      "properties": {
+        "ref": {"type": "string", "pattern": "^SETTLE_[A-Za-z0-9_-]{8,}$"},
+        "schema_version": {"const": "settlement-claim-v1"},
+        "canonical_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "state": {"const": "frozen"}
+      }
+    },
+    "settlementFormulaRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "schema_version", "canonical_hash", "claim_ref", "claim_hash", "state"],
+      "properties": {
+        "ref": {"type": "string", "pattern": "^FORMULA_[A-Za-z0-9_-]{8,}$"},
+        "schema_version": {"const": "settlement-formula-v1"},
+        "canonical_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "claim_ref": {"type": "string", "pattern": "^SETTLE_[A-Za-z0-9_-]{8,}$"},
+        "claim_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "state": {"const": "frozen"}
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "schema_version", "content_hash", "publication_state", "selected_variant"],
+      "properties": {
+        "ref": {"type": "string", "minLength": 1},
+        "schema_version": {"enum": ["post-v1", "media-package.v1", "viewpoint-card-v1", "human-authored-v1"]},
+        "content_hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "publication_state": {"enum": ["ready", "conditional", "blocked"]},
+        "selected_variant": {"$ref": "#/$defs/nullableString"},
+        "settlement_claim": {
+          "anyOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/settlementClaimRef"}
+          ]
+        },
+        "settlement_formula": {
+          "anyOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/settlementFormulaRef"}
+          ]
+        }
+      }
+    },
+    "assetRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset_id", "ref", "content_hash", "rights"],
+      "properties": {
+        "asset_id": {"type": "string", "minLength": 1},
+        "ref": {"type": "string", "minLength": 1},
+        "content_hash": {"$ref": "#/$defs/nullableString"},
+        "rights": {"enum": ["reusable", "reference_only", "unknown"]}
+      }
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["payload_hash", "preview_ref", "asset_refs"],
+      "properties": {
+        "payload_hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "preview_ref": {"type": "string", "minLength": 1},
+        "asset_refs": {"type": "array", "items": {"$ref": "#/$defs/assetRef"}}
+      }
+    },
+    "supportFlags": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["create", "draft", "schedule", "edit", "delete", "status"],
+      "properties": {
+        "create": {"type": "boolean"},
+        "draft": {"type": "boolean"},
+        "schedule": {"type": "boolean"},
+        "edit": {"type": "boolean"},
+        "delete": {"type": "boolean"},
+        "status": {"type": "boolean"}
+      }
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "checked_at", "official_source_url", "adapter_id", "supports"],
+      "properties": {
+        "status": {"enum": ["verified", "unverified", "unavailable"]},
+        "checked_at": {"$ref": "#/$defs/nullableString"},
+        "official_source_url": {"$ref": "#/$defs/nullableString"},
+        "adapter_id": {"$ref": "#/$defs/nullableString"},
+        "supports": {"$ref": "#/$defs/supportFlags"}
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "checked_at", "source_urls", "notes"],
+      "properties": {
+        "decision": {"enum": ["ready", "conditional", "blocked"]},
+        "checked_at": {"$ref": "#/$defs/nullableString"},
+        "source_urls": {"$ref": "#/$defs/stringSet"},
+        "notes": {"type": "string"}
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "approved_by", "approved_at"],
+      "properties": {
+        "status": {"enum": ["pending", "approved", "rejected", "not_required"]},
+        "approved_by": {"$ref": "#/$defs/nullableString"},
+        "approved_at": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "approvals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["content", "release"],
+      "properties": {
+        "content": {"$ref": "#/$defs/approval"},
+        "release": {"$ref": "#/$defs/approval"}
+      }
+    },
+    "schedule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["publish_at", "timezone", "embargo_until", "expires_at"],
+      "properties": {
+        "publish_at": {"$ref": "#/$defs/nullableString"},
+        "timezone": {"$ref": "#/$defs/nullableString"},
+        "embargo_until": {"$ref": "#/$defs/nullableString"},
+        "expires_at": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "manualHandoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "handoff_ref", "checklist"],
+      "properties": {
+        "required": {"type": "boolean"},
+        "handoff_ref": {"$ref": "#/$defs/nullableString"},
+        "checklist": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "edit_supported", "delete_supported", "notes"],
+      "properties": {
+        "mode": {"enum": ["api", "manual", "none"]},
+        "edit_supported": {"type": "boolean"},
+        "delete_supported": {"type": "boolean"},
+        "notes": {"type": "string"}
+      }
+    },
+    "preflight": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "checks", "repairs"],
+      "properties": {
+        "status": {"enum": ["pass", "caution", "block"]},
+        "checks": {"type": "array"},
+        "repairs": {"type": "array"}
+      }
+    },
+    "webDiscoveryGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["seo_pack_ref", "seo_state", "geo_pack_ref", "geo_state"],
+      "properties": {
+        "seo_pack_ref": {"type": ["string", "null"], "pattern": "^seo_pack_[a-f0-9]{16}$"},
+        "seo_state": {"enum": ["pass", "conditional", "blocked"]},
+        "geo_pack_ref": {"type": ["string", "null"], "pattern": "^geo_pack_[a-f0-9]{16}$"},
+        "geo_state": {"enum": ["not_requested", "pass", "conditional", "blocked"]}
+      }
+    },
+    "releaseItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["release_item_id", "artifact", "platform", "account_ref", "execution_mode", "capability", "policy", "approvals", "schedule", "payload", "depends_on", "idempotency_key", "manual_handoff", "rollback", "preflight"],
+      "properties": {
+        "release_item_id": {"type": "string", "pattern": "^release_item_[A-Za-z0-9_-]+$"},
+        "artifact": {"$ref": "#/$defs/artifact"},
+        "platform": {"enum": ["website", "x", "telegram", "reddit", "xiaohongshu", "douyin", "seeking_alpha", "generic"]},
+        "account_ref": {"type": "string", "minLength": 1},
+        "execution_mode": {"enum": ["manual_handoff", "platform_draft", "api_direct", "api_scheduled"]},
+        "capability": {"$ref": "#/$defs/capability"},
+        "policy": {"$ref": "#/$defs/policy"},
+        "approvals": {"$ref": "#/$defs/approvals"},
+        "schedule": {"$ref": "#/$defs/schedule"},
+        "payload": {"$ref": "#/$defs/payload"},
+        "depends_on": {"$ref": "#/$defs/stringSet"},
+        "idempotency_key": {"$ref": "#/$defs/nullableString"},
+        "manual_handoff": {"$ref": "#/$defs/manualHandoff"},
+        "rollback": {"$ref": "#/$defs/rollback"},
+        "preflight": {"$ref": "#/$defs/preflight"},
+        "web_discovery_gate": {"$ref": "#/$defs/webDiscoveryGate"}
+      }
+    },
+    "qualityReport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scores", "hard_failures", "revisions"],
+      "properties": {
+        "scores": {"type": "object"},
+        "hard_failures": {"type": "array"},
+        "revisions": {"type": "array"}
+      }
+    }
+  }
+}

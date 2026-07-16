@@ -1,0 +1,6 @@
+{
+  "artifact": "MarketSEOPackV1",
+  "schema_version": "market-seo-pack.v1",
+  "required_sections": ["input_hash", "ruleset_version", "brief", "evidence_register", "query_map", "page_plan", "technical_gate", "structured_data_plan", "recommendations", "quality_report", "readiness"],
+  "forbidden": ["credentials", "ranking guarantees", "invented search volume", "unsupported financial facts", "external publishing receipt"]
+}

@@ -1,0 +1,43 @@
+{
+  "name": "cuebook",
+  "version": "0.2.0+codex.20260716163000",
+  "description": "Query Cuebook market intelligence or create source-linked trading viewpoints, 2680 x 1056 visuals, settlement protocols, and release-ready content.",
+  "author": {
+    "name": "Cuebook",
+    "url": "https://github.com/cuebook-public"
+  },
+  "homepage": "https://cuebook.xyz",
+  "repository": "https://github.com/cuebook-public/cuebook-skills",
+  "keywords": [
+    "finance",
+    "investment-research",
+    "trading-thesis",
+    "content-creation",
+    "market-data"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Cuebook",
+    "shortDescription": "Query Cuebook data or create sourced market viewpoints",
+    "longDescription": "Cuebook has two explicit modules. Query searches, reads, compares, and explains Cuebook assets, stories, evidence, market data, metrics, history, and public-media patterns without writing anything. Create preserves the user's trading idea, calls Query for missing current facts, and produces three calibrated text and exact 2680 x 1056 visual candidates. It can optionally compile a hash-linked settlement claim and prepare an approved release bundle without placing trades or silently publishing.",
+    "developerName": "Cuebook",
+    "category": "Finance",
+    "capabilities": [
+      "Market Query",
+      "Content Creation",
+      "Static Visuals",
+      "Settlement Protocols",
+      "Release Preparation"
+    ],
+    "websiteURL": "https://cuebook.xyz",
+    "brandColor": "#FFD21C",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png",
+    "defaultPrompt": [
+      "\u67e5\u8be2 USO \u6700\u65b0\u53d9\u4e8b\u3001\u5e02\u573a\u72b6\u6001\u548c\u6765\u6e90",
+      "\u6bd4\u8f83 HOOD \u4e0e COIN \u7684\u6700\u65b0\u4f30\u503c\u53e3\u5f84\u548c\u5e02\u573a\u8868\u73b0",
+      "\u7528\u8fd9\u4efd\u67e5\u8be2\u7ed3\u679c\u521b\u4f5c\u4e09\u5957\u53ef\u53d1\u5e03\u4ea4\u6613\u89c2\u70b9"
+    ]
+  },
+  "mcpServers": "./.mcp.json"
+}

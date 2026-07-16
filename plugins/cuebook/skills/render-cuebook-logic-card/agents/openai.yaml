@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cuebook Logic Card"
+  short_description: "Render narrative logic as Cuebook opinion graphics"
+  default_prompt: "Render this validated VisualArgumentV1 with its recommended Cuebook visual grammar, preserving evidence state, countercase, creator ownership, and settlement."

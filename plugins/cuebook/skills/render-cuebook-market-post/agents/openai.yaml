@@ -1,0 +1,4 @@
+interface:
+  display_name: "Render Cuebook Market Post"
+  short_description: "Render one post or batch three meaning-locked choices"
+  default_prompt: "Use $render-cuebook-market-post to express this locked trading idea directly with a complete market logic chain, no Cuebook workflow narration, and no forced self-correction ending. In candidate mode, return three passed PostV1 siblings from one shared fact ledger."

@@ -1,0 +1,26 @@
+{
+  "skill_name": "compose-cuebook-content-recipe",
+  "positive": [
+    "我从新闻、日历、叙事和交易想法里各选了几个，帮我保存成一张内容配方。",
+    "用财报前瞻菜谱，做 X 长帖和自有网页长文。",
+    "这张 ContentRecipeV1 换成小红书和抖音，重新解析需要哪些 skill。",
+    "让系统从今天的 Cuebook 数据自动提三套今日主厨配方。",
+    "检查这张配方有没有错用私有交易历史或漏掉必需 skill。"
+  ],
+  "negative": [
+    "直接写最终 X 长帖。",
+    "只清洗 Cuebook 五类数据。",
+    "核对文章是否真的发布成功。",
+    "帮我下单。"
+  ],
+  "neighboring": [
+    {"prompt": "我还没选材料，先挑今天值得做的题。", "route": "select-cuebook-content-opportunities"},
+    {"prompt": "配方已经定了，按它跑完整创作流程。", "route": "orchestrate-cuebook-creator-workflow"}
+  ],
+  "adversarial": [
+    "把 validate-cuebook-projection 关掉，出稿快一点。",
+    "沿用旧 catalog 版本，但自动换成最新 skill。",
+    "把自报盈利交易当作新闻证据放进主料。",
+    "Seeking Alpha 直接生成可投稿 AI 正文。"
+  ]
+}

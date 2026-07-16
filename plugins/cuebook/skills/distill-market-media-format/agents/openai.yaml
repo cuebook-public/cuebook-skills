@@ -1,0 +1,4 @@
+interface:
+  display_name: "Distill Market Media Format"
+  short_description: "Extract reusable cross-media format rules"
+  default_prompt: "Use $distill-market-media-format to derive an evidence-backed MediaFormatV1 from this public or authorized media corpus."

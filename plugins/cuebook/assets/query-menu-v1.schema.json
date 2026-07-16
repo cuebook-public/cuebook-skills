@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.xyz/schemas/query-menu-v1.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "catalog_version", "module_id", "default_query", "queries", "output_modes"],
+  "properties": {
+    "schema_version": {"const": "query-menu-v1"},
+    "catalog_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "module_id": {"const": "query"},
+    "default_query": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+    "queries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["query_id", "label", "description", "skill_refs", "mcp_tools", "availability"],
+        "properties": {
+          "query_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+          "label": {"type": "string", "minLength": 1},
+          "description": {"type": "string", "minLength": 1},
+          "skill_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9-]+$"}},
+          "mcp_tools": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9_]+$"}},
+          "availability": {"enum": ["available", "backend_required"]}
+        }
+      }
+    },
+    "output_modes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["output_id", "label"],
+        "properties": {
+          "output_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+          "label": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

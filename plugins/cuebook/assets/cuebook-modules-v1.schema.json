@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.xyz/schemas/cuebook-modules-v1.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "catalog_version", "default_module", "modules", "routing_rules"],
+  "properties": {
+    "schema_version": {"const": "cuebook-modules-v1"},
+    "catalog_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "default_module": {"const": "query"},
+    "modules": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["module_id", "label", "description", "entrypoint_skill", "menu_ref", "access", "may_invoke", "skill_refs"],
+        "properties": {
+          "module_id": {"enum": ["query", "create"]},
+          "label": {"type": "string", "minLength": 1},
+          "description": {"type": "string", "minLength": 1},
+          "entrypoint_skill": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+          "menu_ref": {"type": "string", "pattern": "^\\./[a-z0-9-]+\\.json$"},
+          "access": {"enum": ["read_only", "compose_with_authorized_writes"]},
+          "may_invoke": {"type": "array", "uniqueItems": true, "items": {"enum": ["query", "create"]}},
+          "skill_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9-]+$"}}
+        }
+      }
+    },
+    "routing_rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["read_intents_route_to", "creation_intents_route_to", "ambiguous_intents_route_to", "query_deliverables", "create_deliverables", "query_may_invoke_create", "create_may_invoke_query"],
+      "properties": {
+        "read_intents_route_to": {"const": "query"},
+        "creation_intents_route_to": {"const": "create"},
+        "ambiguous_intents_route_to": {"const": "query"},
+        "query_deliverables": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["answer", "comparison", "source_bundle", "data_table", "factual_chart", "history_view"]}},
+        "create_deliverables": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["market_post", "creator_viewpoint_graphic", "settlement_protocol", "release_bundle", "publishing_candidates"]}},
+        "query_may_invoke_create": {"const": false},
+        "create_may_invoke_query": {"const": true}
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Normalize Cuebook Creator Feed"
+  short_description: "Normalize Cuebook creator data into one feed"
+  default_prompt: "Normalize this Cuebook export of news, calendar events, narratives, trade ideas, and trade history into CreatorFeedV1 with provenance, temporal, permission, and hindsight guards."
+policy:
+  allow_implicit_invocation: false

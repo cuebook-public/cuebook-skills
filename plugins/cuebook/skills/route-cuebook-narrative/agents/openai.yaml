@@ -1,0 +1,6 @@
+interface:
+  display_name: "Route Cuebook Narrative"
+  short_description: "Classify validated cues into market reasoning axes"
+  default_prompt: "Use $route-cuebook-narrative to classify a validated Cuebook cue by event type, reasoning lens, render shape, and required context."
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Compose Trading Thesis"
+  short_description: "Develop a creator idea into a verifiable thesis"
+  default_prompt: "Develop this creator seed with Cuebook evidence, preserve what Cuebook changed, and return a versioned, resolvable TradingThesisV1 with action and quote semantics."

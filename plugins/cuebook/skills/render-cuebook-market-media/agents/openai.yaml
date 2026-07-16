@@ -1,0 +1,4 @@
+interface:
+  display_name: "Render Cuebook Market Media"
+  short_description: "Build grounded cross-media market packages"
+  default_prompt: "Use $render-cuebook-market-media to turn this Cuebook cue or ResearchPackV1 into a policy-checked long-form, Reddit, Xiaohongshu, or short-video package."

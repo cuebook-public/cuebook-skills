@@ -1,0 +1,20 @@
+{
+  "name": "cuebook",
+  "interface": {
+    "displayName": "Cuebook"
+  },
+  "plugins": [
+    {
+      "name": "cuebook",
+      "source": {
+        "source": "local",
+        "path": "./plugins/cuebook"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Finance"
+    }
+  ]
+}

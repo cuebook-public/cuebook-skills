@@ -1,0 +1,247 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/media-corpus-v1.schema.json",
+  "title": "MediaCorpusV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "corpus_id", "generated_at", "scope", "items", "provenance", "stats", "quality"],
+  "properties": {
+    "schema_version": {"const": "media-corpus.v1"},
+    "corpus_id": {"type": "string", "pattern": "^media_corpus_[a-f0-9]{16}$"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "scope": {"$ref": "#/$defs/scope"},
+    "items": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/item"}},
+    "provenance": {"$ref": "#/$defs/corpusProvenance"},
+    "stats": {"$ref": "#/$defs/stats"},
+    "quality": {"$ref": "#/$defs/quality"}
+  },
+  "$defs": {
+    "nullableString": {"type": ["string", "null"]},
+    "nullableNumber": {"type": ["number", "null"]},
+    "nullableInteger": {"type": ["integer", "null"]},
+    "nullableDateTime": {"anyOf": [{"type": "string", "format": "date-time"}, {"type": "null"}]},
+    "nullableUri": {"anyOf": [{"type": "string", "format": "uri"}, {"type": "null"}]},
+    "stringSet": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "countMap": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["platforms", "formats", "sample_frame", "time_range"],
+      "properties": {
+        "platforms": {"$ref": "#/$defs/stringSet"},
+        "formats": {"$ref": "#/$defs/stringSet"},
+        "sample_frame": {"type": "string", "minLength": 1},
+        "time_range": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["start", "end"],
+          "properties": {"start": {"$ref": "#/$defs/nullableDateTime"}, "end": {"$ref": "#/$defs/nullableDateTime"}}
+        }
+      }
+    },
+    "author": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "handle"],
+      "properties": {"name": {"$ref": "#/$defs/nullableString"}, "handle": {"$ref": "#/$defs/nullableString"}}
+    },
+    "packaging": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "subtitle", "cover_text", "tags", "flair"],
+      "properties": {
+        "title": {"$ref": "#/$defs/nullableString"},
+        "subtitle": {"$ref": "#/$defs/nullableString"},
+        "cover_text": {"$ref": "#/$defs/nullableString"},
+        "tags": {"$ref": "#/$defs/stringSet"},
+        "flair": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "url", "local_path", "mime_type", "width", "height", "duration_ms", "rights_status", "ocr_text", "transcript"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^asset_[a-f0-9]{16}$"},
+        "type": {"enum": ["image", "video", "audio", "chart", "screenshot", "document", "other"]},
+        "url": {"$ref": "#/$defs/nullableUri"},
+        "local_path": {"$ref": "#/$defs/nullableString"},
+        "mime_type": {"$ref": "#/$defs/nullableString"},
+        "width": {"$ref": "#/$defs/nullableInteger"},
+        "height": {"$ref": "#/$defs/nullableInteger"},
+        "duration_ms": {"$ref": "#/$defs/nullableInteger"},
+        "rights_status": {"enum": ["owned", "licensed", "public-domain", "permission", "unknown", "not-reusable"]},
+        "ocr_text": {"$ref": "#/$defs/nullableString"},
+        "transcript": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "segment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "index", "role", "text", "start_ms", "end_ms", "asset_ids", "source_urls"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^segment_[a-f0-9]{16}$"},
+        "index": {"type": "integer", "minimum": 0},
+        "role": {"enum": ["title", "dek", "thesis", "evidence", "analysis", "valuation", "risk", "invalidation", "conclusion", "cover", "card", "caption", "body", "question", "reply", "edit", "hook", "voiceover", "on_screen_text", "shot", "cta", "disclosure", "source_list", "other"]},
+        "text": {"$ref": "#/$defs/nullableString"},
+        "start_ms": {"$ref": "#/$defs/nullableInteger"},
+        "end_ms": {"$ref": "#/$defs/nullableInteger"},
+        "asset_ids": {"$ref": "#/$defs/stringSet"},
+        "source_urls": {"type": "array", "items": {"type": "string", "format": "uri"}}
+      },
+      "anyOf": [{"properties": {"text": {"type": "string", "minLength": 1}}}, {"properties": {"asset_ids": {"minItems": 1}}}]
+    },
+    "community": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["name", "flair", "rules_url", "rules_checked_at", "op_intent", "audience_terms"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "flair": {"$ref": "#/$defs/nullableString"},
+        "rules_url": {"$ref": "#/$defs/nullableUri"},
+        "rules_checked_at": {"$ref": "#/$defs/nullableDateTime"},
+        "op_intent": {"$ref": "#/$defs/nullableString"},
+        "audience_terms": {"$ref": "#/$defs/stringSet"}
+      }
+    },
+    "interaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "parent_id", "author_role", "text", "score", "created_at"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^interaction_[a-f0-9]{16}$"},
+        "parent_id": {"$ref": "#/$defs/nullableString"},
+        "author_role": {"enum": ["author", "community", "moderator", "unknown"]},
+        "text": {"type": "string", "minLength": 1},
+        "score": {"$ref": "#/$defs/nullableNumber"},
+        "created_at": {"$ref": "#/$defs/nullableDateTime"}
+      }
+    },
+    "compliance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["account_qualification", "content_class", "commercial_relationship", "ai_label", "identity_disclosure", "disclosure_segment_ids"],
+      "properties": {
+        "account_qualification": {"enum": ["verified", "declared", "unknown", "not_applicable"]},
+        "content_class": {"enum": ["market_commentary", "financial_education", "investment_analysis", "product_marketing", "personalized_advice", "unknown"]},
+        "commercial_relationship": {"enum": ["disclosed", "none", "unknown"]},
+        "ai_label": {"enum": ["present", "absent", "unknown", "not_applicable"]},
+        "identity_disclosure": {"enum": ["present", "absent", "unknown", "not_applicable"]},
+        "disclosure_segment_ids": {"$ref": "#/$defs/stringSet"}
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["available", "observed_at", "values", "missing"],
+      "properties": {
+        "available": {"type": "boolean"},
+        "observed_at": {"$ref": "#/$defs/nullableDateTime"},
+        "values": {"type": "object", "propertyNames": {"pattern": "^[a-z][a-z0-9_]*$"}, "additionalProperties": {"type": "number", "minimum": 0}},
+        "missing": {"$ref": "#/$defs/stringSet"}
+      }
+    },
+    "sourceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_label", "source_file", "source_file_sha256", "source_record_index", "source_record_id", "source_url"],
+      "properties": {
+        "source_label": {"type": "string", "minLength": 1},
+        "source_file": {"type": "string", "minLength": 1},
+        "source_file_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "source_record_index": {"type": "integer", "minimum": 0},
+        "source_record_id": {"$ref": "#/$defs/nullableString"},
+        "source_url": {"$ref": "#/$defs/nullableUri"}
+      }
+    },
+    "itemProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rights_basis", "records", "transformations"],
+      "properties": {
+        "rights_basis": {"enum": ["public", "authorized"]},
+        "records": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/sourceRecord"}},
+        "transformations": {"$ref": "#/$defs/stringSet"}
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "external_id", "platform", "format", "sample_role", "author", "packaging", "created_at", "observed_at", "url", "language", "segments", "assets", "community", "interactions", "compliance", "metrics", "provenance"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^media_item_[a-f0-9]{16}$"},
+        "external_id": {"$ref": "#/$defs/nullableString"},
+        "platform": {"type": "string", "minLength": 1},
+        "format": {"enum": ["long_form_article", "community_post", "community_comment", "image_note", "short_video", "long_video", "podcast", "other"]},
+        "sample_role": {"enum": ["baseline", "recent", "high_attention", "other", "unknown"]},
+        "author": {"$ref": "#/$defs/author"},
+        "packaging": {"$ref": "#/$defs/packaging"},
+        "created_at": {"$ref": "#/$defs/nullableDateTime"},
+        "observed_at": {"$ref": "#/$defs/nullableDateTime"},
+        "url": {"$ref": "#/$defs/nullableUri"},
+        "language": {"type": "string", "minLength": 2},
+        "segments": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/segment"}},
+        "assets": {"type": "array", "items": {"$ref": "#/$defs/asset"}},
+        "community": {"$ref": "#/$defs/community"},
+        "interactions": {"type": "array", "items": {"$ref": "#/$defs/interaction"}},
+        "compliance": {"$ref": "#/$defs/compliance"},
+        "metrics": {"$ref": "#/$defs/metrics"},
+        "provenance": {"$ref": "#/$defs/itemProvenance"}
+      }
+    },
+    "inputFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "format", "sha256", "records"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "format": {"enum": ["json", "jsonl"]},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "records": {"type": "integer", "minimum": 0}
+      }
+    },
+    "corpusProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rights_basis", "source_label", "inputs", "normalized_at", "normalizer"],
+      "properties": {
+        "rights_basis": {"enum": ["public", "authorized"]},
+        "source_label": {"type": "string", "minLength": 1},
+        "inputs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/inputFile"}},
+        "normalized_at": {"type": "string", "format": "date-time"},
+        "normalizer": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "version"],
+          "properties": {"name": {"const": "normalize_media_corpus.py"}, "version": {"type": "string", "minLength": 1}}
+        }
+      }
+    },
+    "stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_records", "output_items", "duplicates_removed", "platforms", "formats", "sample_roles", "items_with_assets", "items_with_interactions", "items_with_metrics"],
+      "properties": {
+        "input_records": {"type": "integer", "minimum": 0},
+        "output_items": {"type": "integer", "minimum": 1},
+        "duplicates_removed": {"type": "integer", "minimum": 0},
+        "platforms": {"$ref": "#/$defs/countMap"},
+        "formats": {"$ref": "#/$defs/countMap"},
+        "sample_roles": {"$ref": "#/$defs/countMap"},
+        "items_with_assets": {"type": "integer", "minimum": 0},
+        "items_with_interactions": {"type": "integer", "minimum": 0},
+        "items_with_metrics": {"type": "integer", "minimum": 0}
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["warnings", "skipped_records", "duplicates_removed"],
+      "properties": {
+        "warnings": {"type": "array", "items": {"type": "string"}},
+        "skipped_records": {"type": "integer", "minimum": 0},
+        "duplicates_removed": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

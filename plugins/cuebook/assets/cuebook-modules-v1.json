@@ -1,0 +1,77 @@
+{
+  "schema_version": "cuebook-modules-v1",
+  "catalog_version": "1.26.0",
+  "default_module": "query",
+  "modules": [
+    {
+      "module_id": "query",
+      "label": "查询",
+      "description": "搜索、查看、比较和解释 Cuebook 数据，只产生可引用的只读结果。",
+      "entrypoint_skill": "query-cuebook",
+      "menu_ref": "./query-menu-v1.json",
+      "access": "read_only",
+      "may_invoke": [],
+      "skill_refs": [
+        "query-cuebook",
+        "collect-market-commentator-corpus",
+        "distill-market-commentator-profile",
+        "collect-market-media-corpus",
+        "distill-market-media-format",
+        "normalize-cuebook-creator-feed",
+        "validate-cuebook-projection",
+        "route-cuebook-narrative",
+        "build-market-research-pack",
+        "compute-cuebook-market-indicators",
+        "reconcile-market-content-history"
+      ]
+    },
+    {
+      "module_id": "create",
+      "label": "创作",
+      "description": "把用户的交易观点做成文字、图、结算协议和发布候选；缺数据时可调用查询。",
+      "entrypoint_skill": "create-cuebook-content",
+      "menu_ref": "./creation-menu-v1.json",
+      "access": "compose_with_authorized_writes",
+      "may_invoke": ["query"],
+      "skill_refs": [
+        "create-cuebook-content",
+        "compose-cuebook-content-recipe",
+        "select-cuebook-content-opportunities",
+        "compile-cuebook-market-view-semantics",
+        "compose-cuebook-trading-thesis",
+        "compile-cuebook-visual-argument",
+        "classify-cuebook-trading-logic",
+        "plan-cuebook-creator-expression",
+        "assemble-cuebook-viewpoint-data",
+        "direct-cuebook-viewpoint-visual",
+        "render-cuebook-viewpoint-visual",
+        "direct-cuebook-viewpoint-motion",
+        "render-cuebook-viewpoint-motion",
+        "render-cuebook-logic-card",
+        "render-cuebook-market-figure",
+        "render-cuebook-market-signal",
+        "plan-market-content-program",
+        "render-cuebook-market-post",
+        "assemble-cuebook-publish-candidates",
+        "compile-cuebook-settlement-claim",
+        "compile-cuebook-settlement-formula",
+        "render-cuebook-market-media",
+        "render-cuebook-thesis-chart",
+        "assemble-cuebook-viewpoint-card",
+        "optimize-cuebook-market-seo",
+        "optimize-cuebook-market-geo",
+        "prepare-market-content-release",
+        "orchestrate-cuebook-creator-workflow"
+      ]
+    }
+  ],
+  "routing_rules": {
+    "read_intents_route_to": "query",
+    "creation_intents_route_to": "create",
+    "ambiguous_intents_route_to": "query",
+    "query_deliverables": ["answer", "comparison", "source_bundle", "data_table", "factual_chart", "history_view"],
+    "create_deliverables": ["market_post", "creator_viewpoint_graphic", "settlement_protocol", "release_bundle", "publishing_candidates"],
+    "query_may_invoke_create": false,
+    "create_may_invoke_query": true
+  }
+}

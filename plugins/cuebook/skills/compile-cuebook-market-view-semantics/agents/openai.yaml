@@ -1,0 +1,4 @@
+interface:
+  display_name: "Compile Cuebook Market View Semantics"
+  short_description: "Compile source-faithful market viewpoint semantics"
+  default_prompt: "Use $compile-cuebook-market-view-semantics to compile this source material into a source-faithful MarketViewSemanticsV1 artifact."

@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.xyz/schemas/cuebook-query-bundle-v1.schema.json",
+  "title": "CuebookQueryBundleV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "module_id", "query_id", "state", "read_only", "query_type", "as_of", "request", "results", "source_register", "unavailable_capabilities", "creation_handoff", "quality_report"],
+  "properties": {
+    "schema_version": {"const": "cuebook-query-bundle-v1"},
+    "module_id": {"const": "query"},
+    "query_id": {"type": "string", "pattern": "^QRY_[A-Za-z0-9_-]+$"},
+    "state": {"enum": ["complete", "partial", "blocked"]},
+    "read_only": {"const": true},
+    "query_type": {"enum": ["latest_stories", "story_detail", "asset_narratives", "market_state", "market_evidence", "fundamentals", "market_series", "derived_metrics", "creator_feed", "settlement_binding", "settlement_history", "publication_history", "commentator_profile", "media_format", "mixed"]},
+    "as_of": {"type": "string", "format": "date-time"},
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw_text", "asset_refs", "time_range", "depth"],
+      "properties": {
+        "raw_text": {"type": "string", "minLength": 1},
+        "asset_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "time_range": {"type": ["string", "null"]},
+        "depth": {"enum": ["quick", "focused", "deep"]}
+      }
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["result_id", "kind", "title", "summary", "data_ref", "source_refs", "as_of", "status"],
+        "properties": {
+          "result_id": {"type": "string", "pattern": "^RES_[A-Za-z0-9_-]+$"},
+          "kind": {"enum": ["asset", "story", "narrative", "market_state", "evidence", "fundamental", "series", "metric", "feed", "settlement", "publication", "profile", "media_format", "analysis"]},
+          "title": {"type": "string", "minLength": 1},
+          "summary": {"type": ["string", "null"]},
+          "data_ref": {"type": ["string", "null"]},
+          "source_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^SRC_[A-Za-z0-9_-]+$"}},
+          "as_of": {"type": "string", "format": "date-time"},
+          "status": {"enum": ["available", "conditional", "unavailable"]}
+        }
+      }
+    },
+    "source_register": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_ref", "source_type", "locator", "published_at", "retrieved_at", "usage_rights"],
+        "properties": {
+          "source_ref": {"type": "string", "pattern": "^SRC_[A-Za-z0-9_-]+$"},
+          "source_type": {"enum": ["cuebook_story", "cuebook_narrative", "cuebook_market_state", "news", "issuer_release", "filing", "regulator", "exchange", "market_data", "calculation", "creator_record", "publication_receipt", "public_corpus"]},
+          "locator": {"type": "string", "minLength": 1},
+          "published_at": {"type": ["string", "null"], "format": "date-time"},
+          "retrieved_at": {"type": "string", "format": "date-time"},
+          "usage_rights": {"enum": ["display", "transform", "citation_only", "restricted"]}
+        }
+      }
+    },
+    "unavailable_capabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9_]+$"}},
+    "creation_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eligible", "subject_refs", "result_refs", "warnings"],
+      "properties": {
+        "eligible": {"type": "boolean"},
+        "subject_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "result_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^RES_[A-Za-z0-9_-]+$"}},
+        "warnings": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "quality_report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["warnings", "hard_failures"],
+      "properties": {
+        "warnings": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "hard_failures": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}

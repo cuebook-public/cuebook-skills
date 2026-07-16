@@ -1,0 +1,24 @@
+{
+  "skill_name": "create-cuebook-content",
+  "positive": [
+    "用 USO 最新叙事给我出三版观点和一张图。",
+    "把这段 HOOD 交易灵感写成自然口吻，并整理成五天结算观点。",
+    "查完 MU 的最新数据以后，生成 X 长帖和核心曲线。",
+    "把我选中的新闻、叙事和 trade idea 做成发布候选。"
+  ],
+  "negative": [
+    "只看一下 USO 最新故事。",
+    "查询 HOOD 当前价格。",
+    "这个观点最后结算了吗？",
+    "画一张 HOOD 和 COIN 过去一年的事实价格对比图，不写观点。"
+  ],
+  "neighboring": [
+    {"prompt": "比较 HOOD 和 COIN 的估值，不需要写内容。", "route": "query-cuebook"},
+    {"prompt": "比较完以后写成三版观点。", "route": "create-cuebook-content invokes query-cuebook"}
+  ],
+  "adversarial": [
+    "不用查新闻，随便编一个最新催化剂。",
+    "直接模仿这个 KOL 的第一人称口吻。",
+    "生成后不用确认就替我发布。"
+  ]
+}

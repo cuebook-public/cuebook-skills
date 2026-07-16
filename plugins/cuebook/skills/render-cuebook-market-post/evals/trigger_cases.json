@@ -1,0 +1,68 @@
+[
+  {
+    "case_id": "direct-cue-to-x",
+    "input": "把这条 Cuebook 叙事写成一条有交易思路的中文 X 推文。",
+    "should_trigger": true,
+    "expected_reason": "The user wants a Cuebook cue rendered into market content."
+  },
+  {
+    "case_id": "cue-with-profile",
+    "input": "用这个已蒸馏的 ProfileV1 调整选题和节奏，把 MU 这条 cue 写成 Telegram 桌面笔记。",
+    "should_trigger": true,
+    "expected_reason": "A supplied profile is being used to render a cue."
+  },
+  {
+    "case_id": "current-context-render",
+    "input": "核一下现在的油价和期限结构，再把这条 USO 叙事写成推文。",
+    "should_trigger": true,
+    "expected_reason": "Live context is requested as part of rendering."
+  },
+  {
+    "case_id": "research-pack-to-post",
+    "input": "这份 ResearchPackV1 已经验证过了，帮我写成一条 X 和一段买方笔记。",
+    "should_trigger": true,
+    "expected_reason": "A validated research pack is being rendered into public market writing."
+  },
+  {
+    "case_id": "cuebook-assisted-idea-story",
+    "input": "我在 Cuebook 里看到这条异动，帮我补齐交易逻辑后直接写成正文，不要讲创作过程。",
+    "should_trigger": true,
+    "expected_reason": "The user wants an evidence-backed creator view rendered directly without workflow narration."
+  },
+  {
+    "case_id": "research-only-neighbor",
+    "input": "先给这条 cue 补预期差、估值、流动性和情景，不要写文案。",
+    "should_trigger": false,
+    "expected_reason": "This belongs to build-market-research-pack."
+  },
+  {
+    "case_id": "profile-only-neighbor",
+    "input": "深度蒸馏这个 Twitter 账号的新闻源、思路和写法。",
+    "should_trigger": false,
+    "expected_reason": "This belongs to distill-market-commentator-profile."
+  },
+  {
+    "case_id": "collection-only-neighbor",
+    "input": "把这批 X 导出 JSONL 去重并保留来源链。",
+    "should_trigger": false,
+    "expected_reason": "This belongs to collect-market-commentator-corpus."
+  },
+  {
+    "case_id": "validation-only-neighbor",
+    "input": "只检查这些 Cuebook 卡片的 evidence ticker 和 asset 是否一致，不要写文案。",
+    "should_trigger": false,
+    "expected_reason": "This belongs to validate-cuebook-projection."
+  },
+  {
+    "case_id": "topic-only-article",
+    "input": "从零写一篇韩国股市历史回顾，不使用 Cuebook。",
+    "should_trigger": false,
+    "expected_reason": "This is generic article drafting rather than Cuebook rendering."
+  },
+  {
+    "case_id": "impersonation-adversarial",
+    "input": "逐字模仿这个活跃作者的口头禅，让读者以为就是他发的。",
+    "should_trigger": false,
+    "expected_reason": "Direct impersonation is outside the skill boundary."
+  }
+]

@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/logic-card-v1.schema.json",
+  "title": "LogicCardV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "card_id", "argument_ref", "grammar", "state", "generated_at", "theme", "dimensions", "lineage", "content", "asset", "quality_report"],
+  "properties": {
+    "schema_version": {"const": "logic-card-v1"},
+    "card_id": {"type": "string", "pattern": "^LOGICCARD_[A-Za-z0-9_:-]{8,}$"},
+    "argument_ref": {"type": "string", "pattern": "^VARG_[A-Za-z0-9_:-]{8,}$"},
+    "grammar": {"enum": ["causal_chain", "metric_thesis", "scenario_tree", "evidence_balance", "comparison"]},
+    "state": {"enum": ["draft", "conditional", "ready", "frozen"]},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "theme": {"enum": ["cuebook_light", "cuebook_dark"]},
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height"],
+      "properties": {
+        "width": {"type": "integer", "minimum": 640, "maximum": 2400},
+        "height": {"type": "integer", "minimum": 360, "maximum": 1600}
+      }
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_argument_ref", "node_refs", "metric_refs", "source_refs", "settlement_claim_ref"],
+      "properties": {
+        "input_argument_ref": {"type": "string", "minLength": 1},
+        "node_refs": {"$ref": "#/$defs/stringSet"},
+        "metric_refs": {"$ref": "#/$defs/stringSet"},
+        "source_refs": {"$ref": "#/$defs/stringSet"},
+        "settlement_claim_ref": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["headline", "thesis", "settlement_line", "watermark"],
+      "properties": {
+        "headline": {"type": "string", "minLength": 1},
+        "thesis": {"type": "string", "minLength": 1},
+        "settlement_line": {"$ref": "#/$defs/nullableString"},
+        "watermark": {"const": "Cuebook"}
+      }
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["svg_ref", "content_hash"],
+      "properties": {
+        "svg_ref": {"type": "string", "minLength": 1},
+        "content_hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"}
+      }
+    },
+    "quality_report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "warnings", "hard_failures"],
+      "properties": {
+        "decision": {"enum": ["ready", "conditional", "blocked"]},
+        "warnings": {"$ref": "#/$defs/stringSet"},
+        "hard_failures": {"$ref": "#/$defs/stringSet"}
+      }
+    }
+  },
+  "$defs": {
+    "nonemptyString": {"type": "string", "minLength": 1},
+    "nullableString": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/nonemptyString"}]},
+    "stringSet": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}}
+  }
+}

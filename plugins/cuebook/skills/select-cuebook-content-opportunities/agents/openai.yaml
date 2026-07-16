@@ -1,0 +1,4 @@
+interface:
+  display_name: "Select Cuebook Content Opportunities"
+  short_description: "Select evidence-ready creator opportunities"
+  default_prompt: "Select and prioritize evidence-ready content opportunities from CreatorFeedV1, applying any supplied ContentRecipeV1 ingredient constraints without drafting copy, promising engagement, or leaking private trade history."

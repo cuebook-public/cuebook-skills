@@ -1,0 +1,828 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/market-view-semantics-v1.schema.json",
+  "title": "MarketViewSemanticsV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "semantics_id",
+    "revision",
+    "state",
+    "lineage",
+    "speakers",
+    "current_creator_ref",
+    "source_units",
+    "source_completeness",
+    "subjects",
+    "claims",
+    "primary_claim_ref",
+    "causal_links",
+    "feedback_loops",
+    "posture",
+    "horizon",
+    "proprietary_signal",
+    "resolution",
+    "quality_report"
+  ],
+  "properties": {
+    "schema_version": {"const": "market-view-semantics-v1"},
+    "semantics_id": {
+      "type": "string",
+      "pattern": "^MVSEM_[A-Za-z0-9_:-]{8,}$"
+    },
+    "revision": {"type": "integer", "minimum": 1},
+    "state": {"enum": ["draft", "conditional", "ready", "frozen"]},
+    "lineage": {"$ref": "#/$defs/lineage"},
+    "speakers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/speaker"}
+    },
+    "current_creator_ref": {"$ref": "#/$defs/nullableString"},
+    "source_units": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/sourceUnit"}
+    },
+    "source_completeness": {"$ref": "#/$defs/sourceCompleteness"},
+    "subjects": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/subject"}
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/claim"}
+    },
+    "primary_claim_ref": {"$ref": "#/$defs/nonemptyString"},
+    "causal_links": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/causalLink"}
+    },
+    "feedback_loops": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/feedbackLoop"}
+    },
+    "posture": {"$ref": "#/$defs/posture"},
+    "horizon": {"$ref": "#/$defs/horizon"},
+    "proprietary_signal": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/proprietarySignal"}
+      ]
+    },
+    "resolution": {"$ref": "#/$defs/resolution"},
+    "quality_report": {"$ref": "#/$defs/qualityReport"}
+  },
+  "$defs": {
+    "nonemptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "nullableString": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/nonemptyString"}
+      ]
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "nullableDateTime": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/dateTime"}
+      ]
+    },
+    "stringList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonemptyString"}
+    },
+    "stringSet": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonemptyString"}
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_artifact_refs", "source_document_refs", "compiled_at"],
+      "properties": {
+        "input_artifact_refs": {"$ref": "#/$defs/stringSet"},
+        "source_document_refs": {"$ref": "#/$defs/stringSet"},
+        "compiled_at": {"$ref": "#/$defs/dateTime"}
+      }
+    },
+    "speaker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["speaker_id", "label", "role", "source_unit_refs"],
+      "properties": {
+        "speaker_id": {"$ref": "#/$defs/nonemptyString"},
+        "label": {"$ref": "#/$defs/nonemptyString"},
+        "role": {
+          "enum": [
+            "source_author",
+            "current_creator",
+            "quoted_witness",
+            "researcher",
+            "unknown"
+          ]
+        },
+        "source_unit_refs": {"$ref": "#/$defs/stringList"}
+      }
+    },
+    "sourceUnit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_unit_id",
+        "locator",
+        "role",
+        "primitive",
+        "speaker_ref",
+        "completeness",
+        "claim_refs",
+        "notes"
+      ],
+      "properties": {
+        "source_unit_id": {"$ref": "#/$defs/nonemptyString"},
+        "locator": {"$ref": "#/$defs/nonemptyString"},
+        "role": {
+          "enum": [
+            "primary_view",
+            "quoted_view",
+            "supporting_evidence",
+            "counterevidence",
+            "context",
+            "creator_instruction",
+            "methodology"
+          ]
+        },
+        "primitive": {
+          "enum": [
+            "official_event",
+            "market_data",
+            "flow_positioning",
+            "on_chain",
+            "social_sentiment",
+            "structural_thesis",
+            "sell_side_expectation",
+            "technical_structure",
+            "proprietary_factor",
+            "methodology",
+            "creator_input",
+            "unknown"
+          ]
+        },
+        "speaker_ref": {"$ref": "#/$defs/nullableString"},
+        "completeness": {
+          "enum": [
+            "complete",
+            "excerpted",
+            "truncated",
+            "summary_only",
+            "unavailable",
+            "unknown"
+          ]
+        },
+        "claim_refs": {"$ref": "#/$defs/stringSet"},
+        "notes": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "sourceCompleteness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["overall", "missing_context"],
+      "properties": {
+        "overall": {"enum": ["complete", "mixed", "incomplete", "unknown"]},
+        "missing_context": {"$ref": "#/$defs/stringList"}
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject_id",
+        "label",
+        "type",
+        "canonical_id",
+        "venue",
+        "source_unit_refs"
+      ],
+      "properties": {
+        "subject_id": {"$ref": "#/$defs/nonemptyString"},
+        "label": {"$ref": "#/$defs/nonemptyString"},
+        "type": {
+          "enum": [
+            "equity",
+            "index",
+            "crypto_asset",
+            "commodity",
+            "currency",
+            "fund",
+            "derivative",
+            "company",
+            "sector",
+            "venue",
+            "technology",
+            "policy",
+            "event",
+            "metric",
+            "signal",
+            "person",
+            "cohort",
+            "flow",
+            "market_state",
+            "geography",
+            "concept",
+            "other"
+          ]
+        },
+        "canonical_id": {"$ref": "#/$defs/nullableString"},
+        "venue": {"$ref": "#/$defs/nullableString"},
+        "source_unit_refs": {"$ref": "#/$defs/stringSet"}
+      }
+    },
+    "ownership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "origin_speaker_ref",
+        "creator_adoption",
+        "surface_voice"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "source_only",
+            "current_creator",
+            "adopted",
+            "shared",
+            "unattributed"
+          ]
+        },
+        "origin_speaker_ref": {"$ref": "#/$defs/nullableString"},
+        "creator_adoption": {
+          "enum": [
+            "none",
+            "reported",
+            "adopted",
+            "qualified",
+            "rejected",
+            "not_applicable"
+          ]
+        },
+        "surface_voice": {
+          "enum": [
+            "source_third_person",
+            "current_creator_first_person",
+            "quoted_first_person",
+            "neutral"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"mode": {"const": "source_only"}},
+            "required": ["mode"]
+          },
+          "then": {
+            "properties": {
+              "surface_voice": {
+                "not": {"const": "current_creator_first_person"}
+              }
+            }
+          }
+        }
+      ]
+    },
+    "evidenceScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["basis", "breadth", "subject_refs", "limitations"],
+      "properties": {
+        "basis": {
+          "enum": [
+            "direct_observation",
+            "official_record",
+            "market_data",
+            "firsthand_witness",
+            "reported_source",
+            "multi_source_synthesis",
+            "proprietary_model",
+            "inference",
+            "none"
+          ]
+        },
+        "breadth": {
+          "enum": [
+            "individual",
+            "cohort",
+            "instrument",
+            "venue",
+            "sector",
+            "cross_asset",
+            "market_wide",
+            "structural",
+            "unspecified"
+          ]
+        },
+        "subject_refs": {"$ref": "#/$defs/stringList"},
+        "limitations": {"$ref": "#/$defs/stringList"}
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_id",
+        "role",
+        "text",
+        "source_unit_refs",
+        "subject_refs",
+        "speech_act",
+        "rhetorical_move",
+        "ownership",
+        "certainty",
+        "evidence_scope"
+      ],
+      "properties": {
+        "claim_id": {"$ref": "#/$defs/nonemptyString"},
+        "role": {
+          "enum": [
+            "primary",
+            "supporting",
+            "caveat",
+            "counterclaim",
+            "trigger",
+            "resolution"
+          ]
+        },
+        "text": {"$ref": "#/$defs/nonemptyString"},
+        "source_unit_refs": {"$ref": "#/$defs/stringSet"},
+        "subject_refs": {"$ref": "#/$defs/stringSet"},
+        "speech_act": {
+          "enum": [
+            "market_observation",
+            "causal_explanation",
+            "forecast",
+            "trade_intent",
+            "trade_report",
+            "trade_recommendation",
+            "conditional_trade",
+            "risk_warning",
+            "sentiment_witness",
+            "category_reframe",
+            "valuation_judgment",
+            "question"
+          ]
+        },
+        "rhetorical_move": {
+          "enum": [
+            "bad_news_absorption",
+            "parallel_realities",
+            "category_reframing",
+            "headline_vs_price",
+            "policy_pivot",
+            "capitulation_testimony",
+            "event_crowding_unwind",
+            "feedback_loop_explainer",
+            "technical_meme_warning",
+            "expectation_reset",
+            "proprietary_factor_rotation",
+            "direct_observation",
+            "causal_chain",
+            "comparison",
+            "caveat",
+            "none"
+          ]
+        },
+        "ownership": {"$ref": "#/$defs/ownership"},
+        "certainty": {
+          "enum": ["certain", "likely", "possible", "speculative", "unspecified"]
+        },
+        "evidence_scope": {"$ref": "#/$defs/evidenceScope"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"speech_act": {"const": "sentiment_witness"}},
+            "required": ["speech_act"]
+          },
+          "then": {
+            "properties": {
+              "evidence_scope": {
+                "properties": {
+                  "breadth": {"enum": ["individual", "cohort"]}
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "causalLink": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "link_id",
+        "from_subject_ref",
+        "to_subject_ref",
+        "relation",
+        "claim_refs",
+        "certainty",
+        "loop_id"
+      ],
+      "properties": {
+        "link_id": {"$ref": "#/$defs/nonemptyString"},
+        "from_subject_ref": {"$ref": "#/$defs/nonemptyString"},
+        "to_subject_ref": {"$ref": "#/$defs/nonemptyString"},
+        "relation": {
+          "enum": [
+            "causes",
+            "amplifies",
+            "dampens",
+            "enables",
+            "triggers",
+            "constrains",
+            "signals",
+            "reprices",
+            "precedes",
+            "conditions"
+          ]
+        },
+        "claim_refs": {"$ref": "#/$defs/stringSet"},
+        "certainty": {
+          "enum": ["certain", "likely", "possible", "speculative", "unspecified"]
+        },
+        "loop_id": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "feedbackLoop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "loop_id",
+        "label",
+        "polarity",
+        "declaration",
+        "link_refs",
+        "claim_refs"
+      ],
+      "properties": {
+        "loop_id": {"$ref": "#/$defs/nonemptyString"},
+        "label": {"$ref": "#/$defs/nonemptyString"},
+        "polarity": {"enum": ["reinforcing", "balancing", "mixed", "unspecified"]},
+        "declaration": {"enum": ["explicit", "inferred"]},
+        "link_refs": {"$ref": "#/$defs/stringSet"},
+        "claim_refs": {"$ref": "#/$defs/stringSet"}
+      }
+    },
+    "tradeLeg": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subject_ref", "role", "direction"],
+      "properties": {
+        "subject_ref": {"$ref": "#/$defs/nonemptyString"},
+        "role": {"enum": ["primary", "comparator", "hedge", "from_leg", "to_leg"]},
+        "direction": {
+          "enum": [
+            "long",
+            "short",
+            "buy",
+            "sell",
+            "hold",
+            "avoid",
+            "exit",
+            "outperform",
+            "underperform",
+            "neutral"
+          ]
+        }
+      }
+    },
+    "posturePhase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "claim_refs",
+        "trigger_subject_refs",
+        "trade_legs",
+        "condition_text"
+      ],
+      "properties": {
+        "action": {
+          "enum": [
+            "long",
+            "short",
+            "outperform",
+            "underperform",
+            "rotate",
+            "buy_dips",
+            "sell_rallies",
+            "hold",
+            "avoid",
+            "wait",
+            "observe",
+            "exit",
+            "neutral"
+          ]
+        },
+        "claim_refs": {"$ref": "#/$defs/stringSet"},
+        "trigger_subject_refs": {"$ref": "#/$defs/stringList"},
+        "trade_legs": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/tradeLeg"}
+        },
+        "condition_text": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "nullablePosturePhase": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/posturePhase"}
+      ]
+    },
+    "posture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["explicitness", "past", "now", "on_condition"],
+      "properties": {
+        "explicitness": {"enum": ["none", "implicit", "explicit"]},
+        "past": {"$ref": "#/$defs/nullablePosturePhase"},
+        "now": {"$ref": "#/$defs/nullablePosturePhase"},
+        "on_condition": {"$ref": "#/$defs/nullablePosturePhase"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"explicitness": {"const": "none"}},
+            "required": ["explicitness"]
+          },
+          "then": {
+            "properties": {
+              "past": {"type": "null"},
+              "now": {"type": "null"},
+              "on_condition": {"type": "null"}
+            }
+          },
+          "else": {
+            "anyOf": [
+              {"properties": {"past": {"type": "object"}}},
+              {"properties": {"now": {"type": "object"}}},
+              {"properties": {"on_condition": {"type": "object"}}}
+            ]
+          }
+        }
+      ]
+    },
+    "duration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min", "max", "unit"],
+      "properties": {
+        "min": {"type": "number", "minimum": 0},
+        "max": {"type": "number", "minimum": 0},
+        "unit": {"enum": ["minutes", "hours", "days", "weeks", "months", "quarters", "years"]}
+      }
+    },
+    "horizon": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "precision",
+        "raw_text",
+        "start_at",
+        "end_at",
+        "duration",
+        "event_subject_ref"
+      ],
+      "properties": {
+        "kind": {"enum": ["unspecified", "instant", "window", "duration", "event_bound", "structural"]},
+        "precision": {"enum": ["none", "exact", "bounded", "approximate", "qualitative"]},
+        "raw_text": {"$ref": "#/$defs/nullableString"},
+        "start_at": {"$ref": "#/$defs/nullableDateTime"},
+        "end_at": {"$ref": "#/$defs/nullableDateTime"},
+        "duration": {
+          "anyOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/duration"}
+          ]
+        },
+        "event_subject_ref": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "formulaInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_id", "subject_ref", "role", "unit", "transformation"],
+      "properties": {
+        "input_id": {"$ref": "#/$defs/nonemptyString"},
+        "subject_ref": {"$ref": "#/$defs/nonemptyString"},
+        "role": {"enum": ["numerator", "denominator", "term", "weight", "filter"]},
+        "unit": {"$ref": "#/$defs/nonemptyString"},
+        "transformation": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "formula": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operator", "expression", "output_unit", "inputs"],
+      "properties": {
+        "operator": {"enum": ["ratio", "difference", "sum", "product", "weighted_composite", "custom"]},
+        "expression": {"$ref": "#/$defs/nonemptyString"},
+        "output_unit": {"$ref": "#/$defs/nonemptyString"},
+        "inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/formulaInput"}
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"operator": {"const": "ratio"}},
+            "required": ["operator"]
+          },
+          "then": {
+            "properties": {
+              "inputs": {
+                "allOf": [
+                  {"contains": {"properties": {"role": {"const": "numerator"}}, "required": ["role"]}},
+                  {"contains": {"properties": {"role": {"const": "denominator"}}, "required": ["role"]}}
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "proprietarySignal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "signal_subject_ref",
+        "name",
+        "replicability",
+        "formula",
+        "segmentation",
+        "source_unit_refs",
+        "claim_refs"
+      ],
+      "properties": {
+        "signal_subject_ref": {"$ref": "#/$defs/nonemptyString"},
+        "name": {"$ref": "#/$defs/nonemptyString"},
+        "replicability": {"enum": ["exact", "partial", "opaque"]},
+        "formula": {"$ref": "#/$defs/formula"},
+        "segmentation": {"$ref": "#/$defs/stringList"},
+        "source_unit_refs": {"$ref": "#/$defs/stringSet"},
+        "claim_refs": {"$ref": "#/$defs/stringSet"}
+      }
+    },
+    "resolutionCriterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "status", "claim_refs"],
+      "properties": {
+        "text": {"$ref": "#/$defs/nonemptyString"},
+        "status": {"enum": ["explicit", "inferred"]},
+        "claim_refs": {"$ref": "#/$defs/stringSet"}
+      }
+    },
+    "resolutionDeadline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw_text", "normalized_at", "status", "claim_refs"],
+      "properties": {
+        "raw_text": {"$ref": "#/$defs/nonemptyString"},
+        "normalized_at": {"$ref": "#/$defs/nullableDateTime"},
+        "status": {"enum": ["explicit", "inferred"]},
+        "claim_refs": {"$ref": "#/$defs/stringSet"}
+      }
+    },
+    "nullableResolutionCriterion": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/resolutionCriterion"}
+      ]
+    },
+    "nullableResolutionDeadline": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/resolutionDeadline"}
+      ]
+    },
+    "resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["explicitness", "criterion", "deadline"],
+      "properties": {
+        "explicitness": {"enum": ["none", "partial", "implicit", "explicit"]},
+        "criterion": {"$ref": "#/$defs/nullableResolutionCriterion"},
+        "deadline": {"$ref": "#/$defs/nullableResolutionDeadline"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"explicitness": {"const": "none"}},
+            "required": ["explicitness"]
+          },
+          "then": {
+            "properties": {
+              "criterion": {"type": "null"},
+              "deadline": {"type": "null"}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"explicitness": {"const": "partial"}},
+            "required": ["explicitness"]
+          },
+          "then": {
+            "oneOf": [
+              {
+                "properties": {
+                  "criterion": {"$ref": "#/$defs/resolutionCriterion"},
+                  "deadline": {"type": "null"}
+                }
+              },
+              {
+                "properties": {
+                  "criterion": {"type": "null"},
+                  "deadline": {"$ref": "#/$defs/resolutionDeadline"}
+                }
+              }
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {"explicitness": {"const": "implicit"}},
+            "required": ["explicitness"]
+          },
+          "then": {
+            "properties": {
+              "criterion": {"$ref": "#/$defs/resolutionCriterion"},
+              "deadline": {"$ref": "#/$defs/resolutionDeadline"}
+            },
+            "not": {
+              "properties": {
+                "criterion": {
+                  "properties": {"status": {"const": "explicit"}},
+                  "required": ["status"]
+                },
+                "deadline": {
+                  "properties": {"status": {"const": "explicit"}},
+                  "required": ["status"]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"explicitness": {"const": "explicit"}},
+            "required": ["explicitness"]
+          },
+          "then": {
+            "properties": {
+              "criterion": {
+                "allOf": [
+                  {"$ref": "#/$defs/resolutionCriterion"},
+                  {"properties": {"status": {"const": "explicit"}}}
+                ]
+              },
+              "deadline": {
+                "allOf": [
+                  {"$ref": "#/$defs/resolutionDeadline"},
+                  {"properties": {"status": {"const": "explicit"}}}
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "qualityReport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "warnings", "hard_failures"],
+      "properties": {
+        "decision": {"enum": ["ready", "conditional", "blocked"]},
+        "warnings": {"$ref": "#/$defs/stringList"},
+        "hard_failures": {"$ref": "#/$defs/stringList"}
+      }
+    }
+  }
+}

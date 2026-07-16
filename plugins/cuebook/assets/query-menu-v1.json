@@ -1,0 +1,31 @@
+{
+  "schema_version": "query-menu-v1",
+  "catalog_version": "1.26.0",
+  "module_id": "query",
+  "default_query": "latest_stories",
+  "queries": [
+    {"query_id": "latest_stories", "label": "最新故事", "description": "查看某个资产已发布的 Cuebook News Story 与来源。", "skill_refs": ["query-cuebook"], "mcp_tools": ["search_assets", "list_asset_stories", "get_story"], "availability": "available"},
+    {"query_id": "story_detail", "label": "故事详情", "description": "读取一条 News Story 的论点、来源和时间线。", "skill_refs": ["query-cuebook"], "mcp_tools": ["get_story"], "availability": "available"},
+    {"query_id": "asset_narratives", "label": "资产叙事", "description": "查看与 News Story 分离的 Cuebook 资产叙事库。", "skill_refs": ["query-cuebook"], "mcp_tools": ["search_assets", "list_asset_narratives"], "availability": "backend_required"},
+    {"query_id": "market_state", "label": "市场状态", "description": "查看当前价格、交易时段和快照时间。", "skill_refs": ["query-cuebook"], "mcp_tools": ["search_assets", "get_market_state"], "availability": "available"},
+    {"query_id": "market_evidence", "label": "新闻与证据", "description": "查新闻、公司公告、监管文件和独立报道。", "skill_refs": ["query-cuebook", "build-market-research-pack"], "mcp_tools": ["search_market_evidence"], "availability": "backend_required"},
+    {"query_id": "fundamentals", "label": "基本面与估值", "description": "按同一口径查看财务指标和估值比较。", "skill_refs": ["query-cuebook", "build-market-research-pack"], "mcp_tools": ["query_fundamental_metrics"], "availability": "backend_required"},
+    {"query_id": "market_series", "label": "价格与成交量", "description": "查看带封盘状态的 OHLCV 和相对表现序列。", "skill_refs": ["query-cuebook"], "mcp_tools": ["query_market_series"], "availability": "backend_required"},
+    {"query_id": "derived_metrics", "label": "指标与触发", "description": "计算可复现的技术、资金和复合触发指标。", "skill_refs": ["query-cuebook", "compute-cuebook-market-indicators"], "mcp_tools": ["query_market_series", "compute_market_metrics"], "availability": "backend_required"},
+    {"query_id": "creator_feed", "label": "我的 Cuebook 数据", "description": "查看新闻、日历、叙事、交易灵感和授权交易记录。", "skill_refs": ["query-cuebook", "normalize-cuebook-creator-feed"], "mcp_tools": ["get_creator_feed"], "availability": "backend_required"},
+    {"query_id": "settlement_binding", "label": "结算绑定", "description": "只读解析标的、快照、观察口径和可结算能力，不注册观点。", "skill_refs": ["query-cuebook"], "mcp_tools": ["resolve_settlement_binding"], "availability": "backend_required"},
+    {"query_id": "settlement_history", "label": "观点结算", "description": "查看冻结观点的观察值、公式分支和结算结果。", "skill_refs": ["query-cuebook", "reconcile-market-content-history"], "mcp_tools": ["get_settlement_outcome"], "availability": "backend_required"},
+    {"query_id": "publication_history", "label": "发布记录", "description": "核对真实发布回执、纠错和内容历史。", "skill_refs": ["query-cuebook", "reconcile-market-content-history"], "mcp_tools": ["get_publication_receipt"], "availability": "backend_required"},
+    {"query_id": "commentator_profile", "label": "账号研究", "description": "查看一个公开财经账号的来源、推理和表达模式。", "skill_refs": ["query-cuebook", "distill-market-commentator-profile"], "mcp_tools": [], "availability": "available"},
+    {"query_id": "media_format", "label": "媒介研究", "description": "查看文章、社区、图文和短视频的结构模式。", "skill_refs": ["query-cuebook", "distill-market-media-format"], "mcp_tools": [], "availability": "available"}
+  ],
+  "output_modes": [
+    {"output_id": "answer", "label": "简明回答"},
+    {"output_id": "comparison", "label": "对比表"},
+    {"output_id": "source_bundle", "label": "来源数据包"},
+    {"output_id": "data_table", "label": "数据表"},
+    {"output_id": "factual_chart", "label": "事实图表"},
+    {"output_id": "history_view", "label": "历史视图"},
+    {"output_id": "creation_handoff", "label": "交给创作"}
+  ]
+}

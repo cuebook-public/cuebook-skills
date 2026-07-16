@@ -1,0 +1,5 @@
+{
+  "schema_version": "media-format.v1",
+  "required_sections": ["target", "corpus_summary", "quality_gate", "unit_map", "sequence_map", "packaging_map", "evidence_map", "media_map", "interaction_map", "compliance_map", "policy_guard", "cuebook_bridge"],
+  "hard_boundaries": ["no generated posts", "no copied catchphrases", "no performance claim without comparable sample", "policy recheck before publish"]
+}

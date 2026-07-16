@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/viewpoint-motion-v1.schema.json",
+  "title": "ViewpointMotionV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "motion_id", "spec_ref", "state", "framework", "animation_library", "dimensions", "timebase", "duration_ms", "fps", "lineage", "asset", "accessibility", "quality_report"],
+  "properties": {
+    "schema_version": {"const": "viewpoint-motion-v1"},
+    "motion_id": {"type": "string", "pattern": "^VMOTION_[A-Za-z0-9_:-]{8,}$"},
+    "spec_ref": {"type": "string", "pattern": "^VMSPEC_[A-Za-z0-9_:-]{8,}$"},
+    "state": {"enum": ["draft", "ready", "frozen"]},
+    "framework": {"const": "react"},
+    "animation_library": {"const": "motion/react"},
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height", "compact_width", "compact_height"],
+      "properties": {
+        "width": {"const": 720},
+        "height": {"const": 420},
+        "compact_width": {"const": 360},
+        "compact_height": {"const": 210}
+      }
+    },
+    "timebase": {"const": "deterministic_ms"},
+    "duration_ms": {"type": "integer", "minimum": 2400, "maximum": 12000},
+    "fps": {"enum": [25, 30, 60]},
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_artifact_refs", "binding_refs", "selected_visual_direction_ref"],
+      "properties": {
+        "input_artifact_refs": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "string", "minLength": 3}},
+        "binding_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^BIND_"}},
+        "selected_visual_direction_ref": {"type": "string", "pattern": "^VDIR_"}
+      }
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["component", "poster", "keyframes", "videos"],
+      "properties": {
+        "component": {"$ref": "#/$defs/componentAsset"},
+        "poster": {"$ref": "#/$defs/pngAsset"},
+        "keyframes": {"type": "array", "minItems": 4, "maxItems": 7, "items": {"$ref": "#/$defs/keyframeAsset"}},
+        "videos": {"type": "array", "maxItems": 2, "items": {"$ref": "#/$defs/videoAsset"}}
+      }
+    },
+    "accessibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reduced_motion_verified", "autoplay_audio", "alt_text"],
+      "properties": {
+        "reduced_motion_verified": {"const": true},
+        "autoplay_audio": {"const": false},
+        "alt_text": {"type": "string", "minLength": 8, "maxLength": 400}
+      }
+    },
+    "quality_report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "first_frame", "decisive_frame", "final_frame", "compact_readability", "data_integrity", "console_errors", "hard_failures", "warnings"],
+      "properties": {
+        "decision": {"enum": ["ready", "conditional", "blocked"]},
+        "first_frame": {"enum": ["pass", "fail"]},
+        "decisive_frame": {"enum": ["pass", "fail"]},
+        "final_frame": {"enum": ["pass", "fail"]},
+        "compact_readability": {"enum": ["pass", "fail"]},
+        "data_integrity": {"enum": ["pass", "fail"]},
+        "console_errors": {"type": "integer", "minimum": 0},
+        "hard_failures": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 2}},
+        "warnings": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 2}}
+      }
+    }
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "componentAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "sha256"],
+      "properties": {"ref": {"type": "string", "pattern": "^[^/].*\\.tsx$"}, "sha256": {"$ref": "#/$defs/hash"}}
+    },
+    "pngAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "sha256"],
+      "properties": {"ref": {"type": "string", "pattern": "^[^/].*\\.png$"}, "sha256": {"$ref": "#/$defs/hash"}}
+    },
+    "keyframeAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["at_ms", "ref", "sha256"],
+      "properties": {"at_ms": {"type": "integer", "minimum": 0}, "ref": {"type": "string", "pattern": "^[^/].*\\.png$"}, "sha256": {"$ref": "#/$defs/hash"}}
+    },
+    "videoAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["format", "ref", "sha256"],
+      "properties": {
+        "format": {"enum": ["mp4", "webm"]},
+        "ref": {"type": "string", "pattern": "^[^/].*\\.(mp4|webm)$"},
+        "sha256": {"$ref": "#/$defs/hash"}
+      }
+    }
+  }
+}

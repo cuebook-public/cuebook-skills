@@ -1,0 +1,390 @@
+{
+  "schema_version": "skill-catalog-v1",
+  "catalog_id": "CAT_cuebook",
+  "catalog_version": "1.26.0",
+  "generated_at": "2026-07-16T16:30:00+08:00",
+  "default_locale": "zh-CN",
+  "categories": [
+    {"category_id": "category-library", "label": "风格库", "description": "收集和蒸馏账号与媒介规则。", "order": 1},
+    {"category_id": "category-intake", "label": "数据入口", "description": "归一化 Cuebook 数据并选择内容机会。", "order": 2},
+    {"category_id": "category-recipe", "label": "内容配方", "description": "保存用户选择、做法、口味与出餐配置。", "order": 3},
+    {"category_id": "category-evidence", "label": "证据检查", "description": "检查资产投射并选择分析路线。", "order": 4},
+    {"category_id": "category-research", "label": "研究编排", "description": "建立研究包并规划多渠道内容。", "order": 5},
+    {"category_id": "category-thesis", "label": "观点协议", "description": "把研究或最终内容编译成可验证、可结算、可追溯的交易观点。", "order": 6},
+    {"category_id": "category-rendering", "label": "内容制作", "description": "生成紧凑文字和多媒介内容包。", "order": 7},
+    {"category_id": "category-discovery", "label": "搜索发现", "description": "处理自有网页 SEO 与 GEO。", "order": 8},
+    {"category_id": "category-governance", "label": "审批交付", "description": "冻结内容、审批和发布交接。", "order": 9},
+    {"category_id": "category-history", "label": "历史复盘", "description": "核对发布、纠错、互动和交易记录。", "order": 10},
+    {"category_id": "category-orchestration", "label": "流程控制", "description": "生成 DAG、追踪工件和阻断状态。", "order": 11},
+    {"category_id": "category-modules", "label": "产品入口", "description": "查询与创作两个稳定入口，以及两者之间的单向调用边界。", "order": 12}
+  ],
+  "skills": [
+    {
+      "skill_id": "collect-market-commentator-corpus", "version": "1.0.0", "display_name": "Collect Commentator Corpus", "description": "Normalize an authorized public commentator corpus.",
+      "category_id": "category-library", "status": "stable", "visibility": "internal", "execution": "installed", "user_selectable": false, "default_enabled": false,
+      "capabilities": ["collect-commentator-corpus"], "input_contracts": ["AuthorizedExportV1", "PublicURLSet"], "output_contract": "CorpusV1", "requires_all": [], "supported_modes": ["library"], "supported_channels": ["all"],
+      "ui": {"surface": "internal", "group": "账号蒸馏", "order": 1, "control_type": "hidden", "icon": "database", "summary": "清洗授权账号样本。"},
+      "maintenance": {"owner": "cuebook-content", "stability": "stable", "last_verified_at": "2026-07-14T13:00:00+08:00", "skill_path": "collect-market-commentator-corpus", "schema_refs": ["collect-market-commentator-corpus/references/corpus-v1.schema.json"], "validator_refs": ["collect-market-commentator-corpus/scripts/normalize_corpus.py"], "test_refs": ["collect-market-commentator-corpus/tests/test_normalize_corpus.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "distill-market-commentator-profile", "version": "1.0.0", "display_name": "Distill Commentator Profile", "description": "Distill source, attention, reasoning, and expression rules from a corpus.",
+      "category_id": "category-library", "status": "stable", "visibility": "selectable", "execution": "installed", "user_selectable": true, "default_enabled": false,
+      "capabilities": ["distill-commentator-profile"], "input_contracts": ["CorpusV1"], "output_contract": "ProfileV1", "requires_all": ["collect-market-commentator-corpus"], "supported_modes": ["library"], "supported_channels": ["all"],
+      "ui": {"surface": "library", "group": "账号蒸馏", "order": 2, "control_type": "toggle", "icon": "user-round-search", "summary": "建立可复用的账号观察与表达规则。"},
+      "maintenance": {"owner": "cuebook-content", "stability": "stable", "last_verified_at": "2026-07-14T13:00:00+08:00", "skill_path": "distill-market-commentator-profile", "schema_refs": ["distill-market-commentator-profile/references/profile-v1.schema.json"], "validator_refs": ["distill-market-commentator-profile/scripts/distill_posts.py"], "test_refs": ["distill-market-commentator-profile/tests/test_distill_posts.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "collect-market-media-corpus", "version": "1.0.0", "display_name": "Collect Media Corpus", "description": "Normalize authorized article, community, carousel, and video samples.",
+      "category_id": "category-library", "status": "stable", "visibility": "internal", "execution": "installed", "user_selectable": false, "default_enabled": false,
+      "capabilities": ["collect-media-corpus"], "input_contracts": ["AuthorizedMediaExportV1", "PublicURLSet"], "output_contract": "MediaCorpusV1", "requires_all": [], "supported_modes": ["library"], "supported_channels": ["all"],
+      "ui": {"surface": "internal", "group": "媒介蒸馏", "order": 3, "control_type": "hidden", "icon": "library", "summary": "清洗授权媒介样本。"},
+      "maintenance": {"owner": "cuebook-content", "stability": "stable", "last_verified_at": "2026-07-14T13:00:00+08:00", "skill_path": "collect-market-media-corpus", "schema_refs": ["collect-market-media-corpus/references/media-corpus-v1.schema.json"], "validator_refs": ["collect-market-media-corpus/scripts/normalize_media_corpus.py"], "test_refs": ["collect-market-media-corpus/tests/test_normalize_media_corpus.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "distill-market-media-format", "version": "1.0.0", "display_name": "Distill Media Format", "description": "Distill reusable structural rules for articles, communities, carousels, and video.",
+      "category_id": "category-library", "status": "stable", "visibility": "selectable", "execution": "installed", "user_selectable": true, "default_enabled": false,
+      "capabilities": ["distill-media-format"], "input_contracts": ["MediaCorpusV1"], "output_contract": "MediaFormatV1", "requires_all": ["collect-market-media-corpus"], "supported_modes": ["library"], "supported_channels": ["all"],
+      "ui": {"surface": "library", "group": "媒介蒸馏", "order": 4, "control_type": "toggle", "icon": "panels-top-left", "summary": "建立平台结构、节奏和素材规则。"},
+      "maintenance": {"owner": "cuebook-content", "stability": "stable", "last_verified_at": "2026-07-14T13:00:00+08:00", "skill_path": "distill-market-media-format", "schema_refs": ["distill-market-media-format/references/media-format-v1.schema.json"], "validator_refs": ["distill-market-media-format/scripts/distill_media_format.py"], "test_refs": ["distill-market-media-format/tests/test_distill_media_format.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "normalize-cuebook-creator-feed", "version": "1.0.0", "display_name": "Normalize Cuebook Feed", "description": "Normalize five Cuebook domains with provenance, time, permission, and privacy guards.",
+      "category_id": "category-intake", "status": "stable", "visibility": "internal", "execution": "installed", "user_selectable": false, "default_enabled": true,
+      "capabilities": ["normalize-feed"], "input_contracts": ["CuebookSnapshotV1"], "output_contract": "CreatorFeedV1", "requires_all": [], "supported_modes": ["plan_only", "single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["all"],
+      "ui": {"surface": "internal", "group": "安全入口", "order": 5, "control_type": "hidden", "icon": "funnel", "summary": "冻结并清洗五类 Cuebook 数据。"},
+      "maintenance": {"owner": "cuebook-data", "stability": "stable", "last_verified_at": "2026-07-14T13:00:00+08:00", "skill_path": "normalize-cuebook-creator-feed", "schema_refs": ["normalize-cuebook-creator-feed/references/creator-feed-v1.schema.json"], "validator_refs": ["normalize-cuebook-creator-feed/scripts/validate_creator_feed.py"], "test_refs": ["normalize-cuebook-creator-feed/tests/test_validate_creator_feed.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "compose-cuebook-content-recipe", "version": "1.0.0", "display_name": "Compose Content Recipe", "description": "Resolve selected ingredients, analysis, voice, outputs, skills, and extensions into ContentRecipeV1.",
+      "category_id": "category-recipe", "status": "beta", "visibility": "automatic", "execution": "installed", "user_selectable": false, "default_enabled": true,
+      "capabilities": ["compose-content-recipe", "resolve-skill-selection"], "input_contracts": ["CreatorFeedV1", "ContentOpportunitySetV1", "SkillCatalogV1"], "output_contract": "ContentRecipeV1", "requires_all": ["normalize-cuebook-creator-feed"], "supported_modes": ["plan_only", "single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["all"],
+      "ui": {"surface": "creator", "group": "内容配方", "order": 6, "control_type": "hidden", "icon": "cooking-pot", "summary": "把选择保存成可复现的内容配方。"},
+      "maintenance": {"owner": "cuebook-creator", "stability": "beta", "last_verified_at": "2026-07-14T13:30:00+08:00", "skill_path": "compose-cuebook-content-recipe", "schema_refs": ["compose-cuebook-content-recipe/references/content-recipe-v1.schema.json", "compose-cuebook-content-recipe/references/skill-catalog-v1.schema.json"], "validator_refs": ["compose-cuebook-content-recipe/scripts/validate_content_recipe.py", "compose-cuebook-content-recipe/scripts/validate_skill_catalog.py"], "test_refs": ["compose-cuebook-content-recipe/tests/test_validate_content_recipe.py", "compose-cuebook-content-recipe/tests/test_validate_skill_catalog.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "select-cuebook-content-opportunities", "version": "1.0.0", "display_name": "Select Content Opportunities", "description": "Deduplicate, gate, classify, and prioritize content opportunities.",
+      "category_id": "category-intake", "status": "stable", "visibility": "automatic", "execution": "installed", "user_selectable": false, "default_enabled": true,
+      "capabilities": ["select-opportunities"], "input_contracts": ["CreatorFeedV1", "ContentRecipeV1"], "output_contract": "ContentOpportunitySetV1", "requires_all": ["normalize-cuebook-creator-feed"], "supported_modes": ["plan_only", "single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["all"],
+      "ui": {"surface": "creator", "group": "自动选题", "order": 7, "control_type": "hidden", "icon": "list-filter", "summary": "合并重复材料并确定可研究主题。"},
+      "maintenance": {"owner": "cuebook-editorial", "stability": "stable", "last_verified_at": "2026-07-14T13:00:00+08:00", "skill_path": "select-cuebook-content-opportunities", "schema_refs": ["select-cuebook-content-opportunities/references/content-opportunity-set-v1.schema.json"], "validator_refs": ["select-cuebook-content-opportunities/scripts/validate_content_opportunities.py"], "test_refs": ["select-cuebook-content-opportunities/tests/test_validate_content_opportunities.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "validate-cuebook-projection", "version": "1.0.0", "display_name": "Validate Cuebook Projection", "description": "Validate source, asset, direction, directness, and freshness before research.",
+      "category_id": "category-evidence", "status": "stable", "visibility": "internal", "execution": "installed", "user_selectable": false, "default_enabled": true,
+      "capabilities": ["validate-projection"], "input_contracts": ["CreatorFeedV1", "ContentOpportunitySetV1"], "output_contract": "GateV1", "requires_all": ["select-cuebook-content-opportunities"], "supported_modes": ["plan_only", "single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["all"],
+      "ui": {"surface": "internal", "group": "证据硬门", "order": 8, "control_type": "hidden", "icon": "shield-check", "summary": "阻止资产、方向和代理链错配。"},
+      "maintenance": {"owner": "cuebook-research", "stability": "stable", "last_verified_at": "2026-07-14T13:00:00+08:00", "skill_path": "validate-cuebook-projection", "schema_refs": ["validate-cuebook-projection/references/gate-v1.schema.json"], "validator_refs": ["validate-cuebook-projection/scripts/validate_projection.py"], "test_refs": ["validate-cuebook-projection/scripts/test_validate_projection.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "route-cuebook-narrative", "version": "1.0.0", "display_name": "Route Cuebook Narrative", "description": "Classify event type, confidence, reasoning lenses, render shape, and abstention.",
+      "category_id": "category-evidence", "status": "stable", "visibility": "internal", "execution": "installed", "user_selectable": false, "default_enabled": true,
+      "capabilities": ["route-narrative"], "input_contracts": ["GateV1", "CreatorFeedV1"], "output_contract": "RouteV1", "requires_all": ["validate-cuebook-projection"], "supported_modes": ["plan_only", "single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["all"],
+      "ui": {"surface": "internal", "group": "分析路由", "order": 9, "control_type": "hidden", "icon": "route", "summary": "选择分析路径并保留 abstention。"},
+      "maintenance": {"owner": "cuebook-research", "stability": "stable", "last_verified_at": "2026-07-14T13:00:00+08:00", "skill_path": "route-cuebook-narrative", "schema_refs": ["route-cuebook-narrative/references/route-v1.schema.json"], "validator_refs": ["route-cuebook-narrative/scripts/route_narrative.py"], "test_refs": ["route-cuebook-narrative/scripts/test_route_narrative.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "build-market-research-pack", "version": "1.1.0", "display_name": "Build Market Research Pack", "description": "Compile explicit creator support requests, then retrieve linked news, basis-compatible metrics, comparators, market context, countercase, and invalidation.",
+      "category_id": "category-research", "status": "stable", "visibility": "automatic", "execution": "installed", "user_selectable": false, "default_enabled": true,
+      "capabilities": ["build-research-pack"], "input_contracts": ["ContentOpportunitySetV1", "GateV1", "RouteV1"], "output_contract": "ResearchPackV1", "requires_all": ["validate-cuebook-projection", "route-cuebook-narrative"], "supported_modes": ["single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["all"],
+      "ui": {"surface": "query", "group": "查询研究", "order": 10, "control_type": "hidden", "icon": "search-check", "summary": "把新闻、PR、估值和比较项逐项查齐并校准口径。"},
+      "maintenance": {"owner": "cuebook-research", "stability": "stable", "last_verified_at": "2026-07-15T16:49:09+08:00", "skill_path": "build-market-research-pack", "schema_refs": ["build-market-research-pack/references/research-pack-v1.schema.json"], "validator_refs": ["build-market-research-pack/scripts/validate_research_pack.py"], "test_refs": ["build-market-research-pack/tests/test_validate_research_pack.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "compile-cuebook-market-view-semantics", "version": "1.0.0", "display_name": "Compile Market View Semantics", "description": "Compile research or creator source material into source-faithful market-view meaning, ownership, posture, horizon, and resolution semantics.",
+      "category_id": "category-thesis", "status": "beta", "visibility": "automatic", "execution": "installed", "user_selectable": false, "default_enabled": true,
+      "capabilities": ["compile-market-view-semantics"], "input_contracts": ["ResearchPackV1", "CreatorViewIntentV1", "CorpusV1", "PostV1", "FinalizedMarketContent"], "output_contract": "MarketViewSemanticsV1", "requires_all": [], "supported_modes": ["single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["all"],
+      "ui": {"surface": "creator", "group": "观点协议", "order": 29, "control_type": "hidden", "icon": "braces", "summary": "保留来源角色、观点归属、交易意图和结算明确度。"},
+      "maintenance": {"owner": "cuebook-thesis", "stability": "beta", "last_verified_at": "2026-07-14T23:29:00+08:00", "skill_path": "compile-cuebook-market-view-semantics", "schema_refs": ["compile-cuebook-market-view-semantics/references/market-view-semantics-v1.schema.json"], "validator_refs": ["compile-cuebook-market-view-semantics/scripts/validate_market_view_semantics.py"], "test_refs": ["compile-cuebook-market-view-semantics/tests/test_validate_market_view_semantics.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "compose-cuebook-trading-thesis", "version": "1.0.0", "display_name": "Compose Trading Thesis", "description": "Freeze Cuebook reasoning into a versioned, evidence-linked, resolvable trading thesis.",
+      "category_id": "category-thesis", "status": "beta", "visibility": "selectable", "execution": "installed", "user_selectable": true, "default_enabled": false,
+      "capabilities": ["compose-trading-thesis"], "input_contracts": ["MarketViewSemanticsV1", "CreatorViewIntentV1", "ResearchPackV1", "CreatorFeedV1", "ContentOpportunitySetV1", "GateV1", "RouteV1"], "output_contract": "TradingThesisV1", "requires_all": ["compile-cuebook-market-view-semantics"], "supported_modes": ["single", "batch", "event_lifecycle"], "supported_channels": ["all"],
+      "ui": {"surface": "creator", "group": "观点协议", "order": 11, "control_type": "toggle", "icon": "file-lock-2", "summary": "冻结可验证、可结算的交易观点。"},
+      "maintenance": {"owner": "cuebook-thesis", "stability": "beta", "last_verified_at": "2026-07-14T16:00:00+08:00", "skill_path": "compose-cuebook-trading-thesis", "schema_refs": ["compose-cuebook-trading-thesis/references/trading-thesis-v1.schema.json"], "validator_refs": ["compose-cuebook-trading-thesis/scripts/validate_trading_thesis.py"], "test_refs": ["compose-cuebook-trading-thesis/tests/test_validate_trading_thesis.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "compile-cuebook-visual-argument", "version": "1.0.1", "display_name": "Compile Visual Argument", "description": "Compile creator text or a selected commentator corpus item with verified evidence, mechanisms, countercases, metrics, scenarios, and settlement into one reusable visual argument graph.",
+      "category_id": "category-thesis", "status": "beta", "visibility": "automatic", "execution": "installed", "user_selectable": false, "default_enabled": false,
+      "capabilities": ["compile-visual-argument"], "input_contracts": ["MarketViewSemanticsV1", "CreatorExpressionPlanV1", "ViewpointDataBundleV1", "CorpusV1", "PostV1", "TradingThesisV1", "ResearchPackV1", "SettlementClaimV1"], "output_contract": "VisualArgumentV1", "requires_all": ["plan-cuebook-creator-expression"], "supported_modes": ["single", "batch", "event_lifecycle"], "supported_channels": ["all"],
+      "ui": {"surface": "creator", "group": "观点图", "order": 12, "control_type": "hidden", "icon": "git-branch", "summary": "把叙事编译成可复用的事件、机制、反例与结算图谱。"},
+      "maintenance": {"owner": "cuebook-thesis", "stability": "beta", "last_verified_at": "2026-07-14T17:46:21+08:00", "skill_path": "compile-cuebook-visual-argument", "schema_refs": ["compile-cuebook-visual-argument/references/visual-argument-v1.schema.json"], "validator_refs": ["compile-cuebook-visual-argument/scripts/validate_visual_argument.py"], "test_refs": ["compile-cuebook-visual-argument/tests/test_validate_visual_argument.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "classify-cuebook-trading-logic", "version": "1.0.0", "display_name": "Classify Trading Logic", "description": "Expose the implicit trade inside a creator viewpoint as a reusable strategy family, catalyst, price mechanism, expression, horizon, edge, action line, reason line, and public tags while keeping evidence state private.",
+      "category_id": "category-thesis", "status": "beta", "visibility": "automatic", "execution": "installed", "user_selectable": false, "default_enabled": false,
+      "capabilities": ["classify-trading-logic"], "input_contracts": ["MarketViewSemanticsV1", "CreatorViewIntentV1", "TradingThesisV1", "VisualArgumentV1", "PostV1", "ResearchPackV1"], "output_contract": "TradeLogicProfileV1", "requires_all": ["compile-cuebook-market-view-semantics"], "supported_modes": ["single", "batch", "event_lifecycle"], "supported_channels": ["all"],
+      "ui": {"surface": "creator", "group": "观点协议", "order": 28, "control_type": "hidden", "icon": "tags", "summary": "自动识别事件驱动、传导机制、交易表达和时间窗口。"},
+      "maintenance": {"owner": "cuebook-thesis", "stability": "beta", "last_verified_at": "2026-07-14T22:40:00+08:00", "skill_path": "classify-cuebook-trading-logic", "schema_refs": ["classify-cuebook-trading-logic/references/trade-logic-profile-v1.schema.json"], "validator_refs": ["classify-cuebook-trading-logic/scripts/validate_trade_logic.py"], "test_refs": ["classify-cuebook-trading-logic/tests/test_trade_logic.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "plan-cuebook-creator-expression", "version": "1.2.0", "display_name": "Plan Creator Expression", "description": "Lock market meaning, authorship, three visual reader jobs, evidence shapes, exact Query tool bindings, Skill path, renderer route, and hashes into one shared expression plan.",
+      "category_id": "category-thesis", "status": "beta", "visibility": "automatic", "execution": "installed", "user_selectable": false, "default_enabled": true,
+      "capabilities": ["plan-creator-expression"], "input_contracts": ["MarketViewSemanticsV1", "ResearchPackV1", "TradingThesisV1", "TradeLogicProfileV1", "ProfileV1"], "output_contract": "CreatorExpressionPlanV1", "requires_all": ["compile-cuebook-market-view-semantics"], "supported_modes": ["single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["all"],
+      "ui": {"surface": "creator", "group": "观点协议", "order": 30, "control_type": "hidden", "icon": "waypoints", "summary": "锁定含义、作者身份，以及必须补齐的新闻、数字和结算数据。"},
+      "maintenance": {"owner": "cuebook-creator", "stability": "beta", "last_verified_at": "2026-07-16T16:30:00+08:00", "skill_path": "plan-cuebook-creator-expression", "schema_refs": ["plan-cuebook-creator-expression/references/creator-expression-plan-v1.schema.json", "plan-cuebook-creator-expression/references/visual-intent-route-registry-v1.json"], "validator_refs": ["plan-cuebook-creator-expression/scripts/validate_creator_expression_plan.py"], "test_refs": ["plan-cuebook-creator-expression/tests/test_validate_creator_expression_plan.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "assemble-cuebook-viewpoint-data", "version": "1.5.0", "display_name": "Assemble Viewpoint Data", "description": "Resolve intent-routed, source-linked market primitives and typed evidence objects while preserving exact Query tool provenance, evidence shape, route hash, and optional-only fallback.",
+      "category_id": "category-research", "status": "beta", "visibility": "automatic", "execution": "installed", "user_selectable": false, "default_enabled": false,
+      "capabilities": ["assemble-viewpoint-data"], "input_contracts": ["CreatorExpressionPlanV1", "CuebookQueryBundleV1", "ResearchPackV1", "MarketSeriesV1", "MarketSeriesBatchV1", "IndicatorPackV1"], "output_contract": "ViewpointDataBundleV1", "requires_all": ["plan-cuebook-creator-expression"], "supported_modes": ["single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["all"],
+      "ui": {"surface": "creator", "group": "研究", "order": 31, "control_type": "hidden", "icon": "database-zap", "summary": "装配曲线、新闻簇、分布、扇形、资金流与收益结构；数据不够就不画。"},
+      "maintenance": {"owner": "cuebook-market-data", "stability": "beta", "last_verified_at": "2026-07-16T16:30:00+08:00", "skill_path": "assemble-cuebook-viewpoint-data", "schema_refs": ["assemble-cuebook-viewpoint-data/references/viewpoint-data-bundle-v1.schema.json"], "validator_refs": ["assemble-cuebook-viewpoint-data/scripts/validate_viewpoint_data_bundle.py"], "test_refs": ["assemble-cuebook-viewpoint-data/tests/test_validate_viewpoint_data_bundle.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "direct-cuebook-viewpoint-visual", "version": "2.5.0", "display_name": "Compose Viewpoint Expression", "description": "Execute locked fast-read, proof, and system jobs as structurally distinct HTML-native candidates using only their routed evidence shapes and data-gated financial grammars.",
+      "category_id": "category-rendering", "status": "beta", "visibility": "automatic", "execution": "installed", "user_selectable": false, "default_enabled": true,
+      "capabilities": ["direct-viewpoint-visual"], "input_contracts": ["CreatorExpressionPlanV1", "ViewpointDataBundleV1", "VisualArgumentV1", "MarketViewSemanticsV1", "ProfileV1", "ContentHistoryLedgerV1"], "output_contract": "VisualDirectionSetV1", "requires_all": ["plan-cuebook-creator-expression", "assemble-cuebook-viewpoint-data"], "supported_modes": ["single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["all"],
+      "ui": {"surface": "creator", "group": "观点排版", "order": 33, "control_type": "hidden", "icon": "gallery-horizontal-end", "summary": "同一交易逻辑生成快速判断、证据证明、系统演绎三种阅读入口，并按数据形态组合新闻、曲线、分布、情景、资金流与策略。"},
+      "maintenance": {"owner": "cuebook-creator", "stability": "beta", "last_verified_at": "2026-07-16T16:30:00+08:00", "skill_path": "direct-cuebook-viewpoint-visual", "schema_refs": ["direct-cuebook-viewpoint-visual/references/visual-direction-set-v1.schema.json", "direct-cuebook-viewpoint-visual/references/viewpoint-expression-registry-v1.json"], "validator_refs": ["direct-cuebook-viewpoint-visual/scripts/validate_visual_direction_set.py", "direct-cuebook-viewpoint-visual/scripts/lint_launch_viewpoint_html.py", "direct-cuebook-viewpoint-visual/scripts/audit_rendered_viewpoint.cjs", "direct-cuebook-viewpoint-visual/scripts/select_creator_palette.py", "direct-cuebook-viewpoint-visual/scripts/stamp_cuebook_wordmark.py", "direct-cuebook-viewpoint-visual/scripts/capture_html_viewpoint.cjs", "direct-cuebook-viewpoint-visual/scripts/capture_html_viewpoints_batch.cjs"], "test_refs": ["direct-cuebook-viewpoint-visual/tests/test_validate_visual_direction_set.py", "direct-cuebook-viewpoint-visual/tests/test_audit_rendered_viewpoint.py", "direct-cuebook-viewpoint-visual/tests/test_capture_html_viewpoint.py", "direct-cuebook-viewpoint-visual/tests/test_lint_launch_viewpoint_html.py", "direct-cuebook-viewpoint-visual/tests/test_select_creator_palette.py", "direct-cuebook-viewpoint-visual/tests/test_stamp_cuebook_wordmark.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "render-cuebook-viewpoint-visual", "version": "1.6.0", "display_name": "Finalize Static Viewpoint", "description": "Deterministically freeze the selected HTML-native layout, source bindings, palette, argument pattern, and nonblank raster hashes into an exact 2680 x 1056 Cuebook publication image plus 670 x 264 preview; retain 720 x 420 SVG only for legacy compatibility.",
+      "category_id": "category-rendering", "status": "beta", "visibility": "selectable", "execution": "installed", "user_selectable": true, "default_enabled": false,
+      "capabilities": ["render-viewpoint-visual"], "input_contracts": ["CreatorExpressionPlanV1", "ViewpointDataBundleV1", "VisualDirectionSetV1", "ViewpointVisualSpecV1"], "output_contract": "ViewpointVisualV1", "requires_all": ["plan-cuebook-creator-expression", "assemble-cuebook-viewpoint-data", "direct-cuebook-viewpoint-visual"], "supported_modes": ["single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["all"],
+      "ui": {"surface": "creator", "group": "观点排版", "order": 32, "control_type": "toggle", "icon": "image", "summary": "选择或混合三套排版，并冻结为最终静态观点图。"},
+      "maintenance": {"owner": "cuebook-creator", "stability": "beta", "last_verified_at": "2026-07-15T15:36:00+08:00", "skill_path": "render-cuebook-viewpoint-visual", "schema_refs": ["render-cuebook-viewpoint-visual/references/viewpoint-visual-spec-v1.schema.json", "render-cuebook-viewpoint-visual/references/viewpoint-visual-v1.schema.json"], "validator_refs": ["render-cuebook-viewpoint-visual/scripts/validate_viewpoint_visual.py", "render-cuebook-viewpoint-visual/scripts/finalize_wide_viewpoint.py", "render-cuebook-viewpoint-visual/scripts/render_viewpoint_visual.py"], "test_refs": ["render-cuebook-viewpoint-visual/tests/test_viewpoint_visual.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "direct-cuebook-viewpoint-motion", "version": "1.0.0", "display_name": "Direct Viewpoint Motion", "description": "Deferred motion-direction capability retained outside the current static creator workflow.",
+      "category_id": "category-rendering", "status": "disabled", "visibility": "internal", "execution": "deferred", "user_selectable": false, "default_enabled": false,
+      "capabilities": ["direct-viewpoint-motion"], "input_contracts": ["CreatorExpressionPlanV1", "ViewpointDataBundleV1", "VisualDirectionSetV1", "ViewpointVisualV1"], "output_contract": "ViewpointMotionSpecV1", "requires_all": ["render-cuebook-viewpoint-visual"], "supported_modes": ["single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["all"],
+      "ui": {"surface": "internal", "group": "暂存能力", "order": 34, "control_type": "hidden", "icon": "clapperboard", "summary": "动画方向暂存；当前创作流程只生成静态观点图。"},
+      "maintenance": {"owner": "cuebook-creator", "stability": "beta", "last_verified_at": "2026-07-15T19:30:00+08:00", "skill_path": "direct-cuebook-viewpoint-motion", "schema_refs": ["direct-cuebook-viewpoint-motion/references/viewpoint-motion-spec-v1.schema.json"], "validator_refs": ["direct-cuebook-viewpoint-motion/scripts/validate_viewpoint_motion_spec.py"], "test_refs": ["direct-cuebook-viewpoint-motion/tests/test_validate_viewpoint_motion_spec.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "render-cuebook-viewpoint-motion", "version": "1.0.0", "display_name": "Render Viewpoint Motion", "description": "Deferred motion-rendering capability retained outside the current static creator workflow.",
+      "category_id": "category-rendering", "status": "disabled", "visibility": "internal", "execution": "deferred", "user_selectable": false, "default_enabled": false,
+      "capabilities": ["render-viewpoint-motion"], "input_contracts": ["ViewpointMotionSpecV1", "VisualDirectionSetV1", "ViewpointVisualV1", "ViewpointDataBundleV1"], "output_contract": "ViewpointMotionV1", "requires_all": ["direct-cuebook-viewpoint-motion"], "supported_modes": ["single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["all"],
+      "ui": {"surface": "internal", "group": "暂存能力", "order": 35, "control_type": "hidden", "icon": "circle-play", "summary": "动画渲染暂存；当前版本不出现在创作者前端。"},
+      "maintenance": {"owner": "cuebook-creator", "stability": "beta", "last_verified_at": "2026-07-15T19:30:00+08:00", "skill_path": "render-cuebook-viewpoint-motion", "schema_refs": ["render-cuebook-viewpoint-motion/references/viewpoint-motion-v1.schema.json"], "validator_refs": ["render-cuebook-viewpoint-motion/scripts/validate_viewpoint_motion.py", "render-cuebook-viewpoint-motion/scripts/capture_motion_keyframes.cjs"], "test_refs": ["render-cuebook-viewpoint-motion/tests/test_validate_viewpoint_motion.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "render-cuebook-logic-card", "version": "1.0.1", "display_name": "Render Viewpoint Logic", "description": "Internal compatibility renderer for legacy causal-chain, metric-thesis, scenario-tree, evidence-balance, and comparison cards.",
+      "category_id": "category-rendering", "status": "beta", "visibility": "internal", "execution": "installed", "user_selectable": false, "default_enabled": false,
+      "capabilities": ["render-viewpoint-logic"], "input_contracts": ["VisualArgumentV1"], "output_contract": "LogicCardV1", "requires_all": ["compile-cuebook-visual-argument"], "supported_modes": ["single", "batch", "event_lifecycle"], "supported_channels": ["all"],
+      "ui": {"surface": "internal", "group": "兼容渲染", "order": 13, "control_type": "hidden", "icon": "workflow", "summary": "为旧版逻辑卡调用保留兼容输出。"},
+      "maintenance": {"owner": "cuebook-creator", "stability": "beta", "last_verified_at": "2026-07-14T23:29:00+08:00", "skill_path": "render-cuebook-logic-card", "schema_refs": ["render-cuebook-logic-card/references/logic-card-v1.schema.json"], "validator_refs": ["render-cuebook-logic-card/scripts/validate_logic_card.py"], "test_refs": ["render-cuebook-logic-card/tests/test_logic_card.py"]}, "replaced_by": "render-cuebook-viewpoint-visual"
+    },
+    {
+      "skill_id": "render-cuebook-market-figure", "version": "1.7.0", "display_name": "Render Market Figure", "description": "Internal compatibility renderer for legacy data-led Feed figures.",
+      "category_id": "category-rendering", "status": "beta", "visibility": "internal", "execution": "installed", "user_selectable": false, "default_enabled": false,
+      "capabilities": ["render-market-figure"], "input_contracts": ["TradeLogicProfileV1", "VisualArgumentV1", "ResearchPackV1", "ThesisChartV1", "ThesisChartDataV1", "IndicatorPackV1", "MarketSeriesBatchV1", "SettlementClaimV1"], "output_contract": "MarketFigureV1", "requires_all": ["classify-cuebook-trading-logic"], "supported_modes": ["single", "batch", "event_lifecycle"], "supported_channels": ["all"],
+      "ui": {"surface": "internal", "group": "兼容渲染", "order": 14, "control_type": "hidden", "icon": "chart-spline", "summary": "为旧版市场图调用保留兼容输出。"},
+      "maintenance": {"owner": "cuebook-market-data", "stability": "beta", "last_verified_at": "2026-07-14T23:29:00+08:00", "skill_path": "render-cuebook-market-figure", "schema_refs": ["render-cuebook-market-figure/references/market-figure-spec-v1.schema.json", "render-cuebook-market-figure/references/market-figure-v1.schema.json"], "validator_refs": ["render-cuebook-market-figure/scripts/validate_market_figure.py"], "test_refs": ["render-cuebook-market-figure/tests/test_market_figure.py"]}, "replaced_by": "render-cuebook-viewpoint-visual"
+    },
+    {
+      "skill_id": "render-cuebook-market-signal", "version": "1.1.0", "display_name": "Render Market Signal", "description": "Internal compatibility renderer for legacy single-signal Feed cards.",
+      "category_id": "category-rendering", "status": "beta", "visibility": "internal", "execution": "installed", "user_selectable": false, "default_enabled": false,
+      "capabilities": ["render-market-signal"], "input_contracts": ["TradeLogicProfileV1", "CreatorFeedV1", "ResearchPackV1", "TradingThesisV1", "MarketSignalSpecV1"], "output_contract": "MarketSignalV1", "requires_all": ["classify-cuebook-trading-logic"], "supported_modes": ["single", "batch", "event_lifecycle"], "supported_channels": ["all"],
+      "ui": {"surface": "internal", "group": "兼容渲染", "order": 27, "control_type": "hidden", "icon": "scan-line", "summary": "为旧版市场信号调用保留兼容输出。"},
+      "maintenance": {"owner": "cuebook-creator", "stability": "beta", "last_verified_at": "2026-07-14T23:29:00+08:00", "skill_path": "render-cuebook-market-signal", "schema_refs": ["render-cuebook-market-signal/references/market-signal-spec-v1.schema.json", "render-cuebook-market-signal/references/market-signal-v1.schema.json"], "validator_refs": ["render-cuebook-market-signal/scripts/validate_market_signal.py"], "test_refs": ["render-cuebook-market-signal/tests/test_market_signal.py"]}, "replaced_by": "render-cuebook-viewpoint-visual"
+    },
+    {
+      "skill_id": "plan-market-content-program", "version": "1.0.0", "display_name": "Plan Content Program", "description": "Plan series, event lifecycles, master content, derivatives, and dependencies.",
+      "category_id": "category-research", "status": "stable", "visibility": "selectable", "execution": "installed", "user_selectable": true, "default_enabled": false,
+      "capabilities": ["plan-content-program"], "input_contracts": ["ResearchPackV1", "TradingThesisV1", "ContentRecipeV1"], "output_contract": "ContentProgramV1", "requires_all": ["build-market-research-pack"], "supported_modes": ["single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["all"],
+      "ui": {"surface": "creator", "group": "做法", "order": 17, "control_type": "toggle", "icon": "layout-list", "summary": "生成主稿、衍生稿、系列或事件链。"},
+      "maintenance": {"owner": "cuebook-editorial", "stability": "stable", "last_verified_at": "2026-07-14T13:00:00+08:00", "skill_path": "plan-market-content-program", "schema_refs": ["plan-market-content-program/references/content-program-v1.schema.json"], "validator_refs": ["plan-market-content-program/scripts/validate_content_program.py"], "test_refs": ["plan-market-content-program/tests/test_validate_content_program.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "render-cuebook-market-post", "version": "1.2.0", "display_name": "Render Market Post", "description": "Render one compact post or batch-generate three meaning-locked, independently passed PostV1 siblings for direct selection.",
+      "category_id": "category-rendering", "status": "stable", "visibility": "automatic", "execution": "installed", "user_selectable": false, "default_enabled": true,
+      "capabilities": ["render-compact-text"], "input_contracts": ["MarketViewSemanticsV1", "CreatorExpressionPlanV1", "ResearchPackV1", "TradingThesisV1", "ContentProgramV1", "ContentRecipeV1"], "output_contract": "PostV1", "requires_all": ["plan-cuebook-creator-expression"], "supported_modes": ["single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["x", "telegram", "buy_side_note", "generic"],
+      "ui": {"surface": "creator", "group": "出餐", "order": 18, "control_type": "hidden", "icon": "message-square-text", "summary": "按选择的平台生成紧凑文字。"},
+      "maintenance": {"owner": "cuebook-editorial", "stability": "stable", "last_verified_at": "2026-07-14T13:00:00+08:00", "skill_path": "render-cuebook-market-post", "schema_refs": ["render-cuebook-market-post/references/post-v1.schema.json"], "validator_refs": ["render-cuebook-market-post/scripts/validate_post_artifact.py"], "test_refs": ["render-cuebook-market-post/scripts/test_validate_post_artifact.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "assemble-cuebook-publish-candidates", "version": "1.2.0", "display_name": "Assemble Publish Candidates", "description": "Use the cached fast path to assemble one locked market view into three concise choices that preserve required linked evidence, basis-compatible metrics, and optional settlement semantics.",
+      "category_id": "category-rendering", "status": "beta", "visibility": "automatic", "execution": "installed", "user_selectable": false, "default_enabled": true,
+      "capabilities": ["assemble-publish-candidates"], "input_contracts": ["CreatorExpressionPlanV1", "PostV1", "VisualDirectionSetV1", "SettlementClaimV1", "ResearchPackV1", "ViewpointDataBundleV1"], "output_contract": "PublishCandidateSetV1", "requires_all": ["render-cuebook-market-post", "direct-cuebook-viewpoint-visual"], "supported_modes": ["single", "batch", "event_lifecycle"], "supported_channels": ["all"],
+      "ui": {"surface": "creator", "group": "出餐", "order": 36, "control_type": "hidden", "icon": "gallery-thumbnails", "summary": "生成三份短文案和观点图，并把关键新闻与数字链接一并交给前端。"},
+      "maintenance": {"owner": "cuebook-creator", "stability": "beta", "last_verified_at": "2026-07-15T16:49:09+08:00", "skill_path": "assemble-cuebook-publish-candidates", "schema_refs": ["assemble-cuebook-publish-candidates/references/publish-candidate-set-v1.schema.json"], "validator_refs": ["assemble-cuebook-publish-candidates/scripts/validate_publish_candidate_set.py"], "test_refs": ["assemble-cuebook-publish-candidates/tests/test_validate_publish_candidate_set.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "compile-cuebook-settlement-claim", "version": "1.2.0", "display_name": "Compile Settlement Claim", "description": "Compile fixed-deadline or trigger-activated, event-bounded market views into one primary settlement claim and deterministic one-line footer.",
+      "category_id": "category-thesis", "status": "beta", "visibility": "selectable", "execution": "installed", "user_selectable": true, "default_enabled": false,
+      "capabilities": ["compile-settlement-claim"], "input_contracts": ["MarketViewSemanticsV1", "CreatorExpressionPlanV1", "PostV1", "MediaPackageV1", "TradingThesisV1", "FinalizedMarketContent"], "output_contract": "SettlementClaimV1", "requires_all": ["plan-cuebook-creator-expression"], "supported_modes": ["single", "batch", "event_lifecycle"], "supported_channels": ["all"],
+      "ui": {"surface": "creator", "group": "观点协议", "order": 19, "control_type": "toggle", "icon": "badge-check", "summary": "正文完成后生成可结算观点与一行版。"},
+      "maintenance": {"owner": "cuebook-thesis", "stability": "beta", "last_verified_at": "2026-07-15T14:40:04+08:00", "skill_path": "compile-cuebook-settlement-claim", "schema_refs": ["compile-cuebook-settlement-claim/references/settlement-claim-v1.schema.json"], "validator_refs": ["compile-cuebook-settlement-claim/scripts/validate_settlement_claim.py"], "test_refs": ["compile-cuebook-settlement-claim/tests/test_validate_settlement_claim.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "compile-cuebook-settlement-formula", "version": "1.1.0", "display_name": "Compile Settlement Formula", "description": "Compile a confirmed claim and DB-bound entry snapshot into one of four constrained, hash-frozen formula families, including equal-notional long/short pair settlement.",
+      "category_id": "category-thesis", "status": "beta", "visibility": "automatic", "execution": "installed", "user_selectable": false, "default_enabled": false,
+      "capabilities": ["compile-settlement-formula"], "input_contracts": ["SettlementClaimV1", "SettlementBindingBundleV1"], "output_contract": "SettlementFormulaV1", "requires_all": ["compile-cuebook-settlement-claim"], "supported_modes": ["single", "batch", "event_lifecycle"], "supported_channels": ["all"],
+      "ui": {"surface": "creator", "group": "观点协议", "order": 37, "control_type": "hidden", "icon": "sigma", "summary": "把已确认的结算观点变成后端可执行、可审计的公式和状态机。"},
+      "maintenance": {"owner": "cuebook-thesis", "stability": "beta", "last_verified_at": "2026-07-15T17:27:06+08:00", "skill_path": "compile-cuebook-settlement-formula", "schema_refs": ["compile-cuebook-settlement-formula/references/settlement-formula-v1.schema.json"], "validator_refs": ["compile-cuebook-settlement-formula/scripts/validate_settlement_formula.py"], "test_refs": ["compile-cuebook-settlement-formula/tests/test_validate_settlement_formula.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "render-cuebook-market-media", "version": "1.0.0", "display_name": "Render Market Media", "description": "Render articles, Reddit, Xiaohongshu carousels, and short-video packages.",
+      "category_id": "category-rendering", "status": "stable", "visibility": "automatic", "execution": "installed", "user_selectable": false, "default_enabled": true,
+      "capabilities": ["render-media-package"], "input_contracts": ["MarketViewSemanticsV1", "CreatorExpressionPlanV1", "PostV1", "ViewpointDataBundleV1", "ViewpointVisualV1", "SettlementClaimV1", "ResearchPackV1", "TradingThesisV1", "ContentProgramV1", "ContentRecipeV1"], "output_contract": "MediaPackageV1", "requires_all": ["plan-cuebook-creator-expression"], "supported_modes": ["single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["xiaohongshu", "reddit", "owned_web", "seeking_alpha_internal", "short_video", "douyin"],
+      "ui": {"surface": "creator", "group": "出餐", "order": 20, "control_type": "hidden", "icon": "clapperboard", "summary": "按媒介语法生成卡片、长文和视频包。"},
+      "maintenance": {"owner": "cuebook-editorial", "stability": "stable", "last_verified_at": "2026-07-14T13:00:00+08:00", "skill_path": "render-cuebook-market-media", "schema_refs": ["render-cuebook-market-media/references/media-package-v1.schema.json"], "validator_refs": ["render-cuebook-market-media/scripts/validate_media_package.py"], "test_refs": ["render-cuebook-market-media/tests/test_validate_media_package.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "render-cuebook-thesis-chart", "version": "1.2.0", "display_name": "Render Thesis Chart", "description": "Render sourced OHLC/K-line evidence with price levels, sealed/forming bars, aligned volume confirmation, open-ended triggers, or an explicit settlement clock.",
+      "category_id": "category-rendering", "status": "beta", "visibility": "automatic", "execution": "installed", "user_selectable": false, "default_enabled": false,
+      "capabilities": ["render-thesis-chart"], "input_contracts": ["CreatorExpressionPlanV1", "ViewpointDataBundleV1", "PostV1", "CreatorViewIntentV1", "TradingThesisV1", "SettlementClaimV1", "ResearchPackV1", "MarketSeriesBatchV1"], "output_contract": "ThesisChartV1", "requires_all": ["assemble-cuebook-viewpoint-data"], "supported_modes": ["single", "batch", "event_lifecycle"], "supported_channels": ["all"],
+      "ui": {"surface": "creator", "group": "完整行情图", "order": 15, "control_type": "hidden", "icon": "chart-no-axes-combined", "summary": "在紧凑观点图之外生成真实 K 线、长历史和结算时钟。"},
+      "maintenance": {"owner": "cuebook-market-data", "stability": "beta", "last_verified_at": "2026-07-15T14:20:32+08:00", "skill_path": "render-cuebook-thesis-chart", "schema_refs": ["render-cuebook-thesis-chart/references/thesis-chart-v1.schema.json", "render-cuebook-thesis-chart/references/market-series-batch-v1.schema.json"], "validator_refs": ["render-cuebook-thesis-chart/scripts/validate_thesis_chart.py"], "test_refs": ["render-cuebook-thesis-chart/tests/test_validate_thesis_chart.py", "render-cuebook-thesis-chart/tests/test_render_market_series.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "compute-cuebook-market-indicators", "version": "1.0.0", "display_name": "Compute Market Indicators", "description": "Compute deterministic, sourced OHLCV indicators that test the selected viewpoint.",
+      "category_id": "category-research", "status": "beta", "visibility": "selectable", "execution": "installed", "user_selectable": true, "default_enabled": false,
+      "capabilities": ["compute-market-indicators"], "input_contracts": ["CreatorViewIntentV1", "TradingThesisV1", "ThesisChartDataV1", "MarketSeriesV1"], "output_contract": "IndicatorPackV1", "requires_all": [], "supported_modes": ["single", "batch", "event_lifecycle"], "supported_channels": ["all"],
+      "ui": {"surface": "query", "group": "查询指标", "order": 16, "control_type": "multi_select", "icon": "sigma", "summary": "计算强弱、趋势、波动和量价指标。"},
+      "maintenance": {"owner": "cuebook-market-data", "stability": "beta", "last_verified_at": "2026-07-14T16:20:43+08:00", "skill_path": "compute-cuebook-market-indicators", "schema_refs": ["compute-cuebook-market-indicators/references/indicator-pack-v1.schema.json"], "validator_refs": ["compute-cuebook-market-indicators/scripts/compute_indicators.py"], "test_refs": ["compute-cuebook-market-indicators/tests/test_compute_indicators.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "assemble-cuebook-viewpoint-card", "version": "1.1.0", "display_name": "Assemble Viewpoint Card", "description": "Assemble the shared creator expression, compact text, unified viewpoint visual, optional settlement, and evidence into the product-native Cuebook card.",
+      "category_id": "category-rendering", "status": "beta", "visibility": "automatic", "execution": "installed", "user_selectable": false, "default_enabled": false,
+      "capabilities": ["assemble-viewpoint-card"], "input_contracts": ["MarketViewSemanticsV1", "CreatorExpressionPlanV1", "PostV1", "ViewpointDataBundleV1", "ViewpointVisualV1", "TradingThesisV1", "TradeLogicProfileV1", "ResearchPackV1", "IndicatorPackV1", "SettlementClaimV1"], "output_contract": "ViewpointCardV1", "requires_all": ["render-cuebook-market-post", "render-cuebook-viewpoint-visual"], "supported_modes": ["single", "batch", "event_lifecycle"], "supported_channels": ["all"],
+      "ui": {"surface": "creator", "group": "出餐", "order": 21, "control_type": "hidden", "icon": "panels-top-left", "summary": "把已验证模块装配成观点预览和 Feed 卡片。"},
+      "maintenance": {"owner": "cuebook-creator", "stability": "beta", "last_verified_at": "2026-07-14T16:20:43+08:00", "skill_path": "assemble-cuebook-viewpoint-card", "schema_refs": ["assemble-cuebook-viewpoint-card/references/creator-view-intent-v1.schema.json", "assemble-cuebook-viewpoint-card/references/viewpoint-card-v1.schema.json"], "validator_refs": ["assemble-cuebook-viewpoint-card/scripts/validate_viewpoint_card.py"], "test_refs": ["assemble-cuebook-viewpoint-card/tests/test_validate_viewpoint_card.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "optimize-cuebook-market-seo", "version": "1.0.0", "display_name": "Optimize Market SEO", "description": "Preflight owned-web search intent, index eligibility, structure, and metadata.",
+      "category_id": "category-discovery", "status": "stable", "visibility": "selectable", "execution": "installed", "user_selectable": true, "default_enabled": false,
+      "capabilities": ["optimize-market-seo"], "input_contracts": ["MediaPackageV1", "ResearchPackV1"], "output_contract": "MarketSEOPackV1", "requires_all": ["render-cuebook-market-media"], "supported_modes": ["single", "batch", "event_lifecycle"], "supported_channels": ["owned_web"],
+      "ui": {"surface": "creator", "group": "搜索发现", "order": 22, "control_type": "toggle", "icon": "search", "summary": "为自有网页补搜索结构与发布检查。"},
+      "maintenance": {"owner": "cuebook-growth", "stability": "stable", "last_verified_at": "2026-07-14T13:00:00+08:00", "skill_path": "optimize-cuebook-market-seo", "schema_refs": ["optimize-cuebook-market-seo/references/market-seo-pack-v1.schema.json"], "validator_refs": ["optimize-cuebook-market-seo/scripts/validate_market_seo_pack.py"], "test_refs": ["optimize-cuebook-market-seo/tests/test_validate_market_seo_pack.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "optimize-cuebook-market-geo", "version": "1.0.0", "display_name": "Optimize Market GEO", "description": "Build entity, fact-card, answer-unit, and citation-support preflight for owned web.",
+      "category_id": "category-discovery", "status": "stable", "visibility": "selectable", "execution": "installed", "user_selectable": true, "default_enabled": false,
+      "capabilities": ["optimize-market-geo"], "input_contracts": ["MarketSEOPackV1", "ResearchPackV1"], "output_contract": "MarketGEOPackV1", "requires_all": ["optimize-cuebook-market-seo"], "supported_modes": ["single", "batch", "event_lifecycle"], "supported_channels": ["owned_web"],
+      "ui": {"surface": "creator", "group": "搜索发现", "order": 23, "control_type": "toggle", "icon": "scan-search", "summary": "增强答案单元、实体和引用支持。"},
+      "maintenance": {"owner": "cuebook-growth", "stability": "stable", "last_verified_at": "2026-07-14T13:00:00+08:00", "skill_path": "optimize-cuebook-market-geo", "schema_refs": ["optimize-cuebook-market-geo/references/market-geo-pack-v1.schema.json"], "validator_refs": ["optimize-cuebook-market-geo/scripts/validate_market_geo_pack.py"], "test_refs": ["optimize-cuebook-market-geo/tests/test_validate_market_geo_pack.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "prepare-market-content-release", "version": "1.1.0", "display_name": "Prepare Content Release", "description": "Freeze exact payloads, assets, settlement protocols, approvals, schedule, idempotency, and rollback data.",
+      "category_id": "category-governance", "status": "stable", "visibility": "selectable", "execution": "installed", "user_selectable": true, "default_enabled": true,
+      "capabilities": ["prepare-release"], "input_contracts": ["MarketViewSemanticsV1", "CreatorExpressionPlanV1", "TradingThesisV1", "SettlementClaimV1", "SettlementFormulaV1", "PostV1", "ViewpointDataBundleV1", "ViewpointVisualV1", "MediaPackageV1", "ViewpointCardV1", "MarketSEOPackV1", "MarketGEOPackV1"], "output_contract": "ReleaseBundleV1", "requires_all": [], "supported_modes": ["single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["all"],
+      "ui": {"surface": "creator", "group": "交付", "order": 24, "control_type": "toggle", "icon": "package-check", "summary": "冻结审批后的精确发布候选。"},
+      "maintenance": {"owner": "cuebook-operations", "stability": "stable", "last_verified_at": "2026-07-15T15:24:00+08:00", "skill_path": "prepare-market-content-release", "schema_refs": ["prepare-market-content-release/references/release-bundle-v1.schema.json"], "validator_refs": ["prepare-market-content-release/scripts/validate_release_bundle.py"], "test_refs": ["prepare-market-content-release/tests/test_validate_release_bundle.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "reconcile-market-content-history", "version": "1.0.0", "display_name": "Reconcile Content History", "description": "Reconcile publication receipts, corrections, engagement, market calibration, and authorized trade outcomes.",
+      "category_id": "category-history", "status": "stable", "visibility": "selectable", "execution": "installed", "user_selectable": true, "default_enabled": false,
+      "capabilities": ["reconcile-history"], "input_contracts": ["ReleaseBundleV1", "PublicationReceiptV1", "AuthorizedTradeHistoryV1"], "output_contract": "ContentHistoryLedgerV1", "requires_all": [], "supported_modes": ["postmortem", "correction"], "supported_channels": ["all"],
+      "ui": {"surface": "query", "group": "查询历史", "order": 25, "control_type": "toggle", "icon": "history", "summary": "核对真实发布、纠错和结果记录。"},
+      "maintenance": {"owner": "cuebook-operations", "stability": "stable", "last_verified_at": "2026-07-14T13:00:00+08:00", "skill_path": "reconcile-market-content-history", "schema_refs": ["reconcile-market-content-history/references/content-history-ledger-v1.schema.json"], "validator_refs": ["reconcile-market-content-history/scripts/validate_content_history.py"], "test_refs": ["reconcile-market-content-history/tests/test_validate_content_history.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "orchestrate-cuebook-creator-workflow", "version": "1.4.0", "display_name": "Orchestrate Creator Workflow", "description": "Resume from the latest valid artifact, separate semantic seed Query from intent-driven gap Query, and execute hash-locked text, visual, renderer, and settlement branches.",
+      "category_id": "category-orchestration", "status": "stable", "visibility": "automatic", "execution": "installed", "user_selectable": false, "default_enabled": true,
+      "capabilities": ["orchestrate-workflow"], "input_contracts": ["ContentRecipeV1", "SkillCatalogV1", "CuebookQueryBundleV1"], "output_contract": "CreatorWorkflowRunV1", "requires_all": [], "supported_modes": ["plan_only", "single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["all"],
+      "ui": {"surface": "admin", "group": "流程控制", "order": 26, "control_type": "hidden", "icon": "workflow", "summary": "先把观点里的新闻和数字需求查齐，再生成三份可追溯候选。"},
+      "maintenance": {"owner": "cuebook-platform", "stability": "stable", "last_verified_at": "2026-07-16T16:30:00+08:00", "skill_path": "orchestrate-cuebook-creator-workflow", "schema_refs": ["orchestrate-cuebook-creator-workflow/references/creator-workflow-run-v1.schema.json"], "validator_refs": ["orchestrate-cuebook-creator-workflow/scripts/validate_creator_workflow.py"], "test_refs": ["orchestrate-cuebook-creator-workflow/tests/test_validate_creator_workflow.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "query-cuebook", "version": "1.0.0", "display_name": "Query Cuebook", "description": "Search, inspect, compare, and explain Cuebook data through one strictly read-only entrypoint.",
+      "category_id": "category-modules", "status": "stable", "visibility": "selectable", "execution": "installed", "user_selectable": true, "default_enabled": true,
+      "capabilities": ["query-cuebook"], "input_contracts": ["CuebookQueryRequestV1"], "output_contract": "CuebookQueryBundleV1", "requires_all": [], "supported_modes": ["plan_only", "single", "postmortem", "library"], "supported_channels": ["all"],
+      "ui": {"surface": "query", "group": "查询", "order": 38, "control_type": "single_select", "icon": "search", "summary": "查看 Cuebook 数据、来源、比较与历史，不产生任何写入。"},
+      "maintenance": {"owner": "cuebook-platform", "stability": "stable", "last_verified_at": "2026-07-15T18:10:00+08:00", "skill_path": "query-cuebook", "schema_refs": ["query-cuebook/references/cuebook-query-request-v1.schema.json", "query-cuebook/references/cuebook-query-bundle-v1.schema.json"], "validator_refs": ["query-cuebook/scripts/validate_query_request.py", "query-cuebook/scripts/validate_query_bundle.py"], "test_refs": ["query-cuebook/tests/test_validate_query_bundle.py"]}, "replaced_by": null
+    },
+    {
+      "skill_id": "create-cuebook-content", "version": "1.1.0", "display_name": "Create Cuebook Content", "description": "Enter creation from the latest compatible artifact, verify semantic premises, then fill only the evidence gaps declared by the locked expression route.",
+      "category_id": "category-modules", "status": "stable", "visibility": "selectable", "execution": "installed", "user_selectable": true, "default_enabled": true,
+      "capabilities": ["create-cuebook-content"], "input_contracts": ["CreatorSeedV1", "CuebookQueryBundleV1", "CreatorWorkflowRunV1"], "output_contract": "CuebookCreationBundleV1", "requires_all": ["orchestrate-cuebook-creator-workflow"], "supported_modes": ["plan_only", "single", "batch", "event_lifecycle", "postmortem", "correction"], "supported_channels": ["all"],
+      "ui": {"surface": "creator", "group": "创作", "order": 39, "control_type": "single_select", "icon": "square-pen", "summary": "保留用户观点，必要时调用查询，再生成三套文字与观点图候选。"},
+      "maintenance": {"owner": "cuebook-platform", "stability": "stable", "last_verified_at": "2026-07-16T16:30:00+08:00", "skill_path": "create-cuebook-content", "schema_refs": ["create-cuebook-content/references/creator-seed-v1.schema.json", "create-cuebook-content/references/cuebook-creation-bundle-v1.schema.json"], "validator_refs": ["create-cuebook-content/scripts/validate_creator_seed.py", "create-cuebook-content/scripts/validate_creation_bundle.py"], "test_refs": ["create-cuebook-content/tests/test_validate_creation_bundle.py"]}, "replaced_by": null
+    }
+  ],
+  "presets": [
+    {
+      "preset_id": "preset-cross-platform-desk", "name": "跨平台交易内容", "description": "一份研究生成 X 与小红书等多个衍生内容。", "state": "active", "selection_mode": "opportunity_first", "default_execution_mode": "single",
+      "ingredient_limits": {"news_refs": {"min": 1, "max": 5}, "calendar_refs": {"min": 0, "max": 2}, "narrative_refs": {"min": 1, "max": 3}, "trade_idea_refs": {"min": 0, "max": 2}, "trade_history_refs": {"min": 0, "max": 0}},
+      "default_analysis_lenses": ["expectation-gap", "actor-forced", "next-catalyst"],
+      "default_outputs": [{"channel": "x", "format": "thread", "count": 1, "length": "standard"}, {"channel": "xiaohongshu", "format": "carousel", "count": 1, "length": "standard"}],
+      "required_skill_ids": ["build-market-research-pack", "plan-market-content-program", "render-cuebook-market-post", "render-cuebook-market-media", "prepare-market-content-release"], "optional_skill_ids": ["render-cuebook-viewpoint-visual", "compute-cuebook-market-indicators", "optimize-cuebook-market-seo", "optimize-cuebook-market-geo"]
+    },
+    {
+      "preset_id": "preset-intraday-move", "name": "盘中异动", "description": "解释价格异动、被迫行为和下一确认点。", "state": "active", "selection_mode": "ingredient_first", "default_execution_mode": "single",
+      "ingredient_limits": {"news_refs": {"min": 1, "max": 4}, "calendar_refs": {"min": 0, "max": 1}, "narrative_refs": {"min": 1, "max": 2}, "trade_idea_refs": {"min": 0, "max": 1}, "trade_history_refs": {"min": 0, "max": 0}},
+      "default_analysis_lenses": ["price-action", "actor-forced", "confirmation-check"],
+      "default_outputs": [{"channel": "x", "format": "thread", "count": 1, "length": "short"}, {"channel": "telegram", "format": "long_post", "count": 1, "length": "standard"}],
+      "required_skill_ids": ["build-market-research-pack", "plan-market-content-program", "render-cuebook-market-post", "prepare-market-content-release"], "optional_skill_ids": ["render-cuebook-market-media", "render-cuebook-viewpoint-visual", "compute-cuebook-market-indicators"]
+    },
+    {
+      "preset_id": "preset-earnings-preview", "name": "财报前瞻", "description": "围绕预期、历史比较、关键变量和电话会确认点组织内容。", "state": "active", "selection_mode": "opportunity_first", "default_execution_mode": "event_lifecycle",
+      "ingredient_limits": {"news_refs": {"min": 1, "max": 5}, "calendar_refs": {"min": 1, "max": 2}, "narrative_refs": {"min": 1, "max": 3}, "trade_idea_refs": {"min": 0, "max": 2}, "trade_history_refs": {"min": 0, "max": 0}},
+      "default_analysis_lenses": ["expectation-gap", "revision-cycle", "scenario-tree"],
+      "default_outputs": [{"channel": "x", "format": "thread", "count": 1, "length": "standard"}, {"channel": "owned_web", "format": "article", "count": 1, "length": "long"}],
+      "required_skill_ids": ["build-market-research-pack", "plan-market-content-program", "render-cuebook-market-post", "render-cuebook-market-media", "optimize-cuebook-market-seo", "prepare-market-content-release"], "optional_skill_ids": ["render-cuebook-viewpoint-visual", "optimize-cuebook-market-geo"]
+    },
+    {
+      "preset_id": "preset-thesis-watch", "name": "交易观察", "description": "围绕判断、时间周期、催化剂和下一观察点生成条件式内容。", "state": "active", "selection_mode": "opportunity_first", "default_execution_mode": "single",
+      "ingredient_limits": {"news_refs": {"min": 1, "max": 5}, "calendar_refs": {"min": 0, "max": 2}, "narrative_refs": {"min": 1, "max": 3}, "trade_idea_refs": {"min": 1, "max": 2}, "trade_history_refs": {"min": 0, "max": 0}},
+      "default_analysis_lenses": ["thesis-test", "next-catalyst", "confirmation-check"],
+      "default_outputs": [{"channel": "buy_side_note", "format": "note", "count": 1, "length": "standard"}],
+      "required_skill_ids": ["build-market-research-pack", "render-cuebook-market-post", "prepare-market-content-release"], "optional_skill_ids": ["compose-cuebook-trading-thesis", "render-cuebook-viewpoint-visual", "plan-market-content-program", "compute-cuebook-market-indicators", "assemble-cuebook-viewpoint-card"]
+    },
+    {
+      "preset_id": "preset-settleable-thesis", "name": "内容 + 结算观点", "description": "先生成自然观点内容，再抽取并冻结一个可验证、可结算的一行主张。", "state": "active", "selection_mode": "opportunity_first", "default_execution_mode": "single",
+      "ingredient_limits": {"news_refs": {"min": 1, "max": 5}, "calendar_refs": {"min": 0, "max": 2}, "narrative_refs": {"min": 1, "max": 3}, "trade_idea_refs": {"min": 0, "max": 2}, "trade_history_refs": {"min": 0, "max": 0}},
+      "default_analysis_lenses": ["thesis-test", "countercase", "settlement-claim"],
+      "default_outputs": [{"channel": "buy_side_note", "format": "note", "count": 1, "length": "standard"}],
+      "required_skill_ids": ["build-market-research-pack", "render-cuebook-market-post", "compile-cuebook-settlement-claim", "compile-cuebook-settlement-formula", "prepare-market-content-release"], "optional_skill_ids": ["compose-cuebook-trading-thesis", "render-cuebook-viewpoint-visual", "plan-market-content-program", "render-cuebook-market-media", "compute-cuebook-market-indicators", "assemble-cuebook-viewpoint-card"]
+    },
+    {
+      "preset_id": "preset-viewpoint-card", "name": "观点卡", "description": "把创作者判断、统一观点图、可选交易协议和证据装成 Cuebook 原生观点卡。", "state": "active", "selection_mode": "ingredient_first", "default_execution_mode": "single",
+      "ingredient_limits": {"news_refs": {"min": 0, "max": 5}, "calendar_refs": {"min": 0, "max": 2}, "narrative_refs": {"min": 0, "max": 3}, "trade_idea_refs": {"min": 0, "max": 2}, "trade_history_refs": {"min": 0, "max": 0}},
+      "default_analysis_lenses": ["semantic-fidelity", "countercase", "visual-argument"],
+      "default_outputs": [{"channel": "generic", "format": "viewpoint_card", "count": 1, "length": "standard"}],
+      "required_skill_ids": ["build-market-research-pack", "render-cuebook-market-post", "render-cuebook-viewpoint-visual", "assemble-cuebook-viewpoint-card", "prepare-market-content-release"], "optional_skill_ids": ["compose-cuebook-trading-thesis", "compile-cuebook-settlement-claim", "compile-cuebook-settlement-formula", "compute-cuebook-market-indicators", "render-cuebook-market-media"]
+    },
+    {
+      "preset_id": "preset-publish-candidates", "name": "三版直出", "description": "自动补充事实并一次生成三套短文案和静态观点图；仅在用户选择结算时附加同一结算提案。", "state": "active", "selection_mode": "ingredient_first", "default_execution_mode": "single",
+      "ingredient_limits": {"news_refs": {"min": 0, "max": 5}, "calendar_refs": {"min": 0, "max": 2}, "narrative_refs": {"min": 0, "max": 3}, "trade_idea_refs": {"min": 0, "max": 2}, "trade_history_refs": {"min": 0, "max": 0}},
+      "default_analysis_lenses": ["autonomous-calibration", "candidate-diversity"],
+      "default_outputs": [{"channel": "generic", "format": "publish_candidate_set", "count": 3, "length": "short"}],
+      "required_skill_ids": ["build-market-research-pack", "render-cuebook-market-post", "direct-cuebook-viewpoint-visual", "assemble-cuebook-publish-candidates"], "optional_skill_ids": ["compose-cuebook-trading-thesis", "compile-cuebook-settlement-claim", "compile-cuebook-settlement-formula", "compute-cuebook-market-indicators", "render-cuebook-thesis-chart"]
+    },
+    {
+      "preset_id": "preset-trade-postmortem", "name": "交易复盘", "description": "使用授权和对账后的历史记录复盘过程、判断和失效条件。", "state": "active", "selection_mode": "opportunity_first", "default_execution_mode": "postmortem",
+      "ingredient_limits": {"news_refs": {"min": 0, "max": 4}, "calendar_refs": {"min": 0, "max": 2}, "narrative_refs": {"min": 0, "max": 2}, "trade_idea_refs": {"min": 0, "max": 2}, "trade_history_refs": {"min": 1, "max": 5}},
+      "default_analysis_lenses": ["decision-review", "process-attribution", "counterfactual"],
+      "default_outputs": [{"channel": "buy_side_note", "format": "note", "count": 1, "length": "long"}, {"channel": "x", "format": "thread", "count": 1, "length": "standard"}],
+      "required_skill_ids": ["reconcile-market-content-history", "build-market-research-pack", "plan-market-content-program", "render-cuebook-market-post", "prepare-market-content-release"], "optional_skill_ids": ["render-cuebook-market-media"]
+    },
+    {
+      "preset_id": "preset-correction-notice", "name": "纠错通知", "description": "失效旧工件后生成带来源、影响范围和传播计划的纠错。", "state": "active", "selection_mode": "opportunity_first", "default_execution_mode": "correction",
+      "ingredient_limits": {"news_refs": {"min": 1, "max": 5}, "calendar_refs": {"min": 0, "max": 1}, "narrative_refs": {"min": 0, "max": 2}, "trade_idea_refs": {"min": 0, "max": 1}, "trade_history_refs": {"min": 0, "max": 3}},
+      "default_analysis_lenses": ["correction-scope", "materiality", "propagation"],
+      "default_outputs": [{"channel": "x", "format": "short_post", "count": 1, "length": "short"}],
+      "required_skill_ids": ["reconcile-market-content-history", "build-market-research-pack", "render-cuebook-market-post", "prepare-market-content-release"], "optional_skill_ids": ["plan-market-content-program"]
+    },
+    {
+      "preset_id": "preset-auto-daily-chef", "name": "今日主厨", "description": "从当前 Cuebook snapshot 自动提议多套配方，等待用户确认。", "state": "active", "selection_mode": "preset_auto", "default_execution_mode": "batch",
+      "ingredient_limits": {"news_refs": {"min": 0, "max": 5}, "calendar_refs": {"min": 0, "max": 2}, "narrative_refs": {"min": 0, "max": 3}, "trade_idea_refs": {"min": 0, "max": 2}, "trade_history_refs": {"min": 0, "max": 0}},
+      "default_analysis_lenses": ["auto", "audience-utility", "next-catalyst"],
+      "default_outputs": [{"channel": "x", "format": "thread", "count": 1, "length": "standard"}, {"channel": "telegram", "format": "long_post", "count": 1, "length": "standard"}],
+      "required_skill_ids": ["build-market-research-pack", "plan-market-content-program", "render-cuebook-market-post", "prepare-market-content-release"], "optional_skill_ids": ["render-cuebook-market-media", "render-cuebook-viewpoint-visual", "optimize-cuebook-market-seo", "optimize-cuebook-market-geo"]
+    }
+  ],
+  "extension_points": [
+    {"extension_point": "feed_adapter", "display_name": "Cuebook 数据适配器", "contract": "FeedAdapterV1", "status": "available", "multiple": false, "provider_required": true, "config_schema_ref": null},
+    {"extension_point": "research_source", "display_name": "研究数据源", "contract": "ResearchSourceProviderV1", "status": "available", "multiple": true, "provider_required": false, "config_schema_ref": null},
+    {"extension_point": "market_data", "display_name": "实时行情与盘口", "contract": "MarketDataProviderV1", "status": "available", "multiple": true, "provider_required": false, "config_schema_ref": null},
+    {"extension_point": "thesis_registry", "display_name": "观点冻结与版本注册", "contract": "ThesisRegistryProviderV1", "status": "deferred", "multiple": false, "provider_required": true, "config_schema_ref": null},
+    {"extension_point": "settlement_oracle", "display_name": "观点结算与争议处理", "contract": "ThesisSettlementProviderV1", "status": "deferred", "multiple": false, "provider_required": true, "config_schema_ref": null},
+    {"extension_point": "reputation", "display_name": "创作者声誉计算", "contract": "ReputationProviderV1", "status": "deferred", "multiple": false, "provider_required": true, "config_schema_ref": null},
+    {"extension_point": "thesis_feed_ranker", "display_name": "观点 Feed 排序", "contract": "ThesisFeedRankingProviderV1", "status": "deferred", "multiple": false, "provider_required": true, "config_schema_ref": null},
+    {"extension_point": "media_asset", "display_name": "视觉与视频资产", "contract": "MediaAssetProviderV1", "status": "available", "multiple": true, "provider_required": false, "config_schema_ref": null},
+    {"extension_point": "policy", "display_name": "平台与合规政策", "contract": "PolicyProviderV1", "status": "available", "multiple": true, "provider_required": false, "config_schema_ref": null},
+    {"extension_point": "publisher", "display_name": "发布连接器", "contract": "PublicationConnectorV1", "status": "deferred", "multiple": true, "provider_required": true, "config_schema_ref": null},
+    {"extension_point": "analytics", "display_name": "内容表现分析", "contract": "AnalyticsProviderV1", "status": "deferred", "multiple": true, "provider_required": false, "config_schema_ref": null},
+    {"extension_point": "custom_renderer", "display_name": "自定义媒介渲染器", "contract": "RendererProviderV1", "status": "deferred", "multiple": true, "provider_required": true, "config_schema_ref": null}
+  ],
+  "maintenance_policy": {
+    "catalog_owner": "cuebook-platform",
+    "compatibility_policy": "semver",
+    "deprecation_min_days": 30,
+    "require_schema": true,
+    "require_validator": true,
+    "require_tests": true
+  }
+}

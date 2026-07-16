@@ -1,0 +1,6 @@
+interface:
+  display_name: "Collect Commentator Corpus"
+  short_description: "Normalize authorized exports into CorpusV1"
+  default_prompt: "Use $collect-market-commentator-corpus to normalize these public or authorized JSON, JSONL, or CSV records into CorpusV1."
+policy:
+  allow_implicit_invocation: false

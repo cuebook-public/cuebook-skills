@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/viewpoint-motion-spec-v1.schema.json",
+  "title": "ViewpointMotionSpecV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "motion_spec_id", "state", "input_refs", "selected_visual_direction_ref", "message", "bindings", "form", "hero", "beats", "runtime", "accessibility", "outputs", "quality_report"],
+  "properties": {
+    "schema_version": {"const": "viewpoint-motion-spec-v1"},
+    "motion_spec_id": {"type": "string", "pattern": "^VMSPEC_[A-Za-z0-9_:-]{8,}$"},
+    "state": {"enum": ["draft", "keyframed", "approved"]},
+    "input_refs": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "string", "minLength": 3}},
+    "selected_visual_direction_ref": {"type": "string", "pattern": "^VDIR_[A-Za-z0-9_:-]{6,}$"},
+    "message": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim", "because", "implication", "direction", "horizon"],
+      "properties": {
+        "claim": {"type": "string", "minLength": 2, "maxLength": 80},
+        "because": {"type": "string", "minLength": 2, "maxLength": 140},
+        "implication": {"type": "string", "minLength": 2, "maxLength": 120},
+        "direction": {"enum": ["long", "short", "relative", "avoid", "watch", "explain", "neutral"]},
+        "horizon": {"type": ["string", "null"], "maxLength": 80}
+      }
+    },
+    "bindings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["binding_id", "kind", "label", "state", "source_refs"],
+        "properties": {
+          "binding_id": {"type": "string", "pattern": "^BIND_[A-Za-z0-9_:-]{4,}$"},
+          "kind": {"enum": ["creator_judgment", "fact", "metric", "series", "level", "event", "deadline", "quote", "relationship", "instrument"]},
+          "label": {"type": "string", "minLength": 1, "maxLength": 160},
+          "value": {"type": ["number", "string", "null"]},
+          "unit": {"type": ["string", "null"], "maxLength": 40},
+          "state": {"enum": ["observed", "reported", "derived", "conditional", "creator_view"]},
+          "source_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 3}}
+        }
+      }
+    },
+    "form": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "distance", "temperature", "capacity", "motif", "continuity"],
+      "properties": {
+        "role": {"enum": ["conviction", "evidence", "mechanism", "strategy", "settlement"]},
+        "distance": {"enum": ["feed_360", "feed_expanded", "social_clip"]},
+        "temperature": {"enum": ["urgent", "skeptical", "calm", "analytical", "contrarian"]},
+        "capacity": {"type": "string", "minLength": 8, "maxLength": 200},
+        "motif": {"type": "string", "minLength": 8, "maxLength": 200},
+        "continuity": {"type": "string", "minLength": 8, "maxLength": 200}
+      }
+    },
+    "hero": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hero_id", "kind", "binding_refs", "continuity_statement", "observed_geometry", "conditional_geometry"],
+      "properties": {
+        "hero_id": {"type": "string", "pattern": "^HERO_[A-Za-z0-9_:-]{4,}$"},
+        "kind": {"enum": ["headline", "observed_path", "key_number", "event_marker", "relative_spread", "causal_path", "risk_ladder", "settlement_line", "freeform"]},
+        "binding_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^BIND_"}},
+        "continuity_statement": {"type": "string", "minLength": 8, "maxLength": 240},
+        "observed_geometry": {"const": "solid"},
+        "conditional_geometry": {"const": "dashed"}
+      }
+    },
+    "beats": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 7,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["beat_id", "role", "start_ms", "end_ms", "focus", "binding_refs", "motion_primitives", "keyframe_ref"],
+        "properties": {
+          "beat_id": {"type": "string", "pattern": "^BEAT_[A-Za-z0-9_:-]{4,}$"},
+          "role": {"enum": ["hook", "evidence", "mechanism", "reaction", "view", "settlement", "hold"]},
+          "start_ms": {"type": "integer", "minimum": 0},
+          "end_ms": {"type": "integer", "minimum": 1},
+          "focus": {"type": "string", "minLength": 2, "maxLength": 160},
+          "binding_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^BIND_"}},
+          "motion_primitives": {"type": "array", "minItems": 1, "maxItems": 3, "uniqueItems": true, "items": {"enum": ["reveal", "draw_path", "count", "focus_pull", "track", "morph", "pulse", "connect", "split", "settle"]}},
+          "keyframe_ref": {"type": "string", "pattern": "^[^/].*\\.png$"}
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["framework", "animation_library", "timebase", "duration_ms", "fps", "autoplay", "loop", "in_view_once", "supports_external_time"],
+      "properties": {
+        "framework": {"const": "react"},
+        "animation_library": {"const": "motion/react"},
+        "timebase": {"const": "deterministic_ms"},
+        "duration_ms": {"type": "integer", "minimum": 2400, "maximum": 12000},
+        "fps": {"enum": [25, 30, 60]},
+        "autoplay": {"enum": ["when_in_view", "manual", "export_only"]},
+        "loop": {"const": false},
+        "in_view_once": {"const": true},
+        "supports_external_time": {"const": true}
+      }
+    },
+    "accessibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reduced_motion", "poster_ref", "audio_default", "alt_text"],
+      "properties": {
+        "reduced_motion": {"const": "static_poster"},
+        "poster_ref": {"type": "string", "pattern": "^[^/].*\\.png$"},
+        "audio_default": {"const": false},
+        "alt_text": {"type": "string", "minLength": 8, "maxLength": 400}
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["component_ref", "poster_ref", "keyframe_refs", "video_ref"],
+      "properties": {
+        "component_ref": {"type": "string", "pattern": "^[^/].*\\.tsx$"},
+        "poster_ref": {"type": "string", "pattern": "^[^/].*\\.png$"},
+        "keyframe_refs": {"type": "array", "minItems": 4, "maxItems": 7, "uniqueItems": true, "items": {"type": "string", "pattern": "^[^/].*\\.png$"}},
+        "video_ref": {"type": ["string", "null"], "pattern": "^[^/].*\\.(mp4|webm)$"}
+      }
+    },
+    "quality_report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["semantic_continuity", "keyframe_readability", "data_integrity", "motion_craft", "reduced_motion", "weighted_score", "verdict", "hard_failures", "revision"],
+      "properties": {
+        "semantic_continuity": {"type": "number", "minimum": 0, "maximum": 10},
+        "keyframe_readability": {"type": "number", "minimum": 0, "maximum": 10},
+        "data_integrity": {"type": "number", "minimum": 0, "maximum": 10},
+        "motion_craft": {"type": "number", "minimum": 0, "maximum": 10},
+        "reduced_motion": {"type": "number", "minimum": 0, "maximum": 10},
+        "weighted_score": {"type": "number", "minimum": 0, "maximum": 10},
+        "verdict": {"enum": ["pass", "revise", "reject"]},
+        "hard_failures": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 2}},
+        "revision": {"type": "string", "minLength": 2, "maxLength": 240}
+      }
+    }
+  }
+}

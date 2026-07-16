@@ -1,0 +1,55 @@
+{
+  "schema_version": "typography-benchmark-profiles-v1",
+  "font_profiles": [
+    {
+      "profile_id": "cuebook-noi-v1",
+      "family_alias": "Cuebook Noi",
+      "licensed_family": "Noi Grotesk",
+      "latin_weights": [400, 500, 600, 700],
+      "numeric_style": "tabular-nums lining-nums",
+      "letter_spacing": 0,
+      "font_synthesis": "none",
+      "cjk_stack": ["PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei"],
+      "delivery": "renderer-local-original-font-files",
+      "trial_policy": "local-evaluation-only",
+      "production_requirements": [
+        "opaque license_ref",
+        "font asset manifest with SHA-256 hashes",
+        "no Trial font path or filename",
+        "render audit confirms Cuebook Noi loaded"
+      ]
+    }
+  ],
+  "benchmark_profiles": [
+    {
+      "profile_id": "market-native-modular-v1",
+      "label": "Market-native modular display",
+      "source_refs": [
+        "https://robinhood.com/us/en/newsroom/a-new-visual-identity/",
+        "https://robinhood.com/us/en/newsroom/a-visual-identity-that-better-reflects-our-vision/"
+      ],
+      "transfer_principles": [
+        "one dominant judgment and one dominant evidence object",
+        "neutral field with one purposeful signal accent",
+        "intentional modular relationship without dashboard chrome",
+        "technical annotations that explain the evidence",
+        "less-is-more deletion before publication"
+      ],
+      "cuebook_transformations": [
+        "make the creator judgment the entry point",
+        "use a sourced market curve or number as proof",
+        "keep the future region unresolved until observed",
+        "preserve Cuebook source bindings and canonical wordmark"
+      ],
+      "excluded_surface_traits": [
+        "Robinhood logo or feather",
+        "Robin Neon color value",
+        "Capsule Sans or Nib",
+        "Robinhood product chrome",
+        "exact source module proportions",
+        "source illustration or photography language",
+        "trade call-to-action"
+      ]
+    }
+  ]
+}

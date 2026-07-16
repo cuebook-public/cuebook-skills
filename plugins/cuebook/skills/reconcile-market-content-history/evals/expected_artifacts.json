@@ -1,0 +1,12 @@
+{
+  "schema_version": "content-history-ledger-v1",
+  "required_sections": ["publication_receipts", "corrections", "artifact_invalidations", "content_performance", "market_outcomes", "trade_reconciliations", "learning_snapshots", "audit_events", "quality_report"],
+  "invariants": [
+    "Only a durable verified platform receipt proves publication.",
+    "Corrections append history and invalidate every affected dependent artifact.",
+    "Content engagement, market calibration, and trading performance remain separate planes.",
+    "Only complete consented broker-reconciled executed cohorts can become public-claim eligible.",
+    "Learning snapshots use cutoff-safe features and forward-time evaluation.",
+    "Ambiguous publishing attempts are not blindly retried."
+  ]
+}

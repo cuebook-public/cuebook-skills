@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/media-package-v1.schema.json",
+  "title": "MediaPackageV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "lineage", "brief", "gate", "research_decision", "policy_gate", "disclosure_state", "route", "fact_ledger", "angle", "asset_plan", "package", "watch_items", "quality_report", "publication_state"],
+  "properties": {
+    "schema_version": {"const": "media-package.v1"},
+    "lineage": {"$ref": "#/$defs/lineage"},
+    "brief": {"$ref": "#/$defs/brief"},
+    "gate": {"$ref": "#/$defs/gate"},
+    "research_decision": {"type": ["string", "null"], "enum": ["ready", "conditional", "blocked", null]},
+    "policy_gate": {"$ref": "#/$defs/policyGate"},
+    "disclosure_state": {"$ref": "#/$defs/disclosureState"},
+    "route": {"$ref": "#/$defs/route"},
+    "fact_ledger": {"type": "array", "items": {"$ref": "#/$defs/fact"}},
+    "angle": {"$ref": "#/$defs/angle"},
+    "asset_plan": {"type": "array", "items": {"$ref": "#/$defs/assetPlan"}},
+    "package": {"oneOf": [{"$ref": "#/$defs/blockedPackage"}, {"$ref": "#/$defs/articleOutline"}, {"$ref": "#/$defs/longFormArticle"}, {"$ref": "#/$defs/communityPost"}, {"$ref": "#/$defs/communityComment"}, {"$ref": "#/$defs/carouselNote"}, {"$ref": "#/$defs/shortVideo"}]},
+    "watch_items": {"type": "array"},
+    "quality_report": {"$ref": "#/$defs/qualityReport"},
+    "publication_state": {"enum": ["ready", "conditional", "blocked"]}
+  },
+  "$defs": {
+    "nullableString": {"type": ["string", "null"]},
+    "stringSet": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "factIds": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "assetIds": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "lineage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["artifact_id", "program_ref", "content_item_ref", "opportunity_refs", "input_artifact_refs"],
+      "properties": {
+        "artifact_id": {"type": "string", "pattern": "^MEDIA_[A-Za-z0-9_:-]+$"},
+        "program_ref": {"$ref": "#/$defs/nullableString"},
+        "content_item_ref": {"$ref": "#/$defs/nullableString"},
+        "opportunity_refs": {"$ref": "#/$defs/stringSet"},
+        "input_artifact_refs": {"$ref": "#/$defs/stringSet"},
+        "thesis_binding": {
+          "anyOf": [
+            {
+              "type": "object", "additionalProperties": false,
+              "required": ["thesis_ref", "canonical_hash"],
+              "properties": {
+                "thesis_ref": {"type": "string", "pattern": "^THESIS_[a-z0-9]{8,64}@r[1-9][0-9]*$"},
+                "canonical_hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"}
+              }
+            },
+            {"type": "null"}
+          ]
+        },
+        "expression_binding": {
+          "anyOf": [
+            {
+              "type": "object", "additionalProperties": false,
+              "required": ["plan_ref", "fingerprint_sha256"],
+              "properties": {
+                "plan_ref": {"type": "string", "pattern": "^CEXP_[A-Za-z0-9_:-]{8,}@r[1-9][0-9]*$"},
+                "fingerprint_sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"}
+              }
+            },
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "brief": {
+      "type": "object", "additionalProperties": false,
+      "required": ["channel", "format", "delivery_mode", "content_class", "temporal_mode", "language", "as_of", "reader", "decision_use", "target_community", "target_duration_seconds", "account_qualification", "research_pack_ref", "profile_ref", "media_format_ref"],
+      "properties": {
+        "channel": {"enum": ["generic_long_form", "seeking_alpha", "reddit", "xiaohongshu", "douyin"]},
+        "format": {"enum": ["article_outline", "long_form_article", "community_post", "community_comment", "carousel_note", "short_video"]},
+        "delivery_mode": {"enum": ["internal_outline", "draft", "publish_ready"]},
+        "content_class": {"enum": ["market_commentary", "financial_education", "investment_analysis", "product_marketing", "personalized_advice"]},
+        "temporal_mode": {"enum": ["realtime", "historical_replay", "evergreen"]},
+        "language": {"type": "string", "minLength": 1},
+        "as_of": {"type": "string", "minLength": 1},
+        "reader": {"type": "string"},
+        "decision_use": {"type": "string"},
+        "target_community": {"$ref": "#/$defs/nullableString"},
+        "target_duration_seconds": {"type": ["number", "null"], "minimum": 0},
+        "account_qualification": {"enum": ["verified", "declared", "unknown", "not_required"]},
+        "research_pack_ref": {"$ref": "#/$defs/nullableString"},
+        "profile_ref": {"$ref": "#/$defs/nullableString"},
+        "media_format_ref": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "gate": {
+      "type": "object", "additionalProperties": false, "required": ["decision", "checks", "repairs"],
+      "properties": {"decision": {"enum": ["pass", "caution", "reject"]}, "checks": {"type": "array"}, "repairs": {"type": "array"}}
+    },
+    "policyRule": {
+      "type": "object", "additionalProperties": false, "required": ["rule_id", "status", "detail", "source_url"],
+      "properties": {"rule_id": {"type": "string", "minLength": 1}, "status": {"enum": ["pass", "caution", "block"]}, "detail": {"type": "string", "minLength": 1}, "source_url": {"type": "string"}}
+    },
+    "policyGate": {
+      "type": "object", "additionalProperties": false, "required": ["decision", "checked_at", "rules_checked", "repairs"],
+      "properties": {"decision": {"enum": ["ready", "conditional", "blocked"]}, "checked_at": {"$ref": "#/$defs/nullableString"}, "rules_checked": {"type": "array", "items": {"$ref": "#/$defs/policyRule"}}, "repairs": {"type": "array"}}
+    },
+    "disclosureState": {
+      "type": "object", "additionalProperties": false,
+      "required": ["position_status", "position_text", "commercial_status", "commercial_text", "identity_status", "ai_assistance_status", "public_disclosures"],
+      "properties": {
+        "position_status": {"enum": ["declared", "no_position", "unknown", "not_required"]},
+        "position_text": {"$ref": "#/$defs/nullableString"},
+        "commercial_status": {"enum": ["declared", "none", "unknown", "not_required"]},
+        "commercial_text": {"$ref": "#/$defs/nullableString"},
+        "identity_status": {"enum": ["verified", "declared", "unknown", "not_required"]},
+        "ai_assistance_status": {"enum": ["disclosed", "not_disclosed", "unknown", "not_required"]},
+        "public_disclosures": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "route": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "taxonomy_version", "cue_id", "event_type", "event_confidence", "candidates", "reasoning_lenses", "render_shape", "required_context", "hard_numbers", "abstain", "abstain_reason"],
+      "properties": {
+        "schema_version": {"const": "route-v1"}, "taxonomy_version": {"const": "market-narrative-v2"},
+        "cue_id": {"type": "string"}, "event_type": {"type": "string"},
+        "event_confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "candidates": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["event_type", "score"], "properties": {"event_type": {"type": "string"}, "score": {"type": "number"}}}},
+        "reasoning_lenses": {"type": "array", "items": {"type": "string"}}, "render_shape": {"type": "string"},
+        "required_context": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["kind", "fields", "why"], "properties": {"kind": {"type": "string"}, "fields": {"type": "array", "items": {"type": "string"}}, "why": {"type": "string"}}}},
+        "hard_numbers": {"type": "array", "items": {"type": "string"}}, "abstain": {"type": "boolean"}, "abstain_reason": {"type": "string"}
+      }
+    },
+    "fact": {
+      "type": "object", "additionalProperties": false, "required": ["id", "claim", "evidence_class", "source_url", "as_of", "freshness"],
+      "properties": {"id": {"type": "string", "minLength": 1}, "claim": {"type": "string", "minLength": 1}, "evidence_class": {"enum": ["source", "verified-live", "derived", "hypothesis"]}, "source_url": {"type": "string"}, "as_of": {"type": "string"}, "freshness": {"enum": ["current", "stale", "unknown"]}}
+    },
+    "angle": {
+      "type": "object", "additionalProperties": false, "required": ["tension", "forced_actor", "why_selected", "profile_rule_ids", "media_rule_ids"],
+      "properties": {"tension": {"type": "string"}, "forced_actor": {"type": "string"}, "why_selected": {"type": "string"}, "profile_rule_ids": {"$ref": "#/$defs/stringSet"}, "media_rule_ids": {"$ref": "#/$defs/stringSet"}}
+    },
+    "assetPlan": {
+      "type": "object", "additionalProperties": false, "required": ["id", "type", "origin", "reuse_allowed", "direction", "source_url", "fact_ids"],
+      "properties": {"id": {"type": "string", "pattern": "^media_asset_[A-Za-z0-9_-]+$"}, "type": {"enum": ["image", "chart", "screenshot", "video", "audio", "document", "other"]}, "origin": {"enum": ["generated", "owned", "licensed", "public-domain", "permission", "source-reference-only"]}, "reuse_allowed": {"type": "boolean"}, "direction": {"type": "string", "minLength": 1}, "source_url": {"$ref": "#/$defs/nullableString"}, "artifact_ref": {"$ref": "#/$defs/nullableString"}, "fact_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}}
+    },
+    "sectionOutline": {
+      "type": "object", "additionalProperties": false, "required": ["role", "heading", "notes", "fact_ids", "asset_ids"],
+      "properties": {"role": {"type": "string"}, "heading": {"type": "string"}, "notes": {"type": "string", "minLength": 1}, "fact_ids": {"$ref": "#/$defs/factIds"}, "asset_ids": {"$ref": "#/$defs/assetIds"}}
+    },
+    "sectionBody": {
+      "type": "object", "additionalProperties": false, "required": ["role", "heading", "body", "fact_ids", "asset_ids"],
+      "properties": {"role": {"type": "string"}, "heading": {"type": "string"}, "body": {"type": "string", "minLength": 1}, "fact_ids": {"$ref": "#/$defs/factIds"}, "asset_ids": {"$ref": "#/$defs/assetIds"}}
+    },
+    "blockedPackage": {"type": "object", "additionalProperties": false, "required": ["kind", "reason"], "properties": {"kind": {"const": "blocked"}, "reason": {"type": "string", "minLength": 1}}},
+    "articleOutline": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "title", "dek", "sections", "disclosures", "source_links"],
+      "properties": {"kind": {"const": "article_outline"}, "title": {"type": "string", "minLength": 1}, "dek": {"type": "string"}, "sections": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/sectionOutline"}}, "disclosures": {"type": "array", "items": {"type": "string"}}, "source_links": {"type": "array", "items": {"type": "string"}}}
+    },
+    "longFormArticle": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "title", "dek", "sections", "disclosures", "source_links"],
+      "properties": {"kind": {"const": "long_form_article"}, "title": {"type": "string", "minLength": 1}, "dek": {"type": "string"}, "sections": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/sectionBody"}}, "disclosures": {"type": "array", "items": {"type": "string"}}, "source_links": {"type": "array", "items": {"type": "string"}}}
+    },
+    "communityPost": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "community", "community_rules_url", "rules_checked_at", "flair", "title", "body", "fact_ids", "reply_plan"],
+      "properties": {"kind": {"const": "community_post"}, "community": {"type": "string", "minLength": 1}, "community_rules_url": {"type": "string", "minLength": 1}, "rules_checked_at": {"type": "string", "minLength": 1}, "flair": {"$ref": "#/$defs/nullableString"}, "title": {"type": "string", "minLength": 1}, "body": {"type": "string", "minLength": 1}, "fact_ids": {"$ref": "#/$defs/factIds"}, "reply_plan": {"type": "array", "items": {"type": "string"}}}
+    },
+    "communityComment": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "thread_url", "community", "community_rules_url", "rules_checked_at", "body", "fact_ids"],
+      "properties": {"kind": {"const": "community_comment"}, "thread_url": {"type": "string", "minLength": 1}, "community": {"type": "string", "minLength": 1}, "community_rules_url": {"type": "string", "minLength": 1}, "rules_checked_at": {"type": "string", "minLength": 1}, "body": {"type": "string", "minLength": 1}, "fact_ids": {"$ref": "#/$defs/factIds"}}
+    },
+    "cover": {
+      "type": "object", "additionalProperties": false, "required": ["headline", "subhead", "visual_direction", "asset_ids"],
+      "properties": {"headline": {"type": "string", "minLength": 1}, "subhead": {"type": "string"}, "visual_direction": {"type": "string", "minLength": 1}, "asset_ids": {"$ref": "#/$defs/assetIds"}}
+    },
+    "card": {
+      "type": "object", "additionalProperties": false, "required": ["index", "role", "headline", "body", "visual_direction", "fact_ids", "asset_ids"],
+      "properties": {"index": {"type": "integer", "minimum": 1}, "role": {"type": "string"}, "headline": {"type": "string", "minLength": 1}, "body": {"type": "string", "minLength": 1}, "visual_direction": {"type": "string", "minLength": 1}, "fact_ids": {"$ref": "#/$defs/factIds"}, "asset_ids": {"$ref": "#/$defs/assetIds"}}
+    },
+    "carouselNote": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "cover", "cards", "caption", "tags", "disclosures"],
+      "properties": {"kind": {"const": "carousel_note"}, "cover": {"$ref": "#/$defs/cover"}, "cards": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/card"}}, "caption": {"type": "string"}, "tags": {"$ref": "#/$defs/stringSet"}, "disclosures": {"type": "array", "items": {"type": "string"}}}
+    },
+    "beat": {
+      "type": "object", "additionalProperties": false, "required": ["index", "start_second", "end_second", "role", "voiceover", "on_screen_text", "visual_direction", "fact_ids", "asset_ids"],
+      "properties": {"index": {"type": "integer", "minimum": 1}, "start_second": {"type": "number", "minimum": 0}, "end_second": {"type": "number", "minimum": 0}, "role": {"type": "string"}, "voiceover": {"type": "string"}, "on_screen_text": {"type": "string"}, "visual_direction": {"type": "string"}, "fact_ids": {"$ref": "#/$defs/factIds"}, "asset_ids": {"$ref": "#/$defs/assetIds"}}
+    },
+    "shortVideo": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "duration_seconds", "hook", "beats", "caption", "tags", "disclosures"],
+      "properties": {"kind": {"const": "short_video"}, "duration_seconds": {"type": "number", "exclusiveMinimum": 0}, "hook": {"type": "string", "minLength": 1}, "beats": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/beat"}}, "caption": {"type": "string"}, "tags": {"$ref": "#/$defs/stringSet"}, "disclosures": {"type": "array", "items": {"type": "string"}}}
+    },
+    "qualityReport": {
+      "type": "object", "additionalProperties": false, "required": ["scores", "hard_failures", "revisions"],
+      "properties": {"scores": {"type": "object"}, "hard_failures": {"type": "array"}, "revisions": {"type": "array"}}
+    }
+  }
+}
