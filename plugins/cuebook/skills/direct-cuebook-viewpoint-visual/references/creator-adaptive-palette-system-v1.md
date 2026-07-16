@@ -52,7 +52,7 @@ The selector is deterministic and fast. It returns the three strategies, preset 
 
 ## Preset Registry
 
-`creator-palette-presets-v1.json` is the canonical registry. It currently covers quiet research, high-energy conviction, event risk, mechanism research, technical/crypto, macro conflict, personal narrative, cycle rotation, and premium minimal expression.
+`creator-palette-presets-v1.json` is the canonical registry. It currently covers quiet research, high-energy conviction, event risk, mechanism research, technical/crypto, macro conflict, personal narrative, cycle rotation, premium minimal expression, warm commodity-desk darkness, ledger-calm valuation, and archival long-form warmth.
 
 Each preset contains:
 

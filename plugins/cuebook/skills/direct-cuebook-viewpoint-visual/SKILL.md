@@ -189,6 +189,7 @@ Every `binding_ref` is a display promise. A selected material binding must appea
 - `references/market-native-art-direction-v1.md`: optional market-native direction and Robinhood brand-distance gate.
 - `references/composition-primitives-v1.md`: open composition vocabulary and routing guidance.
 - `references/canvas-craft-v1.md`: occupation, scale-drama, surface-depth, and set-diversity contract for the 2.36:1 canvas.
+- `references/editorial-craft-benchmarks-v1.md`: chart-honesty, text-discipline, and one-message rules distilled from verified FT/Datawrapper/Economist sources, with the poster exception clause.
 - `references/viewpoint-expression-system-v1.md`: communication-job, evidence-shape, combination, and data-gate contract.
 - `references/finance-visual-argument-system-v1.md`: market-relationship, trading-archetype, chart, and compact-composition routing contract.
 - `references/viewpoint-expression-registry-v1.json`: machine-readable candidate jobs and compatible visual grammars.
