@@ -21,8 +21,9 @@ Provide one read-only entrance for everything the user wants to see in Cuebook. 
    - evidence or valuation: `search_news`, `list_filings`, and `../build-market-research-pack/SKILL.md` when synthesis is requested;
    - curves or triggers: `get_candles`, `compute_market_metrics`, and `../compute-cuebook-market-indicators/SKILL.md` when deterministic local indicators are needed;
    - owned feed: `get_creator_feed`, then `../normalize-cuebook-creator-feed/SKILL.md`;
-   - settlement preparation: `resolve_settlement_binding`; return the read-only binding and never register a claim from Query;
+   - settlement preparation: `resolve_settlement_binding` (legacy; superseded by the Frame publication flow — prefer `get_frame` settlement state when the view lives in a Frame); return the read-only binding and never register a claim from Query;
    - outcomes and receipts: `list_settlements`, `get_publication_receipt`, and `../reconcile-market-content-history/SKILL.md` when a history ledger is requested;
+   - published Frames: `get_frame` for a Frame's releases, media, and settlement state; `get_frame_media` for rendition processing status and pixel-hash receipts;
    - public account or media study: the authorized corpus and distillation skills.
 5. Preserve provider timestamps, sealed/forming state, source identity, metric basis, and capability gaps. A missing backend tool produces a partial result, never an invented value.
 6. Return `CuebookQueryBundleV1`, then answer the user from that bundle. Include sources and freshness near the claims they support.
