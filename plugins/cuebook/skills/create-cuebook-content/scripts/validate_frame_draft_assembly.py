@@ -17,7 +17,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-UUID_PATTERN = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+# The backend derives time-ordered dedupe state from the idempotency key, so a
+# generic UUID (v4 etc.) is rejected: only UUIDv7 carries the required
+# millisecond-ordered prefix. Mirrors uuidV7Schema in core frame assembly.
+UUID_V7_PATTERN = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
 SHA_PATTERN = re.compile(r"^sha256:[0-9a-f]{64}$")
 DECIMAL_PATTERN = re.compile(r"^-?\d+(\.\d+)?$")
 FAMILIES = {"single_asset_direction", "single_asset_price_target", "pair_asset_direction", "pair_asset_price_targets"}
@@ -85,8 +88,8 @@ def validate(payload: Any) -> dict[str, Any]:
     errors: list[dict[str, str]] = []
     if payload.get("schema_version") != "frame-draft-assembly-v1":
         errors.append(issue("SCHEMA_VERSION", "$.schema_version", "Expected frame-draft-assembly-v1."))
-    if not UUID_PATTERN.match(str(payload.get("idempotency_key", ""))):
-        errors.append(issue("IDEMPOTENCY_KEY", "$.idempotency_key", "A lowercase UUID idempotency key is required."))
+    if not UUID_V7_PATTERN.match(str(payload.get("idempotency_key", ""))):
+        errors.append(issue("IDEMPOTENCY_KEY", "$.idempotency_key", "A lowercase UUIDv7 idempotency key is required; other UUID versions are rejected."))
     assembled_at = str(payload.get("assembled_at", ""))
     if not assembled_at:
         errors.append(issue("ASSEMBLED_AT", "$.assembled_at", "assembled_at ISO timestamp is required."))

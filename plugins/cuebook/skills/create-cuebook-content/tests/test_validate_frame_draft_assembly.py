@@ -96,6 +96,11 @@ class AssemblyTests(unittest.TestCase):
         payload = assembly()
         payload["idempotency_key"] = "not-a-uuid"
         self.assertIn("IDEMPOTENCY_KEY", codes(payload))
+        payload = assembly()
+        # A generic UUIDv4 is a valid UUID but not time-ordered; the backend
+        # accepts only UUIDv7 and the assembly validator must match it.
+        payload["idempotency_key"] = "0198a5b0-1111-4000-8000-000000000001"
+        self.assertIn("IDEMPOTENCY_KEY", codes(payload))
 
     def test_manifest_lineage_required(self) -> None:
         payload = assembly()

@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -22,6 +23,7 @@ from typing import Any
 SCHEMA_VERSION = "frame-visual-manifest-v1"
 CAPTURE_KIND_TO_ROLE = {"full": "publication", "compact_622": "compact", "og": "og"}
 REQUIRED_ROLES = ("publication", "compact")
+SHA256_PATTERN = re.compile(r"^sha256:[0-9a-f]{64}$")
 
 
 def canonical_jcs(value: Any) -> str:
@@ -63,15 +65,35 @@ def build(
     role_hashes: dict[str, str] = {}
     for output in capture_report.get("derivatives", []):
         role = CAPTURE_KIND_TO_ROLE.get(str(output.get("kind")))
-        if role:
-            role_hashes[role] = str(output.get("sha256"))
+        if not role:
+            continue
+        # role_hashes carry canonical RGBA pixel hashes, never encoded PNG byte
+        # hashes; the backend re-verifies pixels after its own normalization.
+        pixel = output.get("pixel_sha256")
+        if not isinstance(pixel, str) or not SHA256_PATTERN.match(pixel):
+            errors.append(issue("PIXEL_HASH_MISSING", f"Capture derivative {output.get('kind')} lacks a canonical RGBA pixel_sha256; re-capture with the current capture script."))
+            continue
+        role_hashes[role] = pixel
     for role in REQUIRED_ROLES:
         if role not in role_hashes:
             errors.append(issue("ROLE_MISSING", f"Capture report has no {role} rendition; the backend blocks publication without it."))
+    if len(set(role_hashes.values())) != len(role_hashes):
+        errors.append(issue("ROLE_HASH_DUPLICATE", "Each capture role must bind distinct normalized pixels; two renditions decoded to identical pixels."))
 
     if render_audit.get("valid") is not True:
         errors.append(issue("AUDIT_NOT_PASSED", "Rendered audit must be valid before a manifest is issued."))
-    capture_audit = {"decision": "ready" if render_audit.get("valid") is True else "blocked", "status": "passed" if render_audit.get("valid") is True else "failed"}
+    profile_version = render_audit.get("profile_version")
+    audited_at = render_audit.get("audited_at")
+    if not isinstance(profile_version, str) or not profile_version.strip() or not isinstance(audited_at, str) or not audited_at.strip():
+        errors.append(issue("AUDIT_METADATA_MISSING", "Rendered audit must carry profile_version and audited_at; re-audit with the current audit script."))
+        profile_version = str(profile_version or "")
+        audited_at = str(audited_at or "")
+    capture_audit = {
+        "decision": "ready" if render_audit.get("valid") is True else "blocked",
+        "status": "passed" if render_audit.get("valid") is True else "failed",
+        "profile_version": profile_version,
+        "audited_at": audited_at,
+    }
 
     source_bindings = []
     for binding in direction_set.get("bindings", []):
