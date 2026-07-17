@@ -45,6 +45,43 @@ test("valid plugin package", () => {
   assert.ok(modules.routing_rules.create_deliverables.includes("creator_viewpoint_graphic"));
 });
 
+test("active, planned, and superseded tool surfaces stay separate", () => {
+  const payload = JSON.parse(
+    fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
+  );
+  const active = new Set([...payload.available_tools, ...payload.required_tools].map((item) => item.tool));
+  assert.equal(payload.required_tools.length, 17);
+  assert.deepEqual(new Set(payload.planned_tools.map((item) => item.tool)), new Set([
+    "get_creator_feed",
+    "compute_market_metrics",
+    "publish_release",
+    "get_publication_receipt",
+  ]));
+  for (const tool of payload.planned_tools) assert.ok(!active.has(tool.tool));
+  for (const tool of ["resolve_settlement_binding", "save_creator_artifact", "register_settlement_claim"]) {
+    assert.ok(!active.has(tool));
+    assert.ok(!payload.planned_tools.some((item) => item.tool === tool));
+  }
+});
+
+test("creator fast policy keeps graph deep and Web fallback bounded", () => {
+  const payload = JSON.parse(
+    fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
+  );
+  const policy = payload.skill_tool_policy;
+  assert.ok(!policy.creator_fast_allowlist.includes("get_reasoning_graph"));
+  assert.ok(policy.deep_only.includes("get_reasoning_graph"));
+  assert.deepEqual(policy.web_fallback, {
+    trigger: "material_gap_after_cuebook_batch",
+    max_batches: 1,
+    max_queries: 3,
+    max_sources: 3,
+    source_preference: "primary_or_authoritative",
+    required_lineage_fields: ["retrieved_via", "retrieved_at", "locator"],
+    unsupported_claim_policy: "creator_hypothesis_or_omit",
+  });
+});
+
 test("query cannot invoke create", () => {
   withTmpPath((tmpPath) => {
     const root = copiedPlugin(tmpPath);
@@ -61,10 +98,19 @@ test("query menu rejects write tool", () => {
     const root = copiedPlugin(tmpPath);
     const filePath = path.join(root, "assets", "query-menu-v1.json");
     rewrite(filePath, (payload) => {
-      payload.queries[0].mcp_tools.push("save_creator_artifact");
+      payload.queries[0].mcp_tools.push("publish_frame");
     });
     assert.ok(codes(validate(root)).has("QUERY_WRITE_TOOL"));
   });
+});
+
+test("search_news and paper preview scopes match the backend", () => {
+  const payload = JSON.parse(
+    fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
+  );
+  const active = new Map([...payload.available_tools, ...payload.required_tools].map((item) => [item.tool, item]));
+  assert.equal(active.get("search_news").authorization_scope, "read:public");
+  assert.equal(active.get("preview_paper_order").authorization_scope, "cuebook.paper.trade");
 });
 
 test("skills cannot belong to both modules", () => {

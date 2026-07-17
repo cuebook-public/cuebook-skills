@@ -1,7 +1,7 @@
 {
   "schema_version": "cuebook-release-skills-manifest-v1",
   "catalog_version": "1.27.0",
-  "plugin_version": "0.2.4",
+  "plugin_version": "0.2.5",
   "bundles": [
     {
       "skill": "query-cuebook",
@@ -9,12 +9,11 @@
         "query-cuebook",
         "build-market-research-pack",
         "compute-cuebook-market-indicators",
-        "normalize-cuebook-creator-feed",
         "reconcile-market-content-history",
         "validate-cuebook-projection",
         "route-cuebook-narrative"
       ],
-      "bundled_internal_skills": 6,
+      "bundled_internal_skills": 5,
       "plugin_assets": [
         "cuebook-modules-v1.json",
         "mcp-capability-map-v1.json",
@@ -33,12 +32,14 @@
       "closure": [
         "create-cuebook-content",
         "query-cuebook",
+        "render-cuebook-thesis-chart",
         "orchestrate-cuebook-creator-workflow",
         "assemble-cuebook-publish-candidates",
         "build-market-research-pack",
         "compute-cuebook-market-indicators",
-        "normalize-cuebook-creator-feed",
         "reconcile-market-content-history",
+        "render-cuebook-market-media",
+        "normalize-cuebook-creator-feed",
         "compose-cuebook-content-recipe",
         "validate-cuebook-projection",
         "route-cuebook-narrative",
@@ -49,18 +50,16 @@
         "plan-market-content-program",
         "render-cuebook-market-post",
         "assemble-cuebook-viewpoint-data",
-        "render-cuebook-thesis-chart",
-        "render-cuebook-market-media",
-        "assemble-cuebook-viewpoint-card",
+        "render-cuebook-viewpoint-visual",
         "prepare-market-content-release",
+        "assemble-cuebook-viewpoint-card",
         "compile-cuebook-settlement-claim",
         "compile-cuebook-visual-argument",
-        "render-cuebook-viewpoint-visual",
+        "direct-cuebook-viewpoint-visual",
         "render-cuebook-logic-card",
         "render-cuebook-market-figure",
         "compile-cuebook-settlement-formula",
         "collect-market-commentator-corpus",
-        "direct-cuebook-viewpoint-visual",
         "render-cuebook-market-signal",
         "distill-market-commentator-profile"
       ],
@@ -77,6 +76,7 @@
         "references/skills/query-cuebook/scripts/validate_query_bundle.mjs",
         "references/skills/query-cuebook/scripts/validate_query_request.mjs",
         "references/skills/reconcile-market-content-history/scripts/validate_content_history.mjs",
+        "scripts/run_fast_preview.mjs",
         "scripts/validate_creation_bundle.mjs",
         "scripts/validate_creator_seed.mjs",
         "scripts/validate_frame_preview.mjs"

@@ -15,7 +15,8 @@ function bundle() {
     as_of: "2026-07-15T19:00:00+08:00",
     request: { raw_text: "看 USO 最新叙事", asset_refs: ["asset:uso"], time_range: null, depth: "quick" },
     results: [{ result_id: "RES_story", kind: "story", title: "Oil risk premium", summary: "Risk premium is unwinding.", data_ref: "story:uso:1", source_refs: ["SRC_story"], as_of: "2026-07-15T18:50:00+08:00", status: "available" }],
-    source_register: [{ source_ref: "SRC_story", source_type: "cuebook_story", locator: "cuebook://story/uso/1", published_at: "2026-07-15T18:45:00+08:00", retrieved_at: "2026-07-15T19:00:00+08:00", usage_rights: "citation_only" }],
+    source_register: [{ source_ref: "SRC_story", source_type: "cuebook_story", locator: "cuebook://story/uso/1", published_at: "2026-07-15T18:45:00+08:00", retrieved_at: "2026-07-15T19:00:00+08:00", retrieved_via: "cuebook_mcp", usage_rights: "citation_only" }],
+    retrieval_report: { cuebook_batches: 1, web_batches: 0, web_queries: 0, web_source_refs: [] },
     unavailable_capabilities: [],
     creation_handoff: { eligible: true, subject_refs: ["asset:uso"], result_refs: ["RES_story"], warnings: [] },
     quality_report: { warnings: [], hard_failures: [] },
@@ -62,6 +63,43 @@ test("source refs resolve", () => {
   const item = bundle();
   item.results[0].source_refs = ["SRC_missing"];
   assert.ok(new Set(VALIDATOR.validate(item).errors.map((error) => error.code)).has("UNKNOWN_SOURCE_REF"));
+});
+
+test("authorized Web fallback preserves bounded lineage", () => {
+  const item = bundle();
+  item.state = "partial";
+  item.unavailable_capabilities = ["search_news"];
+  item.source_register.push({
+    source_ref: "SRC_web",
+    source_type: "issuer_release",
+    locator: "https://example.com/release",
+    published_at: "2026-07-15T18:30:00+08:00",
+    retrieved_at: "2026-07-15T19:00:00+08:00",
+    retrieved_via: "authorized_web",
+    usage_rights: "citation_only",
+  });
+  item.retrieval_report = { cuebook_batches: 1, web_batches: 1, web_queries: 2, web_source_refs: ["SRC_web"] };
+  assert.ok(VALIDATOR.validate(item).valid);
+  item.retrieval_report.web_source_refs = [];
+  assert.ok(new Set(VALIDATOR.validate(item).errors.map((error) => error.code)).has("WEB_SOURCE_LINEAGE"));
+});
+
+test("Web fallback requires a public locator and one bounded query batch", () => {
+  const item = bundle();
+  item.source_register.push({
+    source_ref: "SRC_web",
+    source_type: "news",
+    locator: "private-cache:story",
+    published_at: null,
+    retrieved_at: "2026-07-15T19:00:00+08:00",
+    retrieved_via: "authorized_web",
+    usage_rights: "citation_only",
+  });
+  item.retrieval_report = { cuebook_batches: 1, web_batches: 1, web_queries: 0, web_source_refs: ["SRC_web"] };
+  const result = VALIDATOR.validate(item);
+  const resultCodes = new Set(result.errors.map((error) => error.code));
+  assert.ok(resultCodes.has("WEB_SOURCE_LOCATOR"));
+  assert.ok(resultCodes.has("WEB_BATCH_STATE"));
 });
 
 test("partial when capability is unavailable", () => {

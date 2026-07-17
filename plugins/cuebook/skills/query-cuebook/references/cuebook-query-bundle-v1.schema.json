@@ -4,14 +4,14 @@
   "title": "CuebookQueryBundleV1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "module_id", "query_id", "state", "read_only", "query_type", "as_of", "request", "results", "source_register", "unavailable_capabilities", "creation_handoff", "quality_report"],
+  "required": ["schema_version", "module_id", "query_id", "state", "read_only", "query_type", "as_of", "request", "results", "source_register", "retrieval_report", "unavailable_capabilities", "creation_handoff", "quality_report"],
   "properties": {
     "schema_version": {"const": "cuebook-query-bundle-v1"},
     "module_id": {"const": "query"},
     "query_id": {"type": "string", "pattern": "^QRY_[A-Za-z0-9_-]+$"},
     "state": {"enum": ["complete", "partial", "blocked"]},
     "read_only": {"const": true},
-    "query_type": {"enum": ["latest_stories", "story_detail", "asset_narratives", "market_state", "market_evidence", "fundamentals", "market_series", "derived_metrics", "creator_feed", "settlement_binding", "settlement_history", "publication_history", "commentator_profile", "media_format", "mixed"]},
+    "query_type": {"enum": ["latest_stories", "story_detail", "asset_narratives", "market_state", "market_evidence", "fundamentals", "market_series", "derived_metrics", "settlement_history", "published_frame", "commentator_profile", "media_format", "mixed"]},
     "as_of": {"type": "string", "format": "date-time"},
     "request": {
       "type": "object",
@@ -47,15 +47,27 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["source_ref", "source_type", "locator", "published_at", "retrieved_at", "usage_rights"],
+        "required": ["source_ref", "source_type", "locator", "published_at", "retrieved_at", "retrieved_via", "usage_rights"],
         "properties": {
           "source_ref": {"type": "string", "pattern": "^SRC_[A-Za-z0-9_-]+$"},
           "source_type": {"enum": ["cuebook_story", "cuebook_narrative", "cuebook_market_state", "news", "issuer_release", "filing", "regulator", "exchange", "market_data", "calculation", "creator_record", "publication_receipt", "public_corpus"]},
           "locator": {"type": "string", "minLength": 1},
           "published_at": {"type": ["string", "null"], "format": "date-time"},
           "retrieved_at": {"type": "string", "format": "date-time"},
+          "retrieved_via": {"enum": ["cuebook_mcp", "authorized_web", "user_supplied", "local_derivation"]},
           "usage_rights": {"enum": ["display", "transform", "citation_only", "restricted"]}
         }
+      }
+    },
+    "retrieval_report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cuebook_batches", "web_batches", "web_queries", "web_source_refs"],
+      "properties": {
+        "cuebook_batches": {"type": "integer", "minimum": 0, "maximum": 8},
+        "web_batches": {"type": "integer", "minimum": 0, "maximum": 1},
+        "web_queries": {"type": "integer", "minimum": 0, "maximum": 3},
+        "web_source_refs": {"type": "array", "maxItems": 3, "uniqueItems": true, "items": {"type": "string", "pattern": "^SRC_[A-Za-z0-9_-]+$"}}
       }
     },
     "unavailable_capabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9_]+$"}},

@@ -12,6 +12,7 @@ const SCHEMA = JSON.parse(readFileSync(new URL("../references/frame-preview-v1.s
 const SELECTABLE_STATES = new Set(["ready", "conditional", "selected"]);
 const COMPLETE_QUERY_STATES = new Set(["reused", "executed"]);
 const REQUIRED_CHECKS = new Set(["creator_ownership", "source_binding", "copy_fit", "image_render"]);
+const LOGIC_TEMPLATES = new Set(["verdict", "proof", "system"]);
 const PUBLIC_PROCESS_TERMS = [
   "小红书", "Reddit", "reddit", "Telegram", "telegram", "Twitter", "twitter", "推文", "thread", "caption",
   "工作流", "候选集", "质量评分", "证据账本", "query bundle", "research pack", "settlement object",
@@ -69,11 +70,11 @@ export function validate(payload, assetRoot = null) {
   const bundleRefs = Array.isArray(binding.bundle_refs) ? binding.bundle_refs : [];
   const resultRefs = Array.isArray(binding.result_refs) ? binding.result_refs : [];
   if (binding.required === true && SELECTABLE_STATES.has(state) && !COMPLETE_QUERY_STATES.has(binding.status) && binding.status !== "partial") {
-    errors.push(issue("QUERY_REQUIRED", "$.query_binding.status", "A current market preview needs a usable Cuebook query binding."));
+    errors.push(issue("QUERY_REQUIRED", "$.query_binding.status", "A current market preview needs a usable Cuebook-first query binding."));
   }
   if (COMPLETE_QUERY_STATES.has(binding.status) || binding.status === "partial") {
     if (!bundleRefs.length || !resultRefs.length || typeof binding.as_of !== "string") {
-      errors.push(issue("QUERY_LINEAGE", "$.query_binding", "Usable Cuebook query status requires bundle refs, result refs, and as_of."));
+      errors.push(issue("QUERY_LINEAGE", "$.query_binding", "Usable query status requires bundle refs, result refs, and as_of."));
     }
   }
   if (binding.status === "not_required" && (binding.required !== false || bundleRefs.length || resultRefs.length || binding.as_of !== null)) {
@@ -83,7 +84,7 @@ export function validate(payload, assetRoot = null) {
     errors.push(issue("PARTIAL_QUERY", "$.state", "A partial query can produce only a conditional preview."));
   }
   if (binding.status === "unavailable" && state !== "blocked") {
-    errors.push(issue("QUERY_UNAVAILABLE", "$.state", "Unavailable required Cuebook data blocks the preview instead of inviting fabrication."));
+    errors.push(issue("QUERY_UNAVAILABLE", "$.state", "Unavailable required evidence blocks the preview instead of inviting fabrication."));
   }
 
   const ids = new Set();
@@ -99,6 +100,12 @@ export function validate(payload, assetRoot = null) {
     ids.add(candidate.candidate_id);
     angles.add(candidate.angle);
     templates.add(candidate.template_id);
+    if (candidate.visual_kind === "logic_card" && !LOGIC_TEMPLATES.has(candidate.template_id)) {
+      errors.push(issue("VISUAL_ROUTE", `${candidatePath}.template_id`, "A logic card must use verdict, proof, or system."));
+    }
+    if (candidate.visual_kind === "market_chart" && candidate.template_id !== "thesis_chart") {
+      errors.push(issue("VISUAL_ROUTE", `${candidatePath}.template_id`, "A market chart must use thesis_chart."));
+    }
     const frame = isObject(candidate.frame) ? candidate.frame : {};
     const publicCopy = `${frame.title ?? ""}\n${frame.body ?? ""}`;
     for (const term of [...PUBLIC_PROCESS_TERMS, ...CORRECTION_FIRST_TERMS]) {
@@ -112,10 +119,10 @@ export function validate(payload, assetRoot = null) {
     else imageRefs.add(frame.image_ref);
     const evidenceRefs = Array.isArray(candidate.evidence_refs) ? candidate.evidence_refs : [];
     if (binding.required === true && (COMPLETE_QUERY_STATES.has(binding.status) || binding.status === "partial") && !evidenceRefs.length) {
-      errors.push(issue("SOURCE_BINDING", `${candidatePath}.evidence_refs`, "A material current-market preview must bind at least one Cuebook result."));
+      errors.push(issue("SOURCE_BINDING", `${candidatePath}.evidence_refs`, "A material current-market preview must bind at least one frozen query result."));
     }
     const missingEvidence = evidenceRefs.filter((ref) => !knownResults.has(ref));
-    if (missingEvidence.length) errors.push(issue("EVIDENCE_REF", `${candidatePath}.evidence_refs`, "Candidate evidence refs must resolve through the frozen Cuebook query binding."));
+    if (missingEvidence.length) errors.push(issue("EVIDENCE_REF", `${candidatePath}.evidence_refs`, "Candidate evidence refs must resolve through the frozen query binding."));
     const checks = new Set(Array.isArray(candidate.quality_checks) ? candidate.quality_checks : []);
     if (checks.size !== REQUIRED_CHECKS.size || [...REQUIRED_CHECKS].some((check) => !checks.has(check))) {
       errors.push(issue("PREVIEW_CHECKS", `${candidatePath}.quality_checks`, "Run only the four lightweight preview checks."));
@@ -135,7 +142,11 @@ export function validate(payload, assetRoot = null) {
     }
   });
 
-  if (generation.mode === "requested_three" && (angles.size !== 3 || templates.size !== 3)) {
+  if (generation.mode === "requested_three" && (
+    angles.size !== 3
+    || templates.size !== 3
+    || candidates.some((candidate) => candidate?.visual_kind !== "logic_card" || !LOGIC_TEMPLATES.has(candidate?.template_id))
+  )) {
     errors.push(issue("THREE_WAY_VARIATION", "$.candidates", "Three requested previews must use conviction/evidence/mechanism and verdict/proof/system once each."));
   }
 

@@ -13,11 +13,12 @@
     "creator_view": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["original_text", "subject", "direction", "horizon", "claim", "mechanism", "next_watch"],
+      "required": ["original_text", "subject", "direction", "observation_window", "horizon", "claim", "mechanism", "next_watch"],
       "properties": {
         "original_text": {"type": "string", "minLength": 2, "maxLength": 4000},
         "subject": {"type": "string", "minLength": 1, "maxLength": 80},
         "direction": {"enum": ["long", "short", "outperform", "underperform", "range", "avoid", "watch", "neutral", "explain"]},
+        "observation_window": {"type": "string", "minLength": 1, "maxLength": 80},
         "horizon": {"type": "string", "minLength": 1, "maxLength": 80},
         "claim": {"type": "string", "minLength": 2, "maxLength": 200},
         "mechanism": {"type": "string", "minLength": 2, "maxLength": 240},
@@ -54,11 +55,12 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["candidate_id", "angle", "template_id", "frame", "image_sha256", "evidence_refs", "quality_checks"],
+        "required": ["candidate_id", "angle", "visual_kind", "template_id", "frame", "image_sha256", "evidence_refs", "quality_checks"],
         "properties": {
           "candidate_id": {"type": "string", "pattern": "^FPREV_CAND_[A-Za-z0-9_:-]{4,}$"},
           "angle": {"enum": ["conviction", "evidence", "mechanism"]},
-          "template_id": {"enum": ["verdict", "proof", "system"]},
+          "visual_kind": {"enum": ["logic_card", "market_chart"]},
+          "template_id": {"enum": ["verdict", "proof", "system", "thesis_chart"]},
           "frame": {
             "type": "object",
             "additionalProperties": false,

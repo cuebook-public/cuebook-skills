@@ -69,10 +69,50 @@ const FRAME_TOOL_SCOPES = new Map([
 
 const PAPER_TOOL_SCOPES = new Map([
   ["get_paper_portfolio", "cuebook.paper.read"],
-  ["preview_paper_order", "cuebook.paper.read"],
+  ["preview_paper_order", "cuebook.paper.trade"],
   ["list_paper_orders", "cuebook.paper.read"],
   ["place_paper_order", "cuebook.paper.trade"],
   ["close_paper_position", "cuebook.paper.trade"],
+]);
+
+const PLANNED_TOOLS = new Set([
+  "get_creator_feed",
+  "compute_market_metrics",
+  "publish_release",
+  "get_publication_receipt",
+]);
+
+const SUPERSEDED_TOOLS = new Set([
+  "resolve_settlement_binding",
+  "save_creator_artifact",
+  "register_settlement_claim",
+]);
+
+const CREATOR_FAST_TOOLS = new Set([
+  "search_assets",
+  "get_market_state",
+  "list_asset_cues",
+  "get_cues",
+  "search_news",
+  "get_candles",
+  "list_market_calendar",
+  "get_positioning",
+  "list_asset_events",
+]);
+
+const FOCUSED_ON_DEMAND_TOOLS = new Set([
+  "list_filings",
+  "list_asset_disclosures",
+  "get_news_cluster",
+  "list_prediction_markets",
+  "list_market_briefings",
+]);
+
+const DEEP_ONLY_TOOLS = new Set([
+  "list_themes",
+  "get_cues_detail",
+  "get_reasoning_graph",
+  "list_settlements",
 ]);
 
 const FORBIDDEN_FRAME_MEDIA_TOOLS = new Set([
@@ -193,6 +233,7 @@ export function validate(pluginRoot) {
     ...(capabilityMap.available_tools ?? []),
     ...(capabilityMap.required_tools ?? []),
   ];
+  const plannedToolItems = (capabilityMap.planned_tools ?? []).filter(isDict);
   const tools = new Map();
   for (const item of toolItems) {
     if (isDict(item) && typeof item.tool === "string") tools.set(item.tool, item);
@@ -203,6 +244,7 @@ export function validate(pluginRoot) {
   const requiredTools = new Set(
     (capabilityMap.required_tools ?? []).filter(isDict).map((item) => norm(item.tool)),
   );
+  const plannedTools = new Set(plannedToolItems.map((item) => norm(item.tool)));
   const frameTools = new Set(
     (capabilityMap.required_tools ?? [])
       .filter((item) => isDict(item) && item.phase === "frame_phase_b")
@@ -214,6 +256,30 @@ export function validate(pluginRoot) {
     "FRAME_TOOL_SET",
     "mcp-capability-map-v1.json.required_tools",
     "Frame Phase B must expose exactly the frozen upload, draft, publish, correction, withdrawal-consent, and full-Frame read operations.",
+  );
+  check(
+    setEq(requiredTools, frameTools),
+    "REQUIRED_TOOL_SET",
+    "mcp-capability-map-v1.json.required_tools",
+    "Active required tools must contain only the frozen 17-Tool Frame family.",
+  );
+  check(
+    setEq(plannedTools, PLANNED_TOOLS),
+    "PLANNED_TOOL_SET",
+    "mcp-capability-map-v1.json.planned_tools",
+    "Only the four explicitly unimplemented capabilities may remain planned.",
+  );
+  check(
+    !intersects(new Set(tools.keys()), plannedTools),
+    "PLANNED_TOOL_ACTIVE",
+    "mcp-capability-map-v1.json",
+    "Planned tools are documentation only and cannot appear in active available or required tools.",
+  );
+  check(
+    !intersects(new Set([...tools.keys(), ...plannedTools]), SUPERSEDED_TOOLS),
+    "SUPERSEDED_TOOL_PRESENT",
+    "mcp-capability-map-v1.json",
+    "Superseded settlement and legacy write tools must be absent from the capability catalog.",
   );
   check(
     !intersects(new Set(tools.keys()), FORBIDDEN_FRAME_MEDIA_TOOLS),
@@ -232,6 +298,34 @@ export function validate(pluginRoot) {
     "FRAME_DRAFT_INPUT",
     "mcp-capability-map-v1.json.required_tools.create_frame_draft.input_contract",
     "create_frame_draft must receive the Skill assembly plus the registered server binding, never a bare FrameDraftV1.",
+  );
+
+  const skillToolPolicy = capabilityMap.skill_tool_policy ?? {};
+  const creatorFastTools = new Set(skillToolPolicy.creator_fast_allowlist ?? []);
+  const focusedTools = new Set(skillToolPolicy.focused_on_demand ?? []);
+  const deepTools = new Set(skillToolPolicy.deep_only ?? []);
+  check(setEq(creatorFastTools, CREATOR_FAST_TOOLS), "CREATOR_FAST_TOOL_SET", "mcp-capability-map-v1.json.skill_tool_policy.creator_fast_allowlist", "Fast creator routing must stay on the small approved Cuebook read surface.");
+  check(setEq(focusedTools, FOCUSED_ON_DEMAND_TOOLS), "FOCUSED_TOOL_SET", "mcp-capability-map-v1.json.skill_tool_policy.focused_on_demand", "Focused reads must remain explicit and on demand.");
+  check(setEq(deepTools, DEEP_ONLY_TOOLS), "DEEP_TOOL_SET", "mcp-capability-map-v1.json.skill_tool_policy.deep_only", "Graph, themes, detail, and settlement history must remain deep-only.");
+  check(!intersects(creatorFastTools, focusedTools) && !intersects(creatorFastTools, deepTools) && !intersects(focusedTools, deepTools), "SKILL_TOOL_POLICY_OVERLAP", "mcp-capability-map-v1.json.skill_tool_policy", "Fast, focused, and deep Skill tool sets must be disjoint.");
+  for (const toolName of [...creatorFastTools, ...focusedTools, ...deepTools]) {
+    const tool = tools.get(toolName);
+    check(availableTools.has(toolName) && tool?.module === "query" && tool?.access === "read", "SKILL_TOOL_POLICY_ACTIVE", `skill_tool_policy.${toolName}`, "Skill retrieval policy may name only active read-only Query tools.");
+  }
+  check(deepTools.has("get_reasoning_graph") && !creatorFastTools.has("get_reasoning_graph"), "REASONING_GRAPH_ROUTE", "mcp-capability-map-v1.json.skill_tool_policy", "The reasoning graph must never enter the default creator fast path.");
+  check(
+    deepEqualPy(skillToolPolicy.web_fallback, {
+      trigger: "material_gap_after_cuebook_batch",
+      max_batches: 1,
+      max_queries: 3,
+      max_sources: 3,
+      source_preference: "primary_or_authoritative",
+      required_lineage_fields: ["retrieved_via", "retrieved_at", "locator"],
+      unsupported_claim_policy: "creator_hypothesis_or_omit",
+    }),
+    "WEB_FALLBACK_POLICY",
+    "mcp-capability-map-v1.json.skill_tool_policy.web_fallback",
+    "Web fallback must remain one bounded, source-attributed batch after a Cuebook evidence gap.",
   );
 
   check(manifest.name === "cuebook", "PLUGIN_NAME", "plugin.json.name", "Unexpected plugin name.");
@@ -395,12 +489,12 @@ export function validate(pluginRoot) {
   });
 
   const expectedWriteGates = new Map([
-    ["save_creator_artifact", new Set(["explicit_user_approval", "artifact_hash", "idempotency_key"])],
-    ["register_settlement_claim", new Set(["explicit_user_approval", "claim_hash", "formula_hash", "idempotency_key"])],
-    ["publish_release", new Set(["explicit_user_approval", "release_approval", "exact_artifact_hash", "idempotency_key"])],
+    ["create_frame_draft", new Set(["explicit_user_intent", "registered_visual_binding", "idempotency_key"])],
+    ["publish_frame", new Set(["explicit_user_approval", "prepared_hash", "publish_token", "idempotency_key"])],
+    ["withdraw_frame", new Set(["explicit_user_approval", "first_party_consent", "prepared_hash", "idempotency_key"])],
   ]);
   const writeActions = creationMenu.write_actions ?? [];
-  check(writeActions.length === expectedWriteGates.size, "WRITE_ACTION_COUNT", "creation-menu-v1.json.write_actions", "Creation menu must declare every authorized write separately from creation choices.");
+  check(writeActions.length === expectedWriteGates.size, "WRITE_ACTION_COUNT", "creation-menu-v1.json.write_actions", "Creation menu must expose only the high-level Frame draft, publish, and withdrawal actions.");
   writeActions.forEach((action, actionIndex) => {
     const base = `creation-menu-v1.json.write_actions[${actionIndex}]`;
     const toolName = action.mcp_tool;
@@ -409,7 +503,7 @@ export function validate(pluginRoot) {
     if (tool !== undefined) {
       check(tool.module === "create" && ["write", "external_write"].includes(tool.access), "WRITE_ACTION_ACCESS", `${base}.mcp_tool`, "Write action must reference a Create write tool.");
     }
-    check(setEq(new Set(action.required_gates ?? []), expectedWriteGates.get(toolName) ?? new Set()), "WRITE_ACTION_GATES", `${base}.required_gates`, "Write action approval, hash, and idempotency gates are incomplete.");
+    check(setEq(new Set(action.required_gates ?? []), expectedWriteGates.get(toolName) ?? new Set()), "WRITE_ACTION_GATES", `${base}.required_gates`, "Frame action intent, binding, authorization, and idempotency gates are incomplete.");
   });
 
   check(!intersects(availableTools, requiredTools), "DUPLICATE_TOOL_PHASE", "mcp-capability-map-v1.json", "A tool cannot be both available and required.");
@@ -461,6 +555,20 @@ export function validate(pluginRoot) {
     }
   }
 
+  for (const tool of plannedToolItems) {
+    const toolName = norm(tool.tool);
+    const allowedAccess = new Set((((rules[tool.module]) ?? {}).allowed_access ?? []).map(norm));
+    check(allowedAccess.has(norm(tool.access)), "PLANNED_TOOL_ACCESS", `planned_tools.${toolName}`, "Planned tool access must still match its owning module.");
+    for (const skillId of tool.used_by ?? []) {
+      const owner = skillToModule.get(skillId);
+      check(owner !== undefined, "PLANNED_TOOL_SKILL_REF", `planned_tools.${toolName}.used_by`, `Unknown Skill ${skillId}.`);
+      if (owner !== undefined) {
+        const allowed = owner === tool.module || ((modules.get(owner) ?? {}).may_invoke ?? []).includes(tool.module);
+        check(allowed, "PLANNED_TOOL_MODULE_EDGE", `planned_tools.${toolName}.used_by`, `${owner} Skill ${skillId} cannot use planned ${tool.module} tool ${toolName}.`);
+      }
+    }
+  }
+
   for (const skillId of ["create-cuebook-content", "query-cuebook"]) {
     const body = readFileSync(path.join(pluginRoot, "skills", skillId, "SKILL.md"), "utf-8");
     check(
@@ -469,6 +577,9 @@ export function validate(pluginRoot) {
       `skills/${skillId}/SKILL.md`,
       "Skill instructions must not call or reintroduce standalone Frame media retrieval; use owner-only status receipts during upload and get_frame after publish.",
     );
+    for (const toolName of [...SUPERSEDED_TOOLS, ...PLANNED_TOOLS]) {
+      check(!new RegExp(`\\b${toolName}\\b`, "u").test(body), "PUBLIC_SKILL_NONCALLABLE_TOOL", `skills/${skillId}/SKILL.md`, `Public entrypoint must not route to non-callable tool ${toolName}.`);
+    }
   }
 
   for (const skillId of querySkills) {
@@ -483,7 +594,7 @@ export function validate(pluginRoot) {
   const configured = ((mcpConfig.mcpServers ?? {}).cuebook) ?? {};
   check(deepEqualPy(configured.url, (capabilityMap.server ?? {}).url), "MCP_URL", ".mcp.json", "MCP config and capability map URLs differ.");
   check(deepEqualPy(configured.oauth_resource, configured.url), "MCP_OAUTH_RESOURCE", ".mcp.json", "Cuebook OAuth resource must match its MCP URL.");
-  check(!availableTools.has("publish_release"), "PUBLISH_PHASE", "mcp-capability-map-v1.json", "External publishing cannot be marked available before the R2 connector exists.");
+  check(plannedTools.has("publish_release") && !tools.has("publish_release"), "PUBLISH_PHASE", "mcp-capability-map-v1.json", "Future non-Frame publishing must remain planned and non-callable.");
 
   return {
     valid: !errors.length,
@@ -498,6 +609,7 @@ export function validate(pluginRoot) {
       creation_step_count: (creationMenu.steps ?? []).length,
       available_mcp_tools: [...availableTools].filter(Boolean).sort(),
       required_mcp_tools: [...requiredTools].filter(Boolean).sort(),
+      planned_mcp_tools: [...plannedTools].filter(Boolean).sort(),
     },
   };
 }

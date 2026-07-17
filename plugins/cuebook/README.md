@@ -16,9 +16,9 @@ results before producing content.
 
 `query-cuebook` is the safe default entrypoint for requests such as search,
 read, inspect, compare, explain, and review history. It can return assets,
-stories, market state, evidence, fundamentals, OHLCV, metrics, owned feed
-records, settlement outcomes, publication receipts, and authorized public
-media research as a source-linked `CuebookQueryBundleV1`.
+stories, published Frames, market state, evidence, fundamentals, OHLCV,
+locally derived metrics, settlement outcomes, and authorized public-media
+research as a source-linked `CuebookQueryBundleV1`.
 
 Query does not draft Frames, design viewpoint graphics, compile settlement
 claims, save artifacts, or publish.
@@ -34,6 +34,21 @@ directly into creation. One `FramePreviewV1` is returned by default; three are
 generated only when explicitly requested. Every Frame exposes one title, one
 concise body, and one paired 2488 x 1056 image; release contracts and extra
 derivatives wait until selection.
+
+Fast creation keeps the observed history window separate from any forward
+horizon and chooses one image route automatically. Price path, trend,
+relative-strength, volume, event-reaction, and dated-horizon views use a
+sourced Cuebook market chart. Qualitative mechanisms and creator intuition use
+a compact logic card. A market chart shows what happened and the thesis clock;
+it never turns a creator's causal hypothesis into a retrieved fact or draws an
+invented future price path. One deterministic runner handles data adaptation,
+rendering, hashing, and preview validation without expanding the full workflow.
+
+Fast creation uses one small Cuebook-first query phase. If Cuebook leaves a
+material evidence gap, the Skill may run one bounded authorized Web batch with
+at most three targeted searches and three primary or authoritative sources.
+Every source records whether it came from Cuebook, Web, the creator, or a local
+derivation; Web supplementation never masquerades as Cuebook evidence.
 
 Media upload, manifest registration, draft creation, prepare, and Frame
 publication remain explicit, authorized MCP steps. Initial and correction
@@ -83,7 +98,7 @@ bundles, which package each public skill as a self-contained unit.
 After the plugin and marketplace manifest are committed and tagged:
 
 ```bash
-codex plugin marketplace add cuebookapp/cuebook \
+codex plugin marketplace add cuebook-public/cuebook-skills \
   --ref <release-tag> \
   --sparse .agents/plugins \
   --sparse plugins/cuebook

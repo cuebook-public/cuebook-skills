@@ -28,10 +28,10 @@ Proceed with a conditional pack when non-critical fields are missing. Ask a ques
 
 ## Provider Routing
 
-- Use Cuebook `search_news` for a creator's current news, PR, filing, regulator, or exchange premise. Fall back to authorized web research only when that runtime explicitly permits it.
-- Use `list_filings` for reported financials and valuation requests. Use `get_market_state` for bounded current quote context, `get_candles` for OHLCV or synchronized returns, and `compute_market_metrics` for declared derived calculations.
+- Use Cuebook `search_news` first for a creator's current news, PR, regulator, or exchange premise. If one bounded Cuebook pass leaves a material gap and the runtime permits Web research, run one bounded Web batch of at most three targeted searches and three primary or authoritative sources; record `retrieved_via`, URL, and retrieval time.
+- Use `list_filings` for reported financials and valuation requests. Use `get_market_state` for bounded current quote context and `get_candles` for OHLCV or synchronized returns. Run `../compute-cuebook-market-indicators/SKILL.md` locally for declared derived calculations from frozen candle inputs.
 - The renderer never calls providers. Research and data assembly resolve, source, and cache the inputs before copy or layout begins.
-- Missing provider capability is a named backend requirement. It cannot be disguised as a successful qualitative result when the premise is material.
+- Missing provider capability is a named gap. Web supplementation does not erase that gap or become Cuebook evidence, and it cannot be disguised as a successful qualitative result when the premise is material.
 
 ## Creator Claim Enrichment Fast Path
 

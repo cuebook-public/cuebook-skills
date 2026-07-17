@@ -10,6 +10,7 @@ function candidate(index = 1, angle = "conviction", template = "verdict") {
   return {
     candidate_id: `FPREV_CAND_BTC_${index}`,
     angle,
+    visual_kind: "logic_card",
     template_id: template,
     frame: {
       title: `BTC 的韧性正在变成机会 ${index}`,
@@ -33,6 +34,7 @@ function preview() {
       original_text: "最近 BTC 跌不下去，我觉得还会冲一波。",
       subject: "BTC",
       direction: "long",
+      observation_window: "最近 21 天",
       horizon: "30 天",
       claim: "BTC 的抗跌可能演化为下一轮上冲",
       mechanism: "美股风险偏好承压时，边际资金可能寻找全天候流动性资产",
@@ -91,13 +93,21 @@ test("partial Cuebook data makes the preview conditional", () => {
   assert.equal(validate(item).valid, true);
 });
 
-test("material current-market copy binds a Cuebook result", () => {
+test("material current-market copy binds a frozen query result", () => {
   const item = preview();
   item.candidates[0].evidence_refs = [];
   assert.ok(codes(item).has("SOURCE_BINDING"));
 });
 
-test("unavailable required Cuebook data blocks instead of fabricating", () => {
+test("one sourced market chart is valid without pretending to be a logic template", () => {
+  const item = preview();
+  Object.assign(item.candidates[0], { visual_kind: "market_chart", template_id: "thesis_chart" });
+  assert.equal(validate(item).valid, true);
+  item.candidates[0].template_id = "system";
+  assert.ok(codes(item).has("VISUAL_ROUTE"));
+});
+
+test("unavailable required evidence blocks instead of fabricating", () => {
   const item = preview();
   Object.assign(item, { state: "blocked", candidates: [], blockers: ["Cuebook MCP authorization required"] });
   Object.assign(item.query_binding, { status: "unavailable", bundle_refs: [], result_refs: [], as_of: null });

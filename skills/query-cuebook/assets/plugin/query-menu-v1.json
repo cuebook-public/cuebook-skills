@@ -41,7 +41,7 @@
         "search_assets",
         "list_asset_cues"
       ],
-      "availability": "backend_required"
+      "availability": "available"
     },
     {
       "query_id": "market_state",
@@ -97,39 +97,13 @@
     {
       "query_id": "derived_metrics",
       "label": "指标与触发",
-      "description": "计算可复现的技术、资金和复合触发指标。",
+      "description": "从封盘 K 线本地计算可复现的技术、相对表现和触发指标。",
       "skill_refs": [
         "query-cuebook",
         "compute-cuebook-market-indicators"
       ],
       "mcp_tools": [
-        "get_candles",
-        "compute_market_metrics"
-      ],
-      "availability": "backend_required"
-    },
-    {
-      "query_id": "creator_feed",
-      "label": "我的 Cuebook 数据",
-      "description": "查看新闻、日历、叙事、交易灵感和授权交易记录。",
-      "skill_refs": [
-        "query-cuebook",
-        "normalize-cuebook-creator-feed"
-      ],
-      "mcp_tools": [
-        "get_creator_feed"
-      ],
-      "availability": "backend_required"
-    },
-    {
-      "query_id": "settlement_binding",
-      "label": "结算绑定",
-      "description": "只读解析标的、快照、观察口径和可结算能力，不注册观点。",
-      "skill_refs": [
-        "query-cuebook"
-      ],
-      "mcp_tools": [
-        "resolve_settlement_binding"
+        "get_candles"
       ],
       "availability": "backend_required"
     },
@@ -147,15 +121,14 @@
       "availability": "backend_required"
     },
     {
-      "query_id": "publication_history",
-      "label": "发布记录",
-      "description": "核对真实发布回执、纠错和内容历史。",
+      "query_id": "published_frame",
+      "label": "已发布 Frame",
+      "description": "读取一个 release-pinned Frame、配图语义、结算状态和讨论入口。",
       "skill_refs": [
-        "query-cuebook",
-        "reconcile-market-content-history"
+        "query-cuebook"
       ],
       "mcp_tools": [
-        "get_publication_receipt"
+        "get_frame"
       ],
       "availability": "backend_required"
     },

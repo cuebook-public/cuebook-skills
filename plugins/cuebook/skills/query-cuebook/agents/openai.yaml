@@ -1,4 +1,4 @@
 interface:
   display_name: "Query Cuebook"
   short_description: "Search and inspect Cuebook data without creating content"
-  default_prompt: "Query Cuebook for the requested assets, stories, market data, evidence, or history. Return a sourced read-only answer and CuebookQueryBundleV1; do not draft or publish content."
+  default_prompt: "Query Cuebook first for the requested assets, stories, Frames, market data, evidence, or history. Preserve raw candle and selected market-state envelopes for creator handoff, keep the observed history window separate from any future thesis horizon, and label assistant-chosen market proxies explicitly. Use one bounded authorized Web fallback only for a material gap, preserve retrieved_via lineage, and return a sourced read-only CuebookQueryBundleV1 without drafting or publishing content."

@@ -16,7 +16,8 @@
           "label": "新闻",
           "mcp_tools": [
             "list_asset_cues",
-            "get_cues"
+            "get_cues",
+            "search_news"
           ],
           "availability": "available"
         },
@@ -24,7 +25,7 @@
           "option_id": "calendar",
           "label": "日历事件",
           "mcp_tools": [
-            "get_creator_feed"
+            "list_market_calendar"
           ],
           "availability": "backend_required"
         },
@@ -37,24 +38,8 @@
           "availability": "backend_required"
         },
         {
-          "option_id": "trade_idea",
-          "label": "交易灵感",
-          "mcp_tools": [
-            "get_creator_feed"
-          ],
-          "availability": "backend_required"
-        },
-        {
-          "option_id": "trade_history",
-          "label": "交易记录",
-          "mcp_tools": [
-            "get_creator_feed"
-          ],
-          "availability": "backend_required"
-        },
-        {
           "option_id": "creator_note",
-          "label": "自己写",
+          "label": "自己的观点、新闻或线索",
           "mcp_tools": [],
           "availability": "available"
         }
@@ -280,9 +265,9 @@
             "compile-cuebook-settlement-formula"
           ],
           "mcp_tools": [
-            "resolve_settlement_binding"
+            "get_market_state"
           ],
-          "availability": "backend_required"
+          "availability": "available"
         },
         {
           "option_id": "price_threshold",
@@ -292,9 +277,9 @@
             "compile-cuebook-settlement-formula"
           ],
           "mcp_tools": [
-            "resolve_settlement_binding"
+            "get_market_state"
           ],
-          "availability": "backend_required"
+          "availability": "available"
         },
         {
           "option_id": "relative_performance",
@@ -304,8 +289,7 @@
             "compile-cuebook-settlement-formula"
           ],
           "mcp_tools": [
-            "resolve_settlement_binding",
-            "compute_market_metrics"
+            "get_candles"
           ],
           "availability": "backend_required"
         },
@@ -317,9 +301,9 @@
             "compile-cuebook-settlement-formula"
           ],
           "mcp_tools": [
-            "resolve_settlement_binding"
+            "get_market_state"
           ],
-          "availability": "backend_required"
+          "availability": "available"
         },
         {
           "option_id": "trigger_occurrence",
@@ -329,8 +313,7 @@
             "compile-cuebook-settlement-formula"
           ],
           "mcp_tools": [
-            "resolve_settlement_binding",
-            "compute_market_metrics"
+            "get_candles"
           ],
           "availability": "backend_required"
         },
@@ -342,8 +325,7 @@
             "compile-cuebook-settlement-formula"
           ],
           "mcp_tools": [
-            "resolve_settlement_binding",
-            "compute_market_metrics"
+            "get_candles"
           ],
           "availability": "backend_required"
         }
@@ -371,37 +353,37 @@
   ],
   "write_actions": [
     {
-      "action_id": "save_artifact",
-      "label": "保存创作工件",
-      "mcp_tool": "save_creator_artifact",
+      "action_id": "create_frame_draft",
+      "label": "创建 Frame 草稿",
+      "mcp_tool": "create_frame_draft",
       "availability": "backend_required",
       "required_gates": [
-        "explicit_user_approval",
-        "artifact_hash",
+        "explicit_user_intent",
+        "registered_visual_binding",
         "idempotency_key"
       ]
     },
     {
-      "action_id": "register_settlement",
-      "label": "注册结算观点",
-      "mcp_tool": "register_settlement_claim",
+      "action_id": "publish_frame",
+      "label": "发布 Frame",
+      "mcp_tool": "publish_frame",
       "availability": "backend_required",
       "required_gates": [
         "explicit_user_approval",
-        "claim_hash",
-        "formula_hash",
+        "prepared_hash",
+        "publish_token",
         "idempotency_key"
       ]
     },
     {
-      "action_id": "publish_release",
-      "label": "发布冻结内容",
-      "mcp_tool": "publish_release",
+      "action_id": "withdraw_frame",
+      "label": "撤回 Frame",
+      "mcp_tool": "withdraw_frame",
       "availability": "backend_required",
       "required_gates": [
         "explicit_user_approval",
-        "release_approval",
-        "exact_artifact_hash",
+        "first_party_consent",
+        "prepared_hash",
         "idempotency_key"
       ]
     }

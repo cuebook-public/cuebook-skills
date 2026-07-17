@@ -61,6 +61,35 @@ export function validate(payload) {
     errors.push(issue("DUPLICATE_SOURCE", "$.source_register", "Source refs must be unique."));
   }
   const knownSources = new Set(sourceIds);
+  const webSources = sources.filter((item) => isDict(item) && get(item, "retrieved_via") === "authorized_web");
+  for (const [index, source] of sources.entries()) {
+    if (!isDict(source)) continue;
+    if (get(source, "retrieved_via") === "authorized_web" && !/^https?:\/\//u.test(String(get(source, "locator", "")))) {
+      errors.push(issue("WEB_SOURCE_LOCATOR", `$.source_register[${index}].locator`, "Authorized Web sources require a public HTTP(S) locator."));
+    }
+    if (get(source, "retrieved_via") === "local_derivation" && get(source, "source_type") !== "calculation") {
+      errors.push(issue("DERIVATION_SOURCE_TYPE", `$.source_register[${index}].source_type`, "Local derivations must use source_type calculation."));
+    }
+  }
+
+  const retrieval = isDict(get(payload, "retrieval_report")) ? get(payload, "retrieval_report") : {};
+  const webBatches = get(retrieval, "web_batches", 0);
+  const webQueries = get(retrieval, "web_queries", 0);
+  const declaredWebRefs = Array.isArray(get(retrieval, "web_source_refs")) ? get(retrieval, "web_source_refs") : [];
+  const actualWebRefs = webSources.map((source) => get(source, "source_ref"));
+  if (new Set(declaredWebRefs).size !== new Set(actualWebRefs).size || declaredWebRefs.some((ref) => !actualWebRefs.includes(ref))) {
+    errors.push(issue("WEB_SOURCE_LINEAGE", "$.retrieval_report.web_source_refs", "Web source refs must exactly match source_register entries retrieved via authorized_web."));
+  }
+  if (webBatches === 0 && (webQueries !== 0 || declaredWebRefs.length)) {
+    errors.push(issue("WEB_BATCH_STATE", "$.retrieval_report", "A zero-batch Web report cannot carry queries or Web source refs."));
+  }
+  if (webBatches === 1 && !(Number.isInteger(webQueries) && webQueries >= 1 && webQueries <= 3)) {
+    errors.push(issue("WEB_BATCH_STATE", "$.retrieval_report.web_queries", "One bounded Web batch requires one to three targeted queries."));
+  }
+  if (get(payload, "request")?.depth === "quick" && get(retrieval, "cuebook_batches", 0) > 1) {
+    errors.push(issue("QUICK_CUEBOOK_BATCHES", "$.retrieval_report.cuebook_batches", "Quick retrieval permits at most one Cuebook batch after asset resolution."));
+  }
+
   results.forEach((item, index) => {
     if (!isDict(item)) {
       errors.push(issue("RESULT_TYPE", `$.results[${index}]`, "Result must be an object."));

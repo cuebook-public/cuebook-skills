@@ -53,24 +53,13 @@ Do not encode those meanings inside `lead_asset`, ticker strings, or generic JSO
 5. **Observation receipts**
    Preserve provider instrument, resolved symbol period, provider symbol, source, event time, capture time, interval, session, origin, adjustment, bar version, sealed state, decimal value, and selection reason. A correction appends a revision; it never edits history in place.
 
-## Required MCP binding call
+## Required Frame publication binding
 
-The creator workflow needs one bounded backend call before formula compilation. Suggested contract:
+There is no standalone settlement-binding Tool. Resolve canonical assets and current observations through the smallest Query reads (`search_assets`, `get_market_state`, and `get_candles` when history is material), compile the formula locally, and place the frozen intent and hashes in `FrameDraftAssemblyV1`.
 
-```text
-resolve_settlement_binding(SettlementBindingQueryV1)
-  -> SettlementBindingBundleV1
-```
+`prepare_frame_publish` is the authoritative backend gate. It resolves and validates the draft's asset, observation basis, horizon, supported interval, currency alignment, and sealed-history requirements before returning the prepared hash and publish token. `publish_frame` repeats the economic and authorization checks inside the atomic publication transaction.
 
-For each requested leg it returns:
-
-- canonical `asset_id`, ticker, tradeability, and lifecycle;
-- `provider_instrument_id`, provider, quote currency, and current symbol period;
-- the selected persisted entry price, observed time, source, session, and observation reference;
-- supported intervals and sealed outcome bases for the requested horizon;
-- explicit blockers such as private/untradeable asset, missing price, stale observation, unsupported currency alignment, or unavailable sealed history.
-
-The call resolves and reports facts. It does not choose the creator's direction, target, operator, benchmark, deadline, or risk threshold.
+These gates validate facts and contract compatibility. They do not choose the creator's direction, target, operator, benchmark, deadline, or risk threshold.
 
 ## Evaluator rules by family
 

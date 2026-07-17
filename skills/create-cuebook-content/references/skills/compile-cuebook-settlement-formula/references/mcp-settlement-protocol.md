@@ -2,36 +2,22 @@
 
 The formula Skill compiles semantics. Cuebook MCP owns registration, observations, state transitions, and outcome receipts.
 
-## Register
+## Freeze and publish
 
-`register_settlement_claim` accepts `SettlementRegistrationV1`:
-
-```json
-{
-  "schema_version": "settlement-registration-v1",
-  "claim_ref": "SETTLE_...",
-  "claim_hash": "<64 hex>",
-  "formula_ref": "FORMULA_...",
-  "formula_hash": "<64 hex>",
-  "formula": {"schema_version": "settlement-formula-v1"},
-  "release_ref": "release_...",
-  "creator_ref": "creator:...",
-  "registered_at": "2026-07-15T08:00:00Z",
-  "idempotency_key": "settlement:..."
-}
-```
+There is no standalone settlement-registration Tool. Put the frozen settlement intent, claim hash, and formula hash inside `FrameDraftAssemblyV1`; then use the registered visual binding to create or update the Frame draft. `prepare_frame_publish` validates the draft and returns a prepared hash, short-lived publish token, and preview. `publish_frame` atomically freezes the Frame release, visual binding, and Settlement Contract.
 
 Hard gates:
 
 - claim and formula are both `frozen`;
-- `formula.lineage.claim_ref` and `claim_hash` match the registered claim exactly;
+- `formula.lineage.claim_ref` and `claim_hash` match the draft assembly exactly;
 - `formula.execution_profile.engine` is supported and its family is one of the four server templates;
 - the server regenerates the canonical outcome AST from `execution_profile` and rejects a mismatch;
 - every source, calendar, session, timezone, interval, boundary operator, and missing-data policy is pinned;
 - protocol-event horizons carry a stable event ID and authoritative source;
-- registration does not fetch observations or pre-score the view.
+- prepare and publish do not fetch future observations or pre-score the view;
+- each mutation has its own lowercase UUIDv7, and `publish_frame` revalidates the active grant and recomputes the prepared hash inside the transaction.
 
-The registration request carries the complete canonical formula or an immutable artifact reference that the server resolves inside the same transaction. A hash without retrievable canonical bytes is not registerable.
+The draft assembly carries the complete canonical formula or an immutable artifact reference that the server resolves inside the same transaction. A hash without retrievable canonical bytes is not publishable.
 
 ## Resolve
 

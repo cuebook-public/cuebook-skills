@@ -19,9 +19,10 @@ function query_snapshot() {
       { result_id: "RES_state", kind: "market_state", title: "USO market state", summary: "Latest sealed snapshot.", data_ref: "market:uso:1", source_refs: ["SRC_state"], as_of: "2026-07-15T19:00:00+08:00", status: "available" },
     ],
     source_register: [
-      { source_ref: "SRC_story", source_type: "cuebook_story", locator: "cuebook://story/uso/1", published_at: "2026-07-15T18:45:00+08:00", retrieved_at: "2026-07-15T19:00:00+08:00", usage_rights: "citation_only" },
-      { source_ref: "SRC_state", source_type: "cuebook_market_state", locator: "cuebook://market/uso/1", published_at: null, retrieved_at: "2026-07-15T19:00:00+08:00", usage_rights: "display" },
+      { source_ref: "SRC_story", source_type: "cuebook_story", locator: "cuebook://story/uso/1", published_at: "2026-07-15T18:45:00+08:00", retrieved_at: "2026-07-15T19:00:00+08:00", retrieved_via: "cuebook_mcp", usage_rights: "citation_only" },
+      { source_ref: "SRC_state", source_type: "cuebook_market_state", locator: "cuebook://market/uso/1", published_at: null, retrieved_at: "2026-07-15T19:00:00+08:00", retrieved_via: "cuebook_mcp", usage_rights: "display" },
     ],
+    retrieval_report: { cuebook_batches: 1, web_batches: 0, web_queries: 0, web_source_refs: [] },
     unavailable_capabilities: [],
     creation_handoff: { eligible: true, subject_refs: ["asset:uso"], result_refs: ["RES_story", "RES_state"], warnings: [] },
     quality_report: { warnings: [], hard_failures: [] },

@@ -10,7 +10,11 @@ Cuebook exposes two public entrypoints:
   adaptive heuristic question before any price question, then continues
   immediately when skipped. It generates three alternatives only when
   explicitly requested. Every Frame exposes one title, one concise body, and
-  one image.
+  one image. Price, trend, relative-strength, volume, and dated-horizon views
+  use a sourced Cuebook market chart; qualitative mechanisms use a logic card.
+  The observed history window stays separate from the creator's future horizon.
+  Current evidence is Cuebook-first, with one bounded authorized Web fallback
+  only when Cuebook leaves a material gap.
 
 The repository packages 38 modular skills behind those two entrypoints
 (including the `intake-cuebook-viewpoint` conversational front door that
@@ -35,7 +39,7 @@ Install the current release:
 
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \
-  --ref v0.2.4 \
+  --ref v0.2.5 \
   --sparse .agents/plugins \
   --sparse plugins/cuebook
 

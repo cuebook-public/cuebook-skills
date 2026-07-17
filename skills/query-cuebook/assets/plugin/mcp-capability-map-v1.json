@@ -90,7 +90,7 @@
     {
       "tool": "preview_paper_order",
       "module": "query",
-      "authorization_scope": "cuebook.paper.read",
+      "authorization_scope": "cuebook.paper.trade",
       "access": "read",
       "purpose": "Read-only market-order preview against the persisted price snapshot; never places an order.",
       "used_by": [
@@ -225,6 +225,19 @@
       "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Publication-attached membership of one news story with per-member license gate.",
+      "used_by": [
+        "query-cuebook",
+        "build-market-research-pack"
+      ],
+      "content_kind": "news",
+      "default_enabled": false
+    },
+    {
+      "tool": "search_news",
+      "module": "query",
+      "authorization_scope": "read:public",
+      "access": "read",
+      "purpose": "Bounded lexical search over Cuebook's ingested news corpus; semantic mode returns a typed unavailable result.",
       "used_by": [
         "query-cuebook",
         "build-market-research-pack"
@@ -533,90 +546,35 @@
         "create-cuebook-content"
       ],
       "source": "Frame Remote MCP Phase B §6-7"
-    },
-    {
-      "tool": "search_news",
-      "module": "query",
-      "authorization_scope": "cuebook.query",
-      "phase": "pr8",
-      "access": "read",
-      "purpose": "Lexical news search; semantic mode returns unavailable until PR9.",
-      "used_by": [
-        "query-cuebook",
-        "build-market-research-pack"
-      ]
-    },
+    }
+  ],
+  "planned_tools": [
     {
       "tool": "get_creator_feed",
       "module": "query",
-      "authorization_scope": "cuebook.query",
-      "phase": "r2",
+      "phase": "planned",
       "access": "read",
       "purpose": "Owned feed of news, calendar, narratives, trade ideas, and authorized trade history.",
       "used_by": [
-        "query-cuebook",
         "normalize-cuebook-creator-feed"
       ]
     },
     {
       "tool": "compute_market_metrics",
       "module": "query",
-      "authorization_scope": "cuebook.query",
-      "phase": "r2",
+      "phase": "planned",
       "access": "read",
-      "purpose": "Versioned derived metrics and composite trigger signals.",
+      "purpose": "Server-side versioned derived metrics and composite trigger signals.",
       "used_by": [
-        "query-cuebook",
         "compute-cuebook-market-indicators"
       ]
     },
     {
-      "tool": "resolve_settlement_binding",
-      "module": "query",
-      "authorization_scope": "cuebook.query",
-      "phase": "superseded_review",
-      "access": "read",
-      "purpose": "Legacy settlement binding resolution; superseded by the Frame prepare/publish flow.",
-      "used_by": [
-        "query-cuebook"
-      ],
-      "superseded_by": "prepare_frame_publish"
-    },
-    {
-      "tool": "save_creator_artifact",
-      "module": "create",
-      "authorization_scope": "cuebook.create.write",
-      "phase": "superseded_review",
-      "access": "write",
-      "purpose": "Legacy artifact persistence; superseded by the Frame draft/publish tool family.",
-      "used_by": [
-        "orchestrate-cuebook-creator-workflow",
-        "assemble-cuebook-viewpoint-card",
-        "prepare-market-content-release"
-      ],
-      "superseded_by": "create_frame_draft"
-    },
-    {
-      "tool": "register_settlement_claim",
-      "module": "create",
-      "authorization_scope": "cuebook.create.write",
-      "phase": "superseded_review",
-      "access": "write",
-      "purpose": "Legacy settlement registration; folded into publish_frame's atomic transaction.",
-      "used_by": [
-        "compile-cuebook-settlement-claim",
-        "compile-cuebook-settlement-formula",
-        "orchestrate-cuebook-creator-workflow"
-      ],
-      "superseded_by": "publish_frame"
-    },
-    {
       "tool": "publish_release",
       "module": "create",
-      "authorization_scope": "cuebook.publish",
-      "phase": "r2",
+      "phase": "planned",
       "access": "external_write",
-      "purpose": "Send an approved frozen ReleaseBundleV1 through an official platform connector.",
+      "purpose": "Send an approved frozen release through a future official non-Frame connector.",
       "used_by": [
         "prepare-market-content-release"
       ]
@@ -624,16 +582,55 @@
     {
       "tool": "get_publication_receipt",
       "module": "query",
-      "authorization_scope": "cuebook.query",
-      "phase": "r2",
+      "phase": "planned",
       "access": "read",
-      "purpose": "Resolve a platform operation into a verified publication receipt or explicit unknown.",
+      "purpose": "Resolve a future non-Frame publication operation into a verified receipt or explicit unknown.",
       "used_by": [
-        "query-cuebook",
         "reconcile-market-content-history"
       ]
     }
   ],
+  "skill_tool_policy": {
+    "default_mode": "creator_fast",
+    "creator_fast_allowlist": [
+      "search_assets",
+      "get_market_state",
+      "list_asset_cues",
+      "get_cues",
+      "search_news",
+      "get_candles",
+      "list_market_calendar",
+      "get_positioning",
+      "list_asset_events"
+    ],
+    "focused_on_demand": [
+      "list_filings",
+      "list_asset_disclosures",
+      "get_news_cluster",
+      "list_prediction_markets",
+      "list_market_briefings"
+    ],
+    "deep_only": [
+      "list_themes",
+      "get_cues_detail",
+      "get_reasoning_graph",
+      "list_settlements"
+    ],
+    "max_cuebook_batches": 1,
+    "web_fallback": {
+      "trigger": "material_gap_after_cuebook_batch",
+      "max_batches": 1,
+      "max_queries": 3,
+      "max_sources": 3,
+      "source_preference": "primary_or_authoritative",
+      "required_lineage_fields": [
+        "retrieved_via",
+        "retrieved_at",
+        "locator"
+      ],
+      "unsupported_claim_policy": "creator_hypothesis_or_omit"
+    }
+  },
   "frame_publication_flow": {
     "image_transport": "signed_https_upload_only",
     "skill_may_pull_media": false,
@@ -726,5 +723,5 @@
     "source_rights_required_for_creation": true,
     "valuation_comparisons_require_compatible_basis": true
   },
-  "notes": "Data-expansion tools ship with content_kind default_enabled=false; a disabled tool stays in tools/list and returns unavailable until admin app_config enables it. search_news lands in PR8. Frame publish uses the active OAuth grant plus the first-party publish action; separate action consent is withdrawal-only."
+  "notes": "Skill tool policy is client-side routing, not a claimed MCP profile field. Data-expansion tools with default_enabled=false may return typed unavailable. Superseded legacy writes are absent; planned tools are non-callable. Frame publish uses the active OAuth grant plus the first-party publish action; separate action consent is withdrawal-only."
 }

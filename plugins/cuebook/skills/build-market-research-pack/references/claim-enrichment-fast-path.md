@@ -35,9 +35,9 @@ Deduplicate requests across all three publishing candidates. Search or fetch ind
 | `valuation_metric`, `comparison_metric` | `list_filings` | subject, metric, numeric or `N/M` state, numerator, denominator, period, accounting basis, currency treatment, share class, comparability, as-of, source refs, N/M reason |
 | current quote | `get_market_state` | venue, session, quote type, value, currency, observed time |
 | `market_series`, `price_level` | `get_candles` | durable instrument, venue, interval, timezone, sealed/forming state, source refs |
-| derived return, spread, or trigger | `compute_market_metrics` | formula, inputs, synchronized window, sealing state, source refs |
+| derived return, spread, or trigger | `get_candles` + local `$compute-cuebook-market-indicators` | formula, frozen inputs, synchronized window, sealing state, source refs |
 
-The agent may use approved web research to satisfy the same contract when an MCP provider is unavailable. Preserve the URL and retrieval time. A search snippet alone is not an evidence anchor.
+After one bounded Cuebook pass, the agent may use one approved Web batch to satisfy a remaining material gap. Use no more than three targeted searches and three primary or authoritative sources. Preserve `retrieved_via`, URL, and retrieval time. A search snippet alone is not an evidence anchor.
 
 ## News Anchor Selection
 

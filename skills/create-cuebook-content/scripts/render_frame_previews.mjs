@@ -98,7 +98,7 @@ export function renderHtml(candidate, { fontCssPath = null } = {}) {
   return stamped;
 }
 
-export async function renderBatch(payload, outputDir, { htmlOnly = false } = {}) {
+export async function renderBatch(payload, outputDir, { htmlOnly = false, capture = captureViewpoint } = {}) {
   if (!payload || payload.schema_version !== "frame-preview-render-v1") throw new Error("Expected frame-preview-render-v1 input.");
   if (!Array.isArray(payload.candidates) || ![1, 3].includes(payload.candidates.length)) {
     throw new Error("Preview render input must contain one or three candidates.");
@@ -120,7 +120,7 @@ export async function renderBatch(payload, outputDir, { htmlOnly = false } = {})
   });
   const captures = htmlOnly
     ? staged.map(() => null)
-    : await Promise.all(staged.map((item) => captureViewpoint(item.htmlPath, item.candidateDir, null, null, { fullOnly: true })));
+    : await Promise.all(staged.map((item) => capture(item.htmlPath, item.candidateDir, null, null, { fullOnly: true })));
   const candidates = staged.map((item, index) => {
     const htmlRef = path.relative(root, item.htmlPath).split(path.sep).join("/");
     const record = { candidate_id: item.candidate.candidate_id, template_id: item.candidate.template_id, html_ref: htmlRef };

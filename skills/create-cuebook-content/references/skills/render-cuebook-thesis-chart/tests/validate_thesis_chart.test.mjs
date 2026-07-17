@@ -18,6 +18,12 @@ test("valid relative conditional chart", () => {
   assert.ok(codes(result, "warnings").has("DEGRADED_INTERVAL"));
 });
 
+test("Frame-native 2488 width is accepted", () => {
+  const item = baseSpec();
+  item.render.width = 2488;
+  assert.equal(validate(item).valid, true);
+});
+
 const mutations = [
   ["relative baseline synchronization", (item) => { item.series[1].baseline.observed_at = "2026-07-13T19:59:00Z"; }, "RELATIVE_BASELINE_TIME"],
   ["future path", (item) => { item.render.forecast_path = "projected_curve"; }, "FORECAST_PATH"],

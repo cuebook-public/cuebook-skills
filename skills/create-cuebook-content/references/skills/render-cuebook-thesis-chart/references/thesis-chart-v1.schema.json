@@ -69,7 +69,7 @@
         "mode": {"enum": ["single_price", "relative_performance", "range_band", "event_reaction"]},
         "chart_type": {"enum": ["line", "candles"]},
         "y_axis": {"enum": ["price", "return_pct", "excess_return_pct"]},
-        "width": {"type": "integer", "minimum": 640, "maximum": 2400},
+        "width": {"type": "integer", "minimum": 640, "maximum": 2488},
         "height": {"type": "integer", "minimum": 280, "maximum": 1600},
         "future_region": {"type": "boolean"},
         "show_volume": {"type": "boolean"},
