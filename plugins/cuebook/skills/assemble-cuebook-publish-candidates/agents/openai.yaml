@@ -1,4 +1,4 @@
 interface:
-  display_name: "Assemble Publish Candidates"
-  short_description: "Build three linked-evidence Cuebook publishing choices"
-  default_prompt: "Use the cached fast path to generate three concise Cuebook publishing candidates, attach the same typed material evidence anchors to each, preserve settlement eligibility without freezing it before explicit confirmation, pair the candidates with launch-linted visuals, and return a frontend-ready selection set."
+  display_name: "Assemble Frame Candidates"
+  short_description: "Build three Cuebook Frames with title, body, and paired image"
+  default_prompt: "Use the cached fast path to generate three concise Cuebook Frame candidates. Preserve the creator's viewpoint, attach typed evidence and optional settlement only as backstage metadata, pair each candidate with its launch-linted visual, and expose exactly title, body, and one image in the frontend projection."

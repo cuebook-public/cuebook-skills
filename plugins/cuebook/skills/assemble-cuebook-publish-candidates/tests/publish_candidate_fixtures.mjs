@@ -3,6 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
+  canonicalFrameBody,
   SETTLEMENT_CONFIRMATION_FIELDS,
   SETTLEMENT_ELIGIBILITY_FIELDS,
   WEIGHTS,
@@ -131,6 +132,12 @@ export function candidate(index, label, angle, headline, body, close) {
       preview_ref: `candidate-${index}/viewpoint.png`,
       compact_preview_ref: `candidate-${index}/viewpoint-622.png`,
       visible_char_count: 2,
+      alt_text: `HOOD candidate ${index}`,
+    },
+    frame: {
+      title: copy.headline,
+      body: canonicalFrameBody(copy),
+      image_ref: `candidate-${index}/viewpoint.png`,
       alt_text: `HOOD candidate ${index}`,
     },
     evidence_anchors: [evidenceAnchor()],

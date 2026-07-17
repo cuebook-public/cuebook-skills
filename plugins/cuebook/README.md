@@ -1,8 +1,8 @@
 # Cuebook
 
 Cuebook is the distributable Codex plugin for reading Cuebook market
-intelligence and turning a user's trading idea into sourced, publishable
-content. It exposes two top-level modules with one allowed dependency:
+intelligence and turning a user's trading idea into a sourced, publishable
+Frame. It exposes two top-level modules with one allowed dependency:
 
 ```text
 查询 Query  <-  创作 Create
@@ -20,19 +20,21 @@ stories, market state, evidence, fundamentals, OHLCV, metrics, owned feed
 records, settlement outcomes, publication receipts, and authorized public
 media research as a source-linked `CuebookQueryBundleV1`.
 
-Query does not draft posts, design viewpoint graphics, compile settlement
+Query does not draft Frames, design viewpoint graphics, compile settlement
 claims, save artifacts, or publish.
 
 ## Create
 
-`create-cuebook-content` owns writing and packaging. It preserves the user's
-seed and authorship, calls Query when a current claim needs evidence or market
-data, and returns exactly three calibrated candidates through
-`CuebookCreationBundleV1`. The underlying workflow can produce text, exact
-2488 x 1056 static visuals, and an optional settlement claim and formula.
+`create-cuebook-content` owns Frame writing and packaging. It preserves and
+improves the user's seed and authorship, calls Query when a material current
+claim needs support, and returns exactly three calibrated candidates through
+`CuebookCreationBundleV1`. Every candidate exposes only one title, one concise
+body, and one paired 2488 x 1056 viewpoint image. Evidence, disclosures,
+quality state, and an optional settlement claim/formula remain backstage.
 
-Saving, settlement registration, and external publication remain explicit,
-authorized MCP writes. Create never places trades or silently publishes.
+Media upload, manifest registration, draft creation, prepare, first-party
+consent, and Frame publication remain explicit, authorized MCP steps. Create
+never places trades or silently publishes.
 
 ## Package Boundary
 
@@ -45,10 +47,11 @@ authorized MCP writes. Create never places trades or silently publishes.
   Internal skills are capability nodes, not alternate product entrances.
 
 Prompt instructions are not a security boundary. The Cuebook MCP server must
-enforce `cuebook.query`, `cuebook.create.write`, and `cuebook.publish` OAuth
-scopes declared in the capability map. Query-scoped calls must be rejected for
-write tools. Every write is exposed as a separate action with explicit user
-approval, an exact artifact or formula hash, and an idempotency key.
+enforce `read:public`, `cuebook.paper.read`, `cuebook.paper.trade`,
+`cuebook.frame.read`, `cuebook.frame.write`, and `cuebook.frame.publish` as
+declared in the capability map. Read-only grants cannot call write tools.
+Every mutation has explicit authorization, an exact payload or prepared hash,
+and its own lowercase UUIDv7 idempotency key.
 
 The canonical inventory is
 [`assets/plugin-index-v1.json`](assets/plugin-index-v1.json). Module ownership

@@ -156,6 +156,9 @@ export function validate(payload, queryBundle = null) {
     }
   }
   const requestedOutputs = truthy(get(request, "requested_outputs")) ? get(request, "requested_outputs") : [];
+  if (["ready", "conditional"].includes(state) && (!requestedOutputs.includes("text") || !requestedOutputs.includes("visual"))) {
+    errors.push(issue("FRAME_OUTPUT_REQUIRED", "$.creator_request.requested_outputs", "Ready Cuebook creation requires both Frame text and one paired visual."));
+  }
   if (truthy(get(payload, "release_bundle_ref")) && !requestedOutputs.includes("release")) {
     errors.push(issue("UNREQUESTED_RELEASE", "$.release_bundle_ref", "Release bundle requires a release output request."));
   }

@@ -1,4 +1,4 @@
 interface:
-  display_name: "Render Cuebook Market Post"
-  short_description: "Render one post or batch three meaning-locked choices"
-  default_prompt: "Use $render-cuebook-market-post to express this locked trading idea directly with a complete market logic chain, no Cuebook workflow narration, and no forced self-correction ending. In candidate mode, return three passed PostV1 siblings from one shared fact ledger."
+  display_name: "Render Cuebook Frame Body"
+  short_description: "Render one concise Frame body or three meaning-locked choices"
+  default_prompt: "Use $render-cuebook-market-post to make the creator's locked viewpoint clearer and sharper in a concise Frame body. Keep Cuebook workflow narration and correction-first framing out of the copy; let the paired image carry visual reasoning, observed evidence, and timing. In candidate mode, return three passed Frame-only PostV1 siblings from one shared fact ledger."

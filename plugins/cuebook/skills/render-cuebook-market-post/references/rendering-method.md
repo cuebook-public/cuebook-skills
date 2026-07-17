@@ -71,30 +71,18 @@ A profile may adjust:
 - which supported facts receive attention
 - preferred reasoning moves
 - opening shape and paragraph rhythm
-- density, jargon, and platform conventions
+- density, jargon, and Frame reading distance
 - preferred source types and recurring watch items
 
 A profile may not add facts, private access, biography, exact catchphrases, or a claim that the draft came from the profiled person. Record every applied profile rule ID in `angle.profile_rule_ids`.
 
-## 5. Platform Shapes
+## 5. Frame Shape
 
-### X
+The Frame surface always presents one title, one body, and one paired image. Use plain, market-native language. Lead with the creator's judgment or the concrete change, explain only the strongest causal link in the body, and end with the horizon or next observable when it adds information.
 
-Use two to five short paragraphs. Open with the judgment or hard change, keep one main number, and close with the next condition. Keep a single post within the platform limit; use a thread only when requested.
+Keep the body to two to four short paragraphs and normally 160-280 visible Chinese characters. Let the image carry the observed trend, two to four reasoning beats, and a deadline or observation marker when material. Do not duplicate every image label in prose, append source lists or settlement forms to the body, or manufacture a future price path.
 
-### Telegram
-
-Use a compact desk note: judgment, strongest evidence, market consequence, and next observable. Keep source links after the analysis rather than inside the opening sentence.
-
-### Xiaohongshu Finance
-
-Use plain Chinese, a concrete title, and enough explanation for a smart non-specialist. Translate jargon into a consequence for price, cash flow, or positioning. Avoid motivational filler and emoji chains.
-
-This shape covers a caption or simple text note. Use `$render-cuebook-market-media` for a cover, ordered cards, visual evidence, asset rights, or video.
-
-### Buy-Side Note
-
-Lead with the decision. Follow with evidence, model or flow impact, horizon, and next catalyst. Keep risk boundaries in a separate section only when requested. Separate source facts from analyst inference.
+Facts, inferences, and the creator's viewpoint remain distinct in the evidence ledger even when the public wording is seamless. A material contradiction is surfaced to the creator for a decision; it is not silently rewritten into a different view.
 
 ## 6. Focused Editing Passes
 

@@ -1514,10 +1514,7 @@
         "correction"
       ],
       "supported_channels": [
-        "x",
-        "telegram",
-        "buy_side_note",
-        "generic"
+        "frame"
       ],
       "ui": {
         "surface": "creator",
@@ -1525,7 +1522,7 @@
         "order": 18,
         "control_type": "hidden",
         "icon": "message-square-text",
-        "summary": "按选择的平台生成紧凑文字。"
+        "summary": "为 Frame 生成一段观点正文。"
       },
       "maintenance": {
         "owner": "cuebook-editorial",
@@ -1577,7 +1574,7 @@
         "event_lifecycle"
       ],
       "supported_channels": [
-        "all"
+        "frame"
       ],
       "ui": {
         "surface": "creator",
@@ -1585,7 +1582,7 @@
         "order": 36,
         "control_type": "hidden",
         "icon": "gallery-thumbnails",
-        "summary": "生成三份短文案和观点图，并把关键新闻与数字链接一并交给前端。"
+        "summary": "生成三份 Frame 候选；每份只向用户展示标题、正文和配对图片。"
       },
       "maintenance": {
         "owner": "cuebook-creator",
@@ -2231,7 +2228,7 @@
         "correction"
       ],
       "supported_channels": [
-        "all"
+        "frame"
       ],
       "ui": {
         "surface": "creator",
@@ -2239,7 +2236,7 @@
         "order": 39,
         "control_type": "single_select",
         "icon": "square-pen",
-        "summary": "保留用户观点，必要时调用查询，再生成三套文字与观点图候选。"
+        "summary": "保留用户观点，必要时调用查询，再生成标题、正文和配对图片组成的 Frame。"
       },
       "maintenance": {
         "owner": "cuebook-platform",
@@ -2316,7 +2313,7 @@
       "preset_id": "preset-cross-platform-desk",
       "name": "跨平台交易内容",
       "description": "一份研究生成 X 与小红书等多个衍生内容。",
-      "state": "active",
+      "state": "deprecated",
       "selection_mode": "opportunity_first",
       "default_execution_mode": "single",
       "ingredient_limits": {
@@ -2376,7 +2373,7 @@
       "preset_id": "preset-intraday-move",
       "name": "盘中异动",
       "description": "解释价格异动、被迫行为和下一确认点。",
-      "state": "active",
+      "state": "deprecated",
       "selection_mode": "ingredient_first",
       "default_execution_mode": "single",
       "ingredient_limits": {
@@ -2436,7 +2433,7 @@
       "preset_id": "preset-earnings-preview",
       "name": "财报前瞻",
       "description": "围绕预期、历史比较、关键变量和电话会确认点组织内容。",
-      "state": "active",
+      "state": "deprecated",
       "selection_mode": "opportunity_first",
       "default_execution_mode": "event_lifecycle",
       "ingredient_limits": {
@@ -2495,7 +2492,7 @@
       "preset_id": "preset-thesis-watch",
       "name": "交易观察",
       "description": "围绕判断、时间周期、催化剂和下一观察点生成条件式内容。",
-      "state": "active",
+      "state": "deprecated",
       "selection_mode": "opportunity_first",
       "default_execution_mode": "single",
       "ingredient_limits": {
@@ -2550,7 +2547,7 @@
       "preset_id": "preset-settleable-thesis",
       "name": "内容 + 结算观点",
       "description": "先生成自然观点内容，再抽取并冻结一个可验证、可结算的一行主张。",
-      "state": "active",
+      "state": "deprecated",
       "selection_mode": "opportunity_first",
       "default_execution_mode": "single",
       "ingredient_limits": {
@@ -2608,7 +2605,7 @@
       "preset_id": "preset-viewpoint-card",
       "name": "观点卡",
       "description": "把创作者判断、统一观点图、可选交易协议和证据装成 Cuebook 原生观点卡。",
-      "state": "active",
+      "state": "deprecated",
       "selection_mode": "ingredient_first",
       "default_execution_mode": "single",
       "ingredient_limits": {
@@ -2663,8 +2660,8 @@
     },
     {
       "preset_id": "preset-publish-candidates",
-      "name": "三版直出",
-      "description": "自动补充事实并一次生成三套短文案和静态观点图；仅在用户选择结算时附加同一结算提案。",
+      "name": "Frame 三版直出",
+      "description": "自动补充事实并一次生成三套 Frame；每套只展示一个标题、一段正文和一张配对观点图。结算与证据保留在后台。",
       "state": "active",
       "selection_mode": "ingredient_first",
       "default_execution_mode": "single",
@@ -2696,7 +2693,7 @@
       ],
       "default_outputs": [
         {
-          "channel": "generic",
+          "channel": "frame",
           "format": "publish_candidate_set",
           "count": 3,
           "length": "short"
@@ -2720,7 +2717,7 @@
       "preset_id": "preset-trade-postmortem",
       "name": "交易复盘",
       "description": "使用授权和对账后的历史记录复盘过程、判断和失效条件。",
-      "state": "active",
+      "state": "deprecated",
       "selection_mode": "opportunity_first",
       "default_execution_mode": "postmortem",
       "ingredient_limits": {
@@ -2779,7 +2776,7 @@
       "preset_id": "preset-correction-notice",
       "name": "纠错通知",
       "description": "失效旧工件后生成带来源、影响范围和传播计划的纠错。",
-      "state": "active",
+      "state": "deprecated",
       "selection_mode": "opportunity_first",
       "default_execution_mode": "correction",
       "ingredient_limits": {
@@ -2831,7 +2828,7 @@
       "preset_id": "preset-auto-daily-chef",
       "name": "今日主厨",
       "description": "从当前 Cuebook snapshot 自动提议多套配方，等待用户确认。",
-      "state": "active",
+      "state": "deprecated",
       "selection_mode": "preset_auto",
       "default_execution_mode": "batch",
       "ingredient_limits": {

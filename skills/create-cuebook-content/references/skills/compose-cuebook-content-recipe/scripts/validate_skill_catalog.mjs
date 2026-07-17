@@ -11,6 +11,7 @@ const DEFAULT_SKILLS_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..
 const ROOT_FIELDS = new Set(["schema_version", "catalog_id", "catalog_version", "generated_at", "default_locale", "categories", "skills", "presets", "extension_points", "maintenance_policy"]);
 const SEMVER = /^[0-9]+\.[0-9]+\.[0-9]+$/;
 const CHANNEL_FORMATS = new Map([
+  ["frame", new Set(["publish_candidate_set"])],
   ["x", new Set(["short_post", "thread"])], ["telegram", new Set(["short_post", "long_post"])],
   ["xiaohongshu", new Set(["caption", "carousel"])], ["reddit", new Set(["post", "comment"])],
   ["owned_web", new Set(["article", "brief"])], ["seeking_alpha_internal", new Set(["article_outline"])],
@@ -495,8 +496,13 @@ export function validate(payload, check_files = true, skills_root = null) {
         errors.push(issue("PRESET_CHANNEL_FORMAT", `${path}.default_outputs[${output_index}]`, "Unsupported channel/format pair."));
       }
     });
-    if (channels.keys().some((channel) => channel === "x" || channel === "telegram" || channel === "buy_side_note" || channel === "generic") && !required.has("render-cuebook-market-post")) {
+    if (channels.keys().some((channel) => channel === "frame" || channel === "x" || channel === "telegram" || channel === "buy_side_note" || channel === "generic") && !required.has("render-cuebook-market-post")) {
       errors.push(issue("PRESET_POST_RENDERER", path, "Preset requires the compact-text renderer."));
+    }
+    if (channels.has("frame")) {
+      for (const skillId of ["direct-cuebook-viewpoint-visual", "assemble-cuebook-publish-candidates"]) {
+        if (!required.has(skillId)) errors.push(issue("PRESET_FRAME_PIPELINE", path, `Frame preset requires ${skillId}.`));
+      }
     }
     if (formats.has("viewpoint_card")) {
       if (!required.has("assemble-cuebook-viewpoint-card")) {

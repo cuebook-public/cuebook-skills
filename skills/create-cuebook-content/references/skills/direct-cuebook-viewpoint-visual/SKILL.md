@@ -1,6 +1,6 @@
 ---
 name: direct-cuebook-viewpoint-visual
-description: Execute a locked Cuebook visual intent route as three real, structurally different HTML-native financial arguments. Route the thesis through a market relationship, trading argument archetype, evidence contract, chart grammar, and composition archetype; preserve source-linked reasoning; derive creator-adaptive hierarchy and color; author at 1244 x 528; export the exact 2488 x 1056 publication image plus a 622 x 264 preview; and return VisualDirectionSetV1. Use when a market thesis, KOL idea, VisualArgumentV1, MarketViewSemanticsV1, creator note, or CreatorExpressionPlanV1 needs a clear static visual argument without making every creator look alike. Own grid, type, whitespace, semantic color, logic-route placement, and the presentation of numbers, curves, news, comparisons, term structures, and reasoning. Do not reclassify a valid upstream intent route, research missing market facts, change the creator's thesis, invent chart data, or render settlement backend fields.
+description: Execute a locked Cuebook Frame visual intent route as three real, structurally different HTML-native financial arguments. Route the creator-owned viewpoint through a market relationship, trading argument archetype, evidence contract, chart grammar, and composition archetype; preserve source-linked reasoning; divide labor with the Frame title and body; derive creator-adaptive hierarchy and color; author at 1244 x 528; export the exact 2488 x 1056 publication image plus a 622 x 264 preview; and return VisualDirectionSetV1. Use when a market thesis, KOL idea, VisualArgumentV1, MarketViewSemanticsV1, creator note, or CreatorExpressionPlanV1 needs its one paired Frame image. Own grid, type, whitespace, semantic color, logic-route placement, and the presentation of numbers, observed curves, news, comparisons, term structures, reasoning beats, and timing markers. Do not reclassify a valid upstream intent route, research missing market facts, change the creator's thesis, duplicate the full Frame body, invent chart data or a future price path, or render settlement backend fields.
 license: Proprietary. Cuebook internal; see the repository README for terms.
 compatibility: Requires Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
 ---
@@ -13,19 +13,19 @@ Act as the layout and typography director between market semantics and final ren
 
 Turn approved content blocks into a readable, source-bound visual argument:
 
-`evidence or event -> mechanism -> judgment -> implication or condition`
+`creator judgment -> observed evidence or event -> mechanism -> implication, horizon, or condition`
 
 Own information hierarchy, reading order, grid, alignment, type scale, density, whitespace, and placement of curves, numbers, news, and causal relationships. The static renderer owns the final pixels and must preserve the approved layout.
 
 ## Workflow
 
 1. Read the creator view and any `VisualArgumentV1`, `ViewpointDataBundleV1`, thesis, `ProfileV1`, `ContentHistoryLedgerV1`, or settlement artifact. Preserve the creator's judgment, direction, horizon, conditions, source boundary, established visual voice, and recent palette history. Require and freeze the supplied `visual_plan.intent` and `visual_plan.execution_route`; reject an unknown route, mismatched tool coverage, or renderer mismatch instead of reclassifying it here. Treat `evidence_objects` as the only eligible source for news-cluster, distribution, quantile-fan, reconciled composition/flow, ordered-category, and payoff geometry.
-2. Reduce the public argument to four beats:
-   - **observation**: what happened or which value was reported;
-   - **mechanism**: through which financial channel it can matter;
-   - **claim**: what the creator believes;
-   - **implication**: what changes for the reader.
-   The image may enter from any beat, but the full route must remain connected. If these cannot be written plainly, return upstream instead of designing around ambiguity.
+2. Reduce the public argument to two to four connected beats:
+   - **viewpoint**: what the creator believes; this owns the visual thesis;
+   - **observation**: what happened or which value was reported; this requires evidence;
+   - **mechanism**: the supported or explicitly hypothetical financial channel;
+   - **implication/timing**: what changes, what to watch, and when the view is observed or settled.
+   The image may enter from any beat, but viewpoint, inference, and observed fact must remain semantically distinct. Read the paired Frame title/body before composing and remove any beat they already communicate better. If the route cannot be written plainly, return upstream instead of designing around ambiguity or correcting the creator by default.
 3. Declare the upstream lineage namespaces before layout: `input_refs` for source artifacts or meaning inputs, `fact_refs` for approved fact IDs, and `data_requirement_refs` for visual requirements from the expression plan or data bundle. Build a source-linked binding for every fact, metric, curve, level, event, quote, qualitative relationship, and creator judgment that may appear. Every binding's `source_refs` must resolve inside those declarations and must carry the upstream-compatible `request_class`, `material_to_claim`, and `selected_for_display` fields. A qualitative relationship must remain textual or categorical; a decorative fake curve or magnitude is invalid.
 4. Read `references/finance-visual-argument-system-v1.md`, `references/viewpoint-expression-system-v1.md`, `references/viewpoint-expression-registry-v1.json`, `references/cuebook-static-design-kernel-v1.md`, `references/canvas-craft-v1.md`, `references/logic-progression-v1.md`, `references/typography-benchmark-profiles-v1.json`, and `references/market-native-art-direction-v1.md`. Freeze one set-level `intent_lock`: reader job and question, analytic relationship, eligible evidence shapes, finance transform, comparison basis, baseline policy, chart decision, renderer route, and compact fallback. This lock cannot change between candidates. Then write one `design_read`, derive `creator_visual_profile` from `voice_spec`, a commentator profile, creator text, and any approved visual references, compile one connected `logic_progression`, and run `scripts/select_creator_palette.mjs` with recent palette history when available.
 5. Unless the user already approved a direction, create **three complete HTML previews using the same meaning, bindings, and logic progression** through three independent design logics and three palette strategies:
@@ -61,6 +61,7 @@ node scripts/capture_html_viewpoints_batch.cjs capture-manifest.json
 When the output feeds `../assemble-cuebook-publish-candidates/SKILL.md`, all three directions are user-facing finished choices. Keep the set in `previewed` state until the frontend selects one.
 
 - Read `references/launch-visual-copy-v1.md`. Limit total visible image copy to 120 characters and prefer 55-95. Use one claim, one proof, and one condition only when it changes the trade.
+- Treat the image as the third and final public Frame component. It must add visual reasoning, observed trend/evidence, or timing information that the title and body do not already express; otherwise redesign it.
 - Produce three structurally distinct passed directions at both sizes. Failed or clipped directions are regenerated internally and never exposed.
 - Pair conviction-first, evidence-first, and catalyst/reasoning-first copy with compatible spatial skeletons; do not paste the same text into unrelated layouts.
 - Pair the three candidate families with the exact locked reader jobs: fast judgment, strongest proof, and full system. Record the market relationship, trading argument archetype, composition archetype, exact evidence shapes, primary grammar, optional support grammars, proof bindings, and data requirements in `expression_recipe`.
@@ -69,6 +70,7 @@ When the output feeds `../assemble-cuebook-publish-candidates/SKILL.md`, all thr
 - Treat a creator-named news event, requested number, comparison metric, or price anchor as material when the expression plan says so. Mark its binding `material_to_claim: true` and `selected_for_display: true` when it is selected for the image. Every direction must carry that binding in both full and compact logic routes; a generic qualitative substitute is only a degraded internal preview and cannot enter a selectable set.
 - Treat a material observed series the same way. Render its real geometry at both sizes, connect one visible logic step to the event, level, divergence, or change it proves, and keep any unsupported mechanism as text rather than encoding it in the curve.
 - Keep disclosures, source notes, settlement prose, and repeated context outside the bitmap. Do not use a footer band unless its catalyst or deadline is part of the visual argument.
+- For bounded views, make the observation cutoff and future horizon visually distinct. Show an accepted deadline or settlement level only when it is part of the argument. Never draw a projected future price path.
 - Do not hand-break a claim. Mark visible groups with launch roles, use balanced natural wrapping, and rewrite any orphan line before rendering.
 - Declare exactly one visual entry group, assign levels 1-4 to every visible non-brand group, and keep claim at level 1 or 2. The hierarchy must survive grayscale.
 - Use one to three semantic color roles, then map those roles to registered palette tokens. Across three siblings, use three distinct presets: creator-native, thesis-native, and contrast variant. Keep role meaning stable while allowing actual hues to adapt to the creator and content.
@@ -98,6 +100,7 @@ Write one sentence for `form_from_content`. If it could describe an unrelated st
 ## Public Visual Contract
 
 - The first glance must reveal the judgment, not the taxonomy name.
+- The image is paired with one Frame title and one body. It must not reproduce the complete title/body argument or introduce a second public post.
 - Use one dominant idea and at most two supporting relationships.
 - Make the claim clearly distinct from annotations, but let proof geometry dominate a proof-led candidate. Use 64-120px for the declared hero role; the hero may be a chart, comparison, threshold, or term structure rather than a headline.
 - Use size, weight, occupied area, position, and whitespace for hierarchy. Color supports the order and never creates it alone.
@@ -105,6 +108,7 @@ Write one sentence for `form_from_content`. If it could describe an unrelated st
 - Use creator-adaptive color through registered presets. Calm research, urgent calls, technical setups, personal stories, and macro conflict should not share one default visual voice.
 - Use public language. Hide workflow state, evidence counts, database field names, and settlement machinery.
 - Show settlement text outside the image unless its level or deadline is itself the argument.
+- When horizon, observation window, or settlement timing matters, make it legible as a separate marker from the solid observed series.
 - Bind every displayed market fact or number. Factual and derived bindings must resolve to a declared fact or data-requirement ref; creator opinions resolve to a declared input ref and use `request_class: creator_judgment`.
 - Observed and reported material uses solid geometry. Conditional or future paths use dashed geometry.
 - Do not use generic card grids, equal boxes, decorative sparklines, gradients, stock dashboard chrome, or tiny legends.

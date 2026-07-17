@@ -2,7 +2,7 @@
 
 ## Task
 
-- Platforms: `x` / `telegram` / `xhs` / `buy_side_note`
+- Surface: `frame`
 - Language: `zh-CN`
 - Reader and market fluency:
 - Decision use: `understand` / `watch` / `research` / `trade_debate`
@@ -54,4 +54,4 @@
 - Current facts include a source and timestamp.
 - The post has one clear tension, one market actor, and one next condition.
 - Beat/miss, revision, valuation, and tape claims preserve their period, basis, and timestamp.
-- The wording is original and fits the requested platform.
+- The wording is original and fits a Frame whose visible result is one title, one body, and one paired image.

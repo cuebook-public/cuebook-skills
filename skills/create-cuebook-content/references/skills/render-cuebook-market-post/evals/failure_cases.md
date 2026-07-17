@@ -20,7 +20,7 @@ Keep these cases in every renderer regression pass.
 | Current price without a timestamped source | Remove the price or block publication |
 | ResearchPackV1 is conditional but draft states a firm thesis | Keep the draft conditional and surface the missing input |
 | Research pack is referenced with a null decision | Block validation until its quality decision is carried forward |
-| Draft has no fact-ID map | Add platform-specific `draft_evidence` before publication |
+| Frame draft has no fact-ID map | Add `draft_evidence.frame` before publication |
 | RouteV1 abstains but a public draft is present | Block and clear every draft |
 | Selected opportunity or program item is absent from lineage | Block handoff until lineage is repaired |
 | Position or commercial disclosure is unknown while state is ready | Downgrade or resolve disclosure before release |
@@ -29,5 +29,9 @@ Keep these cases in every renderer regression pass.
 | Trade claim omits liquidity, asset expression, or horizon | Render as a watch, not an instruction; retain risk boundaries in structured metadata |
 | Draft says Cuebook found, inspired, completed, or improved the idea | Remove workflow narration; retain the assistance record internally |
 | Draft ends with `我认错` or `什么情况算看错` | Replace it with the horizon, next catalyst, or next observable |
+| User supplies a viewpoint and the draft opens by disproving or correcting them without contradictory evidence | Preserve the viewpoint, strengthen its mechanism, and keep uncertainty proportional |
+| Result includes X, Xiaohongshu, Reddit, Telegram, thread, caption, tags, or platform-specific variants | Remove every platform wrapper and return the Frame-only projection |
+| Candidate card shows evidence links, settlement panel, quality state, or workflow metadata next to the creative | Keep those fields backstage; show only title, body, and one paired image |
+| Body repeats the title and every label already visible in the image | Delete repetition and restore text-image division of labor |
 
 Regression drafts must also avoid dumping raw source articles, URLs, HTML, internal error codes, and year fragments such as `FY26` as standalone numbers.

@@ -26,8 +26,8 @@ server are loaded.
 ## Invocation
 
 - Read or inspect anything: `query-cuebook` (read-only, no writes).
-- Turn an idea into content: `create-cuebook-content` (may call query; writes
-  only through explicit, authorized MCP write tools).
+- Turn an idea into a Frame: `create-cuebook-content` (may call Query; each
+  candidate visibly contains only one title, one body, and one paired image).
 
 ## Runtime dependencies
 
@@ -39,9 +39,11 @@ server are loaded.
 
 ## Write operations
 
-`save_creator_artifact`, `register_settlement_claim`, and `publish_release`
-are explicit MCP writes that require user authorization. Query never calls
-them; Create never publishes silently.
+Frame publication follows the capability-advertised upload → manifest → draft
+→ prepare → first-party consent → publish → `get_frame` readback sequence.
+Every mutation uses a separate lowercase UUIDv7. Query never calls writes;
+Create never publishes silently, and no standalone media retrieval tool is
+exposed.
 
 ## Known limitations
 

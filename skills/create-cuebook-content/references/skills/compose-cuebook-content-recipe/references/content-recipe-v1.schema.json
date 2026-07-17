@@ -98,7 +98,7 @@
       "required": ["output_id", "channel", "format", "count", "length", "media_format_ref", "target_context"],
       "properties": {
         "output_id": {"type": "string", "pattern": "^OUT_[a-z0-9_:-]+$"},
-        "channel": {"anyOf": [{"enum": ["x", "telegram", "xiaohongshu", "reddit", "owned_web", "seeking_alpha_internal", "buy_side_note", "short_video", "douyin", "generic"]}, {"type": "string", "pattern": "^custom:[a-z0-9-]+$"}]},
+        "channel": {"anyOf": [{"enum": ["frame", "x", "telegram", "xiaohongshu", "reddit", "owned_web", "seeking_alpha_internal", "buy_side_note", "short_video", "douyin", "generic"]}, {"type": "string", "pattern": "^custom:[a-z0-9-]+$"}]},
         "format": {"type": "string", "pattern": "^[a-z0-9_-]+$"},
         "count": {"type": "integer", "minimum": 1, "maximum": 20},
         "length": {"enum": ["short", "standard", "long"]},

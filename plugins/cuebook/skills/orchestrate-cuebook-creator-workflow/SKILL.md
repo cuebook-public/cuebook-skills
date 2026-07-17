@@ -1,6 +1,6 @@
 ---
 name: orchestrate-cuebook-creator-workflow
-description: Plan, run, resume, inspect, or repair an end-to-end MCP-connected Cuebook trading-content creator workflow as CreatorWorkflowRunV1, starting from Cuebook news, calendar events, narratives, trade ideas, trade history, a frontend ContentRecipeV1, or existing creator artifacts. Use for ingredient recipes, saved presets, three publishable candidates, static viewpoint cards, settleable claims, daily batches, cross-platform programs, release preparation, publication handoff, receipts, corrections, and postmortems that coordinate versioned Skills with available Cuebook MCP tools. Do not use for direct order execution, credential handling, unavailable backend writes, or claiming content was published without a verified platform receipt.
+description: Plan, run, resume, inspect, or repair an end-to-end MCP-connected Cuebook Frame creator workflow as CreatorWorkflowRunV1, starting from Cuebook news, calendar events, narratives, trade ideas, trade history, a frontend ContentRecipeV1, or existing creator artifacts. Use for Frame recipes, three publishable Frame candidates, paired static viewpoint images, optional settleable claims, Frame media upload, draft preparation, first-party consent, publication receipts, corrections, withdrawals, and postmortems that coordinate versioned Skills with available Cuebook MCP tools. The visible creative is always one title, one body, and one paired image. Do not use for social-platform programs, direct order execution, credential handling, unavailable backend writes, or claiming a Frame was published without a verified receipt.
 license: Proprietary. Cuebook internal; see the repository README for terms.
 compatibility: Requires a connected Cuebook MCP server for asset resolution and market data; degrades to partial results, never invented values, when tools are unavailable. Node.js 18+ for validators.
 ---
@@ -21,7 +21,7 @@ Operate the control plane for Cuebook creator work. Reuse existing skills as cap
 
 1. **Catalog**: load the pinned SkillCatalogV1 to resolve available skills, presets, versions, and extensions.
 2. **Intake**: run `$normalize-cuebook-creator-feed` and register `CreatorFeedV1`.
-3. **Recipe and triage**: run `$compose-cuebook-content-recipe` before selection for `ingredient_first`/`preset_auto`, or after selection for `opportunity_first`; register `ContentRecipeV1` and `ContentOpportunitySetV1`.
+3. **Recipe and triage**: run `$compose-cuebook-content-recipe` before selection for `ingredient_first`/`preset_auto`, or after selection for `opportunity_first`; require exactly one `frame/publish_candidate_set` output and a visual branch, then register `ContentRecipeV1` and `ContentOpportunitySetV1`.
 4. **Evidence route**: for each selected opportunity, run `$validate-cuebook-projection`, then `$route-cuebook-narrative`. Stop on projection reject or route abstention.
 5. **Seed Query binding**: compile the smallest support request needed to verify the user's material current premises and safely compile semantics. Invoke `$query-cuebook`, then register the bundle, hash, cutoff, state, and selected result refs. Do not prefetch a broad visual package before the expression intent exists. A partial usable bundle makes dependent semantics conditional; a blocked material premise stops it.
 6. **Research and semantics**: consume the bound query results and their referenced `ResearchPackV1` when research is required. Compile the research pack or direct creator/source input with `$compile-cuebook-market-view-semantics`. `MarketViewSemanticsV1` is the authoritative meaning and ownership boundary.
@@ -29,13 +29,13 @@ Operate the control plane for Cuebook creator work. Reuse existing skills as cap
 8. **Expression bridge and visual route**: run `$plan-cuebook-creator-expression` after semantics and any resolved trade protocol. Register one `CreatorExpressionPlanV1`, including its locked visual intent, three candidate jobs, evidence shapes, exact Query tool bindings, Skill path, renderer route, and route hash. Pass its meaning fingerprint and visual route hash unchanged to every downstream branch.
 9. **Intent-driven gap Query**: compare `visual_plan.execution_route.query_requests` with every compatible current Query result. Reuse valid results whose entity, basis, cutoff, freshness, rights, and contract match. If any routed requirement remains unresolved, invoke `$query-cuebook` once with the smallest mixed gap request and register the new immutable bundle. Do not rerun Query when all routed requirements are already satisfied, and never substitute another tool for the locked capability.
 10. **Program**: run `$plan-market-content-program` when the resolved recipe requires batches, event lifecycles, multiple outputs, derivatives, or a series.
-11. **Parallel text and data**: run `$render-cuebook-market-post` in reasoning-complete mode and, when a visual is selected, `$assemble-cuebook-viewpoint-data` as sibling branches from the same expression plan and compatible Query bundles. Neither branch may depend on the other. Compact selector copy is derived only after the full post passes.
+11. **Parallel text and data**: run `$render-cuebook-market-post` in Frame-sized mode and `$assemble-cuebook-viewpoint-data` as sibling branches from the same expression plan and compatible Query bundles. Neither branch may depend on the other. The body carries the creator viewpoint and concise mechanism; the image data branch carries observed evidence, reasoning beats, and timing when material.
 12. **Static viewpoint layout and render**: execute the locked visual Skill path from the latest valid artifact. Compile one source-linked logic progression. When a bounded trading view has an honest observed series, run `$render-cuebook-market-figure` in `argument_curve` mode and pass its source-linked plot semantics into `$direct-cuebook-viewpoint-visual` as the evidence hero; the plot remains an internal component, not a separate final card. Project the shared argument into the locked fast-read, proof, and system jobs as three structurally different HTML layouts, and register an exact 2488 x 1056 publication preview plus a 622 x 264 compact preview, capture report, and rendered-audit report for every direction in `VisualDirectionSetV1`. Then use `$render-cuebook-viewpoint-visual` for the selected or combined direction. Use `$render-cuebook-thesis-chart` only when the route includes the optional full-chart detail branch for real OHLC/K-line, long price history, forming bars, explicit levels, or settlement clock. Every route retains the same plan ref, meaning fingerprint, and route hash. Logic-card, market-signal, and standalone 720 x 420 SVG outputs remain internal compatibility modules.
 13. **Optional settlement**: when the expression plan marks a claim eligible and the recipe selects settlement, compile the claim and formula from the bound settlement result. Registration is a separate approved write action after both hashes are frozen. Non-trade semantics skip both.
-14. **Autonomous choices**: when the recipe requests `publish_candidate_set`, run `$assemble-cuebook-publish-candidates`. Generate three passed reasoning-complete `PostV1` siblings, derive compact selector excerpts, and pair them with the three passed `VisualDirectionSetV1` previews. A material news premise carries at least one linked evidence anchor in every candidate; a material metric premise carries a resolved same-basis value or an explicit `not meaningful` result. Complete research, market-data, policy, copy, and visual calibration internally; return only `PublishCandidateSetV1` in `ready_for_selection` or a blocked set with no partial candidates.
-15. **Media and viewpoint card**: assemble structured media after post and any selected visual/settlement artifacts. A `ViewpointCardV1` requires `PostV1` and `ViewpointVisualV1`; thesis, trade logic, and settlement remain optional inputs.
-16. **Govern and freeze**: run `$prepare-market-content-release` for `release_candidates`; bind decisions to exact artifact hashes.
-17. **Activation handoff**: pass an approved `ReleaseBundleV1` to an explicitly configured external publisher.
+14. **Autonomous choices**: when the recipe requests `publish_candidate_set`, run `$assemble-cuebook-publish-candidates`. Generate three passed Frame-sized `PostV1` siblings and pair them with the three passed `VisualDirectionSetV1` previews. Build each exact public projection as `title + body + image`; keep labels, tags, evidence anchors, disclosures, settlement, and calibration backstage. A material news premise carries at least one linked evidence anchor in every candidate; a material metric premise carries a resolved same-basis value or an explicit `not meaningful` result. Complete research, market-data, policy, copy, and visual calibration internally; return only `PublishCandidateSetV1` in `ready_for_selection` or a blocked set with no partial candidates.
+15. **Selection and Frame assembly**: select the copy-to-image pair atomically, validate that `candidate.frame` exactly matches the frozen internal copy split and publication visual, then assemble `FrameDraftAssemblyV1 + FrameDraftAssemblyBindingV1`. Optional thesis, trade logic, and settlement remain backstage inputs.
+16. **Frame activation**: after explicit user intent, execute only the capability-advertised Frame sequence: upload every rendition, register the manifest, create or update the draft, prepare publish, obtain first-party consent bound to `prepared_hash`, publish, and verify through `get_frame`. If a required B2/B3 tool is absent, stop at the latest completed phase without legacy fallback.
+17. **Receipt and readback**: require the publish receipt's versioned Frame ref and verify it through `get_frame`. The readback exposes the full Frame and one attached visual semantic ref, never image bytes, display URLs, rendition IDs, or `media[]`.
 18. **Reconcile and learn**: run `$reconcile-market-content-history` on receipts, revisions, corrections, engagement snapshots, and authorized outcomes.
 
 Read `references/workflow-map.md` for scenario paths, role gates, and skill ownership.
@@ -54,7 +54,7 @@ Read `references/workflow-map.md` for scenario paths, role gates, and skill owne
 - Use `ready_for_handoff` only after an exact current ReleaseBundleV1 has release approval. Use `complete` only after required receipt/reconciliation work is complete.
 - Never use `published` as a workflow assertion without a verified `PublicationReceiptV1` produced by an external connector.
 - Never send credentials through Skill inputs or artifacts. OAuth and platform credentials remain inside the MCP server or authorized publication connector.
-- Call `publish_release` only when the runtime exposes it, the exact current release hash has approval, and an idempotency key exists. Otherwise stop at `ready_for_handoff`.
+- Execute a Frame mutation only when the runtime advertises it, every command has its own fresh lowercase UUIDv7, the exact prepared hash has first-party consent, and the preceding receipt is bound. Otherwise stop at the latest valid phase.
 
 ## Publish Candidate Fast Path
 
@@ -63,11 +63,11 @@ Use this path whenever the requested output is only `publish_candidate_set`:
 1. Reuse accepted feed, research, semantics, instrument, policy, and complete-bar artifacts whose hashes and freshness windows still pass.
 2. Compile and fulfill only the material support needed for semantics through one seed `$query-cuebook` request.
 3. Compile one semantics artifact, one expression fingerprint, and one locked visual intent route. Reuse matching seed results and issue at most one mixed gap Query for unresolved routed requirements.
-4. Fan out three sibling branches from that fingerprint and route hash: one batched reasoning-complete post generation, one three-direction visual generation, and one optional settlement compilation. When the expression plan requests a proof series, compile its `argument_curve` once and reuse the same sourced geometry across the three layouts.
+4. Fan out three sibling branches from that fingerprint and route hash: one batched Frame-body generation, one three-direction visual generation, and one optional settlement compilation. When the expression plan requests a proof series, compile its `argument_curve` once and reuse the same sourced geometry across the three layouts.
 5. Batch-capture all full and compact previews with bounded concurrency.
 6. Assemble and validate the candidate set. Retry only a failed sibling or stale primitive.
 
-Skip content-program planning, cross-platform media, selected-direction rendering, release freezing, and publishing handoff until the user chooses a candidate or the recipe explicitly requests them. A warm fast-path run does not revisit unchanged upstream nodes.
+Skip content-program planning, selected-direction rendering, Frame upload, prepare, consent, and publish until the user chooses a candidate or explicitly requests the next write. A warm fast-path run does not revisit unchanged upstream nodes.
 
 ## Mode Rules
 
@@ -81,7 +81,7 @@ Skip content-program planning, cross-platform media, selected-direction renderin
 ## Human Gates
 
 - `research`: source coverage, comparators, calculations, uncertainty, and falsifier.
-- `editorial`: angle, audience utility, compression, channel fit, and original voice.
+- `editorial`: creator lift, angle, compression, Frame fit, text-image division of labor, and original voice.
 - `compliance`: disclosures, rights, claims, jurisdiction, privacy, and financial-content policy.
 - `release`: exact frozen payload, destinations, schedule, approvals, expiry, and rollback readiness.
 
@@ -112,7 +112,7 @@ An approval records artifact IDs and their hashes. A changed hash requires a new
 
 - Do not embed source text, research facts, drafts, or release payloads into this run contract. Register their artifacts.
 - Do not inspect artifact payloads through registry locators. Artifact-producing Skills own payload validation and must publish their normalized gate summary into the registry alongside the payload hash.
-- Do not invent a universal publishing skill. Platform connectors own credentials, idempotency, and API behavior.
+- Do not invent a universal publisher or social derivative. The first-party Frame MCP family owns authorization, idempotency, consent, and publication behavior.
 - Do not optimize the research truth layer using clicks, likes, or later returns.
 - Do not place or modify trades.
 

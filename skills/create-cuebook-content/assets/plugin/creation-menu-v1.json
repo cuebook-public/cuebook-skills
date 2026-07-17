@@ -204,7 +204,7 @@
       "step_id": "visual",
       "label": "选观点图",
       "selection": "single",
-      "minimum": 0,
+      "minimum": 1,
       "maximum": 1,
       "options": [
         {
@@ -256,11 +256,6 @@
             "render-cuebook-market-figure",
             "render-cuebook-thesis-chart"
           ]
-        },
-        {
-          "option_id": "none",
-          "label": "纯文字",
-          "skill_refs": []
         }
       ]
     },
@@ -356,57 +351,17 @@
     },
     {
       "step_id": "output",
-      "label": "选发布形式",
-      "selection": "multi",
+      "label": "发布到 Frame",
+      "selection": "single",
       "minimum": 1,
-      "maximum": 3,
+      "maximum": 1,
       "options": [
         {
-          "option_id": "x_short",
-          "label": "X 短帖",
+          "option_id": "frame",
+          "label": "Frame（标题 + 正文 + 图）",
           "skill_refs": [
-            "render-cuebook-market-post"
-          ]
-        },
-        {
-          "option_id": "x_thread",
-          "label": "X 长帖",
-          "skill_refs": [
-            "render-cuebook-market-post"
-          ]
-        },
-        {
-          "option_id": "telegram",
-          "label": "Telegram 长文",
-          "skill_refs": [
-            "render-cuebook-market-post"
-          ]
-        },
-        {
-          "option_id": "xiaohongshu",
-          "label": "小红书图文",
-          "skill_refs": [
-            "render-cuebook-market-media"
-          ]
-        },
-        {
-          "option_id": "owned_web",
-          "label": "自有网站长文",
-          "skill_refs": [
-            "render-cuebook-market-media"
-          ]
-        },
-        {
-          "option_id": "buy_side_note",
-          "label": "投研笔记",
-          "skill_refs": [
-            "render-cuebook-market-post"
-          ]
-        },
-        {
-          "option_id": "three_candidates",
-          "label": "三版直出",
-          "skill_refs": [
+            "render-cuebook-market-post",
+            "direct-cuebook-viewpoint-visual",
             "assemble-cuebook-publish-candidates"
           ],
           "default": true

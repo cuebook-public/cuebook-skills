@@ -1,7 +1,7 @@
 {
   "name": "cuebook",
-  "version": "0.2.0+codex.20260716163000",
-  "description": "Query Cuebook market intelligence or create source-linked trading viewpoints, 2680 x 1056 visuals, settlement protocols, and release-ready content.",
+  "version": "0.2.0+codex.20260717080042",
+  "description": "Query Cuebook market intelligence or turn a creator-owned trading viewpoint into a Frame with one title, one body, and one paired image.",
   "author": {
     "name": "Cuebook",
     "url": "https://github.com/cuebook-public"
@@ -18,14 +18,14 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Cuebook",
-    "shortDescription": "Query Cuebook data or create sourced market viewpoints",
-    "longDescription": "Cuebook has two explicit modules. Query searches, reads, compares, and explains Cuebook assets, stories, evidence, market data, metrics, history, and public-media patterns without writing anything. Create preserves the user's trading idea, calls Query for missing current facts, and produces three calibrated text and exact 2680 x 1056 visual candidates. It can optionally compile a hash-linked settlement claim and prepare an approved release bundle without placing trades or silently publishing.",
+    "shortDescription": "Query Cuebook data or create a title-body-image Frame",
+    "longDescription": "Cuebook has two explicit modules. Query searches, reads, compares, and explains Cuebook assets, stories, evidence, market data, metrics, and history without writing anything. Create preserves and improves the user's trading viewpoint, calls Query only for missing material support, and produces three calibrated Frame choices. Every choice shows exactly one title, one concise body, and one paired 2488 x 1056 viewpoint image; evidence, disclosures, optional settlement semantics, and workflow state remain backstage. Publication always requires explicit first-party approval.",
     "developerName": "Cuebook",
     "category": "Finance",
     "capabilities": [
       "Market Query",
-      "Content Creation",
-      "Static Visuals",
+      "Frame Creation",
+      "Paired Viewpoint Images",
       "Settlement Protocols",
       "Release Preparation"
     ],
@@ -36,7 +36,7 @@
     "defaultPrompt": [
       "\u67e5\u8be2 USO \u6700\u65b0\u53d9\u4e8b\u3001\u5e02\u573a\u72b6\u6001\u548c\u6765\u6e90",
       "\u6bd4\u8f83 HOOD \u4e0e COIN \u7684\u6700\u65b0\u4f30\u503c\u53e3\u5f84\u548c\u5e02\u573a\u8868\u73b0",
-      "\u7528\u8fd9\u4efd\u67e5\u8be2\u7ed3\u679c\u521b\u4f5c\u4e09\u5957\u53ef\u53d1\u5e03\u4ea4\u6613\u89c2\u70b9"
+      "\u6211\u89c9\u5f97 BTC \u672a\u6765 30 \u5929\u4f1a\u6bd4\u73b0\u5728\u9ad8\uff0c\u5e2e\u6211\u505a\u6210\u6807\u9898\u3001\u6b63\u6587\u548c\u914d\u56fe\u5b8c\u6574\u7684 Frame"
     ]
   },
   "mcpServers": "./.mcp.json"

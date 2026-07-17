@@ -33,7 +33,7 @@ Choose one mode before planning voice:
 - `cuebook_assisted`: preserve a real creator seed, record each Cuebook addition as `evidence`, `connection`, `countercase`, or `rule`, and let the creator explicitly accept or reject every addition.
 - `source_transformation`: an external creator owns the source view. Produce an original, attributed transformation without adopting the source author's biography, discovery, trade, or identity.
 
-For `cuebook_assisted`, require at least one accepted addition and a non-empty `idea_delta`, but set `public_attribution_required: false` and `public_attribution_line: null`. The contract still records the seed, additions, and creator decisions for audit. Public copy presents the completed reasoning directly and never narrates how Cuebook supplied, inspired, completed, or improved the idea.
+For `cuebook_assisted`, require at least one accepted addition and a non-empty `idea_delta`, but set `public_attribution_required: false` and `public_attribution_line: null`. The contract still records the seed, additions, and creator decisions for audit. The creator's seed remains the expression anchor. Cuebook may strengthen, connect, narrow, or condition it; a material contradiction must be surfaced for creator review rather than silently replacing the view. Public copy presents the completed reasoning directly and never narrates how Cuebook supplied, inspired, completed, or improved the idea.
 
 For `source_transformation`, set `source_view_owner.owner_type` to `external_creator`, name the owner in the public attribution line, and keep current-creator trade and settlement intent at `none`. If the current creator later adopts a trade, capture that adoption in a new creator-owned semantic input and use `creator_original` or `cuebook_assisted`.
 
@@ -129,10 +129,11 @@ Plan all six slots: `hook`, `proof`, `mechanism`, `action`, `caveat`, and `close
 - Bind each included slot to semantic claim or supporting fact refs.
 - Use proof for source-linked facts, not workflow status or social popularity.
 - Use mechanism for the causal bridge, not a second hook.
-- Reconstruct the trading idea in seven passes: creator judgment, observed change, market disagreement, actor under pressure, transmission into price or relative performance, chosen asset and horizon, and next observable. Mark each pass as explicit, genuinely implied, supplied by evidence, or unavailable before writing guidance.
+- Reconstruct the trading idea in seven internal passes: creator judgment, observed change, market disagreement, actor under pressure, transmission into price or relative performance, chosen asset and horizon, and next observable. Mark each pass as explicit, genuinely implied, supplied by evidence, or unavailable before writing guidance. These are completeness checks across the combined Frame, not seven required public paragraphs.
 - Supplement only the missing links that materially improve the decision. A supplement needs a fact or source ref and may narrow confidence; it may not add a new trade, target, deadline, or personal experience.
 - Keep addition history, idea delta, workflow status, and Cuebook attribution out of all public text slots.
 - Keep invalidation and countercase in the semantic contract. Surface either in body copy only when explicitly requested by the user or selected format; never frame it as `我认错`, `哪里认错`, or `错了怎么办`.
+- For the public Frame, use one title, one 160-280-character body, and one paired image. The body carries the viewpoint and concise mechanism; the image carries two to four reasoning beats, observed evidence, and a timing marker when material. Do not duplicate the complete argument across both surfaces.
 - Set `text_blueprint.data_requirement_refs` to every root data requirement whose `expression_surfaces` contains `text`, including requirements that have no visual role.
 - Map action exactly from source trade intent:
 
@@ -146,7 +147,7 @@ Plan all six slots: `hook`, `proof`, `mechanism`, `action`, `caveat`, and `close
 
 When action is omitted, leave purpose and refs empty, set its character budget to zero, and use `source_has_no_trade_intent` as the omission reason. Do not turn an explanatory close into an implied buy or sell recommendation.
 
-Return two to four original public tags. Each tag is at most 24 characters and must describe reader-facing strategy, mechanism, or format.
+Return two to four original internal discovery tags. Each tag is at most 24 characters and must describe reader-facing strategy, mechanism, or format. Do not render tags in the public Frame.
 
 ## 7. Expression Data Requirements
 

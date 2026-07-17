@@ -24,7 +24,7 @@
     "Every material fact or number in a draft maps to a fact_ledger item.",
     "Every verified-live item has source_url and as_of.",
     "ResearchPackV1 source and fact IDs are preserved when a pack is supplied.",
-    "Every non-empty platform draft returns the fact IDs it uses in draft_evidence.",
+    "The sole Frame draft returns the fact IDs it uses in draft_evidence.frame.",
     "A research_pack_ref requires a non-null research_decision.",
     "Every artifact identifies its selected opportunity, content-program item when present, and input artifact references in lineage.",
     "A RouteV1 abstention has empty drafts and publication_state blocked.",
@@ -35,6 +35,8 @@
     "Beat/miss, revision, valuation, and price-reaction wording preserves period, basis, and timestamp.",
     "Profile rules used by the draft are returned by rule ID.",
     "Internal gate codes and schema jargon do not appear in public drafts.",
-    "The draft does not imitate a living author or reuse exact catchphrases."
+    "The draft does not imitate a living author or reuse exact catchphrases.",
+    "The public handoff contains exactly one title, one body, and one paired image; tags, evidence, settlement, and workflow metadata stay backstage.",
+    "The body improves and expresses the creator's viewpoint instead of defaulting to correction-first narration."
   ]
 }

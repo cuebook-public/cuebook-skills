@@ -10,9 +10,10 @@ Score each dimension from 1 to 5. Any hard failure blocks publication regardless
 | Market reasoning | The post explains who may act, why, and what changes next |
 | Angle quality | One supported tension carries the post without forced drama |
 | Human language | Concrete, conversational, varied, and free of template residue |
-| Platform fit | Length, density, structure, and jargon fit the requested platform |
+| Frame fit | The title, 160-280-character body, and paired image divide labor without platform wrappers or duplicated sections |
 | Decision utility | A reader can follow the asset expression, horizon, market consequence, and next observable |
 | Assisted authorship | Internal provenance keeps the creator seed, evidence-linked additions, creator judgment, and idea change distinct while body copy contains no workflow narration |
+| Creator lift | The creator's idea is recognizably theirs and feels clearer, sharper, and better expressed rather than graded or corrected by default |
 | Lineage integrity | The output resolves to selected opportunities, its program item, and every input artifact |
 
 Publication thresholds:
@@ -37,3 +38,6 @@ Hard failures:
 - fabricated creator seed or unsupported claim that Cuebook discovered or improved an idea
 - public narration of Cuebook assistance, idea completion, accepted additions, or authoring workflow
 - self-correction headings such as `我认错` or `什么情况算看错`
+- social-platform variants, labels, or wrappers in the public result
+- a public result with visible fields beyond title, body, and one paired image
+- correction-first rewriting of a creator-owned viewpoint without a material evidence contradiction

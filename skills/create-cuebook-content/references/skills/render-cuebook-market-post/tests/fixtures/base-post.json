@@ -1,7 +1,7 @@
 {
   "schema_version": "post-v1",
   "lineage": {
-    "artifact_id": "POST_storage_x",
+    "artifact_id": "POST_storage_frame",
     "program_ref": null,
     "content_item_ref": null,
     "opportunity_refs": [
@@ -14,7 +14,7 @@
   },
   "brief": {
     "platforms": [
-      "x"
+      "frame"
     ],
     "content_class": "market_commentary",
     "temporal_mode": "realtime",
@@ -86,18 +86,12 @@
     "profile_rule_ids": []
   },
   "drafts": {
-    "x": "库存高过预期，多头今天少了点想象空间。下一份数据要是还压不下来，反弹会更难做。",
-    "telegram": "",
-    "xhs": "",
-    "buy_side_note": ""
+    "frame": "库存高过预期，多头今天少了点想象空间。下一份数据要是还压不下来，反弹会更难做。"
   },
   "draft_evidence": {
-    "x": [
+    "frame": [
       "F1"
-    ],
-    "telegram": [],
-    "xhs": [],
-    "buy_side_note": []
+    ]
   },
   "watch_items": [],
   "quality_report": {

@@ -248,6 +248,19 @@ function validate_generation_handoff(payload, draft, lineage, roles, visualManif
     if (get(draft, "title") !== get(copy, "headline") || get(draft, "body") !== canonical_frame_body(copy)) {
       errors.push(issue("ASSEMBLY_COPY_MISMATCH", "$.frame_draft", "Frame title/body must be the exact selected headline and canonical body-plus-close copy."));
     }
+    const frame = isDict(get(selectedCandidate, "frame")) ? get(selectedCandidate, "frame") : {};
+    const expectedFrameKeys = ["alt_text", "body", "image_ref", "title"];
+    const actualFrameKeys = Object.keys(frame).sort();
+    if (
+      actualFrameKeys.length !== expectedFrameKeys.length
+      || actualFrameKeys.some((key, index) => key !== expectedFrameKeys[index])
+      || get(frame, "title") !== get(draft, "title")
+      || get(frame, "body") !== get(draft, "body")
+      || get(frame, "image_ref") !== get(candidateVisual, "preview_ref")
+      || get(frame, "alt_text") !== get(candidateVisual, "alt_text")
+    ) {
+      errors.push(issue("FRAME_PROJECTION_MISMATCH", "$.handoff.candidateSet.candidates.frame", "The public Frame projection must contain only the selected title, body, paired publication image, and matching alt text."));
+    }
     const preflight = get(selectedDirection, "preflight");
     const critique = isDict(get(selectedDirection, "critique")) ? get(selectedDirection, "critique") : {};
     const candidateQuality = isDict(get(selectedCandidate, "quality")) ? get(selectedCandidate, "quality") : {};

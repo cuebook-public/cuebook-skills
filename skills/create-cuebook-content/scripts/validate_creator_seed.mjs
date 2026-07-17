@@ -33,6 +33,16 @@ function truthy(value) {
 
 export function validate(payload) {
   const errors = validateInstance(payload, SCHEMA);
+  if (isDict(payload)) {
+    const outputs = Array.isArray(get(payload, "requested_outputs")) ? get(payload, "requested_outputs") : [];
+    if (!outputs.includes("text") || !outputs.includes("visual")) {
+      errors.push({
+        code: "FRAME_OUTPUT_REQUIRED",
+        path: "$.requested_outputs",
+        message: "Cuebook creation is Frame-only and requires both text and one paired visual.",
+      });
+    }
+  }
   if (isDict(payload) && get(payload, "stance_source") !== "creator_seed") {
     if (get(payload, "adoption_confirmed") !== true || !truthy(get(payload, "source_claim_refs"))) {
       errors.push({

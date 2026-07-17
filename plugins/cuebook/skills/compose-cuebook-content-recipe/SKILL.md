@@ -1,6 +1,6 @@
 ---
 name: compose-cuebook-content-recipe
-description: Compose, validate, revise, or resolve a frontend-selected Cuebook content recipe from news, calendar events, narratives, trade ideas, trade history, creator profiles, media formats, output channels, and optional creator skills. Use when a user wants to pick a few items from each Cuebook category like ingredients, apply a saved preset, choose analysis and voice controls, or turn those choices into a versioned ContentRecipeV1 before research and drafting. Do not use to write final copy, bypass evidence gates, place trades, or publish externally.
+description: Compose, validate, revise, or resolve a frontend-selected Cuebook Frame recipe from news, calendar events, narratives, trade ideas, trade history, creator profiles, visual formats, and optional creator skills. Use when a user wants to pick a few items from each Cuebook category like ingredients, apply a saved preset, choose analysis and voice controls, or turn those choices into a versioned ContentRecipeV1 before research and drafting. The public creation destination is always Frame, with one title, one body, and one paired image. Do not use to write final copy, bypass evidence gates, place trades, or publish externally.
 license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
@@ -18,7 +18,7 @@ Turn creator selections into one deterministic recipe that the workflow orchestr
    - `opportunity_first`: the user starts from one selected opportunity and adjusts its ingredients.
    - `preset_auto`: the user chooses a recipe preset and lets selection resolve later.
 5. Record ingredients separately: news, calendar, narratives, trade ideas, and trade history. Give trade history an explicit permitted use.
-6. Record preparation, flavor, plating, execution, and optional extension providers. In `flavor`, preserve `authorship_mode` (`creator_led`, `cuebook_assisted`, or `cuebook_generated`) and `assistance_attribution` (`none` or `disclosure_only`). Cuebook collaboration stays out of body copy; use a separate disclosure only when policy requires it. When the creator selects `compose-cuebook-trading-thesis`, treat the output as a canonical thesis declaration rather than ordinary market commentary.
+6. Record preparation, flavor, Frame plating, execution, and optional extension providers. In the public plugin path, resolve exactly one `frame/publish_candidate_set` output; legacy channel values are compatibility inputs, never creation-menu choices. In `flavor`, preserve `authorship_mode` (`creator_led`, `cuebook_assisted`, or `cuebook_generated`) and `assistance_attribution` (`none` or `disclosure_only`). Cuebook collaboration stays out of body copy; use a separate disclosure surface only when policy requires it. When the creator selects `compose-cuebook-trading-thesis`, treat the output as a canonical thesis declaration rather than ordinary market commentary.
 7. Resolve automatic and required skills from the catalog. Preserve the user's selectable skills separately.
 8. Validate the recipe with `node scripts/validate_content_recipe.mjs <recipe.json>` before sending it to `$orchestrate-cuebook-creator-workflow`.
 
@@ -34,6 +34,7 @@ Read `references/recipe-method.md` when resolving modes, output channels, preset
 - Trade history requires an explicit `history_use`. Only authorized, cutoff-safe records may reach a valid recipe.
 - A recipe may be conditional while ingredients or providers are unresolved. It cannot be marked valid by hiding those gaps.
 - `cuebook_assisted` requires an actual creator seed downstream. Assistance provenance stays internal and `assistance_attribution` defaults to `none`.
+- The public Cuebook creation recipe always includes both text and visual work. Do not offer a text-only Frame or a social-platform derivative.
 
 ## Skill Selection
 
@@ -51,7 +52,7 @@ Read `references/recipe-method.md` when resolving modes, output channels, preset
 - `ingredient_first` without a selected primary ingredient: block execution.
 - `opportunity_first` without a selected opportunity: block.
 - Trade history selected with `history_use: none`, private reuse, or unreconciled public performance: block.
-- Channel/format mismatch, missing renderer, unknown skill, disabled required skill, or catalog-version mismatch: block.
+- A public plugin recipe whose output is not exactly `frame/publish_candidate_set`, or whose visual branch is missing: block. Legacy channel/format pairs may validate only for stored compatibility recipes and must not be surfaced in the creation menu.
 - `assistance_attribution` outside `none|disclosure_only`: block. Disclosure-only text belongs in the platform disclosure surface, never the argument body.
 - A selected strict-thesis path with incomplete resolution criteria, post-cutoff evidence, unknown public disclosures, or no thesis lineage: block release while allowing a conditional draft.
 - A selected content-first settlement path with an unconfirmed deadline, threshold, session, benchmark, event definition, or source: keep the claim in `needs_confirmation` and block its release attachment.

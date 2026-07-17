@@ -1,6 +1,6 @@
 ---
 name: render-cuebook-market-post
-description: Render a validated CreatorExpressionPlanV1, MarketViewSemanticsV1, ContentRecipeV1 output, selected opportunity, TradingThesisV1, Cuebook cue, or ResearchPackV1 into original, reasoning-complete finance text for X, Telegram, Xiaohongshu, or a buy-side note. Use for one final post or three meaning-locked PostV1 siblings consumed by assemble-cuebook-publish-candidates when the product must offer finished choices without conversational revision. Preserve authorship, evidence, rhetoric, and internal assistance provenance while expressing the trading idea directly; derive compact selector copy separately instead of shrinking the final post into a preview. Use compile-cuebook-settlement-claim for a separate settleable viewpoint and prepare-market-content-release after approval. Do not use for research without writing, corpus collection, commentator profiling, copying a living author's voice, automated publishing, or invented market facts.
+description: Render a validated CreatorExpressionPlanV1, MarketViewSemanticsV1, ContentRecipeV1 output, selected opportunity, TradingThesisV1, Cuebook cue, or ResearchPackV1 into original Frame body copy. Use for one final Frame or three meaning-locked PostV1 siblings consumed by assemble-cuebook-publish-candidates. Preserve the creator's viewpoint, improve its reasoning and expression, and keep evidence, policy, settlement, and assistance provenance backstage. The only public destination is Frame, whose visible content is one title, one body, and one paired image. Use compile-cuebook-settlement-claim for optional internal settlement semantics. Do not use for social-platform variants, research without writing, corpus collection, commentator profiling, copying a living author's voice, automated publishing, or invented market facts.
 license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
@@ -10,7 +10,7 @@ Turn a supported market event into a readable point of view. Evidence decides wh
 
 ## Workflow
 
-1. Resolve the assigned output and copy mode from ContentRecipeV1. Apply its channel, format, count, language, flavor, and selected profile/media refs without changing claim strength. Default a final public post to `reasoned_feed`; use `compact_preview` only for a selector, notification, or explicitly compact destination. If the recipe contains coordinated items, call `../plan-market-content-program/SKILL.md` and render only the assigned item. Preserve recipe, program, content-item, opportunity, and input-artifact refs in `lineage`.
+1. Resolve the assigned Frame output from ContentRecipeV1. The public plugin path accepts only `frame/publish_candidate_set`; do not generate or mention social-platform variants. Apply language, flavor, and selected profile/visual refs without changing claim strength. Preserve recipe, program, content-item, opportunity, and input-artifact refs in `lineage`.
 2. Run the cue through `validate-cuebook-projection`. A `reject` produces no public draft. A `caution` can produce only a watch, debate, or clearly conditional draft.
 3. Run `route-cuebook-narrative` and preserve the complete RouteV1 as source triage. `abstain: true` produces no public draft. RouteV1 never owns the final rhetoric or visual grammar.
 4. If `ResearchPackV1` is supplied, validate it with `../build-market-research-pack/SKILL.md`, preserve its source and fact IDs, and copy `quality_report.decision` into `research_decision`. If the request needs decision-grade comparators, valuation, positioning, or liquidity that the cue does not contain, build a research pack before drafting.
@@ -20,29 +20,30 @@ Turn a supported market event into a readable point of view. Evidence decides wh
 8. Build or import the fact ledger before drafting. Give every usable fact an ID, evidence class, source URL, event time, observed time, freshness state, and allowed wording.
 9. Resolve authorship mode from the expression plan. In `cuebook_assisted`, preserve `creator_seed`, evidence-linked additions, creator acceptance or rejection, `idea_delta`, and final judgment in internal `assisted_discovery`; force `public_attribution: false`. If no real creator seed exists, use generated or source-transformation disclosure; never invent first-person discovery.
 10. Fetch only the small amount of live context still required by the expression plan. Timestamp every price, probability, spread, flow, or news update. Preserve whether a displayed current price is a live trade, last close, midpoint, or another quote type.
-11. Draft the selected text blueprint. Do not regenerate the angle once the plan is locked. Make the creator's judgment, concrete change, market disagreement, forced actor, transmission, expression/horizon, and next observable legible even when adjacent jobs share a paragraph. Use sourced additions to repair missing links, then remove all research-process and assistance narration. Apply profile rules only when compatible with the source-style firewall; report which rules were used.
-12. Check current destination policy and record position, commercial relationship, identity, and AI-assistance disclosure states. If the request needs sections, community rules, visual assets, voiceover, subtitles, or timed beats, hand the same locked expression plan to `../render-cuebook-market-media/SKILL.md`.
-13. Run four focused passes: semantic lock, evidence, human language, and platform fit. Then score with `evals/rubric.md` and repair every hard failure.
+11. Draft the Frame body from the selected blueprint. Treat the creator's explicit viewpoint as the thesis, not as a claim to disprove before writing. Use Cuebook evidence to strengthen, connect, narrow, or qualify it. Only a material contradiction may stop or change the view, and then show the conflict to the creator instead of silently replacing their judgment. Make the mechanism and next observable legible without forcing every reasoning job into prose; the paired image owns the visual progression, observed trend, and timing marker. Remove all research-process and assistance narration from the body.
+12. Check current Frame policy and record position, commercial relationship, identity, and AI-assistance disclosure states in structured metadata. Never turn those records, source counts, tags, settlement objects, or workflow state into sibling visible sections beside the Frame body.
+13. Run four focused passes: semantic lock, evidence, creator lift, and Frame fit. Then score with `evals/rubric.md` and repair every hard failure.
 14. When returning structured output, run `scripts/validate_post_artifact.mjs` and resolve all errors. Warnings require a deliberate review.
-15. When the user wants `正文 + 结算观点`, route the finalized prose to `../compile-cuebook-settlement-claim/SKILL.md` only when the expression plan says settlement is eligible. Return separate `PostV1` and `SettlementClaimV1` artifacts; do not force contract fields into the draft.
-16. When the user asks to stage, schedule, hand off, or publish it, route the final artifacts to `../prepare-market-content-release/SKILL.md`; this skill performs no account or platform operation.
+15. When the user accepts a settleable horizon or threshold, route the finalized prose to `../compile-cuebook-settlement-claim/SKILL.md` only when the expression plan says settlement is eligible. Keep the contract as internal Frame metadata. Mention a deadline or level in the body only when it improves the argument; never display a separate settlement panel in the creative result.
+16. When the user asks to stage or publish, return the PostV1 to the Frame creation workflow. This skill performs no account operation.
 
-Read `references/rendering-method.md` for evidence classes, angle selection, profile use, and platform rules. Use `references/skill-matrix.md` as a market-situation reference, not as a substitute for source-first routing.
+Read `references/rendering-method.md` for evidence classes, angle selection, profile use, and Frame composition. Use `references/skill-matrix.md` as a market-situation reference, not as a substitute for source-first routing.
 
-## Public Copy Modes
+## Frame Copy Contract
 
-- `reasoned_feed` is the default final content unit. In Chinese, normally use 420-900 visible characters across five to eight short paragraphs. This is a reasoning budget, not a quota: finish sooner when every decision-relevant job is clear, and go longer only when the channel supports it. For X, use a thread when the account limit is unknown or the complete argument does not fit; do not silently amputate the mechanism.
-- A reasoning-complete trading post lets the reader follow seven jobs: the judgment; what changed; what the market may be misreading; who may have to act; how that action reaches price or relative performance; why this asset and horizon express the view; and what observable comes next. Merge jobs naturally and vary their rhetorical order when the source supports it.
-- `compact_preview` is a 220-character-or-shorter selector derived from a completed post. It may carry judgment, strongest proof, and one condition. It is never the canonical final post and cannot be the only text behind a selectable candidate.
-- `detail_note` is for Telegram, Xiaohongshu, or a buy-side note that needs secondary evidence. Keep the same argument spine, then add only sourced comparators, caveats, and scenarios that change the decision.
-- A source may support a shorter output than these defaults. Never pad with generic context, repeated warnings, engagement bait, or workflow narration.
+- The final visible Frame has exactly three components: one title, one body, and one paired image. This renderer owns the body; the candidate assembler derives the title and binds the image.
+- In Chinese, normally use 160-280 visible characters across two to four short paragraphs. Finish sooner when the judgment, mechanism, and next observable are clear. Do not turn the body into a miniature research report.
+- The body carries the hook, creator-owned viewpoint, and concise causal read. It does not need to carry all seven reasoning jobs when the image can show the observed evidence, two to four reasoning beats, and the horizon or deadline more clearly.
+- The body and image divide labor. Do not repeat the title, reproduce every image label in prose, or paste a settlement form beneath the argument.
+- Keep viewpoint, inference, and observation honest: the viewpoint belongs to the creator; a mechanism may remain a hypothesis; hard market facts require Cuebook-linked evidence.
+- Never pad with generic context, repeated warnings, engagement bait, platform language, or workflow narration.
 
 ## Autonomous Candidate Mode
 
-When called by `../assemble-cuebook-publish-candidates/SKILL.md`, use one batch generation pass to render exactly three passed, reasoning-complete `PostV1` siblings from the same expression fingerprint and fact ledger. Use distinct openings: conviction first, evidence first, and catalyst/condition first. A substitute angle is allowed when one opening does not fit the source.
+When called by `../assemble-cuebook-publish-candidates/SKILL.md`, use one batch generation pass to render exactly three passed, Frame-ready `PostV1` siblings from the same expression fingerprint and fact ledger. Use distinct openings: conviction first, evidence first, and catalyst/condition first. A substitute angle is allowed when one opening does not fit the source.
 
 - Return finished copy only. Do not expose outlines, rejected tensions, repair notes, or requests for another writing round.
-- Keep every canonical `PostV1` in `reasoned_feed` mode unless the destination explicitly requires another final format. The candidate assembler derives a separate selector preview with a 24-character headline, 160-character body, 36-character close, three short paragraphs, three hard numbers, and 220 visible characters total including tags.
+- Keep every canonical `PostV1` Frame-sized. The candidate assembler derives a title and its internal body/close split, then exposes only the canonical `title`, combined `body`, and paired `image` projection. Tags and split fields remain internal.
 - Resolve routine volatile context through the research pack, Cuebook data, official primary sources, and approved live providers before writing. Repair or omit unsupported facts internally.
 - Keep one judgment and one argument spine, then make the forced actor, transmission, market consequence, horizon, and material caveat understandable. Remove repeated setup before removing a reasoning link.
 - Run semantic-lock, evidence, human-language, and compactness passes on every sibling. Regenerate a failed sibling; never send a weak option downstream merely to reach three.
@@ -67,12 +68,16 @@ When called by `../assemble-cuebook-publish-candidates/SKILL.md`, use one batch 
 - A reasoning-complete post reduced to selector copy, or a post that omits the forced actor or transmission solely to satisfy a preview budget: reject and restore the full argument behind `post_ref`.
 - A settlement footer with an invented or unconfirmed deadline, threshold, session, benchmark, or source: keep it separate in `needs_confirmation`; do not attach it as a ready claim.
 - A public draft that narrates Cuebook assistance, idea completion, workflow steps, or accepted/rejected additions: remove that narration. Preserve it only in internal provenance fields.
+- A draft or handoff that names X, Xiaohongshu, Reddit, Telegram, a thread, a caption, or any destination other than Frame: reject and restore the Frame-only shape.
+- A creative result that exposes labels, tags, evidence ledgers, settlement panels, source counts, quality scores, or workflow state beside the title, body, and image: reject the presentation projection.
+- A body that treats the creator's viewpoint as a mistake to correct without a material evidence contradiction: reject and restore creator ownership.
 - A post whose prose says wait, watch, avoid, or exit while its settlement claim says immediate long or short: block the pair until action state and claim agree.
 - Direct imitation, exact catchphrases, or identity performance for a living author: refuse that part and render original analysis.
 
 ## Writing Rules
 
 - Start with a concrete change, judgment, or tension. Avoid an abstract scene setter.
+- Optimize the creator's intended judgment before adding caveats. The experience should feel like their idea became clearer, sharper, and better expressed—not like a referee graded it.
 - Put one thought in each paragraph. Let the source fact and the market read occupy separate sentences.
 - Name the actor who may need to revise, hedge, chase, cut, or wait.
 - End on the horizon, next data point, catalyst, or market condition. Do not force an invalidation paragraph or generic warning.
@@ -93,7 +98,7 @@ Return `PostV1`:
 {
   "schema_version": "post-v1",
   "lineage": {"artifact_id": "POST_...", "program_ref": null, "content_item_ref": null, "opportunity_refs": [], "input_artifact_refs": [], "thesis_binding": null, "expression_binding": {"plan_ref": "CEXP_...@r1", "fingerprint_sha256": "sha256:..."}},
-  "brief": {"platforms": [], "content_class": "market_commentary", "temporal_mode": "realtime", "language": "zh-CN", "as_of": "", "reader": "", "decision_use": "", "research_pack_ref": null},
+  "brief": {"platforms": ["frame"], "content_class": "market_commentary", "temporal_mode": "realtime", "language": "zh-CN", "as_of": "", "reader": "", "decision_use": "", "research_pack_ref": null},
   "gate": {"decision": "pass | caution | reject", "checks": [], "repairs": []},
   "research_decision": "ready | conditional | blocked | null",
   "policy_gate": {"decision": "ready | conditional | blocked", "checked_at": "", "rules_checked": [], "repairs": []},
@@ -104,8 +109,8 @@ Return `PostV1`:
   ],
   "assisted_discovery": {"mode": "none | cuebook_assisted", "creator_seed": null, "cuebook_contribution": null, "creator_judgment": null, "idea_delta": null, "final_trade_idea": null, "fact_refs": [], "public_attribution": false},
   "angle": {"tension": "", "forced_actor": "", "why_selected": "", "profile_rule_ids": []},
-  "drafts": {"x": "", "telegram": "", "xhs": "", "buy_side_note": ""},
-  "draft_evidence": {"x": [], "telegram": [], "xhs": [], "buy_side_note": []},
+  "drafts": {"frame": ""},
+  "draft_evidence": {"frame": []},
   "watch_items": [],
   "quality_report": {"scores": {}, "hard_failures": [], "revisions": []},
   "publication_state": "ready | conditional | blocked"
@@ -117,7 +122,7 @@ Set `publication_state` to the stricter result from `gate.decision`, RouteV1 abs
 ## Resources
 
 - `templates/brief-template.md`: normalized request and source boundary.
-- `references/rendering-method.md`: evidence, angle, profile, and platform method.
+- `references/rendering-method.md`: evidence, angle, profile, and Frame method.
 - `references/post-v1.schema.json`: structured output contract.
 - `references/skill-matrix.md`: market-situation examples and context needs.
 - `scripts/validate_post_artifact.mjs`: deterministic PostV1 invariant checks.

@@ -28,7 +28,7 @@
     {
       "module_id": "create",
       "label": "创作",
-      "description": "把用户的交易观点做成文字、图、结算协议和发布候选；缺数据时可调用查询。",
+      "description": "把用户的交易观点优化成 Frame：一个标题、一段正文和一张配对观点图；证据与可选结算留在后台，缺数据时可调用查询。",
       "entrypoint_skill": "create-cuebook-content",
       "menu_ref": "./creation-menu-v1.json",
       "access": "compose_with_authorized_writes",

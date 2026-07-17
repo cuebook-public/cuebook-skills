@@ -1,6 +1,6 @@
 # Cuebook Market Content Matrix
 
-This matrix helps choose a market tension after projection validation and source-first routing. Event type, reasoning lens, platform, and tone remain separate controls.
+This matrix helps choose a market tension after projection validation and source-first routing. Event type, reasoning lens, Frame composition, and tone remain separate controls.
 
 ## Event Matrix
 
@@ -37,16 +37,13 @@ When several angles are valid, prefer this order:
 
 Do not use social pain, dramatic language, or a commentator profile to rescue a thin cue.
 
-## Platform Translation
+## Frame Translation
 
-| Platform | Opening | Middle | Ending |
+| Surface | Title | Body | Image |
 | --- | --- | --- | --- |
-| X | judgment or hard change | one fact plus one market read | one condition |
-| Telegram | judgment | evidence, missing context, actor | next observable |
-| Xiaohongshu finance | concrete title and plain-language fact | explain the consequence for price, cash flow, or positioning | practical watch list |
-| Buy-side note | decision | evidence and model/flow impact | horizon and next catalyst |
+| Frame | creator judgment or hard change | one supported mechanism plus the horizon or next observable | observed evidence, two to four reasoning beats, and a timing marker when material |
 
-Platform rules shape the delivery. They do not change evidence strength or turn a caution into a pass.
+The three components divide labor. They do not change evidence strength or turn a caution into a pass.
 
 ## Research Module Map
 
@@ -70,7 +67,7 @@ Use a distilled profile only through explicit rule IDs:
 - `reasoning.*`: preferred analytical sequence
 - `opening.*`: number-first, actor-first, tape-first, question-first
 - `rhythm.*`: paragraph and sentence density
-- `platform.*`: formatting conventions
+- `frame.*`: title/body/image composition conventions
 - `avoid.*`: phrases, identity markers, unsupported private-source moves
 
 Return the applied IDs. If opposite profiles produce identical angle and rhythm despite different eligible rules, the profile bridge has failed and should be reviewed.

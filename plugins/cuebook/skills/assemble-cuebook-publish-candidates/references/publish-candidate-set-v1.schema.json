@@ -286,15 +286,15 @@
     },
     "candidate": {
       "type": "object", "additionalProperties": false,
-      "required": ["candidate_id", "label", "angle", "meaning_fingerprint", "post_ref", "copy", "visual", "evidence_anchors", "settlement", "public_disclosures", "quality"],
+      "required": ["candidate_id", "label", "angle", "meaning_fingerprint", "post_ref", "copy", "visual", "frame", "evidence_anchors", "settlement", "public_disclosures", "quality"],
       "properties": {
         "candidate_id": {"type": "string", "pattern": "^PUBCAND_[A-Za-z0-9_:-]{6,}$"},
         "label": {"type": "string", "minLength": 1, "maxLength": 12},
         "angle": {"enum": ["conviction", "evidence", "catalyst", "mechanism", "countercase"]},
         "meaning_fingerprint": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
-        "post_ref": {"$ref": "#/$defs/nonemptyString", "description": "Reference to the reasoning-complete canonical PostV1; never a selector-only excerpt."},
+        "post_ref": {"$ref": "#/$defs/nonemptyString", "description": "Reference to the canonical Frame-sized PostV1."},
         "copy": {
-          "type": "object", "additionalProperties": false, "description": "Compact selector copy derived from the canonical post_ref artifact.",
+          "type": "object", "additionalProperties": false, "description": "Internal title/body split retained for FrameDraftAssemblyV1 compatibility. Frontends must render frame instead.",
           "required": ["headline", "body", "close", "tags", "visible_char_count"],
           "properties": {
             "headline": {"type": "string", "minLength": 2, "maxLength": 32},
@@ -313,6 +313,16 @@
             "preview_ref": {"type": "string", "pattern": "^[^/].*\\.png$"},
             "compact_preview_ref": {"type": "string", "pattern": "^[^/].*\\.png$"},
             "visible_char_count": {"type": "integer", "minimum": 1, "maximum": 120},
+            "alt_text": {"type": "string", "minLength": 2, "maxLength": 120}
+          }
+        },
+        "frame": {
+          "type": "object", "additionalProperties": false, "description": "The only creator-facing projection. Render no sibling labels, tags, evidence panels, settlement panels, disclosures, or workflow metadata.",
+          "required": ["title", "body", "image_ref", "alt_text"],
+          "properties": {
+            "title": {"type": "string", "minLength": 2, "maxLength": 32},
+            "body": {"type": "string", "minLength": 20, "maxLength": 280},
+            "image_ref": {"type": "string", "pattern": "^[^/].*\\.png$"},
             "alt_text": {"type": "string", "minLength": 2, "maxLength": 120}
           }
         },

@@ -10,7 +10,7 @@ import { audit_html, pyrepr, walkHtml } from "../../direct-cuebook-viewpoint-vis
 import { PY_WS_CLASS_SOURCE, pyFloatFixed, pyFromIsoformat, pyLen, pyStrip } from "../../render-cuebook-market-signal/scripts/pycompat.mjs";
 
 const ROOT_FIELDS = new Set(["schema_version", "candidate_set_id", "revision", "state", "lineage", "generation_policy", "shared_view", "calibration", "candidates", "selection", "quality_report"]);
-const CANDIDATE_FIELDS = new Set(["candidate_id", "label", "angle", "meaning_fingerprint", "post_ref", "copy", "visual", "evidence_anchors", "settlement", "public_disclosures", "quality"]);
+const CANDIDATE_FIELDS = new Set(["candidate_id", "label", "angle", "meaning_fingerprint", "post_ref", "copy", "visual", "frame", "evidence_anchors", "settlement", "public_disclosures", "quality"]);
 const ANGLES = new Set(["conviction", "evidence", "catalyst", "mechanism", "countercase"]);
 const CALIBRATION_STATES = new Set(["ready", "degraded", "not_applicable", "blocked"]);
 const PROCESS_TERMS = new Set(["工作流", "数据库字段", "证据状态", "内部校准", "已计算", "已确认", "待补数据", "待补充数据", "模型生成过程"]);
@@ -223,6 +223,10 @@ export function visibleCharCount(copy) {
   return parts.reduce((sum, item) => sum + pyLen(pyStrip(item)), 0) + tags.reduce((sum, tag) => sum + pyLen(pyStrip(pythonRawStr(tag))), 0);
 }
 
+export function canonicalFrameBody(copy) {
+  return [pythonStr(copy.body), pythonStr(copy.close)].map((part) => pyStrip(part)).filter(Boolean).join("\n\n");
+}
+
 export function htmlVisibleCharCount(html) {
   const parts = [];
   let skipDepth = 0;
@@ -430,6 +434,22 @@ export function validate(payload, assetRoot = null) {
       seen.add(ref);
       if (assetRoot !== null && assetRoot !== undefined && !isFile(resolve(String(assetRoot), ref))) errors.push(issue("VISUAL_MISSING", `${path}.visual.${key}`, `Missing visual asset ${pyrepr(ref)}.`));
     }
+
+    const frame = isObject(candidate.frame) ? candidate.frame : {};
+    requireExactFields(frame, new Set(["title", "body", "image_ref", "alt_text"]), `${path}.frame`, "FRAME_PROJECTION_FIELDS", errors);
+    const expectedFrame = {
+      title: pyStrip(headline),
+      body: canonicalFrameBody(copy),
+      image_ref: visual.preview_ref,
+      alt_text: visual.alt_text,
+    };
+    for (const [field, expected] of Object.entries(expectedFrame)) {
+      if (frame[field] !== expected) errors.push(issue("FRAME_PROJECTION_MISMATCH", `${path}.frame.${field}`, `Frame ${field} must match the selected canonical copy and paired publication image.`));
+    }
+    if (!safeRelativeRef(frame.image_ref, ".png")) errors.push(issue("FRAME_IMAGE_REF", `${path}.frame.image_ref`, "Frame image_ref must be one safe relative PNG ref."));
+    if (!nonemptyString(frame.title) || pyLen(pyStrip(frame.title)) < 2 || pyLen(pyStrip(frame.title)) > 32) errors.push(issue("FRAME_TITLE", `${path}.frame.title`, "Frame title must be 2-32 visible characters."));
+    if (!nonemptyString(frame.body) || pyLen(pyStrip(frame.body)) < 20 || pyLen(pyStrip(frame.body)) > 280) errors.push(issue("FRAME_BODY", `${path}.frame.body`, "Frame body must be 20-280 visible characters."));
+    if (!nonemptyString(frame.alt_text) || pyLen(pyStrip(frame.alt_text)) < 2 || pyLen(pyStrip(frame.alt_text)) > 120) errors.push(issue("FRAME_ALT_TEXT", `${path}.frame.alt_text`, "Frame alt text must be 2-120 visible characters."));
 
     let evidenceAnchors = candidate.evidence_anchors;
     if (!Array.isArray(evidenceAnchors) || evidenceAnchors.length > 8) { errors.push(issue("EVIDENCE_ANCHORS", `${path}.evidence_anchors`, "Evidence anchors must be an array with at most eight items.")); evidenceAnchors = []; }

@@ -5,8 +5,8 @@ Official Cuebook skill and plugin distribution for Codex.
 Cuebook exposes two public entrypoints:
 
 - `query-cuebook` reads source-linked market intelligence without writing.
-- `create-cuebook-content` turns a creator's trading idea into sourced text,
-  static visuals, and optional settlement artifacts.
+- `create-cuebook-content` turns a creator's trading idea into Frame candidates;
+  each candidate exposes one title, one concise body, and one paired image.
 
 The repository packages 38 modular skills behind those two entrypoints
 (including the `intake-cuebook-viewpoint` conversational front door that

@@ -65,7 +65,7 @@
       "additionalProperties": false,
       "required": ["platforms", "content_class", "temporal_mode", "language", "as_of", "reader", "decision_use", "research_pack_ref"],
       "properties": {
-        "platforms": {"type": "array", "items": {"enum": ["x", "telegram", "xhs", "buy_side_note"]}},
+        "platforms": {"type": "array", "minItems": 1, "maxItems": 1, "uniqueItems": true, "items": {"const": "frame"}},
         "content_class": {"enum": ["market_commentary", "financial_education", "investment_analysis", "product_marketing", "personalized_advice"]},
         "temporal_mode": {"enum": ["realtime", "historical_replay", "evergreen"]},
         "language": {"type": "string", "minLength": 1},
@@ -177,23 +177,18 @@
     },
     "drafts": {
       "type": "object",
-      "required": ["x", "telegram", "xhs", "buy_side_note"],
+      "additionalProperties": false,
+      "required": ["frame"],
       "properties": {
-        "x": {"type": "string"},
-        "telegram": {"type": "string"},
-        "xhs": {"type": "string"},
-        "buy_side_note": {"type": "string"}
+        "frame": {"type": "string"}
       }
     },
     "draft_evidence": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["x", "telegram", "xhs", "buy_side_note"],
+      "required": ["frame"],
       "properties": {
-        "x": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
-        "telegram": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
-        "xhs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
-        "buy_side_note": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+        "frame": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
       }
     },
     "watch_items": {"type": "array"},

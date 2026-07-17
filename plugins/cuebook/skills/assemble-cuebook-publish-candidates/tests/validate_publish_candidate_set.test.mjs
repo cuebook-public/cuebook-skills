@@ -113,6 +113,25 @@ test("character count is verified", () => {
   assertCode(validate(item), "CHAR_COUNT");
 });
 
+test("Frame projection is exactly title, body, and paired image", () => {
+  const item = baseSet();
+  assert.deepEqual(Object.keys(item.candidates[0].frame).sort(), ["alt_text", "body", "image_ref", "title"]);
+  item.candidates[0].frame.title = "A different title";
+  assertCode(validate(item), "FRAME_PROJECTION_MISMATCH");
+});
+
+test("Frame cannot expose an additional public section", () => {
+  const item = baseSet();
+  item.candidates[0].frame.tags = ["hidden-only"];
+  assertCode(validate(item), "FRAME_PROJECTION_FIELDS");
+});
+
+test("Frame image remains paired with the selected visual", () => {
+  const item = baseSet();
+  item.candidates[0].frame.image_ref = item.candidates[1].visual.preview_ref;
+  assertCode(validate(item), "FRAME_PROJECTION_MISMATCH");
+});
+
 test("stock AI phrase is rejected", () => {
   const item = baseSet();
   item.candidates[0].copy.body = "值得关注的是，Robinhood Chain 已经上线。";

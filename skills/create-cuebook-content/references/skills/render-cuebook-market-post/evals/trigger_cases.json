@@ -1,25 +1,25 @@
 [
   {
-    "case_id": "direct-cue-to-x",
-    "input": "把这条 Cuebook 叙事写成一条有交易思路的中文 X 推文。",
+    "case_id": "direct-cue-to-frame",
+    "input": "把这条 Cuebook 叙事写成一个能发的 Frame，标题、正文和图配套。",
     "should_trigger": true,
     "expected_reason": "The user wants a Cuebook cue rendered into market content."
   },
   {
     "case_id": "cue-with-profile",
-    "input": "用这个已蒸馏的 ProfileV1 调整选题和节奏，把 MU 这条 cue 写成 Telegram 桌面笔记。",
+    "input": "用这个已蒸馏的 ProfileV1 调整选题和节奏，把 MU 这条 cue 做成 Frame 正文。",
     "should_trigger": true,
     "expected_reason": "A supplied profile is being used to render a cue."
   },
   {
     "case_id": "current-context-render",
-    "input": "核一下现在的油价和期限结构，再把这条 USO 叙事写成推文。",
+    "input": "核一下现在的油价和期限结构，再把这条 USO 叙事做成 Frame。",
     "should_trigger": true,
     "expected_reason": "Live context is requested as part of rendering."
   },
   {
     "case_id": "research-pack-to-post",
-    "input": "这份 ResearchPackV1 已经验证过了，帮我写成一条 X 和一段买方笔记。",
+    "input": "这份 ResearchPackV1 已经验证过了，帮我压成一段 Frame 正文。",
     "should_trigger": true,
     "expected_reason": "A validated research pack is being rendered into public market writing."
   },
@@ -28,6 +28,12 @@
     "input": "我在 Cuebook 里看到这条异动，帮我补齐交易逻辑后直接写成正文，不要讲创作过程。",
     "should_trigger": true,
     "expected_reason": "The user wants an evidence-backed creator view rendered directly without workflow narration."
+  },
+  {
+    "case_id": "creator-view-not-correction",
+    "input": "我觉得 BTC 未来 30 天会比现在高，帮我把这个观点优化成 Frame，不要先教育我哪里错。",
+    "should_trigger": true,
+    "expected_reason": "The creator wants their own view strengthened and expressed as a Frame while evidence remains supportive rather than correction-first."
   },
   {
     "case_id": "research-only-neighbor",
@@ -43,7 +49,7 @@
   },
   {
     "case_id": "collection-only-neighbor",
-    "input": "把这批 X 导出 JSONL 去重并保留来源链。",
+    "input": "把这批社交帖子导出 JSONL 去重并保留来源链。",
     "should_trigger": false,
     "expected_reason": "This belongs to collect-market-commentator-corpus."
   },

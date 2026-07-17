@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const REQUIRED = new Set(["schema_version", "lineage", "brief", "gate", "research_decision", "policy_gate", "disclosure_state", "route", "fact_ledger", "angle", "drafts", "draft_evidence", "watch_items", "quality_report", "publication_state"]);
 const OPTIONAL = new Set(["assisted_discovery"]);
-const PLATFORMS = new Set(["x", "telegram", "xhs", "buy_side_note"]);
+const PLATFORMS = new Set(["frame"]);
 const RESEARCH_DECISIONS = new Set(["ready", "conditional", "blocked", null]);
 const EVIDENCE_CLASSES = new Set(["source", "verified-live", "derived", "hypothesis"]);
 const FRESHNESS = new Set(["current", "stale", "unknown"]);
@@ -115,7 +115,7 @@ export function validate(item) {
   let brief = item.brief;
   if (!isDict(brief)) { errors.push(issue("BRIEF_TYPE", "$.brief", "brief must be an object.")); brief = {}; }
   const platforms = brief.platforms;
-  if (!Array.isArray(platforms) || platforms.some((platform) => !PLATFORMS.has(platform))) errors.push(issue("PLATFORMS", "$.brief.platforms", "platforms contains an unsupported value."));
+  if (!Array.isArray(platforms) || platforms.length !== 1 || platforms[0] !== "frame") errors.push(issue("PLATFORMS", "$.brief.platforms", "PostV1 is Frame-only and requires platforms=[\"frame\"]."));
   const contentClass = brief.content_class;
   const temporalMode = brief.temporal_mode;
   if (!CONTENT_CLASSES.has(contentClass)) errors.push(issue("CONTENT_CLASS", "$.brief.content_class", "Unsupported content class."));
@@ -168,7 +168,7 @@ export function validate(item) {
   }
 
   let drafts = item.drafts;
-  if (!isDict(drafts) || [...PLATFORMS].some((platform) => !(platform in drafts))) { errors.push(issue("DRAFT_FIELDS", "$.drafts", "All PostV1 draft fields must be present.")); drafts = isDict(drafts) ? drafts : {}; }
+  if (!isDict(drafts) || Object.keys(drafts).length !== PLATFORMS.size || [...PLATFORMS].some((platform) => !(platform in drafts))) { errors.push(issue("DRAFT_FIELDS", "$.drafts", "PostV1 must contain exactly one Frame draft field.")); drafts = isDict(drafts) ? drafts : {}; }
   const liveDrafts = nonemptyDrafts(drafts);
   const state = item.publication_state;
   const gateState = { pass: "ready", caution: "conditional", reject: "blocked" }[decision];
@@ -224,7 +224,7 @@ export function validate(item) {
   }
 
   let draftEvidence = item.draft_evidence;
-  if (!isDict(draftEvidence) || [...PLATFORMS].some((platform) => !(platform in draftEvidence))) { errors.push(issue("DRAFT_EVIDENCE_FIELDS", "$.draft_evidence", "All platform evidence fields must be present.")); draftEvidence = {}; }
+  if (!isDict(draftEvidence) || Object.keys(draftEvidence).length !== PLATFORMS.size || [...PLATFORMS].some((platform) => !(platform in draftEvidence))) { errors.push(issue("DRAFT_EVIDENCE_FIELDS", "$.draft_evidence", "PostV1 must contain exactly one Frame evidence field.")); draftEvidence = {}; }
   for (const platform of [...PLATFORMS].sort()) {
     const refs = draftEvidence[platform];
     const path = `$.draft_evidence.${platform}`;

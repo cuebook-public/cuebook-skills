@@ -25,8 +25,10 @@ codeTest("blocked post cannot retain a draft", "BLOCKED_HAS_DRAFT", (item) => { 
 codeTest("verified live fact needs a source", "LIVE_SOURCE", (item) => { item.fact_ledger[0].evidence_class = "verified-live"; item.fact_ledger[0].source_url = ""; });
 codeTest("fact IDs are unique", "DUPLICATE_FACT_ID", (item) => item.fact_ledger.push(structuredClone(item.fact_ledger[0])));
 codeTest("gate state binds publication state", "PUBLICATION_STATE", (item) => { item.gate.decision = "caution"; });
-codeTest("internal marker cannot leak", "INTERNAL_MARKER", (item) => { item.drafts.x = "SOURCE_ASSET_MISMATCH"; });
-codeTest("stock AI phrase is warned", "AI_PHRASE", (item) => { item.drafts.x = "值得关注的是，这里还要看下一份数据。"; });
+codeTest("internal marker cannot leak", "INTERNAL_MARKER", (item) => { item.drafts.frame = "SOURCE_ASSET_MISMATCH"; });
+codeTest("stock AI phrase is warned", "AI_PHRASE", (item) => { item.drafts.frame = "值得关注的是，这里还要看下一份数据。"; });
+codeTest("social platform draft fields are rejected", "DRAFT_FIELDS", (item) => { item.drafts.x = item.drafts.frame; });
+codeTest("Frame is the only public surface", "PLATFORMS", (item) => { item.brief.platforms = ["x"]; });
 
 test("conditional research decision can be valid", () => {
   const item = base(); item.research_decision = "conditional"; item.brief.research_pack_ref = "pack:conditional-valid"; item.publication_state = "conditional";
@@ -36,9 +38,9 @@ test("conditional research decision can be valid", () => {
 codeTest("research decision binds publication state", "PUBLICATION_STATE", (item) => { item.research_decision = "conditional"; item.brief.research_pack_ref = "pack:conditional-state"; });
 codeTest("blocked research rejects live draft", "BLOCKED_HAS_DRAFT", (item) => { item.research_decision = "blocked"; item.brief.research_pack_ref = "pack:block-test"; item.publication_state = "blocked"; });
 codeTest("research pack requires decision", "RESEARCH_DECISION_REQUIRED", (item) => { item.brief.research_pack_ref = "pack:missing-decision"; });
-codeTest("conditional draft names uncertainty", "CONDITIONAL_WORDING", (item) => { item.gate.decision = "caution"; item.publication_state = "conditional"; item.drafts.x = "库存超预期已经确认下跌，结论很明确。"; });
-codeTest("personalized action boundary", "ACTION_BOUNDARY", (item) => { item.drafts.x = "买100股，止损90。"; });
-codeTest("draft must retain evidence", "DRAFT_EVIDENCE_MISSING", (item) => { item.draft_evidence.x = []; });
+codeTest("conditional draft names uncertainty", "CONDITIONAL_WORDING", (item) => { item.gate.decision = "caution"; item.publication_state = "conditional"; item.drafts.frame = "库存超预期已经确认下跌，结论很明确。"; });
+codeTest("personalized action boundary", "ACTION_BOUNDARY", (item) => { item.drafts.frame = "买100股，止损90。"; });
+codeTest("draft must retain evidence", "DRAFT_EVIDENCE_MISSING", (item) => { item.draft_evidence.frame = []; });
 
 test("abstaining route blocks publication and draft", () => {
   const item = base(); Object.assign(item.route, { event_type: "unknown", event_confidence: 0, candidates: [], reasoning_lenses: [], hard_numbers: [], abstain: true, abstain_reason: "no-supported-event-type" });
@@ -73,10 +75,10 @@ test("invalid expression binding reports lineage and fingerprint", () => {
 
 codeTest("ready post resolves position disclosure", "POSITION_DISCLOSURE_UNKNOWN", (item) => { item.disclosure_state.position_status = "unknown"; });
 codeTest("ready policy snapshot stays current", "POLICY_STALE", (item) => { item.policy_gate.checked_at = "2026-05-01T00:00:00Z"; });
-codeTest("Cuebook workflow narration stays private", "PUBLIC_CUEBOOK_NARRATION", (item) => { item.drafts.x = "我把库存异动放进 Cuebook，又补看了持仓和下一份数据。"; });
+codeTest("Cuebook workflow narration stays private", "PUBLIC_CUEBOOK_NARRATION", (item) => { item.drafts.frame = "我把库存异动放进 Cuebook，又补看了持仓和下一份数据。"; });
 
 test("Cuebook may appear as a data source", () => {
-  const item = base(); item.drafts.x = "数据来源：Cuebook。库存高过预期，多头今天少了点想象空间。下一份数据还要看库存能否回落。";
+  const item = base(); item.drafts.frame = "数据来源：Cuebook。库存高过预期，多头今天少了点想象空间。下一份数据还要看库存能否回落。";
   assert.equal(validate(item).valid, true);
 });
 
@@ -85,7 +87,7 @@ function assistedItem() {
     mode: "cuebook_assisted", creator_seed: "库存高于预期可能压制反弹。", cuebook_contribution: "Cuebook 补出了持仓拥挤和下一次数据确认点。",
     creator_judgment: "保留偏空判断，但把表达改成条件观察。", idea_delta: "conditionalized", final_trade_idea: "下一份库存继续超预期时，偏空观点维持。",
     fact_refs: ["F1"], public_attribution: false,
-  }; item.drafts.x = "库存超预期以后，拥挤持仓让反弹更难做。下一份数据如果继续走高，偏空判断维持。"; return item;
+  }; item.drafts.frame = "库存超预期以后，拥挤持仓让反弹更难做。下一份数据如果继续走高，偏空判断维持。"; return item;
 }
 
 test("valid internal assisted-discovery provenance", () => assert.equal(validate(assistedItem()).valid, true));
@@ -101,6 +103,6 @@ test("assistance attribution stays internal", () => {
   }; assert.ok(allCodes(validate(item)).has("PUBLIC_ASSISTANCE_ATTRIBUTION"));
 });
 
-codeTest("self-correction heading is rejected", "PUBLIC_SELF_CORRECTION_HEADING", (item) => { item.drafts.x = "库存超预期，什么情况算看错：下一份数据回落。"; });
+codeTest("self-correction heading is rejected", "PUBLIC_SELF_CORRECTION_HEADING", (item) => { item.drafts.frame = "库存超预期，什么情况算看错：下一份数据回落。"; });
 
 export { assistedItem, base };

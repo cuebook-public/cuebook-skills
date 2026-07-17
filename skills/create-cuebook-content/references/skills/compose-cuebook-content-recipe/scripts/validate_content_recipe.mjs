@@ -21,6 +21,7 @@ const INGREDIENT_FIELDS = new Map([
   ["trade_history_refs", ["trade_history", "TRADE_"]],
 ]);
 const CHANNEL_FORMATS = new Map([
+  ["frame", new Set(["publish_candidate_set"])],
   ["x", new Set(["short_post", "thread"])],
   ["telegram", new Set(["short_post", "long_post"])],
   ["xiaohongshu", new Set(["caption", "carousel"])],
@@ -32,7 +33,7 @@ const CHANNEL_FORMATS = new Map([
   ["douyin", new Set(["short_video_script"])],
   ["generic", new Set(["text", "viewpoint_card", "publish_candidate_set"])],
 ]);
-const COMPACT_CHANNELS = new Set(["x", "telegram", "buy_side_note", "generic"]);
+const COMPACT_CHANNELS = new Set(["frame", "x", "telegram", "buy_side_note", "generic"]);
 const MEDIA_CHANNELS = new Set(["xiaohongshu", "reddit", "owned_web", "seeking_alpha_internal", "short_video", "douyin"]);
 const BASE_REQUIRED_SKILLS = [
   "normalize-cuebook-creator-feed",

@@ -103,6 +103,12 @@ function handoffFor(payload) {
         compact_preview_ref: "selected/viewpoint-622.png",
         alt_text: payload.frame_draft.media[0].alt_text,
       },
+      frame: {
+        title: payload.frame_draft.title,
+        body: payload.frame_draft.body,
+        image_ref: "selected/viewpoint-2488.png",
+        alt_text: payload.frame_draft.media[0].alt_text,
+      },
       settlement: { state: "frozen" },
       quality: { verdict: "pass" },
     }],
@@ -251,6 +257,14 @@ test("Frame handoff rejects copy drift after candidate selection", () => {
   payload.frame_draft.body = "A later rewrite that the user never selected.";
   const result = V.validate(payload, null, null, handoff);
   assert.ok(new Set(result.errors.map((error) => error.code)).has("ASSEMBLY_COPY_MISMATCH"));
+});
+
+test("Frame handoff rejects public projection drift", () => {
+  const payload = assembly();
+  const handoff = handoffFor(payload);
+  handoff.candidateSet.candidates[0].frame.body = "A different public body.";
+  const result = V.validate(payload, null, null, handoff);
+  assert.ok(new Set(result.errors.map((error) => error.code)).has("FRAME_PROJECTION_MISMATCH"));
 });
 
 test("Frame handoff rejects a different visual direction", () => {

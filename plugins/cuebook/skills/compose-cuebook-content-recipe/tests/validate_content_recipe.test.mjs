@@ -8,6 +8,7 @@ import { validate } from "../scripts/validate_content_recipe.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const catalog = JSON.parse(readFileSync(path.join(root, "references", "skill-catalog-v1.json"), "utf8"));
+const creationMenu = JSON.parse(readFileSync(path.join(root, "..", "..", "assets", "creation-menu-v1.json"), "utf8"));
 const skillVersions = Object.fromEntries(catalog.skills.map((entry) => [entry.skill_id, entry.version]));
 
 const RESOLVED = [
@@ -161,6 +162,39 @@ test("base recipe is valid with feed, opportunities, and catalog", () => {
 test("base recipe avoids thesis and settlement layers", () => {
   const excluded = new Set(["compose-cuebook-trading-thesis", "classify-cuebook-trading-logic", "compile-cuebook-settlement-claim"]);
   assert.equal(baseRecipe().execution.resolved_skill_ids.some((id) => excluded.has(id)), false);
+});
+
+test("public creation menu is Frame-only and always includes an image", () => {
+  const outputStep = creationMenu.steps.find((step) => step.step_id === "output");
+  const visualStep = creationMenu.steps.find((step) => step.step_id === "visual");
+  assert.deepEqual(outputStep.options.map((option) => option.option_id), ["frame"]);
+  assert.equal(outputStep.selection, "single");
+  assert.equal(outputStep.minimum, 1);
+  assert.equal(outputStep.maximum, 1);
+  assert.equal(visualStep.minimum, 1);
+  assert.equal(visualStep.options.some((option) => option.option_id === "none"), false);
+});
+
+test("Frame publish-candidate recipe is valid", () => {
+  const item = baseRecipe();
+  item.preset_ref = "preset-publish-candidates";
+  item.plating.bundle_strategy = "independent";
+  item.plating.outputs = [{
+    output_id: "OUT_frame",
+    channel: "frame",
+    format: "publish_candidate_set",
+    count: 3,
+    length: "short",
+    media_format_ref: null,
+    target_context: null,
+  }];
+  for (const skillId of ["direct-cuebook-viewpoint-visual", "assemble-cuebook-publish-candidates"]) {
+    item.execution.resolved_skill_ids.push(skillId);
+    item.execution.version_pins.push({ skill_id: skillId, version: skillVersions[skillId] });
+  }
+  Object.assign(item.validation_report.counts, { outputs: 1, resolved_skills: item.execution.resolved_skill_ids.length });
+  const result = validate(item);
+  assert.equal(result.valid, true, JSON.stringify(result));
 });
 
 const simpleMutations = [

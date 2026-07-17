@@ -92,6 +92,18 @@ test("creator seed requires creation deliverable", () => {
   assert.ok(codes(SEED_VALIDATOR.validate(item)).has("SCHEMA_ENUM"));
 });
 
+test("creator seed requires Frame text and image", () => {
+  const item = seed();
+  item.requested_outputs = ["text"];
+  assert.ok(codes(SEED_VALIDATOR.validate(item)).has("FRAME_OUTPUT_REQUIRED"));
+});
+
+test("ready creation requires Frame text and image", () => {
+  const item = bundle();
+  item.creator_request.requested_outputs = ["text"];
+  assert.ok(codes(validate(item)).has("FRAME_OUTPUT_REQUIRED"));
+});
+
 test("material claim requires query", () => {
   const item = bundle();
   item.query_binding = { required: false, status: "not_required", query_bundle_ref: null, query_bundle_hash: null, query_state: "not_applicable", result_refs: [], as_of: null, freshness: "unknown", warnings: [] };
