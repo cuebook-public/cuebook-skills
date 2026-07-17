@@ -48,34 +48,28 @@
       "order": 7
     },
     {
-      "category_id": "category-discovery",
-      "label": "搜索发现",
-      "description": "处理自有网页 SEO 与 GEO。",
-      "order": 8
-    },
-    {
       "category_id": "category-governance",
       "label": "审批交付",
       "description": "冻结内容、审批和发布交接。",
-      "order": 9
+      "order": 8
     },
     {
       "category_id": "category-history",
       "label": "历史复盘",
       "description": "核对发布、纠错、互动和交易记录。",
-      "order": 10
+      "order": 9
     },
     {
       "category_id": "category-orchestration",
       "label": "流程控制",
       "description": "生成 DAG、追踪工件和阻断状态。",
-      "order": 11
+      "order": 10
     },
     {
       "category_id": "category-modules",
       "label": "产品入口",
       "description": "查询与创作两个稳定入口，以及两者之间的单向调用边界。",
-      "order": 12
+      "order": 11
     }
   ],
   "skills": [
@@ -122,10 +116,10 @@
           "collect-market-commentator-corpus/references/corpus-v1.schema.json"
         ],
         "validator_refs": [
-          "collect-market-commentator-corpus/scripts/normalize_corpus.py"
+          "collect-market-commentator-corpus/scripts/normalize_corpus.mjs"
         ],
         "test_refs": [
-          "collect-market-commentator-corpus/tests/test_normalize_corpus.py"
+          "collect-market-commentator-corpus/tests/normalize_corpus.test.mjs"
         ]
       },
       "replaced_by": null
@@ -225,10 +219,10 @@
           "collect-market-media-corpus/references/media-corpus-v1.schema.json"
         ],
         "validator_refs": [
-          "collect-market-media-corpus/scripts/normalize_media_corpus.py"
+          "collect-market-media-corpus/scripts/normalize_media_corpus.mjs"
         ],
         "test_refs": [
-          "collect-market-media-corpus/tests/test_normalize_media_corpus.py"
+          "collect-market-media-corpus/tests/normalize_media_corpus.test.mjs"
         ]
       },
       "replaced_by": null
@@ -277,10 +271,10 @@
           "distill-market-media-format/references/media-format-v1.schema.json"
         ],
         "validator_refs": [
-          "distill-market-media-format/scripts/distill_media_format.py"
+          "distill-market-media-format/scripts/distill_media_format.mjs"
         ],
         "test_refs": [
-          "distill-market-media-format/tests/test_distill_media_format.py"
+          "distill-market-media-format/tests/distill_media_format.test.mjs"
         ]
       },
       "replaced_by": null
@@ -332,10 +326,10 @@
           "normalize-cuebook-creator-feed/references/creator-feed-v1.schema.json"
         ],
         "validator_refs": [
-          "normalize-cuebook-creator-feed/scripts/validate_creator_feed.py"
+          "normalize-cuebook-creator-feed/scripts/validate_creator_feed.mjs"
         ],
         "test_refs": [
-          "normalize-cuebook-creator-feed/tests/test_validate_creator_feed.py"
+          "normalize-cuebook-creator-feed/tests/validate_creator_feed.test.mjs"
         ]
       },
       "replaced_by": null
@@ -393,12 +387,12 @@
           "compose-cuebook-content-recipe/references/skill-catalog-v1.schema.json"
         ],
         "validator_refs": [
-          "compose-cuebook-content-recipe/scripts/validate_content_recipe.py",
-          "compose-cuebook-content-recipe/scripts/validate_skill_catalog.py"
+          "compose-cuebook-content-recipe/scripts/validate_content_recipe.mjs",
+          "compose-cuebook-content-recipe/scripts/validate_skill_catalog.mjs"
         ],
         "test_refs": [
-          "compose-cuebook-content-recipe/tests/test_validate_content_recipe.py",
-          "compose-cuebook-content-recipe/tests/test_validate_skill_catalog.py"
+          "compose-cuebook-content-recipe/tests/validate_content_recipe.test.mjs",
+          "compose-cuebook-content-recipe/tests/validate_skill_catalog.test.mjs"
         ]
       },
       "replaced_by": null
@@ -453,10 +447,10 @@
           "select-cuebook-content-opportunities/references/content-opportunity-set-v1.schema.json"
         ],
         "validator_refs": [
-          "select-cuebook-content-opportunities/scripts/validate_content_opportunities.py"
+          "select-cuebook-content-opportunities/scripts/validate_content_opportunities.mjs"
         ],
         "test_refs": [
-          "select-cuebook-content-opportunities/tests/test_validate_content_opportunities.py"
+          "select-cuebook-content-opportunities/tests/validate_content_opportunities.test.mjs"
         ]
       },
       "replaced_by": null
@@ -511,10 +505,10 @@
           "validate-cuebook-projection/references/gate-v1.schema.json"
         ],
         "validator_refs": [
-          "validate-cuebook-projection/scripts/validate_projection.py"
+          "validate-cuebook-projection/scripts/validate_projection.mjs"
         ],
         "test_refs": [
-          "validate-cuebook-projection/scripts/test_validate_projection.py"
+          "validate-cuebook-projection/scripts/validate_projection.test.mjs"
         ]
       },
       "replaced_by": null
@@ -569,10 +563,10 @@
           "route-cuebook-narrative/references/route-v1.schema.json"
         ],
         "validator_refs": [
-          "route-cuebook-narrative/scripts/route_narrative.py"
+          "route-cuebook-narrative/scripts/route_narrative.mjs"
         ],
         "test_refs": [
-          "route-cuebook-narrative/scripts/test_route_narrative.py"
+          "route-cuebook-narrative/scripts/route_narrative.test.mjs"
         ]
       },
       "replaced_by": null
@@ -628,10 +622,10 @@
           "build-market-research-pack/references/research-pack-v1.schema.json"
         ],
         "validator_refs": [
-          "build-market-research-pack/scripts/validate_research_pack.py"
+          "build-market-research-pack/scripts/validate_research_pack.mjs"
         ],
         "test_refs": [
-          "build-market-research-pack/tests/test_validate_research_pack.py"
+          "build-market-research-pack/tests/validate_research_pack.test.mjs"
         ]
       },
       "replaced_by": null
@@ -686,10 +680,10 @@
           "compile-cuebook-market-view-semantics/references/market-view-semantics-v1.schema.json"
         ],
         "validator_refs": [
-          "compile-cuebook-market-view-semantics/scripts/validate_market_view_semantics.py"
+          "compile-cuebook-market-view-semantics/scripts/validate_market_view_semantics.mjs"
         ],
         "test_refs": [
-          "compile-cuebook-market-view-semantics/tests/test_validate_market_view_semantics.py"
+          "compile-cuebook-market-view-semantics/tests/validate_market_view_semantics.test.mjs"
         ]
       },
       "replaced_by": null
@@ -746,10 +740,10 @@
           "compose-cuebook-trading-thesis/references/trading-thesis-v1.schema.json"
         ],
         "validator_refs": [
-          "compose-cuebook-trading-thesis/scripts/validate_trading_thesis.py"
+          "compose-cuebook-trading-thesis/scripts/validate_trading_thesis.mjs"
         ],
         "test_refs": [
-          "compose-cuebook-trading-thesis/tests/test_validate_trading_thesis.py"
+          "compose-cuebook-trading-thesis/tests/validate_trading_thesis.test.mjs"
         ]
       },
       "replaced_by": null
@@ -807,10 +801,10 @@
           "compile-cuebook-visual-argument/references/visual-argument-v1.schema.json"
         ],
         "validator_refs": [
-          "compile-cuebook-visual-argument/scripts/validate_visual_argument.py"
+          "compile-cuebook-visual-argument/scripts/validate_visual_argument.mjs"
         ],
         "test_refs": [
-          "compile-cuebook-visual-argument/tests/test_validate_visual_argument.py"
+          "compile-cuebook-visual-argument/tests/validate_visual_argument.test.mjs"
         ]
       },
       "replaced_by": null
@@ -866,10 +860,10 @@
           "classify-cuebook-trading-logic/references/trade-logic-profile-v1.schema.json"
         ],
         "validator_refs": [
-          "classify-cuebook-trading-logic/scripts/validate_trade_logic.py"
+          "classify-cuebook-trading-logic/scripts/validate_trade_logic.mjs"
         ],
         "test_refs": [
-          "classify-cuebook-trading-logic/tests/test_trade_logic.py"
+          "classify-cuebook-trading-logic/tests/trade_logic.test.mjs"
         ]
       },
       "replaced_by": null
@@ -1051,21 +1045,21 @@
           "direct-cuebook-viewpoint-visual/references/viewpoint-expression-registry-v1.json"
         ],
         "validator_refs": [
-          "direct-cuebook-viewpoint-visual/scripts/validate_visual_direction_set.py",
-          "direct-cuebook-viewpoint-visual/scripts/lint_launch_viewpoint_html.py",
+          "direct-cuebook-viewpoint-visual/scripts/validate_visual_direction_set.mjs",
+          "direct-cuebook-viewpoint-visual/scripts/lint_launch_viewpoint_html.mjs",
           "direct-cuebook-viewpoint-visual/scripts/audit_rendered_viewpoint.cjs",
-          "direct-cuebook-viewpoint-visual/scripts/select_creator_palette.py",
-          "direct-cuebook-viewpoint-visual/scripts/stamp_cuebook_wordmark.py",
+          "direct-cuebook-viewpoint-visual/scripts/select_creator_palette.mjs",
+          "direct-cuebook-viewpoint-visual/scripts/stamp_cuebook_wordmark.mjs",
           "direct-cuebook-viewpoint-visual/scripts/capture_html_viewpoint.cjs",
           "direct-cuebook-viewpoint-visual/scripts/capture_html_viewpoints_batch.cjs"
         ],
         "test_refs": [
-          "direct-cuebook-viewpoint-visual/tests/test_validate_visual_direction_set.py",
-          "direct-cuebook-viewpoint-visual/tests/test_audit_rendered_viewpoint.py",
-          "direct-cuebook-viewpoint-visual/tests/test_capture_html_viewpoint.py",
-          "direct-cuebook-viewpoint-visual/tests/test_lint_launch_viewpoint_html.py",
-          "direct-cuebook-viewpoint-visual/tests/test_select_creator_palette.py",
-          "direct-cuebook-viewpoint-visual/tests/test_stamp_cuebook_wordmark.py"
+          "direct-cuebook-viewpoint-visual/tests/validate_visual_direction_set.test.mjs",
+          "direct-cuebook-viewpoint-visual/tests/audit_rendered_viewpoint.test.mjs",
+          "direct-cuebook-viewpoint-visual/tests/capture_html_viewpoint.test.mjs",
+          "direct-cuebook-viewpoint-visual/tests/lint_launch_viewpoint_html.test.mjs",
+          "direct-cuebook-viewpoint-visual/tests/select_creator_palette.test.mjs",
+          "direct-cuebook-viewpoint-visual/tests/stamp_cuebook_wordmark.test.mjs"
         ]
       },
       "replaced_by": null
@@ -1185,10 +1179,10 @@
           "direct-cuebook-viewpoint-motion/references/viewpoint-motion-spec-v1.schema.json"
         ],
         "validator_refs": [
-          "direct-cuebook-viewpoint-motion/scripts/validate_viewpoint_motion_spec.py"
+          "direct-cuebook-viewpoint-motion/scripts/validate_viewpoint_motion_spec.mjs"
         ],
         "test_refs": [
-          "direct-cuebook-viewpoint-motion/tests/test_validate_viewpoint_motion_spec.py"
+          "direct-cuebook-viewpoint-motion/tests/validate_viewpoint_motion_spec.test.mjs"
         ]
       },
       "replaced_by": null
@@ -1244,11 +1238,11 @@
           "render-cuebook-viewpoint-motion/references/viewpoint-motion-v1.schema.json"
         ],
         "validator_refs": [
-          "render-cuebook-viewpoint-motion/scripts/validate_viewpoint_motion.py",
+          "render-cuebook-viewpoint-motion/scripts/validate_viewpoint_motion.mjs",
           "render-cuebook-viewpoint-motion/scripts/capture_motion_keyframes.cjs"
         ],
         "test_refs": [
-          "render-cuebook-viewpoint-motion/tests/test_validate_viewpoint_motion.py"
+          "render-cuebook-viewpoint-motion/tests/validate_viewpoint_motion.test.mjs"
         ]
       },
       "replaced_by": null
@@ -1420,10 +1414,10 @@
           "render-cuebook-market-signal/references/market-signal-v1.schema.json"
         ],
         "validator_refs": [
-          "render-cuebook-market-signal/scripts/validate_market_signal.py"
+          "render-cuebook-market-signal/scripts/validate_market_signal.mjs"
         ],
         "test_refs": [
-          "render-cuebook-market-signal/tests/test_market_signal.py"
+          "render-cuebook-market-signal/tests/market_signal.test.mjs"
         ]
       },
       "replaced_by": "render-cuebook-viewpoint-visual"
@@ -1478,10 +1472,10 @@
           "plan-market-content-program/references/content-program-v1.schema.json"
         ],
         "validator_refs": [
-          "plan-market-content-program/scripts/validate_content_program.py"
+          "plan-market-content-program/scripts/validate_content_program.mjs"
         ],
         "test_refs": [
-          "plan-market-content-program/tests/test_validate_content_program.py"
+          "plan-market-content-program/tests/validate_content_program.test.mjs"
         ]
       },
       "replaced_by": null
@@ -1542,10 +1536,10 @@
           "render-cuebook-market-post/references/post-v1.schema.json"
         ],
         "validator_refs": [
-          "render-cuebook-market-post/scripts/validate_post_artifact.py"
+          "render-cuebook-market-post/scripts/validate_post_artifact.mjs"
         ],
         "test_refs": [
-          "render-cuebook-market-post/scripts/test_validate_post_artifact.py"
+          "render-cuebook-market-post/tests/validate_post_artifact.test.mjs"
         ]
       },
       "replaced_by": null
@@ -1661,10 +1655,10 @@
           "compile-cuebook-settlement-claim/references/settlement-claim-v1.schema.json"
         ],
         "validator_refs": [
-          "compile-cuebook-settlement-claim/scripts/validate_settlement_claim.py"
+          "compile-cuebook-settlement-claim/scripts/validate_settlement_claim.mjs"
         ],
         "test_refs": [
-          "compile-cuebook-settlement-claim/tests/test_validate_settlement_claim.py"
+          "compile-cuebook-settlement-claim/tests/validate_settlement_claim.test.mjs"
         ]
       },
       "replaced_by": null
@@ -1716,10 +1710,10 @@
           "compile-cuebook-settlement-formula/references/settlement-formula-v1.schema.json"
         ],
         "validator_refs": [
-          "compile-cuebook-settlement-formula/scripts/validate_settlement_formula.py"
+          "compile-cuebook-settlement-formula/scripts/validate_settlement_formula.mjs"
         ],
         "test_refs": [
-          "compile-cuebook-settlement-formula/tests/test_validate_settlement_formula.py"
+          "compile-cuebook-settlement-formula/tests/validate_settlement_formula.test.mjs"
         ]
       },
       "replaced_by": null
@@ -1786,10 +1780,10 @@
           "render-cuebook-market-media/references/media-package-v1.schema.json"
         ],
         "validator_refs": [
-          "render-cuebook-market-media/scripts/validate_media_package.py"
+          "render-cuebook-market-media/scripts/validate_media_package.mjs"
         ],
         "test_refs": [
-          "render-cuebook-market-media/tests/test_validate_media_package.py"
+          "render-cuebook-market-media/tests/validate_media_package.test.mjs"
         ]
       },
       "replaced_by": null
@@ -1848,11 +1842,11 @@
           "render-cuebook-thesis-chart/references/market-series-batch-v1.schema.json"
         ],
         "validator_refs": [
-          "render-cuebook-thesis-chart/scripts/validate_thesis_chart.py"
+          "render-cuebook-thesis-chart/scripts/validate_thesis_chart.mjs"
         ],
         "test_refs": [
-          "render-cuebook-thesis-chart/tests/test_validate_thesis_chart.py",
-          "render-cuebook-thesis-chart/tests/test_render_market_series.py"
+          "render-cuebook-thesis-chart/tests/validate_thesis_chart.test.mjs",
+          "render-cuebook-thesis-chart/tests/render_market_series.test.mjs"
         ]
       },
       "replaced_by": null
@@ -1904,10 +1898,10 @@
           "compute-cuebook-market-indicators/references/indicator-pack-v1.schema.json"
         ],
         "validator_refs": [
-          "compute-cuebook-market-indicators/scripts/compute_indicators.py"
+          "compute-cuebook-market-indicators/scripts/compute_indicators.mjs"
         ],
         "test_refs": [
-          "compute-cuebook-market-indicators/tests/test_compute_indicators.py"
+          "compute-cuebook-market-indicators/tests/compute_indicators.test.mjs"
         ]
       },
       "replaced_by": null
@@ -1969,120 +1963,10 @@
           "assemble-cuebook-viewpoint-card/references/viewpoint-card-v1.schema.json"
         ],
         "validator_refs": [
-          "assemble-cuebook-viewpoint-card/scripts/validate_viewpoint_card.py"
+          "assemble-cuebook-viewpoint-card/scripts/validate_viewpoint_card.mjs"
         ],
         "test_refs": [
-          "assemble-cuebook-viewpoint-card/tests/test_validate_viewpoint_card.py"
-        ]
-      },
-      "replaced_by": null
-    },
-    {
-      "skill_id": "optimize-cuebook-market-seo",
-      "version": "1.0.0",
-      "display_name": "Optimize Market SEO",
-      "description": "Preflight owned-web search intent, index eligibility, structure, and metadata.",
-      "category_id": "category-discovery",
-      "status": "stable",
-      "visibility": "selectable",
-      "execution": "installed",
-      "user_selectable": true,
-      "default_enabled": false,
-      "capabilities": [
-        "optimize-market-seo"
-      ],
-      "input_contracts": [
-        "MediaPackageV1",
-        "ResearchPackV1"
-      ],
-      "output_contract": "MarketSEOPackV1",
-      "requires_all": [
-        "render-cuebook-market-media"
-      ],
-      "supported_modes": [
-        "single",
-        "batch",
-        "event_lifecycle"
-      ],
-      "supported_channels": [
-        "owned_web"
-      ],
-      "ui": {
-        "surface": "creator",
-        "group": "搜索发现",
-        "order": 22,
-        "control_type": "toggle",
-        "icon": "search",
-        "summary": "为自有网页补搜索结构与发布检查。"
-      },
-      "maintenance": {
-        "owner": "cuebook-growth",
-        "stability": "stable",
-        "last_verified_at": "2026-07-14T13:00:00+08:00",
-        "skill_path": "optimize-cuebook-market-seo",
-        "schema_refs": [
-          "optimize-cuebook-market-seo/references/market-seo-pack-v1.schema.json"
-        ],
-        "validator_refs": [
-          "optimize-cuebook-market-seo/scripts/validate_market_seo_pack.py"
-        ],
-        "test_refs": [
-          "optimize-cuebook-market-seo/tests/test_validate_market_seo_pack.py"
-        ]
-      },
-      "replaced_by": null
-    },
-    {
-      "skill_id": "optimize-cuebook-market-geo",
-      "version": "1.0.0",
-      "display_name": "Optimize Market GEO",
-      "description": "Build entity, fact-card, answer-unit, and citation-support preflight for owned web.",
-      "category_id": "category-discovery",
-      "status": "stable",
-      "visibility": "selectable",
-      "execution": "installed",
-      "user_selectable": true,
-      "default_enabled": false,
-      "capabilities": [
-        "optimize-market-geo"
-      ],
-      "input_contracts": [
-        "MarketSEOPackV1",
-        "ResearchPackV1"
-      ],
-      "output_contract": "MarketGEOPackV1",
-      "requires_all": [
-        "optimize-cuebook-market-seo"
-      ],
-      "supported_modes": [
-        "single",
-        "batch",
-        "event_lifecycle"
-      ],
-      "supported_channels": [
-        "owned_web"
-      ],
-      "ui": {
-        "surface": "creator",
-        "group": "搜索发现",
-        "order": 23,
-        "control_type": "toggle",
-        "icon": "scan-search",
-        "summary": "增强答案单元、实体和引用支持。"
-      },
-      "maintenance": {
-        "owner": "cuebook-growth",
-        "stability": "stable",
-        "last_verified_at": "2026-07-14T13:00:00+08:00",
-        "skill_path": "optimize-cuebook-market-geo",
-        "schema_refs": [
-          "optimize-cuebook-market-geo/references/market-geo-pack-v1.schema.json"
-        ],
-        "validator_refs": [
-          "optimize-cuebook-market-geo/scripts/validate_market_geo_pack.py"
-        ],
-        "test_refs": [
-          "optimize-cuebook-market-geo/tests/test_validate_market_geo_pack.py"
+          "assemble-cuebook-viewpoint-card/tests/validate_viewpoint_card.test.mjs"
         ]
       },
       "replaced_by": null
@@ -2111,9 +1995,7 @@
         "ViewpointDataBundleV1",
         "ViewpointVisualV1",
         "MediaPackageV1",
-        "ViewpointCardV1",
-        "MarketSEOPackV1",
-        "MarketGEOPackV1"
+        "ViewpointCardV1"
       ],
       "output_contract": "ReleaseBundleV1",
       "requires_all": [],
@@ -2144,10 +2026,10 @@
           "prepare-market-content-release/references/release-bundle-v1.schema.json"
         ],
         "validator_refs": [
-          "prepare-market-content-release/scripts/validate_release_bundle.py"
+          "prepare-market-content-release/scripts/validate_release_bundle.mjs"
         ],
         "test_refs": [
-          "prepare-market-content-release/tests/test_validate_release_bundle.py"
+          "prepare-market-content-release/tests/validate_release_bundle.test.mjs"
         ]
       },
       "replaced_by": null
@@ -2197,10 +2079,10 @@
           "reconcile-market-content-history/references/content-history-ledger-v1.schema.json"
         ],
         "validator_refs": [
-          "reconcile-market-content-history/scripts/validate_content_history.py"
+          "reconcile-market-content-history/scripts/validate_content_history.mjs"
         ],
         "test_refs": [
-          "reconcile-market-content-history/tests/test_validate_content_history.py"
+          "reconcile-market-content-history/tests/validate_content_history.test.mjs"
         ]
       },
       "replaced_by": null
@@ -2254,10 +2136,10 @@
           "orchestrate-cuebook-creator-workflow/references/creator-workflow-run-v1.schema.json"
         ],
         "validator_refs": [
-          "orchestrate-cuebook-creator-workflow/scripts/validate_creator_workflow.py"
+          "orchestrate-cuebook-creator-workflow/scripts/validate_creator_workflow.mjs"
         ],
         "test_refs": [
-          "orchestrate-cuebook-creator-workflow/tests/test_validate_creator_workflow.py"
+          "orchestrate-cuebook-creator-workflow/tests/validate_creator_workflow.test.mjs"
         ]
       },
       "replaced_by": null
@@ -2308,11 +2190,11 @@
           "query-cuebook/references/cuebook-query-bundle-v1.schema.json"
         ],
         "validator_refs": [
-          "query-cuebook/scripts/validate_query_request.py",
-          "query-cuebook/scripts/validate_query_bundle.py"
+          "query-cuebook/scripts/validate_query_request.mjs",
+          "query-cuebook/scripts/validate_query_bundle.mjs"
         ],
         "test_refs": [
-          "query-cuebook/tests/test_validate_query_bundle.py"
+          "query-cuebook/tests/validate_query_bundle.test.mjs"
         ]
       },
       "replaced_by": null
@@ -2369,11 +2251,11 @@
           "create-cuebook-content/references/cuebook-creation-bundle-v1.schema.json"
         ],
         "validator_refs": [
-          "create-cuebook-content/scripts/validate_creator_seed.py",
-          "create-cuebook-content/scripts/validate_creation_bundle.py"
+          "create-cuebook-content/scripts/validate_creator_seed.mjs",
+          "create-cuebook-content/scripts/validate_creation_bundle.mjs"
         ],
         "test_refs": [
-          "create-cuebook-content/tests/test_validate_creation_bundle.py"
+          "create-cuebook-content/tests/validate_creation_bundle.test.mjs"
         ]
       },
       "replaced_by": null
@@ -2406,7 +2288,7 @@
       "ui": {
         "surface": "creator",
         "group": "安全入口",
-        "order": 6,
+        "order": 40,
         "control_type": "hidden",
         "icon": "message-circle-question",
         "summary": "分诊来访输入，补全并核验观点必要项，回传结构化种子。"
@@ -2420,10 +2302,10 @@
           "intake-cuebook-viewpoint/references/viewpoint-intake-v1.schema.json"
         ],
         "validator_refs": [
-          "intake-cuebook-viewpoint/scripts/validate_viewpoint_intake.py"
+          "intake-cuebook-viewpoint/scripts/validate_viewpoint_intake.mjs"
         ],
         "test_refs": [
-          "intake-cuebook-viewpoint/tests/test_validate_viewpoint_intake.py"
+          "intake-cuebook-viewpoint/tests/validate_viewpoint_intake.test.mjs"
         ]
       },
       "replaced_by": null
@@ -2487,9 +2369,7 @@
       ],
       "optional_skill_ids": [
         "render-cuebook-viewpoint-visual",
-        "compute-cuebook-market-indicators",
-        "optimize-cuebook-market-seo",
-        "optimize-cuebook-market-geo"
+        "compute-cuebook-market-indicators"
       ]
     },
     {
@@ -2605,12 +2485,10 @@
         "plan-market-content-program",
         "render-cuebook-market-post",
         "render-cuebook-market-media",
-        "optimize-cuebook-market-seo",
         "prepare-market-content-release"
       ],
       "optional_skill_ids": [
-        "render-cuebook-viewpoint-visual",
-        "optimize-cuebook-market-geo"
+        "render-cuebook-viewpoint-visual"
       ]
     },
     {
@@ -3005,9 +2883,7 @@
       ],
       "optional_skill_ids": [
         "render-cuebook-market-media",
-        "render-cuebook-viewpoint-visual",
-        "optimize-cuebook-market-seo",
-        "optimize-cuebook-market-geo"
+        "render-cuebook-viewpoint-visual"
       ]
     }
   ],

@@ -23,7 +23,7 @@ Turn a supported market event into a readable point of view. Evidence decides wh
 11. Draft the selected text blueprint. Do not regenerate the angle once the plan is locked. Make the creator's judgment, concrete change, market disagreement, forced actor, transmission, expression/horizon, and next observable legible even when adjacent jobs share a paragraph. Use sourced additions to repair missing links, then remove all research-process and assistance narration. Apply profile rules only when compatible with the source-style firewall; report which rules were used.
 12. Check current destination policy and record position, commercial relationship, identity, and AI-assistance disclosure states. If the request needs sections, community rules, visual assets, voiceover, subtitles, or timed beats, hand the same locked expression plan to `../render-cuebook-market-media/SKILL.md`.
 13. Run four focused passes: semantic lock, evidence, human language, and platform fit. Then score with `evals/rubric.md` and repair every hard failure.
-14. When returning structured output, run `scripts/validate_post_artifact.py` and resolve all errors. Warnings require a deliberate review.
+14. When returning structured output, run `scripts/validate_post_artifact.mjs` and resolve all errors. Warnings require a deliberate review.
 15. When the user wants `正文 + 结算观点`, route the finalized prose to `../compile-cuebook-settlement-claim/SKILL.md` only when the expression plan says settlement is eligible. Return separate `PostV1` and `SettlementClaimV1` artifacts; do not force contract fields into the draft.
 16. When the user asks to stage, schedule, hand off, or publish it, route the final artifacts to `../prepare-market-content-release/SKILL.md`; this skill performs no account or platform operation.
 
@@ -120,7 +120,8 @@ Set `publication_state` to the stricter result from `gate.decision`, RouteV1 abs
 - `references/rendering-method.md`: evidence, angle, profile, and platform method.
 - `references/post-v1.schema.json`: structured output contract.
 - `references/skill-matrix.md`: market-situation examples and context needs.
-- `scripts/validate_post_artifact.py`: deterministic PostV1 invariant checks.
+- `scripts/validate_post_artifact.mjs`: deterministic PostV1 invariant checks.
+- `tests/validate_post_artifact.test.mjs`: regression tests.
 - `evals/trigger_cases.json`: positive, negative, neighboring, and adversarial routing cases.
 - `evals/expected_artifacts.json`: PostV1 contract expectations.
 - `evals/rubric.md`: content quality gate.

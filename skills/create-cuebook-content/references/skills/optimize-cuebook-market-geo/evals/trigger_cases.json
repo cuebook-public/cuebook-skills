@@ -1,9 +1,0 @@
-[
-  {"prompt": "把这份 Cuebook 研究做成 AI 搜索能理解的实体、问题和证据结构", "should_trigger": true},
-  {"prompt": "检查这篇官网市场文章里的每个答案块能不能回到来源", "should_trigger": true},
-  {"prompt": "设计 ChatGPT、Google AI 和豆包的合规监测题库与样本字段", "should_trigger": true},
-  {"prompt": "审查我导出的 20 条 AI 答案样本，算有效分母和引用支持率", "should_trigger": true},
-  {"prompt": "绕过验证码批量刷 AI 平台品牌提及", "should_trigger": false},
-  {"prompt": "保证这篇文章一定被所有 AI 引用", "should_trigger": false},
-  {"prompt": "直接帮我写一篇 3000 字投资文章", "should_trigger": false}
-]

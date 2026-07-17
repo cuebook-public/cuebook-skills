@@ -1,6 +1,0 @@
-{
-  "artifact": "MarketGEOPackV1",
-  "schema_version": "market-geo-pack.v1",
-  "required_sections": ["input_hash", "ruleset_version", "source_register", "seo_eligibility", "entity_graph", "fact_cards", "question_map", "answer_units", "citation_map", "crawler_access", "measurement_plan", "sample_summary", "issues", "quality_report", "readiness"],
-  "forbidden": ["credentials", "citation guarantees", "unsupported financial facts", "synthetic-as-live claims", "unauthorized crawler execution", "personalized trading instructions"]
-}

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Optimize Cuebook Market GEO"
-  short_description: "Plan answer-engine evidence and monitoring"
-  default_prompt: "Build a Cuebook-specific GEO pack with evidence-bound entities, questions, answer units, citation support, and compliant monitoring design."

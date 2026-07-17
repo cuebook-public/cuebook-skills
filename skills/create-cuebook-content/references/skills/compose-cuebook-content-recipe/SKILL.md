@@ -20,7 +20,7 @@ Turn creator selections into one deterministic recipe that the workflow orchestr
 5. Record ingredients separately: news, calendar, narratives, trade ideas, and trade history. Give trade history an explicit permitted use.
 6. Record preparation, flavor, plating, execution, and optional extension providers. In `flavor`, preserve `authorship_mode` (`creator_led`, `cuebook_assisted`, or `cuebook_generated`) and `assistance_attribution` (`none` or `disclosure_only`). Cuebook collaboration stays out of body copy; use a separate disclosure only when policy requires it. When the creator selects `compose-cuebook-trading-thesis`, treat the output as a canonical thesis declaration rather than ordinary market commentary.
 7. Resolve automatic and required skills from the catalog. Preserve the user's selectable skills separately.
-8. Validate the recipe with `scripts/validate_content_recipe.py` before sending it to `../orchestrate-cuebook-creator-workflow/SKILL.md`.
+8. Validate the recipe with `node scripts/validate_content_recipe.mjs <recipe.json>` before sending it to `../orchestrate-cuebook-creator-workflow/SKILL.md`.
 
 Read `references/recipe-method.md` when resolving modes, output channels, presets, or skill dependencies.
 
@@ -37,7 +37,7 @@ Read `references/recipe-method.md` when resolving modes, output channels, preset
 
 ## Skill Selection
 
-- `selected_skill_ids` contains choices exposed to the user, such as a settleable thesis, program planning, SEO, GEO, release preparation, or reconciliation.
+- `selected_skill_ids` contains choices exposed to the user, such as a settleable thesis, program planning, release preparation, or reconciliation.
 - `compose-cuebook-trading-thesis` is an explicit creator choice. When selected, research must produce `TradingThesisV1` before any renderer and every derivative must preserve its versioned reference and canonical hash.
 - `resolved_skill_ids` contains the full executable set, including automatic and internal safety skills.
 - A user cannot disable projection, routing, evidence, policy, or lineage guards.
@@ -68,7 +68,7 @@ Return `ContentRecipeV1` from `references/content-recipe-v1.schema.json`. A vali
   "recipe_id": "RECIPE_...",
   "revision": 1,
   "state": "valid",
-  "catalog_version": "1.26.0",
+  "catalog_version": "1.27.0",
   "selection_mode": "opportunity_first",
   "anchor": {},
   "ingredients": {},
@@ -88,8 +88,8 @@ Return `ContentRecipeV1` from `references/content-recipe-v1.schema.json`. A vali
 - `references/skill-catalog-v1.schema.json`: registry contract.
 - `references/recipe-method.md`: selection modes, ingredient roles, and resolution rules.
 - `../../../assets/plugin/creation-menu-v1.json`: product-facing ingredient, reasoning, voice, visual, settlement, and output choices.
-- `scripts/validate_content_recipe.py`: recipe, feed, opportunity, and catalog checks.
-- `scripts/validate_skill_catalog.py`: catalog dependency, visibility, version, and path checks.
-- `tests/test_validate_content_recipe.py`: recipe regressions.
-- `tests/test_validate_skill_catalog.py`: catalog regressions.
+- `scripts/validate_content_recipe.mjs`: recipe, feed, opportunity, and catalog checks.
+- `scripts/validate_skill_catalog.mjs`: catalog dependency, visibility, version, and path checks.
+- `tests/validate_content_recipe.test.mjs`: recipe regressions using `node:test`.
+- `tests/validate_skill_catalog.test.mjs`: catalog regressions using `node:test`.
 - `evals/trigger_cases.json`, `evals/rubric.md`, and `evals/failure_cases.md`: routing and quality evaluation.

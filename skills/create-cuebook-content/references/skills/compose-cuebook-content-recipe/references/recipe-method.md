@@ -36,8 +36,6 @@ The resolver always includes intake, selection, recipe composition, projection v
 - `render-cuebook-thesis-chart` when the creator selects a chart block or the output format is `viewpoint_card`; chart mode follows the claim and benchmark, while horizon selects the preferred interval;
 - `compute-cuebook-market-indicators` when the creator selects indicator evidence; each result keeps its formula, lookback, interval, as-of time, and forming/sealed state;
 - `assemble-cuebook-viewpoint-card` when the output format is `viewpoint_card`; it runs after text, settlement, chart, and indicator artifacts are available and preserves the creator's free text;
-- `optimize-cuebook-market-seo` for owned-web output;
-- `optimize-cuebook-market-geo` only when selected and SEO is present;
 - `prepare-market-content-release` for release candidates;
 - `assemble-cuebook-publish-candidates` for one-pass frontend choice sets containing three short posts, three passed static visuals, and one optional shared settlement projection;
 - `reconcile-market-content-history` for postmortem or correction modes.

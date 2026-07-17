@@ -23,7 +23,7 @@ Create one immutable, cutoff-safe intake artifact. Preserve uncertainty and sour
 6. Deduplicate by exact revision/content hash first, then add `same_as` or cluster links for syndicated and near-duplicate records. Do not count syndication as independent confirmation.
 7. Quarantine records with unresolved identity, future knowledge, retracted-only support, unknown access basis, invalid lineage, or missing required semantics. Preserve the raw locator and reason.
 8. Set `quality_report.decision` to `ready`, `conditional`, or `blocked`. Unknown never defaults to `none`, `flat`, `public`, `authorized`, or `verified`.
-9. Return `CreatorFeedV1`, run `scripts/validate_creator_feed.py`, and repair every error. Review warnings before opportunity selection.
+9. Return `CreatorFeedV1`, run `scripts/validate_creator_feed.mjs`, and repair every error. Review warnings before opportunity selection.
 
 ## Stable Identity And Time
 
@@ -76,8 +76,8 @@ Return the shape in `references/creator-feed-v1.schema.json`. The core sections 
 
 - `references/input-semantics.md`: allowed and prohibited uses for each Cuebook input.
 - `references/creator-feed-v1.schema.json`: authoritative contract.
-- `scripts/validate_creator_feed.py`: deterministic lineage, cutoff, permission, reference, and count checks.
-- `tests/test_validate_creator_feed.py`: regression suite.
+- `scripts/validate_creator_feed.mjs`: deterministic lineage, cutoff, permission, reference, and count checks.
+- `tests/validate_creator_feed.test.mjs`: regression suite.
 - `evals/trigger_cases.json`: positive, neighboring, and adversarial routing cases.
 - `evals/rubric.md`: intake quality gate.
 - `evals/failure_cases.md`: stable failure patterns.

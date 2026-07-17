@@ -21,8 +21,10 @@
         "query-menu-v1.json"
       ],
       "vendored_shared_validators": [
-        "scripts/validate_query_bundle.py",
-        "scripts/validate_query_request.py"
+        "references/skills/build-market-research-pack/scripts/validate_research_pack.mjs",
+        "references/skills/reconcile-market-content-history/scripts/validate_content_history.mjs",
+        "scripts/validate_query_bundle.mjs",
+        "scripts/validate_query_request.mjs"
       ],
       "valid": true
     },
@@ -57,15 +59,13 @@
         "assemble-cuebook-viewpoint-card",
         "compile-cuebook-settlement-claim",
         "compile-cuebook-visual-argument",
-        "optimize-cuebook-market-seo",
-        "optimize-cuebook-market-geo",
         "render-cuebook-logic-card",
         "render-cuebook-market-signal",
         "compile-cuebook-settlement-formula",
         "collect-market-commentator-corpus",
         "distill-market-commentator-profile"
       ],
-      "bundled_internal_skills": 34,
+      "bundled_internal_skills": 32,
       "plugin_assets": [
         "creation-menu-v1.json",
         "cuebook-modules-v1.json",
@@ -74,11 +74,13 @@
         "query-menu-v1.json"
       ],
       "vendored_shared_validators": [
-        "references/skills/intake-cuebook-viewpoint/scripts/validate_viewpoint_intake.py",
-        "references/skills/query-cuebook/scripts/validate_query_bundle.py",
-        "references/skills/query-cuebook/scripts/validate_query_request.py",
-        "scripts/validate_creation_bundle.py",
-        "scripts/validate_creator_seed.py"
+        "references/skills/build-market-research-pack/scripts/validate_research_pack.mjs",
+        "references/skills/intake-cuebook-viewpoint/scripts/validate_viewpoint_intake.mjs",
+        "references/skills/query-cuebook/scripts/validate_query_bundle.mjs",
+        "references/skills/query-cuebook/scripts/validate_query_request.mjs",
+        "references/skills/reconcile-market-content-history/scripts/validate_content_history.mjs",
+        "scripts/validate_creation_bundle.mjs",
+        "scripts/validate_creator_seed.mjs"
       ],
       "valid": true
     }

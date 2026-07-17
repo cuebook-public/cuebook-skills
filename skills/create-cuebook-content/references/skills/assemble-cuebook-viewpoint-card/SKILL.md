@@ -24,7 +24,7 @@ Build the product object shown in the creator preview. This skill composes valid
 4. Recommend blocks by decision job, not by visual variety. Every block states whether it supports, challenges, contextualizes, or settles the viewpoint.
 5. Assemble one `ViewpointCardV1`. Preserve artifact refs and fact refs rather than copying source payloads.
 6. Apply the strictest upstream state. A provisional indicator, degraded chart, unconfirmed deadline, or unresolved disclosure makes the preview `conditional`.
-7. Validate with `scripts/validate_viewpoint_card.py`. The frontend may reorder optional blocks, but changing the claim, deadline, benchmark, or settlement rule creates a new thesis revision.
+7. Validate with `scripts/validate_viewpoint_card.mjs`. The frontend may reorder optional blocks, but changing the claim, deadline, benchmark, or settlement rule creates a new thesis revision.
 
 ## Block Recommendations
 
@@ -54,7 +54,7 @@ The author can add, remove, and reorder optional blocks. The header, creator tex
 Validate:
 
 ```bash
-python scripts/validate_viewpoint_card.py viewpoint-card-v1.json
+node scripts/validate_viewpoint_card.mjs viewpoint-card-v1.json
 ```
 
 ## Resources
@@ -62,5 +62,5 @@ python scripts/validate_viewpoint_card.py viewpoint-card-v1.json
 - `references/authoring-flow.md`: exact mapping from the two-screen creator flow to contracts, skills, states, and runtime services.
 - `references/creator-view-intent-v1.schema.json`: asset, deadline, outcome, evidence choices, and creator text.
 - `references/viewpoint-card-v1.schema.json`: card header, ordered evidence blocks, settlement, disclosures, and state.
-- `scripts/validate_viewpoint_card.py`: lineage, block, benchmark, state, and ownership validator.
-- `tests/test_validate_viewpoint_card.py`: regression tests.
+- `scripts/validate_viewpoint_card.mjs`: lineage, block, benchmark, state, and ownership validator.
+- `tests/validate_viewpoint_card.test.mjs`: regression tests.
