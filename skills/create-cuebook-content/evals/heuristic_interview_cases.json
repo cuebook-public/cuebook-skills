@@ -1,0 +1,48 @@
+{
+  "schema_version": "cuebook-heuristic-interview-eval-v1",
+  "skill_name": "create-cuebook-content",
+  "cases": [
+    {
+      "case_id": "btc-relative-resilience",
+      "input": "最近 BTC 跌不下去，我觉得未来 30 天还会冲一波。美股最近跌得厉害，资金可能在回流币圈。",
+      "expected_heuristic": "anomaly",
+      "example_interview": "你抓到的可能不只是 BTC 看涨，而是美股泄压时，BTC 的不跌本身正在变成资金选择。这个反常更像资金提前换仓，还是持续买盘在吸收抛压？有没有哪个盘面瞬间或消息让你第一次有这个感觉？没有更多就按这个做。"
+    },
+    {
+      "case_id": "nvda-post-earnings",
+      "input": "英伟达财报很好，我觉得未来五天还会涨，帮我做个 Frame。",
+      "expected_heuristic": "causal_bridge",
+      "example_interview": "我听到的不是单纯财报好，而是你觉得财报后的重估还没有走完。你认为接下来继续上行更像盈利预期被重新抬高，还是资金还没完成换仓？财报里哪一处变化最先让你产生这个判断？没有更多就按这个做。"
+    },
+    {
+      "case_id": "gold-long-held-view",
+      "input": "我一直看多黄金，未来三个月应该还会涨，帮我表达出来。",
+      "expected_heuristic": "why_now",
+      "example_interview": "你不是刚刚转多，而是觉得这个长期判断现在到了值得被放大的窗口。最近发生了什么变化，让你觉得是现在，而不是更早或更晚？没有更多就按这个做。"
+    },
+    {
+      "case_id": "oil-risk-premium",
+      "input": "我觉得油价未来 30 天偏多，霍尔木兹不稳，保险和绕航成本会在断供前先动。",
+      "expected_heuristic": "next_footprint",
+      "example_interview": "你抓到的是供应还没真正中断，风险溢价可能已经沿成本链条先走。这个逻辑开始兑现时，你最先会看运价、期限结构，还是能源资产的相对强弱？没有更多就按这个做。"
+    },
+    {
+      "case_id": "mu-margin-edge",
+      "input": "市场都在盯 AI capex，但我觉得 MU 未来 30 天真正的看点是毛利率修复。",
+      "expected_heuristic": "blind_spot",
+      "example_interview": "你的差异不在于也看 AI，而在于你认为市场盯错了传导结果。你觉得大家最容易低估的是毛利率修复的幅度、持续时间，还是它对估值的影响？没有更多就按这个做。"
+    },
+    {
+      "case_id": "complete-viewpoint",
+      "input": "BTC 未来 30 天偏多；美股下跌时它保持相对强势，现货承接没有松，边际资金可能在提前换仓。我想观察 BTC 对纳指的相对强弱。",
+      "expected_heuristic": "voice_lock",
+      "example_interview": "这套判断已经完整了：反常、机制和下一步信号都有。成品里你最不想被稀释的是 BTC 的抗跌、跨资产资金迁移，还是未来 30 天这个明确判断？没有更多就按这个做。"
+    }
+  ],
+  "forbidden_moves": [
+    "把新闻、线索、signal、直觉一次性列成问卷",
+    "要求用户证明观点或先说什么会证明他错",
+    "在用户采用前把助手建议的机制写成用户观点",
+    "在普通快速预览里追问目标价"
+  ]
+}

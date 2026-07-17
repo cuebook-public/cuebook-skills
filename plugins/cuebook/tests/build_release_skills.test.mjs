@@ -61,13 +61,35 @@ test("create bundle keeps the one-round creator interview before price", () => {
     buildRelease(tmpPath);
     const skillPath = path.join(tmpPath, "release", "create-cuebook-content", "SKILL.md");
     const text = fs.readFileSync(skillPath, "utf-8");
-    const interview = text.indexOf("## One-Round Creator Interview");
+    const interview = text.indexOf("## One-Round Heuristic Interview");
     const skip = text.indexOf("closes it immediately", interview);
     const price = text.indexOf("This interview always precedes any price-target", interview);
     assert.ok(interview >= 0, skillPath);
     assert.ok(skip > interview, skillPath);
     assert.ok(price > skip, skillPath);
     assert.match(text, /Ask for a price only after the creator explicitly chooses a price-target settlement/u);
+  });
+});
+
+test("heuristic interview covers each missing-link route without a generic checklist", () => {
+  withTmpPath((tmpPath) => {
+    buildRelease(tmpPath);
+    const builtEval = path.join(
+      tmpPath,
+      "release",
+      "create-cuebook-content",
+      "evals",
+      "heuristic_interview_cases.json",
+    );
+    const payload = JSON.parse(fs.readFileSync(builtEval, "utf-8"));
+    const routes = [...new Set(payload.cases.map((item) => item.expected_heuristic))].sort();
+    assert.deepEqual(routes, ["anomaly", "blind_spot", "causal_bridge", "next_footprint", "voice_lock", "why_now"]);
+    assert.ok(payload.cases.every((item) => item.example_interview.includes("没有更多就按这个做")));
+
+    const skillPath = path.join(tmpPath, "release", "create-cuebook-content", "SKILL.md");
+    const text = fs.readFileSync(skillPath, "utf-8");
+    for (const route of routes) assert.match(text, new RegExp(`\\b${route}\\b`, "u"));
+    assert.match(text, /Do not dump categories/u);
   });
 });
 

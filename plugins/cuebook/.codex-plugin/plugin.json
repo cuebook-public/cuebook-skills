@@ -1,6 +1,6 @@
 {
   "name": "cuebook",
-  "version": "0.2.2+codex.20260717175357",
+  "version": "0.2.3+codex.20260717182947",
   "description": "Query Cuebook market intelligence or turn a creator-owned trading viewpoint into a Frame with one title, one body, and one paired image.",
   "author": {
     "name": "Cuebook",
@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Cuebook",
     "shortDescription": "Query Cuebook data or create a title-body-image Frame",
-    "longDescription": "Cuebook has two explicit modules. Query searches, reads, compares, and explains Cuebook assets, stories, evidence, market data, metrics, and history without writing anything. Create preserves and improves the user's trading viewpoint, offers one optional follow-up about its news, signals, or intuition before any price question, then calls Query for material support and quickly returns one recommended Frame by default. A skipped follow-up moves directly into creation; three alternatives are produced only when requested. Every Frame shows exactly one title, one concise body, and one paired 2488 x 1056 viewpoint image. Release packaging and extra derivatives wait until selection, and publication always requires explicit first-party approval.",
+    "longDescription": "Cuebook has two explicit modules. Query searches, reads, compares, and explains Cuebook assets, stories, evidence, market data, metrics, and history without writing anything. Create preserves and improves the user's trading viewpoint, reflects its distinctive kernel, and asks one optional heuristic question about only the highest-leverage missing link before any price question. It then calls Query for material support and quickly returns one recommended Frame by default. A skip moves directly into creation; three alternatives are produced only when requested. Every Frame shows exactly one title, one concise body, and one paired 2488 x 1056 viewpoint image. Release packaging and extra derivatives wait until selection, and publication always requires explicit first-party approval.",
     "developerName": "Cuebook",
     "category": "Finance",
     "capabilities": [
