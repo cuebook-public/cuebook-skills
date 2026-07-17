@@ -31,8 +31,7 @@ server are loaded.
 
 ## Runtime dependencies
 
-- Python 3.11+ for every validator script.
-- Node.js 18+ with Playwright and a local Chromium/Chrome executable for the
+- Node.js 18+ for every validator script, with Playwright and a local Chromium/Chrome executable for the
   seven render/audit skills (declared in their `compatibility` frontmatter).
   Codex runs supply these via the bundled runtime under
   `~/.cache/codex-runtimes/`; set `NODE_PATH` to a Playwright-bearing

@@ -65,9 +65,7 @@ before tagging a release.
 ```bash
 node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook
 
-PYTHONDONTWRITEBYTECODE=1 python3 -m pytest \
-  -p no:cacheprovider \
-  plugins/cuebook
+node --test 'plugins/cuebook/**/*.test.mjs'
 ```
 
 Do not commit API keys, OAuth tokens, credentials, generated user output, or

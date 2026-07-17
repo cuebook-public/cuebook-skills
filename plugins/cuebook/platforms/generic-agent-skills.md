@@ -36,9 +36,9 @@ report unavailable capabilities instead of inventing values.
 
 ## Runtime dependencies
 
-Declared per skill in `compatibility` frontmatter: Python 3.11+ everywhere;
-Node.js 18+ with Playwright and local Chromium only for visual capture and
-audit paths.
+Declared per skill in `compatibility` frontmatter: Node.js 18+ everywhere,
+with Playwright and local Chromium additionally required for visual capture
+and audit paths.
 
 ## Write operations
 

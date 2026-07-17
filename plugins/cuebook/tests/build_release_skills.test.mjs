@@ -87,26 +87,15 @@ test("vendored validators import without plugin tree", () => {
     ];
     buildRelease(tmpPath);
     for (const stem of bundled) {
-      // The tree is migrating from .py to .mjs; exercise whichever the
-      // builder vendored (both, while sources are mixed).
-      const candidates = [`${stem}.mjs`, `${stem}.py`].filter((script) => fs.existsSync(script));
-      assert.ok(candidates.length > 0, stem);
-      for (const script of candidates) {
-        const isMjs = script.endsWith(".mjs");
-        const helper = path.join(path.dirname(script), isMjs ? "validate_json_schema.mjs" : "validate_json_schema.py");
-        assert.ok(fs.existsSync(helper), path.dirname(script));
-        const completed = isMjs
-          ? spawnSync(process.execPath, [script, "--help"], { encoding: "utf-8" })
-          : spawnSync("python3", [script, "--help"], { encoding: "utf-8" });
-        if (isMjs) {
-          // --help exit codes are not contractual for .mjs ports; assert the
-          // vendored import graph resolved instead.
-          assert.ok(completed.status !== null, completed.stderr);
-          assert.ok(!/ERR_MODULE_NOT_FOUND|Cannot find module|Cannot find package/.test(completed.stderr ?? ""), completed.stderr);
-        } else {
-          assert.equal(completed.status, 0, completed.stderr);
-        }
-      }
+      const script = `${stem}.mjs`;
+      const helper = path.join(path.dirname(script), "validate_json_schema.mjs");
+      assert.ok(fs.existsSync(script), script);
+      assert.ok(fs.existsSync(helper), path.dirname(script));
+      const completed = spawnSync(process.execPath, [script, "--help"], { encoding: "utf-8" });
+      // --help exit codes are not contractual; assert the vendored import
+      // graph resolved instead.
+      assert.ok(completed.status !== null, completed.stderr);
+      assert.ok(!/ERR_MODULE_NOT_FOUND|Cannot find module|Cannot find package/.test(completed.stderr ?? ""), completed.stderr);
     }
   });
 });

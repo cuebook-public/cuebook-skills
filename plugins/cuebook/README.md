@@ -95,12 +95,10 @@ Run the package boundary validator:
 node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook
 ```
 
-Run all plugin tests without local caches:
+Run all plugin tests:
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 python3 -m pytest \
-  -p no:cacheprovider \
-  plugins/cuebook
+node --test 'plugins/cuebook/**/*.test.mjs'
 ```
 
 Before release, keep the plugin version, catalog version, module map, menus,

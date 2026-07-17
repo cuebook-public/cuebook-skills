@@ -2,7 +2,7 @@
 name: orchestrate-cuebook-creator-workflow
 description: Plan, run, resume, inspect, or repair an end-to-end MCP-connected Cuebook trading-content creator workflow as CreatorWorkflowRunV1, starting from Cuebook news, calendar events, narratives, trade ideas, trade history, a frontend ContentRecipeV1, or existing creator artifacts. Use for ingredient recipes, saved presets, three publishable candidates, static viewpoint cards, settleable claims, daily batches, cross-platform programs, release preparation, publication handoff, receipts, corrections, and postmortems that coordinate versioned Skills with available Cuebook MCP tools. Do not use for direct order execution, credential handling, unavailable backend writes, or claiming content was published without a verified platform receipt.
 license: Proprietary. Cuebook internal; see the repository README for terms.
-compatibility: Requires a connected Cuebook MCP server for asset resolution and market data; degrades to partial results, never invented values, when tools are unavailable. Python 3.11+ for validators.
+compatibility: Requires a connected Cuebook MCP server for asset resolution and market data; degrades to partial results, never invented values, when tools are unavailable. Node.js 18+ for validators.
 ---
 
 # Orchestrate Cuebook Creator Workflow

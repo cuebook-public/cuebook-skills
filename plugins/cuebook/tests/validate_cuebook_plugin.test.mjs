@@ -37,7 +37,7 @@ function rewrite(filePath, mutate) {
 test("valid plugin package", () => {
   const result = validate(PLUGIN_ROOT);
   assert.ok(result.valid, JSON.stringify(result));
-  assert.deepEqual(result.stats.module_skill_counts, { create: 29, query: 11 });
+  assert.deepEqual(result.stats.module_skill_counts, { create: 27, query: 11 });
   const modules = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "cuebook-modules-v1.json"), "utf-8"),
   );

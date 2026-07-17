@@ -13,9 +13,7 @@
 // - referenced plugin assets are copied to `assets/plugin/` and paths rewritten;
 // - `$skill-name` tokens are rewritten to bundle-relative SKILL.md paths;
 // - the shared `validate_json_schema.mjs` helper is vendored next to every
-//   validator that imports it through the plugin-root scripts directory
-//   (legacy `validate_json_schema.py` sys.path shims are vendored the same
-//   way while the .py -> .mjs migration is in flight);
+//   validator that imports it through the plugin-root scripts directory;
 // - the result is checked against the Agent Skills format rules before writing
 //   the release manifest.
 
@@ -25,9 +23,6 @@ import { fileURLToPath } from "node:url";
 
 const ASSET_REF_SOURCE = "\\.\\./\\.\\./assets/([A-Za-z0-9._/-]+)";
 const FRONTMATTER_PATTERN = /^---\n([\s\S]*?)\n---\n/;
-// Legacy Python shared-validator shim (still handled while .py sources exist).
-const PLUGIN_SHIM_ROOT = "PLUGIN_ROOT = Path(__file__).resolve().parents[3]";
-const PLUGIN_SHIM_INSERT = 'sys.path.insert(0, str(PLUGIN_ROOT / "scripts"))';
 // ESM shared-validator import used by plugin skill scripts.
 const MJS_SHIM_IMPORT = "../../../scripts/validate_json_schema.mjs";
 const MJS_SHIM_LOCAL = "./validate_json_schema.mjs";
@@ -118,19 +113,12 @@ export function rewriteMarkdown(md, bundleRoot, skillNames, usedAssets) {
   fs.writeFileSync(md, text);
 }
 
-// Vendor the shared validator next to a bundled script. `.py` scripts use the
-// legacy sys.path shim; `.mjs` scripts import the shared module relative to
-// the plugin root. Both are rewritten to load the vendored sibling copy.
+// Vendor the shared validator next to a bundled ESM script and rewrite the
+// plugin-root import to load the sibling copy.
 export function vendorSharedValidator(script, sharedHelper) {
   let text = fs.readFileSync(script, "utf-8");
-  if (script.endsWith(".py")) {
-    if (!text.includes(PLUGIN_SHIM_ROOT)) return false;
-    text = text.replaceAll(PLUGIN_SHIM_ROOT, "PLUGIN_ROOT = Path(__file__).resolve().parent");
-    text = text.replaceAll(PLUGIN_SHIM_INSERT, "sys.path.insert(0, str(PLUGIN_ROOT))");
-  } else {
-    if (!text.includes(MJS_SHIM_IMPORT)) return false;
-    text = text.replaceAll(MJS_SHIM_IMPORT, MJS_SHIM_LOCAL);
-  }
+  if (!text.includes(MJS_SHIM_IMPORT)) return false;
+  text = text.replaceAll(MJS_SHIM_IMPORT, MJS_SHIM_LOCAL);
   fs.writeFileSync(script, text);
   fs.copyFileSync(sharedHelper, path.join(path.dirname(script), path.basename(sharedHelper)));
   return true;
@@ -196,10 +184,7 @@ export function build(pluginRootArg, outputDirArg) {
   const skillNames = new Set(
     fs.readdirSync(path.join(pluginRoot, "skills")).filter((name) => isDir(path.join(pluginRoot, "skills", name))),
   );
-  const sharedHelpers = {
-    ".py": path.join(pluginRoot, "scripts", "validate_json_schema.py"),
-    ".mjs": path.join(pluginRoot, "scripts", "validate_json_schema.mjs"),
-  };
+  const sharedHelper = path.join(pluginRoot, "scripts", "validate_json_schema.mjs");
   const errors = [];
   const bundles = [];
 
@@ -229,9 +214,8 @@ export function build(pluginRootArg, outputDirArg) {
       fs.copyFileSync(source, target);
     }
     const vendored = [];
-    for (const script of [...rglob(bundleRoot, ".py"), ...rglob(bundleRoot, ".mjs")]) {
-      const helper = sharedHelpers[script.endsWith(".py") ? ".py" : ".mjs"];
-      if (vendorSharedValidator(script, helper)) {
+    for (const script of rglob(bundleRoot, ".mjs")) {
+      if (vendorSharedValidator(script, sharedHelper)) {
         vendored.push(path.relative(bundleRoot, script));
       }
     }
