@@ -112,6 +112,10 @@ function browserExecutable() {
   return candidates.find((candidate) => fs.existsSync(candidate));
 }
 
+function chromiumPlatformArgs(platform = process.platform) {
+  return platform === "linux" ? ["--no-sandbox", "--disable-dev-shm-usage"] : [];
+}
+
 function htmlFor(svgText, width, height) {
   return [
     "<!doctype html>",
@@ -147,6 +151,7 @@ async function renderPng(browser, svgText, width, height, output, workDir) {
   fs.writeFileSync(htmlPath, htmlFor(svgText, width, height), "utf8");
   const args = [
     "--headless=new",
+    ...chromiumPlatformArgs(),
     "--disable-gpu",
     "--hide-scrollbars",
     "--no-first-run",
@@ -163,12 +168,16 @@ async function renderPng(browser, svgText, width, height, output, workDir) {
   ];
   const child = spawn(browser, args, {
     detached: true,
-    stdio: "ignore",
+    stdio: ["ignore", "ignore", "pipe"],
     env: { ...process.env, HOME: workDir },
   });
   let spawnError = null;
+  let stderrText = "";
   child.once("error", (error) => {
     spawnError = error;
+  });
+  child.stderr.on("data", (chunk) => {
+    stderrText = `${stderrText}${chunk}`.slice(-4096);
   });
   let stableSize = -1;
   let stableChecks = 0;
@@ -182,6 +191,7 @@ async function renderPng(browser, svgText, width, height, output, workDir) {
         stableSize = size;
         if (stableChecks >= 10) break;
       }
+      if (child.exitCode !== null && !fs.existsSync(output)) break;
       await delay(100);
     }
   } finally {
@@ -189,7 +199,11 @@ async function renderPng(browser, svgText, width, height, output, workDir) {
     await delay(100);
   }
   if (!fs.existsSync(output) || fs.statSync(output).size <= 100 || stableChecks < 10) {
-    throw new Error(`Chromium did not produce a stable ${width}x${height} PNG within 15 seconds.`);
+    const detail = stderrText.trim();
+    throw new Error([
+      `Chromium did not produce a stable ${width}x${height} PNG within 15 seconds.`,
+      detail ? `Chromium stderr:\n${detail}` : null,
+    ].filter(Boolean).join("\n"));
   }
   const dimensions = pngDimensions(output);
   if (dimensions[0] !== width || dimensions[1] !== height) {
@@ -299,7 +313,11 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  process.stderr.write(`${error.stack || error.message}\n`);
-  process.exitCode = 1;
-});
+module.exports = { chromiumPlatformArgs };
+
+if (require.main === module) {
+  main().catch((error) => {
+    process.stderr.write(`${error.stack || error.message}\n`);
+    process.exitCode = 1;
+  });
+}

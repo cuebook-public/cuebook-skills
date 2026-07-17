@@ -27,6 +27,10 @@ function browserExecutable() {
   return candidates.find((candidate) => fs.existsSync(candidate));
 }
 
+function chromiumPlatformArgs(platform = process.platform) {
+  return platform === "linux" ? ["--no-sandbox", "--disable-dev-shm-usage"] : [];
+}
+
 function pngDimensions(file) {
   const data = fs.readFileSync(file);
   const signature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
@@ -199,6 +203,7 @@ async function capture(browser, htmlPath, width, height, scaleFactor, output, wo
   fs.rmSync(profile, { recursive: true, force: true });
   const args = [
     "--headless=new",
+    ...chromiumPlatformArgs(),
     "--disable-gpu",
     "--hide-scrollbars",
     "--no-first-run",
@@ -213,9 +218,17 @@ async function capture(browser, htmlPath, width, height, scaleFactor, output, wo
     `--screenshot=${output}`,
     pathToFileURL(htmlPath).href,
   ];
-  const child = spawn(browser, args, { detached: true, stdio: "ignore", env: { ...process.env, HOME: workDir } });
+  const child = spawn(browser, args, {
+    detached: true,
+    stdio: ["ignore", "ignore", "pipe"],
+    env: { ...process.env, HOME: workDir },
+  });
   let spawnError = null;
+  let stderrText = "";
   child.once("error", (error) => { spawnError = error; });
+  child.stderr.on("data", (chunk) => {
+    stderrText = `${stderrText}${chunk}`.slice(-4096);
+  });
   let stableSize = -1;
   let stableChecks = 0;
   try {
@@ -228,6 +241,7 @@ async function capture(browser, htmlPath, width, height, scaleFactor, output, wo
         stableSize = size;
         if (stableChecks >= 3) break;
       }
+      if (child.exitCode !== null && !fs.existsSync(output)) break;
       await delay(75);
     }
   } finally {
@@ -236,7 +250,13 @@ async function capture(browser, htmlPath, width, height, scaleFactor, output, wo
   }
   const expectedWidth = width * scaleFactor;
   const expectedHeight = height * scaleFactor;
-  if (!fs.existsSync(output) || stableChecks < 3) throw new Error(`Chromium did not produce a stable ${expectedWidth}x${expectedHeight} PNG.`);
+  if (!fs.existsSync(output) || stableChecks < 3) {
+    const detail = stderrText.trim();
+    throw new Error([
+      `Chromium did not produce a stable ${expectedWidth}x${expectedHeight} PNG.`,
+      detail ? `Chromium stderr:\n${detail}` : null,
+    ].filter(Boolean).join("\n"));
+  }
   const dimensions = pngDimensions(output);
   if (dimensions[0] !== expectedWidth || dimensions[1] !== expectedHeight) {
     throw new Error(`Expected ${expectedWidth}x${expectedHeight}, received ${dimensions.join("x")}.`);
@@ -336,7 +356,7 @@ async function main() {
   process.stdout.write(`${result.outputDir}\n`);
 }
 
-module.exports = { browserExecutable, canonicalRgbaPixelSha256, captureViewpoint, paintStats };
+module.exports = { browserExecutable, canonicalRgbaPixelSha256, captureViewpoint, chromiumPlatformArgs, paintStats };
 
 if (require.main === module) {
   main().catch((error) => {

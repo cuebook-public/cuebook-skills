@@ -3,11 +3,14 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "no
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
+import { createRequire } from "node:module";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const script = path.join(root, "scripts", "capture_html_viewpoint.cjs");
+const require = createRequire(import.meta.url);
+const { chromiumPlatformArgs } = require(script);
 const browsers = [
   process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
   process.env.CHROME_PATH,
@@ -20,6 +23,11 @@ const browsers = [
   "/usr/bin/chromium-browser",
 ].filter(Boolean);
 const canCapture = browsers.some(existsSync);
+
+test("Linux Chromium capture uses CI-safe process flags", () => {
+  assert.deepEqual(chromiumPlatformArgs("linux"), ["--no-sandbox", "--disable-dev-shm-usage"]);
+  assert.deepEqual(chromiumPlatformArgs("darwin"), []);
+});
 
 function html(content) {
   return `<!doctype html><html><head><meta charset="utf-8"><style>

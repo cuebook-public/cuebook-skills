@@ -12,7 +12,8 @@
     "validate:closure": "node plugins/cuebook/scripts/validate_skill_closure.mjs plugins/cuebook",
     "validate": "npm run validate:plugin && npm run validate:closure",
     "test": "node --test 'plugins/cuebook/**/*.test.mjs'",
-    "check": "npm run validate && npm test && npm run build:release && git diff --exit-code -- skills"
+    "test:ci": "node --test --test-concurrency=1 'plugins/cuebook/**/*.test.mjs'",
+    "check": "npm run validate && npm run test:ci && npm run build:release && git diff --exit-code -- skills"
   },
   "devDependencies": {
     "playwright": "1.61.1"

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -22,6 +23,9 @@ import {
   grammarSpec,
   seriesSpec,
 } from "./viewpoint_visual_fixtures.mjs";
+
+const require = createRequire(import.meta.url);
+const { chromiumPlatformArgs } = require("../scripts/rasterize_viewpoint_visual.cjs");
 
 function withTempDirectory(callback) {
   const directory = mkdtempSync(join(tmpdir(), "cuebook-viewpoint-visual-"));
@@ -296,6 +300,11 @@ const browserAvailable = [
   "/usr/bin/chromium",
   "/usr/bin/chromium-browser",
 ].filter(Boolean).some(existsSync);
+
+test("Linux Chromium rasterization uses CI-safe process flags", () => {
+  assert.deepEqual(chromiumPlatformArgs("linux"), ["--no-sandbox", "--disable-dev-shm-usage"]);
+  assert.deepEqual(chromiumPlatformArgs("darwin"), []);
+});
 
 test("rasterizer writes the atomic full and compact derivative pair", { skip: !browserAvailable }, () => {
   withTempDirectory((directory) => {
