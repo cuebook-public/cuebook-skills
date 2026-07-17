@@ -168,10 +168,10 @@
           "distill-market-commentator-profile/references/profile-v1.schema.json"
         ],
         "validator_refs": [
-          "distill-market-commentator-profile/scripts/distill_posts.py"
+          "distill-market-commentator-profile/scripts/distill_posts.mjs"
         ],
         "test_refs": [
-          "distill-market-commentator-profile/tests/test_distill_posts.py"
+          "distill-market-commentator-profile/tests/distill_posts.test.mjs"
         ]
       },
       "replaced_by": null

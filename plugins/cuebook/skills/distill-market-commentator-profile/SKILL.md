@@ -26,7 +26,7 @@ Do not bypass login, paywall, rate limit, robots policy, deleted-content control
 6. Read `references/distillation-matrix.md`, then run:
 
 ```bash
-python scripts/distill_posts.py corpus-v1.json --output profile-v1.json
+node scripts/distill_posts.mjs corpus-v1.json --output profile-v1.json
 ```
 
 7. Validate against `references/profile-v1.schema.json`. Review `quality_gate`, low-confidence entries, evidence item IDs, platform concentration, link coverage, and metrics availability.
@@ -50,7 +50,8 @@ python scripts/distill_posts.py corpus-v1.json --output profile-v1.json
 
 - `references/profile-v1.schema.json`: authoritative ProfileV1 JSON Schema.
 - `references/distillation-matrix.md`: map taxonomy, confidence model, and Cuebook bridge rules.
-- `scripts/distill_posts.py`: standard-library CorpusV1-to-ProfileV1 distiller.
+- `scripts/distill_posts.mjs`: dependency-free CorpusV1-to-ProfileV1 distiller.
+- `tests/distill_posts.test.mjs`: contract, classifier, source, ticker, metrics, and bridge regressions.
 - `tests/fixtures/corpus-v1.json`: compact bilingual regression corpus.
 - `templates/brief-template.md`: collection and distillation boundary.
 - `evals/trigger_cases.json`: routing cases, including neighbors and adversarial requests.
