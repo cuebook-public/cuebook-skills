@@ -1848,11 +1848,11 @@
           "render-cuebook-thesis-chart/references/market-series-batch-v1.schema.json"
         ],
         "validator_refs": [
-          "render-cuebook-thesis-chart/scripts/validate_thesis_chart.py"
+          "render-cuebook-thesis-chart/scripts/validate_thesis_chart.mjs"
         ],
         "test_refs": [
-          "render-cuebook-thesis-chart/tests/test_validate_thesis_chart.py",
-          "render-cuebook-thesis-chart/tests/test_render_market_series.py"
+          "render-cuebook-thesis-chart/tests/validate_thesis_chart.test.mjs",
+          "render-cuebook-thesis-chart/tests/render_market_series.test.mjs"
         ]
       },
       "replaced_by": null
