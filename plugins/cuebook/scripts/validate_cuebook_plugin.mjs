@@ -99,11 +99,46 @@ const FRAME_PUBLICATION_FLOW = {
     "register_frame_visual_manifest",
     "create_or_update_frame_draft",
     "prepare_frame_publish",
-    "first_party_consent",
-    "get_frame_action_consent",
     "publish_frame",
     "get_frame",
   ],
+  correction_publish_sequence: [
+    "prepare_frame_correction_publish",
+    "publish_frame_correction",
+    "get_frame",
+  ],
+  withdraw_sequence: [
+    "prepare_frame_withdraw",
+    "first_party_consent",
+    "get_frame_action_consent",
+    "withdraw_frame",
+  ],
+  publish_authorization: "active_frame_publish_grant_and_first_party_publish_action",
+  action_consent_usage: "withdrawal_only",
+  prepared_publish_required_fields: [
+    "prepared_hash",
+    "publish_token",
+    "publish_token_expires_at",
+    "preview",
+  ],
+  prepared_correction_publish_required_fields: [
+    "prepared_hash",
+    "publish_token",
+    "publish_token_expires_at",
+    "preview",
+    "base_release_id",
+    "expected_economic_hash",
+  ],
+  prepared_publish_omitted_fields: [
+    "consent_request_id",
+    "consent_url",
+    "consent_expires_at",
+  ],
+  publish_input_omitted_fields: ["consent_request_id"],
+  wire_golden: {
+    tool_manifest_sha256: "bf4464c25623d9d44dd16f08dbb51a9cbb91e3062c813ed1c3941403d65289a2",
+    schema_catalog_sha256: "ba0729ca77e4b44864850a1fed1346f2fa758c646e4e6c63993cae26c326e4fa",
+  },
   mutation_idempotency: "distinct_lowercase_uuidv7_per_command",
   replay_policy: "same_key_same_payload_returns_receipt_changed_payload_conflict",
 };
@@ -178,7 +213,7 @@ export function validate(pluginRoot) {
     setEq(frameTools, new Set(FRAME_TOOL_SCOPES.keys())),
     "FRAME_TOOL_SET",
     "mcp-capability-map-v1.json.required_tools",
-    "Frame Phase B must expose exactly the frozen upload, draft, consent, publish, correction, withdrawal, and full-Frame read operations.",
+    "Frame Phase B must expose exactly the frozen upload, draft, publish, correction, withdrawal-consent, and full-Frame read operations.",
   );
   check(
     !intersects(new Set(tools.keys()), FORBIDDEN_FRAME_MEDIA_TOOLS),
@@ -190,7 +225,7 @@ export function validate(pluginRoot) {
     deepEqualPy(capabilityMap.frame_publication_flow, FRAME_PUBLICATION_FLOW),
     "FRAME_FLOW_CONTRACT",
     "mcp-capability-map-v1.json.frame_publication_flow",
-    "Frame publication must remain signed-upload-only and follow the frozen receipt, manifest, draft, consent, publish, then full-Frame verification sequence.",
+    "Frame publication must remain signed-upload-only; ordinary and correction publishing go directly from prepare to publish, while only withdrawal uses first-party action consent.",
   );
   check(
     tools.get("create_frame_draft")?.input_contract === "FrameDraftAssemblyV1 + FrameDraftAssemblyBindingV1",
@@ -392,6 +427,9 @@ export function validate(pluginRoot) {
     "frame_media_status_returns_receipts_only",
     "frame_get_returns_one_attached_visual",
     "frame_mutations_use_distinct_uuidv7_keys",
+    "frame_publish_action_authorizes_publish",
+    "frame_publish_recomputes_prepared_hash_and_revalidates_authority",
+    "frame_withdraw_requires_first_party_consent",
   ]) {
     check(releaseRules[ruleName] === true, "RUNTIME_ENFORCEMENT", `release_rules.${ruleName}`, "Runtime enforcement rule must be enabled.");
   }

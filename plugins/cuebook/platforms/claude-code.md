@@ -29,7 +29,9 @@ cross-invocation convention maps to Claude Code's Skill tool.
 ## Write operations
 
 Identical policy to Codex: writes are explicit MCP tools behind user
-authorization; query is structurally read-only.
+authorization; initial and correction publication go from prepare directly to
+publish, withdrawal retains separate first-party consent, and query is
+structurally read-only.
 
 ## Known limitations (why Planned, not Tested)
 

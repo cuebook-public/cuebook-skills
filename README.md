@@ -35,7 +35,7 @@ Install the current release:
 
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \
-  --ref v0.2.3 \
+  --ref v0.2.4 \
   --sparse .agents/plugins \
   --sparse plugins/cuebook
 

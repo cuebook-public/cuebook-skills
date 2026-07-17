@@ -146,6 +146,109 @@ test("Frame publication flow cannot become pull-based", () => {
   });
 });
 
+test("initial and correction publish skip separate consent while withdrawal retains it", () => {
+  const payload = JSON.parse(
+    fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
+  );
+  const flow = payload.frame_publication_flow;
+  assert.deepEqual(flow.initial_publish_sequence.slice(-3), [
+    "prepare_frame_publish",
+    "publish_frame",
+    "get_frame",
+  ]);
+  assert.deepEqual(flow.correction_publish_sequence, [
+    "prepare_frame_correction_publish",
+    "publish_frame_correction",
+    "get_frame",
+  ]);
+  assert.deepEqual(flow.withdraw_sequence, [
+    "prepare_frame_withdraw",
+    "first_party_consent",
+    "get_frame_action_consent",
+    "withdraw_frame",
+  ]);
+  assert.equal(flow.action_consent_usage, "withdrawal_only");
+});
+
+test("Frame publish contract pins consentless prepared and input fields", () => {
+  const payload = JSON.parse(
+    fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
+  );
+  const flow = payload.frame_publication_flow;
+  assert.deepEqual(flow.prepared_publish_required_fields, [
+    "prepared_hash",
+    "publish_token",
+    "publish_token_expires_at",
+    "preview",
+  ]);
+  assert.deepEqual(flow.prepared_correction_publish_required_fields, [
+    "prepared_hash",
+    "publish_token",
+    "publish_token_expires_at",
+    "preview",
+    "base_release_id",
+    "expected_economic_hash",
+  ]);
+  assert.deepEqual(flow.prepared_publish_omitted_fields, [
+    "consent_request_id",
+    "consent_url",
+    "consent_expires_at",
+  ]);
+  assert.deepEqual(flow.publish_input_omitted_fields, ["consent_request_id"]);
+});
+
+test("Frame capability map pins the current backend wire goldens", () => {
+  const payload = JSON.parse(
+    fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
+  );
+  assert.deepEqual(payload.frame_publication_flow.wire_golden, {
+    tool_manifest_sha256: "bf4464c25623d9d44dd16f08dbb51a9cbb91e3062c813ed1c3941403d65289a2",
+    schema_catalog_sha256: "ba0729ca77e4b44864850a1fed1346f2fa758c646e4e6c63993cae26c326e4fa",
+  });
+});
+
+test("Frame flow rejects reintroduced publish consent", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, "assets", "mcp-capability-map-v1.json");
+    rewrite(filePath, (payload) => {
+      const sequence = payload.frame_publication_flow.initial_publish_sequence;
+      sequence.splice(sequence.indexOf("publish_frame"), 0, "get_frame_action_consent");
+    });
+    assert.ok(codes(validate(root)).has("FRAME_FLOW_CONTRACT"));
+  });
+});
+
+test("Frame flow rejects withdrawal without action consent", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, "assets", "mcp-capability-map-v1.json");
+    rewrite(filePath, (payload) => {
+      payload.frame_publication_flow.withdraw_sequence = [
+        "prepare_frame_withdraw",
+        "withdraw_frame",
+      ];
+    });
+    assert.ok(codes(validate(root)).has("FRAME_FLOW_CONTRACT"));
+  });
+});
+
+test("Frame entry skills describe consentless publish and withdrawal-only consent", () => {
+  const create = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const orchestrate = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "orchestrate-cuebook-creator-workflow", "SKILL.md"),
+    "utf-8",
+  );
+  assert.match(create, /prepare_frame_publish.*publish_frame/u);
+  assert.match(create, /Withdrawals alone retain/u);
+  assert.match(orchestrate, /Do not request or poll separate action consent for initial publication/u);
+  assert.match(orchestrate, /Withdrawal still requires approved first-party consent/u);
+  assert.doesNotMatch(create, /prepare → first-party consent bound to `prepared_hash` → publish/u);
+});
+
 test("Skill instructions cannot reintroduce get_frame_media", () => {
   withTmpPath((tmpPath) => {
     const root = copiedPlugin(tmpPath);

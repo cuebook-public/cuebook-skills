@@ -1,6 +1,6 @@
 ---
 name: orchestrate-cuebook-creator-workflow
-description: Run or resume the release-grade phase of an MCP-connected Cuebook Frame workflow after a fast preview is selected, or coordinate an explicitly requested advanced batch. Use for selected Frame freezing, three alternatives only when requested, paired release derivatives, optional settleable claims, Frame media upload, draft preparation, first-party consent, publication receipts, corrections, withdrawals, and postmortems. Do not build a workflow DAG for an ordinary first preview; do not use for social-platform programs, direct order execution, credential handling, unavailable backend writes, or claiming publication without a verified receipt.
+description: Run or resume the release-grade phase of an MCP-connected Cuebook Frame workflow after a fast preview is selected, or coordinate an explicitly requested advanced batch. Use for selected Frame freezing, three alternatives only when requested, paired release derivatives, optional settleable claims, Frame media upload, draft preparation, authorized publication, withdrawal consent, publication receipts, corrections, withdrawals, and postmortems. Do not build a workflow DAG for an ordinary first preview; do not use for social-platform programs, direct order execution, credential handling, unavailable backend writes, or claiming publication without a verified receipt.
 license: Proprietary. Cuebook internal; see the repository README for terms.
 compatibility: Requires a connected Cuebook MCP server for asset resolution and market data; degrades to partial results, never invented values, when tools are unavailable. Node.js 18+ for validators.
 ---
@@ -38,7 +38,7 @@ For a raw idea whose requested result is simply a Frame, return to the public `c
 13. **Optional settlement**: when the expression plan marks a claim eligible and the recipe selects settlement, compile the claim and formula from the bound settlement result. Registration is a separate approved write action after both hashes are frozen. Non-trade semantics skip both.
 14. **Candidate freeze**: run `../assemble-cuebook-publish-candidates/SKILL.md`. Preserve one selected preview without siblings, or assemble three only when explicitly requested. Build each exact public projection as `title + body + image`; keep all lineage and calibration backstage.
 15. **Selection and Frame assembly**: select the copy-to-image pair atomically, validate that `candidate.frame` exactly matches the frozen internal copy split and publication visual, then assemble `FrameDraftAssemblyV1 + FrameDraftAssemblyBindingV1`. Optional thesis, trade logic, and settlement remain backstage inputs.
-16. **Frame activation**: after explicit user intent, execute only the capability-advertised Frame sequence: upload every rendition, register the manifest, create or update the draft, prepare publish, obtain first-party consent bound to `prepared_hash`, publish, and verify through `get_frame`. If a required B2/B3 tool is absent, stop at the latest completed phase without legacy fallback.
+16. **Frame activation**: after explicit user intent, execute only the capability-advertised Frame sequence: upload every rendition, register the manifest, create or update the draft, run `prepare_frame_publish`, call `publish_frame` with its exact `prepared_hash` and `publish_token`, and verify through `get_frame`. Do not request or poll separate action consent for initial publication. If a required B2/B3 tool is absent, stop at the latest completed phase without legacy fallback.
 17. **Receipt and readback**: require the publish receipt's versioned Frame ref and verify it through `get_frame`. The readback exposes the full Frame and one attached visual semantic ref, never image bytes, display URLs, rendition IDs, or `media[]`.
 18. **Reconcile and learn**: run `../reconcile-market-content-history/SKILL.md` on receipts, revisions, corrections, engagement snapshots, and authorized outcomes.
 
@@ -58,7 +58,7 @@ Read `references/workflow-map.md` for scenario paths, role gates, and skill owne
 - Use `ready_for_handoff` only after an exact current ReleaseBundleV1 has release approval. Use `complete` only after required receipt/reconciliation work is complete.
 - Never use `published` as a workflow assertion without a verified `PublicationReceiptV1` produced by an external connector.
 - Never send credentials through Skill inputs or artifacts. OAuth and platform credentials remain inside the MCP server or authorized publication connector.
-- Execute a Frame mutation only when the runtime advertises it, every command has its own fresh lowercase UUIDv7, the exact prepared hash has first-party consent, and the preceding receipt is bound. Otherwise stop at the latest valid phase.
+- Execute a Frame mutation only when the runtime advertises it, every command has its own fresh lowercase UUIDv7, and the preceding receipt is bound. Initial and correction publication require the exact prepared hash and short-lived publish token under the active `cuebook.frame.publish` grant and first-party publish action; neither accepts `consent_request_id`. Withdrawal still requires approved first-party consent bound to its prepared action. Otherwise stop at the latest valid phase.
 
 ## Selected Preview Freeze Path
 
@@ -68,7 +68,7 @@ Use this path whenever one `FramePreviewV1` candidate has been confirmed:
 2. Compile one minimal meaning fingerprint and one selected visual route. Do not normalize feed, select opportunities, compose a recipe, or plan a content program.
 3. Re-render only the selected direction with production fonts, compact, and visibility-required OG derivatives; run release audits once.
 4. Materialize the selected `PostV1`, one-direction selected `VisualDirectionSetV1`, one-candidate selected `PublishCandidateSetV1`, and Frame assembly. Compile settlement only when explicitly chosen.
-5. Stop before media upload, prepare, consent, or publish unless the user requested the next write.
+5. Stop before media upload, prepare, or publish unless the user requested the next write. Stop before withdrawal consent unless the user requested withdrawal.
 
 ## Mode Rules
 
@@ -113,7 +113,7 @@ An approval records artifact IDs and their hashes. A changed hash requires a new
 
 - Do not embed source text, research facts, drafts, or release payloads into this run contract. Register their artifacts.
 - Do not inspect artifact payloads through registry locators. Artifact-producing Skills own payload validation and must publish their normalized gate summary into the registry alongside the payload hash.
-- Do not invent a universal publisher or social derivative. The first-party Frame MCP family owns authorization, idempotency, consent, and publication behavior.
+- Do not invent a universal publisher or social derivative. The first-party Frame MCP family owns authorization, idempotency, publication behavior, and withdrawal consent.
 - Do not optimize the research truth layer using clicks, likes, or later returns.
 - Do not place or modify trades.
 

@@ -42,8 +42,10 @@ and audit paths.
 
 ## Write operations
 
-Writes happen only through explicit Cuebook MCP write tools. A client without
-those tools gets read-only behavior.
+Writes happen only through explicit Cuebook MCP write tools. Initial and
+correction publication go from prepare directly to publish; only withdrawal
+uses separate first-party consent. A client without those tools gets read-only
+behavior.
 
 ## Known limitations
 

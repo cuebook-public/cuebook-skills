@@ -35,9 +35,11 @@ generated only when explicitly requested. Every Frame exposes one title, one
 concise body, and one paired 2488 x 1056 image; release contracts and extra
 derivatives wait until selection.
 
-Media upload, manifest registration, draft creation, prepare, first-party
-consent, and Frame publication remain explicit, authorized MCP steps. Create
-never places trades or silently publishes.
+Media upload, manifest registration, draft creation, prepare, and Frame
+publication remain explicit, authorized MCP steps. Initial and correction
+publishing go directly from prepare to publish under the active grant and
+first-party publish action; only withdrawal retains a separate consent step.
+Create never places trades or silently publishes.
 
 ## Package Boundary
 

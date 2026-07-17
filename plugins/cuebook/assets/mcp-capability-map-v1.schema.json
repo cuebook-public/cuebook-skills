@@ -86,6 +86,15 @@
         "published_visual_semantics",
         "forbidden_tools",
         "initial_publish_sequence",
+        "correction_publish_sequence",
+        "withdraw_sequence",
+        "publish_authorization",
+        "action_consent_usage",
+        "prepared_publish_required_fields",
+        "prepared_correction_publish_required_fields",
+        "prepared_publish_omitted_fields",
+        "publish_input_omitted_fields",
+        "wire_golden",
         "mutation_idempotency",
         "replay_policy"
       ],
@@ -126,11 +135,76 @@
             "register_frame_visual_manifest",
             "create_or_update_frame_draft",
             "prepare_frame_publish",
-            "first_party_consent",
-            "get_frame_action_consent",
             "publish_frame",
             "get_frame"
           ]
+        },
+        "correction_publish_sequence": {
+          "const": [
+            "prepare_frame_correction_publish",
+            "publish_frame_correction",
+            "get_frame"
+          ]
+        },
+        "withdraw_sequence": {
+          "const": [
+            "prepare_frame_withdraw",
+            "first_party_consent",
+            "get_frame_action_consent",
+            "withdraw_frame"
+          ]
+        },
+        "publish_authorization": {
+          "const": "active_frame_publish_grant_and_first_party_publish_action"
+        },
+        "action_consent_usage": {
+          "const": "withdrawal_only"
+        },
+        "prepared_publish_required_fields": {
+          "const": [
+            "prepared_hash",
+            "publish_token",
+            "publish_token_expires_at",
+            "preview"
+          ]
+        },
+        "prepared_correction_publish_required_fields": {
+          "const": [
+            "prepared_hash",
+            "publish_token",
+            "publish_token_expires_at",
+            "preview",
+            "base_release_id",
+            "expected_economic_hash"
+          ]
+        },
+        "prepared_publish_omitted_fields": {
+          "const": [
+            "consent_request_id",
+            "consent_url",
+            "consent_expires_at"
+          ]
+        },
+        "publish_input_omitted_fields": {
+          "const": [
+            "consent_request_id"
+          ]
+        },
+        "wire_golden": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "tool_manifest_sha256",
+            "schema_catalog_sha256"
+          ],
+          "properties": {
+            "tool_manifest_sha256": {
+              "const": "bf4464c25623d9d44dd16f08dbb51a9cbb91e3062c813ed1c3941403d65289a2"
+            },
+            "schema_catalog_sha256": {
+              "const": "ba0729ca77e4b44864850a1fed1346f2fa758c646e4e6c63993cae26c326e4fa"
+            }
+          }
         },
         "mutation_idempotency": {
           "const": "distinct_lowercase_uuidv7_per_command"

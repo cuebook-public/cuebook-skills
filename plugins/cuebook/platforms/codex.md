@@ -40,7 +40,9 @@ server are loaded.
 ## Write operations
 
 Frame publication follows the capability-advertised upload → manifest → draft
-→ prepare → first-party consent → publish → `get_frame` readback sequence.
+→ prepare → publish → `get_frame` readback sequence. Initial and correction
+publishing use the active grant and first-party publish action without a
+separate consent request; only withdrawal uses `get_frame_action_consent`.
 Every mutation uses a separate lowercase UUIDv7. Query never calls writes;
 Create never publishes silently, and no standalone media retrieval tool is
 exposed.

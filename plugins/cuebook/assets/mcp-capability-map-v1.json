@@ -413,7 +413,7 @@
       "authorization_scope": "cuebook.frame.publish",
       "phase": "frame_phase_b",
       "access": "write",
-      "purpose": "Validate the draft and create a prepared hash, publish token, preview, and first-party consent request without publishing.",
+      "purpose": "Validate the draft and create a prepared hash, short-lived publish token, and preview without publishing or creating a separate action-consent request.",
       "input_contract": "PrepareFramePublishInputV1",
       "output_contract": "PreparedFramePublishV1",
       "used_by": [
@@ -427,7 +427,7 @@
       "authorization_scope": "cuebook.frame.publish",
       "phase": "frame_phase_b",
       "access": "read",
-      "purpose": "Poll an opaque first-party consent request state; never returns a bearer-like consent token.",
+      "purpose": "Poll an opaque first-party withdrawal-consent request state; ordinary publish and correction flows never call this tool.",
       "input_contract": "GetFrameActionConsentInputV1",
       "output_contract": "FrameActionConsentStatusV1",
       "used_by": [
@@ -441,7 +441,7 @@
       "authorization_scope": "cuebook.frame.publish",
       "phase": "frame_phase_b",
       "access": "write",
-      "purpose": "Consume approved first-party consent and freeze the Frame, release, visual binding, and Settlement Contract atomically.",
+      "purpose": "Revalidate the active publish grant and first-party publish action, recompute the prepared hash, verify the short-lived token, then freeze the Frame, release, visual binding, and Settlement Contract atomically.",
       "input_contract": "PublishFrameInputV1",
       "output_contract": "FramePublicationReceiptV1",
       "used_by": [
@@ -484,7 +484,7 @@
       "authorization_scope": "cuebook.frame.publish",
       "phase": "frame_phase_b",
       "access": "write",
-      "purpose": "Prove the economic hash is unchanged and create correction preview plus first-party consent.",
+      "purpose": "Prove the economic hash is unchanged and create a correction prepared hash, short-lived publish token, and preview without a separate action-consent request.",
       "input_contract": "PrepareFrameCorrectionPublishInputV1",
       "output_contract": "PreparedFrameCorrectionPublishV1",
       "used_by": [
@@ -498,7 +498,7 @@
       "authorization_scope": "cuebook.frame.publish",
       "phase": "frame_phase_b",
       "access": "write",
-      "purpose": "Consume correction consent, publish a new content release, and reuse the frozen economic contract.",
+      "purpose": "Revalidate correction publish authority, recompute the prepared hash, publish a new content release, and reuse the frozen economic contract.",
       "input_contract": "PublishFrameCorrectionInputV1",
       "output_contract": "FramePublicationReceiptV1",
       "used_by": [
@@ -656,11 +656,48 @@
       "register_frame_visual_manifest",
       "create_or_update_frame_draft",
       "prepare_frame_publish",
-      "first_party_consent",
-      "get_frame_action_consent",
       "publish_frame",
       "get_frame"
     ],
+    "correction_publish_sequence": [
+      "prepare_frame_correction_publish",
+      "publish_frame_correction",
+      "get_frame"
+    ],
+    "withdraw_sequence": [
+      "prepare_frame_withdraw",
+      "first_party_consent",
+      "get_frame_action_consent",
+      "withdraw_frame"
+    ],
+    "publish_authorization": "active_frame_publish_grant_and_first_party_publish_action",
+    "action_consent_usage": "withdrawal_only",
+    "prepared_publish_required_fields": [
+      "prepared_hash",
+      "publish_token",
+      "publish_token_expires_at",
+      "preview"
+    ],
+    "prepared_correction_publish_required_fields": [
+      "prepared_hash",
+      "publish_token",
+      "publish_token_expires_at",
+      "preview",
+      "base_release_id",
+      "expected_economic_hash"
+    ],
+    "prepared_publish_omitted_fields": [
+      "consent_request_id",
+      "consent_url",
+      "consent_expires_at"
+    ],
+    "publish_input_omitted_fields": [
+      "consent_request_id"
+    ],
+    "wire_golden": {
+      "tool_manifest_sha256": "bf4464c25623d9d44dd16f08dbb51a9cbb91e3062c813ed1c3941403d65289a2",
+      "schema_catalog_sha256": "ba0729ca77e4b44864850a1fed1346f2fa758c646e4e6c63993cae26c326e4fa"
+    },
     "mutation_idempotency": "distinct_lowercase_uuidv7_per_command",
     "replay_policy": "same_key_same_payload_returns_receipt_changed_payload_conflict"
   },
@@ -675,6 +712,9 @@
     "frame_media_status_returns_receipts_only": true,
     "frame_get_returns_one_attached_visual": true,
     "frame_mutations_use_distinct_uuidv7_keys": true,
+    "frame_publish_action_authorizes_publish": true,
+    "frame_publish_recomputes_prepared_hash_and_revalidates_authority": true,
+    "frame_withdraw_requires_first_party_consent": true,
     "external_write_requires_exact_artifact_hash": true,
     "external_write_requires_release_approval": true,
     "publish_success_requires_verified_receipt": true,
@@ -686,5 +726,5 @@
     "source_rights_required_for_creation": true,
     "valuation_comparisons_require_compatible_basis": true
   },
-  "notes": "Data-expansion tools ship with content_kind default_enabled=false; a disabled tool stays in tools/list and returns unavailable until admin app_config enables it. search_news lands in PR8. Frame tool family activates in Phase B after OAuth owner/client consent."
+  "notes": "Data-expansion tools ship with content_kind default_enabled=false; a disabled tool stays in tools/list and returns unavailable until admin app_config enables it. search_news lands in PR8. Frame publish uses the active OAuth grant plus the first-party publish action; separate action consent is withdrawal-only."
 }

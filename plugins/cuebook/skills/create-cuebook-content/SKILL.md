@@ -1,6 +1,6 @@
 ---
 name: create-cuebook-content
-description: Turn a user's market idea or selected Cuebook material into a creator-owned Frame with one title, body, and paired image. After inferring subject, direction, and horizon, reflect the distinctive idea and ask one optional heuristic question chosen from anomaly, causal transmission, timing, next footprint, market blind spot, or creator voice. Ask before any price target; a skip proceeds immediately. Default to one fast preview and generate three only on request. Use Cuebook for material current claims, preserve the user's judgment, and defer settlement, upload, consent, and publication until selection. Never create social-platform variants, silently publish or trade, fabricate query results, build OAuth, or present a source view as the user's without adoption.
+description: Turn a user's market idea or selected Cuebook material into a creator-owned Frame with one title, body, and paired image. After inferring subject, direction, and horizon, reflect the distinctive idea and ask one optional heuristic question chosen from anomaly, causal transmission, timing, next footprint, market blind spot, or creator voice. Ask before any price target; a skip proceeds immediately. Default to one fast preview and generate three only on request. Use Cuebook for material current claims, preserve the user's judgment, and defer settlement, upload, and publication until selection. Never create social-platform variants, silently publish or trade, fabricate query results, build OAuth, or present a source view as the user's without adoption.
 license: Proprietary. Cuebook internal; see the repository README for terms.
 compatibility: Requires a connected Cuebook MCP server for current market claims; degrades to a conditional or blocked preview, never invented values, when tools are unavailable. Node.js 18+ with Playwright and local Chromium/Chrome for deterministic preview rendering.
 ---
@@ -71,12 +71,15 @@ node scripts/validate_frame_draft_assembly.mjs assembly.json \
 
 Publish only after explicit user intent and only through the frozen Frame MCP sequence in `../../assets/mcp-capability-map-v1.json`:
 
-`get_frame_capabilities` → begin each media upload → signed HTTPS PUT → complete each media upload → poll owner-only `get_frame_media_status` → `register_frame_visual_manifest` → create/update draft with assembly plus registered binding → prepare → first-party consent bound to `prepared_hash` → publish → `get_frame` readback.
+`get_frame_capabilities` → begin each media upload → signed HTTPS PUT → complete each media upload → poll owner-only `get_frame_media_status` → `register_frame_visual_manifest` → create/update draft with assembly plus registered binding → `prepare_frame_publish` → `publish_frame` with the returned `prepared_hash` and `publish_token` → `get_frame` readback.
 
 - Never pull image bytes back through MCP, browse a display URL, use a standalone media-retrieval operation, or fall back to base64.
 - Give every mutation its own fresh lowercase UUIDv7. Replay the same key only with the identical payload.
+- A prepared initial publish requires `prepared_hash`, `publish_token`, `publish_token_expires_at`, and `preview`. It never returns `consent_request_id`, `consent_url`, or `consent_expires_at`; never request or poll `get_frame_action_consent` for ordinary publication.
+- The active `cuebook.frame.publish` OAuth grant and the first-party publish action authorize initial and correction publication. Inside the publish transaction, the server recomputes `prepared_hash` and revalidates the credential, credential family, grant, client, user, scope, policy, and token.
 - If a required capability is absent, stop at the latest completed phase without a legacy write fallback.
-- Corrections and withdrawals use their dedicated prepare → first-party consent → execute flows.
+- Corrections use `prepare_frame_correction_publish` → `publish_frame_correction` with no separate consent request. The prepared correction additionally requires `base_release_id` and `expected_economic_hash`, and its publish input also omits `consent_request_id`.
+- Withdrawals alone retain `prepare_frame_withdraw` → first-party consent → `get_frame_action_consent` polling → `withdraw_frame`.
 
 After manifest registration, repeat the assembly validator with `--binding` and `--visual-manifest` before draft creation.
 
