@@ -97,6 +97,55 @@ export function issue(code, message) {
 export function build(captureReport, renderAudit, directionSet, fontsManifestPath, altTextByRole) {
   const errors = [];
 
+  let selectedDirection = null;
+  if (directionSet.state !== "selected") {
+    errors.push(issue("DIRECTION_NOT_SELECTED", "Visual manifest creation requires a selected VisualDirectionSetV1."));
+  } else {
+    selectedDirection = (directionSet.directions ?? []).find((item) => item?.direction_id === directionSet.selected_direction_id) ?? null;
+    if (selectedDirection === null) {
+      errors.push(issue("DIRECTION_NOT_SELECTED", "selected_direction_id must resolve inside VisualDirectionSetV1."));
+    }
+  }
+
+  if (selectedDirection !== null) {
+    const preflight = selectedDirection.preflight;
+    if (preflight === null || typeof preflight !== "object" || Array.isArray(preflight) || !Object.values(preflight).length || Object.values(preflight).some((value) => value !== true)) {
+      errors.push(issue("DIRECTION_PREFLIGHT", "Every selected-direction preflight gate must pass before a Frame manifest is built."));
+    }
+    if (selectedDirection.critique?.verdict !== "pass") {
+      errors.push(issue("DIRECTION_QUALITY", "The selected visual direction must carry a passing critique verdict."));
+    }
+
+    if (captureReport.schema_version !== "viewpoint-html-capture-v1" || captureReport.source !== path.basename(selectedDirection.html_ref ?? "")) {
+      errors.push(issue("CAPTURE_SOURCE_MISMATCH", "Capture report must bind the selected direction HTML."));
+    }
+    if (!SHA256_PATTERN.test(captureReport.source_sha256 ?? "")) {
+      errors.push(issue("CAPTURE_SOURCE_MISMATCH", "Capture report must carry the selected HTML sha256."));
+    }
+    if (renderAudit.schema_version !== "viewpoint-render-audit-v1" || renderAudit.source_sha256 !== captureReport.source_sha256) {
+      errors.push(issue("AUDIT_SOURCE_MISMATCH", "Rendered audit and capture report must bind the same selected HTML bytes."));
+    }
+
+    const derivatives = new Map((captureReport.derivatives ?? []).filter((item) => item !== null && typeof item === "object" && !Array.isArray(item)).map((item) => [item.kind, item]));
+    const selectedRefs = [
+      ["full", selectedDirection.preview_ref, 2488, 1056],
+      ["compact_622", selectedDirection.compact_preview_ref, 622, 264],
+    ];
+    for (const [kind, selectedRef, width, height] of selectedRefs) {
+      const derivative = derivatives.get(kind);
+      if (derivative?.ref !== path.basename(selectedRef ?? "")) {
+        errors.push(issue("CAPTURE_REF_MISMATCH", `Capture ${kind} derivative must be the selected direction asset.`));
+      }
+      if (derivative?.width !== width || derivative?.height !== height) {
+        errors.push(issue("CAPTURE_DIMENSIONS", `Capture ${kind} derivative must be ${width} x ${height}.`));
+      }
+    }
+    const og = derivatives.get("og");
+    if (og !== undefined && (og.width !== 1200 || og.height !== 630)) {
+      errors.push(issue("CAPTURE_DIMENSIONS", "Capture og derivative must be 1200 x 630."));
+    }
+  }
+
   const roleHashes = {};
   for (const output of captureReport.derivatives ?? []) {
     const role = CAPTURE_KIND_TO_ROLE[pyStr(output.kind)];
@@ -137,8 +186,9 @@ export function build(captureReport, renderAudit, directionSet, fontsManifestPat
   };
 
   const sourceBindings = [];
+  const selectedBindingIds = new Set(selectedDirection?.binding_refs ?? []);
   for (const binding of directionSet.bindings ?? []) {
-    if (binding.selected_for_display === true) {
+    if (selectedBindingIds.has(binding.binding_id) && binding.selected_for_display === true) {
       const refs = binding.source_refs || [];
       sourceBindings.push({
         ref: refs.length ? pyStr(refs[0]) : pyStr(binding.binding_id),

@@ -18,10 +18,32 @@ Provide one creation entrance for writing, viewpoint graphics, settlement expres
 5. Run `$compose-cuebook-content-recipe`, then `$orchestrate-cuebook-creator-workflow`. The workflow may use query-layer research skills through the explicit `create -> query` module edge.
 6. Preserve one meaning fingerprint across text, visual, and settlement branches. Produce exactly three meaning-equivalent candidates with real differences in expression and composition only when creation is `ready` or `conditional`.
 7. Compile a settlement claim and formula only when the creator supplied or accepted the required asset, direction or comparator, horizon, observation rule, and threshold semantics.
-8. When the deliverable is a Frame publication, assemble `FrameDraftAssemblyV1`: the FrameDraftV1-compatible draft (title, body, disclosures, media roles publication/compact — plus og for public or unlisted), the `SettlementIntentV1` built from the intake seed (family, explicit threshold, 1h-to-6-month horizon intent, direction-consistent targets), the visual-manifest lineage hash, and a fresh **UUIDv7** `idempotency_key`. Each `frame_draft.media[].sha256` is the exact encoded PNG byte hash. The visual manifest's `role_hashes` are canonical RGBA8 pixel hashes and must never be substituted for those byte hashes. The manifest is authoritative for `alt_text_by_role`; duplicate alt text in the assembly must match it exactly. Validate the assembly with `node scripts/validate_frame_draft_assembly.mjs assembly.json` before any backend call; non-settleable directions assemble no intent and stay store-only.
+8. When the deliverable is a Frame publication, require one confirmed candidate and its paired selected visual direction before assembling `FrameDraftAssemblyV1`. Set `frame_draft.title` to the selected `copy.headline` exactly and `frame_draft.body` to trimmed `copy.body + "\n\n" + copy.close`; never rewrite either after selection. Carry the selected direction-set ref, the exact encoded PNG byte hash for each media role, the authoritative per-role manifest alt text, the `SettlementIntentV1` accepted during selection, the visual-manifest lineage hash, and a fresh **UUIDv7** `idempotency_key`. Manifest `role_hashes` are canonical RGBA8 pixel hashes and must never substitute for byte hashes. Run the pre-upload Frame handoff preflight below; non-settleable directions assemble no intent and stay store-only.
 9. Return `CuebookCreationBundleV1`. Selecting a settlement format only compiles artifacts; it never registers them. Saving, settlement registration, and publishing use the separate approved `write_actions` in the creation menu.
-10. When the user asks to publish and the Frame MCP family is available, follow the frozen sequence in `../../assets/mcp-capability-map-v1.json`: `get_frame_capabilities` → `begin_frame_media_upload` for each role → signed HTTPS PUT for each role → `complete_frame_media_upload` for each role → poll owner-only `get_frame_media_status` until encoded-byte and canonical-pixel receipts are ready → `register_frame_visual_manifest` → `create_frame_draft` with `FrameDraftAssemblyV1 + FrameDraftAssemblyBindingV1` (or `update_frame_draft` under optimistic concurrency) → `prepare_frame_publish` → the user approves the exact prepared hash on Cuebook's first-party consent page → poll `get_frame_action_consent` → `publish_frame` → `get_frame` using the receipt's versioned Frame ref. The status call returns processing and hashes only: never pull image bytes, dereference a display URL, or treat a rendition as an independently retrievable product. If the host cannot perform the signed PUT, return `blocked/client_upload_capability_required`; never fall back to base64. After registration, revalidate with `node scripts/validate_frame_draft_assembly.mjs assembly.json --binding binding.json --visual-manifest frame-visual-manifest-v1.json` before draft creation.
+10. When the user asks to publish and the Frame MCP family is available, follow the frozen sequence in `../../assets/mcp-capability-map-v1.json`: `get_frame_capabilities` → `begin_frame_media_upload` for each role → signed HTTPS PUT for each role → `complete_frame_media_upload` for each role → poll owner-only `get_frame_media_status` until encoded-byte and canonical-pixel receipts are ready → `register_frame_visual_manifest` → `create_frame_draft` with `FrameDraftAssemblyV1 + FrameDraftAssemblyBindingV1` (or `update_frame_draft` under optimistic concurrency) → `prepare_frame_publish` → the user approves the exact prepared hash on Cuebook's first-party consent page → poll `get_frame_action_consent` → `publish_frame` → `get_frame` using the receipt's versioned Frame ref. The status call returns processing and hashes only: never pull image bytes, dereference a display URL, or treat a rendition as an independently retrievable product. If the host cannot perform the signed PUT, return `blocked/client_upload_capability_required`; never fall back to base64. Run the registered handoff preflight below before draft creation.
 11. Give every mutation its own fresh lowercase UUIDv7. The assembly key belongs only to `create_frame_draft`; begin, complete, register, update, prepare, publish, correction, and withdrawal commands never reuse it or each other's keys. Replaying the same key with the same payload recovers the same receipt; changing the payload under that key is a conflict. Content fixes after release use `create_frame_correction_draft` → `prepare_frame_correction_publish` → first-party consent → `publish_frame_correction`, while preserving the frozen contract. Stopping distribution uses `prepare_frame_withdraw` → first-party consent → `withdraw_frame`. A tool absent from `tools/list` or returning unavailable means that phase is not enabled; report the state and do not fall back to a legacy write.
+
+## Frame Handoff Preflight
+
+Before upload, prove the assembly still carries the exact user-selected content, paired visual direction, capture artifacts, and encoded PNG hashes:
+
+```bash
+node scripts/validate_frame_draft_assembly.mjs assembly.json \
+  --candidate-set publish-candidate-set-v1.json \
+  --direction-set visual-direction-set-v1.json \
+  --capture-report capture-report.json
+```
+
+After manifest registration, repeat the same proof with the server binding and locally built manifest. This adds registered lineage, authoritative alt text, and canonical pixel-hash checks:
+
+```bash
+node scripts/validate_frame_draft_assembly.mjs assembly.json \
+  --candidate-set publish-candidate-set-v1.json \
+  --direction-set visual-direction-set-v1.json \
+  --capture-report capture-report.json \
+  --binding binding.json \
+  --visual-manifest frame-visual-manifest-v1.json
+```
 
 ## Query Use
 

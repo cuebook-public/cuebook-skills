@@ -17,7 +17,7 @@ function assembly() {
       kind: "market_view",
       visibility: "public",
       title: "USO 30 天偏多：霍尔木兹运输风险先入价",
-      body: "航道规则收紧，绕行与保险成本先动，油价计入运输风险溢价。",
+      body: "航道规则收紧，绕行与保险成本先动。\n\n油价计入运输风险溢价。",
       language: "zh",
       disclosures: { ai_assistance: "assisted" },
       media: [
@@ -49,6 +49,75 @@ function visualManifestFor(payload) {
     role_hashes: Object.fromEntries(roles.map((role, index) => [role, `sha256:${String(index + 1).repeat(64)}`])),
     alt_text_by_role: Object.fromEntries(payload.frame_draft.media.map((item) => [item.rendition_role, item.alt_text])),
   };
+}
+
+function handoffFor(payload) {
+  const selectedDirectionId = "VDIR_uso_selected_1";
+  const directionSet = {
+    schema_version: "visual-direction-set-v1",
+    direction_set_id: payload.lineage.direction_set_ref,
+    state: "selected",
+    selected_direction_id: selectedDirectionId,
+    bindings: [
+      { binding_id: "BIND_USO_VIEW", selected_for_display: true },
+      { binding_id: "BIND_USO_HIDDEN", selected_for_display: false },
+    ],
+    directions: [{
+      direction_id: selectedDirectionId,
+      html_ref: "selected/viewpoint.html",
+      preview_ref: "selected/viewpoint-2488.png",
+      compact_preview_ref: "selected/viewpoint-622.png",
+      binding_refs: ["BIND_USO_VIEW"],
+      preflight: { copy_audited: true, compact_readable: true, source_bindings_complete: true },
+      critique: { verdict: "pass" },
+    }],
+  };
+  const fingerprint = `sha256:${"9".repeat(64)}`;
+  const candidateSet = {
+    schema_version: "publish-candidate-set-v1",
+    candidate_set_id: "PUBSET_USO_SELECTED_1",
+    state: "selected",
+    lineage: {
+      fingerprint_sha256: fingerprint,
+      input_artifact_refs: [directionSet.direction_set_id],
+      settlement_claim_ref: "SETTLE_USO_30D",
+    },
+    selection: {
+      selected_candidate_id: "PUBCAND_USO_SELECTED_1",
+      selection_receipt_ref: "SEL_USO_SELECTED_1",
+      content_confirmed: true,
+      settlement_confirmed: true,
+    },
+    candidates: [{
+      candidate_id: "PUBCAND_USO_SELECTED_1",
+      meaning_fingerprint: fingerprint,
+      copy: {
+        headline: payload.frame_draft.title,
+        body: "航道规则收紧，绕行与保险成本先动。",
+        close: "油价计入运输风险溢价。",
+      },
+      visual: {
+        direction_ref: selectedDirectionId,
+        html_ref: "selected/viewpoint.html",
+        preview_ref: "selected/viewpoint-2488.png",
+        compact_preview_ref: "selected/viewpoint-622.png",
+        alt_text: payload.frame_draft.media[0].alt_text,
+      },
+      settlement: { state: "frozen" },
+      quality: { verdict: "pass" },
+    }],
+  };
+  const captureReport = {
+    schema_version: "viewpoint-html-capture-v1",
+    source: "viewpoint.html",
+    source_sha256: `sha256:${"8".repeat(64)}`,
+    derivatives: [
+      { kind: "full", ref: "viewpoint-2488.png", width: 2488, height: 1056, sha256: payload.frame_draft.media[0].sha256, pixel_sha256: `sha256:${"1".repeat(64)}` },
+      { kind: "compact_622", ref: "viewpoint-622.png", width: 622, height: 264, sha256: payload.frame_draft.media[1].sha256, pixel_sha256: `sha256:${"2".repeat(64)}` },
+      { kind: "og", ref: "og-1200x630.png", width: 1200, height: 630, sha256: payload.frame_draft.media[2].sha256, pixel_sha256: `sha256:${"3".repeat(64)}` },
+    ],
+  };
+  return { candidateSet, directionSet, captureReport };
 }
 
 test("valid assembly", () => {
@@ -146,4 +215,70 @@ test("visual manifest alt text is authoritative", () => {
   manifest.alt_text_by_role.publication = "different alt text";
   const result = V.validate(payload, binding, manifest);
   assert.ok(new Set(result.errors.map((error) => error.code)).has("ALT_TEXT_MANIFEST_MISMATCH"));
+});
+
+test("selected content and visual capture form one valid Frame handoff", () => {
+  const payload = assembly();
+  const handoff = handoffFor(payload);
+  const result = V.validate(payload, null, null, handoff);
+  assert.ok(result.valid, JSON.stringify(result.errors));
+});
+
+test("registered handoff preserves both image hash chains", () => {
+  const payload = assembly();
+  const handoff = handoffFor(payload);
+  const binding = {
+    media_asset_id: "0198a5b0-2222-7000-8000-000000000002",
+    visual_manifest_id: "0198a5b0-3333-7000-8000-000000000003",
+    visual_manifest_sha256: payload.lineage.visual_manifest_sha256,
+  };
+  const result = V.validate(payload, binding, visualManifestFor(payload), handoff);
+  assert.ok(result.valid, JSON.stringify(result.errors));
+});
+
+test("Frame handoff rejects unconfirmed settlement semantics", () => {
+  const payload = assembly();
+  const handoff = handoffFor(payload);
+  handoff.candidateSet.selection.settlement_confirmed = false;
+  handoff.candidateSet.candidates[0].settlement.state = "needs_confirmation";
+  const result = V.validate(payload, null, null, handoff);
+  assert.ok(new Set(result.errors.map((error) => error.code)).has("SETTLEMENT_NOT_CONFIRMED"));
+});
+
+test("Frame handoff rejects copy drift after candidate selection", () => {
+  const payload = assembly();
+  const handoff = handoffFor(payload);
+  payload.frame_draft.body = "A later rewrite that the user never selected.";
+  const result = V.validate(payload, null, null, handoff);
+  assert.ok(new Set(result.errors.map((error) => error.code)).has("ASSEMBLY_COPY_MISMATCH"));
+});
+
+test("Frame handoff rejects a different visual direction", () => {
+  const payload = assembly();
+  const handoff = handoffFor(payload);
+  handoff.candidateSet.candidates[0].visual.direction_ref = "VDIR_other_selection";
+  const result = V.validate(payload, null, null, handoff);
+  assert.ok(new Set(result.errors.map((error) => error.code)).has("CANDIDATE_DIRECTION_MISMATCH"));
+});
+
+test("Frame handoff rejects encoded PNG hash drift", () => {
+  const payload = assembly();
+  const handoff = handoffFor(payload);
+  handoff.captureReport.derivatives[0].sha256 = `sha256:${"e".repeat(64)}`;
+  const result = V.validate(payload, null, null, handoff);
+  assert.ok(new Set(result.errors.map((error) => error.code)).has("CAPTURE_ENCODED_HASH_MISMATCH"));
+});
+
+test("registered Frame handoff rejects canonical pixel hash drift", () => {
+  const payload = assembly();
+  const handoff = handoffFor(payload);
+  const binding = {
+    media_asset_id: "0198a5b0-2222-7000-8000-000000000002",
+    visual_manifest_id: "0198a5b0-3333-7000-8000-000000000003",
+    visual_manifest_sha256: payload.lineage.visual_manifest_sha256,
+  };
+  const manifest = visualManifestFor(payload);
+  manifest.role_hashes.publication = `sha256:${"f".repeat(64)}`;
+  const result = V.validate(payload, binding, manifest, handoff);
+  assert.ok(new Set(result.errors.map((error) => error.code)).has("CAPTURE_PIXEL_HASH_MISMATCH"));
 });

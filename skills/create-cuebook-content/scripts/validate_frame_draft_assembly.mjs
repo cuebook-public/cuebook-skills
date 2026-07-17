@@ -7,6 +7,7 @@
 // verified before any backend call.
 
 import { readFileSync, realpathSync } from "node:fs";
+import { basename } from "node:path";
 import { fileURLToPath } from "node:url";
 
 // The backend derives time-ordered dedupe state from the idempotency key, so a
@@ -21,6 +22,8 @@ const PAIR_FAMILIES = ["pair_asset_direction", "pair_asset_price_targets"];
 const TARGET_FAMILIES = ["single_asset_price_target", "pair_asset_price_targets"];
 const HORIZON_UNIT_MAX = { hour: 24 * 183, calendar_day: 183, market_session: 130 };
 const MEDIA_ROLES = ["publication", "compact", "og"];
+const CAPTURE_KIND_BY_ROLE = { publication: "full", compact: "compact_622", og: "og" };
+const CAPTURE_DIMENSIONS = { publication: [2488, 1056], compact: [622, 264], og: [1200, 630] };
 
 function isDict(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -174,7 +177,126 @@ export function check_leg(leg, needsTarget, needsThreshold, errors, path) {
   }
 }
 
-export function validate(payload, binding = null, visualManifest = null) {
+export function canonical_frame_body(copy) {
+  if (!isDict(copy)) return "";
+  return [get(copy, "body", ""), get(copy, "close", "")]
+    .filter((value) => typeof value === "string" && pystrip(value))
+    .map((value) => pystrip(value))
+    .join("\n\n");
+}
+
+function validate_generation_handoff(payload, draft, lineage, roles, visualManifest, handoff, errors) {
+  if (handoff === null || handoff === undefined) return;
+  if (!isDict(handoff)) {
+    errors.push(issue("HANDOFF_CONTEXT", "$.handoff", "Generation handoff must contain candidateSet, directionSet, and captureReport."));
+    return;
+  }
+  const candidateSet = get(handoff, "candidateSet");
+  const directionSet = get(handoff, "directionSet");
+  const captureReport = get(handoff, "captureReport");
+  if (![candidateSet, directionSet, captureReport].every(isDict)) {
+    errors.push(issue("HANDOFF_CONTEXT", "$.handoff", "candidateSet, directionSet, and captureReport must be validated together."));
+    return;
+  }
+
+  if (get(candidateSet, "schema_version") !== "publish-candidate-set-v1" || get(candidateSet, "state") !== "selected") {
+    errors.push(issue("CANDIDATE_SELECTION", "$.handoff.candidateSet", "Frame handoff requires a selected PublishCandidateSetV1."));
+  }
+  const selection = isDict(get(candidateSet, "selection")) ? get(candidateSet, "selection") : {};
+  const selectedCandidateId = get(selection, "selected_candidate_id");
+  const selectedCandidate = (Array.isArray(get(candidateSet, "candidates")) ? get(candidateSet, "candidates") : [])
+    .find((item) => isDict(item) && get(item, "candidate_id") === selectedCandidateId);
+  if (!isDict(selectedCandidate) || get(selection, "content_confirmed") !== true || !truthy(get(selection, "selection_receipt_ref"))) {
+    errors.push(issue("CANDIDATE_SELECTION", "$.handoff.candidateSet.selection", "Selected content must resolve and carry its confirmation receipt."));
+  }
+  if (get(payload, "settlement_intent") !== null && get(selection, "settlement_confirmed") !== true) {
+    errors.push(issue("SETTLEMENT_NOT_CONFIRMED", "$.handoff.candidateSet.selection", "A Frame settlement intent requires explicit settlement confirmation before handoff."));
+  }
+
+  if (get(directionSet, "schema_version") !== "visual-direction-set-v1" || get(directionSet, "state") !== "selected") {
+    errors.push(issue("DIRECTION_SELECTION", "$.handoff.directionSet", "Frame handoff requires a selected VisualDirectionSetV1."));
+  }
+  const selectedDirectionId = get(directionSet, "selected_direction_id");
+  const selectedDirection = (Array.isArray(get(directionSet, "directions")) ? get(directionSet, "directions") : [])
+    .find((item) => isDict(item) && get(item, "direction_id") === selectedDirectionId);
+  if (!isDict(selectedDirection)) {
+    errors.push(issue("DIRECTION_SELECTION", "$.handoff.directionSet.selected_direction_id", "Selected visual direction must resolve."));
+  }
+
+  if (isDict(selectedCandidate) && isDict(selectedDirection)) {
+    const candidateVisual = isDict(get(selectedCandidate, "visual")) ? get(selectedCandidate, "visual") : {};
+    if (get(candidateVisual, "direction_ref") !== selectedDirectionId) {
+      errors.push(issue("CANDIDATE_DIRECTION_MISMATCH", "$.handoff.candidateSet.candidates", "Selected content must retain its paired selected visual direction."));
+    }
+    for (const field of ["html_ref", "preview_ref", "compact_preview_ref"]) {
+      if (get(candidateVisual, field) !== get(selectedDirection, field)) {
+        errors.push(issue("CANDIDATE_VISUAL_REF_MISMATCH", `$.handoff.candidateSet.candidates.visual.${field}`, `Selected candidate ${field} must match the selected visual direction.`));
+      }
+    }
+    const candidateLineage = isDict(get(candidateSet, "lineage")) ? get(candidateSet, "lineage") : {};
+    const fingerprint = get(candidateLineage, "fingerprint_sha256");
+    if (!SHA_PATTERN.test(pystr(fingerprint)) || get(selectedCandidate, "meaning_fingerprint") !== fingerprint) {
+      errors.push(issue("CANDIDATE_FINGERPRINT_MISMATCH", "$.handoff.candidateSet", "Selected content must preserve the candidate-set meaning fingerprint."));
+    }
+    if (!(Array.isArray(get(candidateLineage, "input_artifact_refs")) && get(candidateLineage, "input_artifact_refs").includes(get(directionSet, "direction_set_id")))) {
+      errors.push(issue("DIRECTION_SET_LINEAGE", "$.handoff.candidateSet.lineage.input_artifact_refs", "Candidate set must retain the selected visual direction-set ref."));
+    }
+    if (get(lineage, "direction_set_ref") !== get(directionSet, "direction_set_id")) {
+      errors.push(issue("ASSEMBLY_DIRECTION_SET_MISMATCH", "$.lineage.direction_set_ref", "Frame assembly must retain the selected visual direction-set ref."));
+    }
+    const copy = isDict(get(selectedCandidate, "copy")) ? get(selectedCandidate, "copy") : {};
+    if (get(draft, "title") !== get(copy, "headline") || get(draft, "body") !== canonical_frame_body(copy)) {
+      errors.push(issue("ASSEMBLY_COPY_MISMATCH", "$.frame_draft", "Frame title/body must be the exact selected headline and canonical body-plus-close copy."));
+    }
+    const preflight = get(selectedDirection, "preflight");
+    const critique = isDict(get(selectedDirection, "critique")) ? get(selectedDirection, "critique") : {};
+    const candidateQuality = isDict(get(selectedCandidate, "quality")) ? get(selectedCandidate, "quality") : {};
+    if (!isDict(preflight) || !Object.values(preflight).length || Object.values(preflight).some((value) => value !== true) || get(critique, "verdict") !== "pass" || get(candidateQuality, "verdict") !== "pass") {
+      errors.push(issue("HANDOFF_QUALITY", "$.handoff", "Selected content and visual direction must pass their quality gates."));
+    }
+    const candidateSettlement = isDict(get(selectedCandidate, "settlement")) ? get(selectedCandidate, "settlement") : {};
+    if (get(payload, "settlement_intent") !== null && get(candidateSettlement, "state") !== "frozen") {
+      errors.push(issue("SETTLEMENT_NOT_CONFIRMED", "$.handoff.candidateSet.candidates.settlement", "Selected candidate settlement must be frozen before Frame handoff."));
+    }
+    const publicationAlt = get(candidateVisual, "alt_text");
+    if (typeof publicationAlt !== "string" || publicationAlt !== get(get(roles, "publication", {}), "alt_text")) {
+      errors.push(issue("CANDIDATE_ALT_MISMATCH", "$.frame_draft.media.publication.alt_text", "Publication alt text must match the selected candidate visual."));
+    }
+
+    if (get(captureReport, "schema_version") !== "viewpoint-html-capture-v1" || get(captureReport, "source") !== basename(pystr(get(selectedDirection, "html_ref", ""))) || !SHA_PATTERN.test(pystr(get(captureReport, "source_sha256", "")))) {
+      errors.push(issue("CAPTURE_SOURCE_MISMATCH", "$.handoff.captureReport", "Capture report must bind the selected direction HTML."));
+    }
+    const derivatives = new Map();
+    for (const item of Array.isArray(get(captureReport, "derivatives")) ? get(captureReport, "derivatives") : []) {
+      if (isDict(item)) derivatives.set(get(item, "kind"), item);
+    }
+    const roleHashes = isDict(visualManifest) && isDict(get(visualManifest, "role_hashes")) ? get(visualManifest, "role_hashes") : null;
+    for (const [role, mediaItem] of Object.entries(roles)) {
+      const kind = CAPTURE_KIND_BY_ROLE[role];
+      const derivative = derivatives.get(kind);
+      const [width, height] = CAPTURE_DIMENSIONS[role];
+      const expectedRef = role === "publication"
+        ? basename(pystr(get(selectedDirection, "preview_ref", "")))
+        : role === "compact"
+          ? basename(pystr(get(selectedDirection, "compact_preview_ref", "")))
+          : null;
+      if (!isDict(derivative) || get(derivative, "width") !== width || get(derivative, "height") !== height || (expectedRef !== null && get(derivative, "ref") !== expectedRef)) {
+        errors.push(issue("CAPTURE_DERIVATIVE_MISMATCH", `$.handoff.captureReport.derivatives.${kind}`, `Capture derivative ${kind} must match the selected ${role} asset and dimensions.`));
+        continue;
+      }
+      if (get(derivative, "sha256") !== get(mediaItem, "sha256")) {
+        errors.push(issue("CAPTURE_ENCODED_HASH_MISMATCH", `$.frame_draft.media.${role}.sha256`, `Frame ${role} byte hash must match the captured PNG bytes.`));
+      }
+      if (!SHA_PATTERN.test(pystr(get(derivative, "pixel_sha256", "")))) {
+        errors.push(issue("CAPTURE_PIXEL_HASH_MISMATCH", `$.handoff.captureReport.derivatives.${kind}.pixel_sha256`, `Capture ${kind} needs a canonical RGBA8 pixel hash.`));
+      } else if (roleHashes !== null && get(roleHashes, role) !== get(derivative, "pixel_sha256")) {
+        errors.push(issue("CAPTURE_PIXEL_HASH_MISMATCH", `$.visual_manifest.role_hashes.${role}`, `Manifest ${role} pixel hash must match the capture report.`));
+      }
+    }
+  }
+}
+
+export function validate(payload, binding = null, visualManifest = null, handoff = null) {
   if (!isDict(payload)) {
     return { valid: false, errors: [issue("ROOT_TYPE", "$", "Assembly must be an object.")] };
   }
@@ -350,6 +472,8 @@ export function validate(payload, binding = null, visualManifest = null) {
     }
   }
 
+  validate_generation_handoff(payload, draft, lineage, roles, visualManifest, handoff, errors);
+
   return { valid: !errors.length, errors };
 }
 
@@ -358,24 +482,36 @@ function main() {
   const assemblyPath = args[0];
   let bindingPath = null;
   let visualManifestPath = null;
+  let candidateSetPath = null;
+  let directionSetPath = null;
+  let captureReportPath = null;
   for (let index = 1; index < args.length; index += 2) {
     const flag = args[index];
     const value = args[index + 1];
     if (flag === "--binding") bindingPath = value;
     else if (flag === "--visual-manifest") visualManifestPath = value;
+    else if (flag === "--candidate-set") candidateSetPath = value;
+    else if (flag === "--direction-set") directionSetPath = value;
+    else if (flag === "--capture-report") captureReportPath = value;
     else {
-      process.stderr.write("usage: validate_frame_draft_assembly.mjs assembly.json [--binding binding.json --visual-manifest manifest.json]\n");
+      process.stderr.write("usage: validate_frame_draft_assembly.mjs assembly.json [--candidate-set candidates.json --direction-set directions.json --capture-report capture.json] [--binding binding.json --visual-manifest manifest.json]\n");
       process.exit(2);
     }
   }
-  if (!assemblyPath || assemblyPath.startsWith("-") || args.length % 2 === 0 || (bindingPath === null) !== (visualManifestPath === null)) {
-    process.stderr.write("usage: validate_frame_draft_assembly.mjs assembly.json [--binding binding.json --visual-manifest manifest.json]\n");
+  const handoffPathCount = [candidateSetPath, directionSetPath, captureReportPath].filter((value) => value !== null).length;
+  if (!assemblyPath || assemblyPath.startsWith("-") || args.length % 2 === 0 || (bindingPath === null) !== (visualManifestPath === null) || ![0, 3].includes(handoffPathCount)) {
+    process.stderr.write("usage: validate_frame_draft_assembly.mjs assembly.json [--candidate-set candidates.json --direction-set directions.json --capture-report capture.json] [--binding binding.json --visual-manifest manifest.json]\n");
     process.exit(2);
   }
   const result = validate(
     JSON.parse(readFileSync(assemblyPath, "utf-8")),
     bindingPath ? JSON.parse(readFileSync(bindingPath, "utf-8")) : null,
     visualManifestPath ? JSON.parse(readFileSync(visualManifestPath, "utf-8")) : null,
+    candidateSetPath ? {
+      candidateSet: JSON.parse(readFileSync(candidateSetPath, "utf-8")),
+      directionSet: JSON.parse(readFileSync(directionSetPath, "utf-8")),
+      captureReport: JSON.parse(readFileSync(captureReportPath, "utf-8")),
+    } : null,
   );
   process.stdout.write(JSON.stringify(result, null, 2) + "\n");
   process.exit(result.valid ? 0 : 1);
