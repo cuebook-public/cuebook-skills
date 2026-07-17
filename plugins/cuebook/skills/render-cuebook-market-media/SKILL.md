@@ -24,7 +24,7 @@ Build one grounded cross-media artifact. Research controls what may be said, cur
 12. Validate with:
 
 ```bash
-python scripts/validate_media_package.py media-package-v1.json
+node scripts/validate_media_package.mjs media-package-v1.json
 ```
 13. For owned web, rerun selected `$optimize-cuebook-market-seo` and `$optimize-cuebook-market-geo` modules in `preflight` against the final artifact. Then route the final `MediaPackageV1` and sidecar references to `$prepare-market-content-release`; this skill performs no account or platform operation.
 
@@ -83,6 +83,6 @@ For a blocked result, return `package.kind = blocked` and a repair reason. The o
 
 - `references/channel-methods.md`: per-format structure and policy routing.
 - `references/media-package-v1.schema.json`: MediaPackageV1 contract.
-- `scripts/validate_media_package.py`: deterministic evidence, policy, timing, rights, and state checks.
-- `tests/test_validate_media_package.py`: format and safety regressions.
+- `scripts/validate_media_package.mjs`: deterministic evidence, policy, timing, rights, and state checks.
+- `tests/validate_media_package.test.mjs`: format and safety regressions.
 - `evals/trigger_cases.json`: positive, neighboring, and adversarial routing cases.

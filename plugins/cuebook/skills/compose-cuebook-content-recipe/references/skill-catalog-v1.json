@@ -1542,10 +1542,10 @@
           "render-cuebook-market-post/references/post-v1.schema.json"
         ],
         "validator_refs": [
-          "render-cuebook-market-post/scripts/validate_post_artifact.py"
+          "render-cuebook-market-post/scripts/validate_post_artifact.mjs"
         ],
         "test_refs": [
-          "render-cuebook-market-post/scripts/test_validate_post_artifact.py"
+          "render-cuebook-market-post/tests/validate_post_artifact.test.mjs"
         ]
       },
       "replaced_by": null
@@ -1786,10 +1786,10 @@
           "render-cuebook-market-media/references/media-package-v1.schema.json"
         ],
         "validator_refs": [
-          "render-cuebook-market-media/scripts/validate_media_package.py"
+          "render-cuebook-market-media/scripts/validate_media_package.mjs"
         ],
         "test_refs": [
-          "render-cuebook-market-media/tests/test_validate_media_package.py"
+          "render-cuebook-market-media/tests/validate_media_package.test.mjs"
         ]
       },
       "replaced_by": null
