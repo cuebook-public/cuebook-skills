@@ -1596,10 +1596,10 @@
           "assemble-cuebook-publish-candidates/references/publish-candidate-set-v1.schema.json"
         ],
         "validator_refs": [
-          "assemble-cuebook-publish-candidates/scripts/validate_publish_candidate_set.py"
+          "assemble-cuebook-publish-candidates/scripts/validate_publish_candidate_set.mjs"
         ],
         "test_refs": [
-          "assemble-cuebook-publish-candidates/tests/test_validate_publish_candidate_set.py"
+          "assemble-cuebook-publish-candidates/tests/validate_publish_candidate_set.test.mjs"
         ]
       },
       "replaced_by": null
