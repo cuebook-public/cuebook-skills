@@ -8,7 +8,7 @@ Cuebook exposes two public entrypoints:
 - `create-cuebook-content` turns a creator's trading idea into sourced text,
   static visuals, and optional settlement artifacts.
 
-The repository packages 40 modular skills behind those two entrypoints
+The repository packages 38 modular skills behind those two entrypoints
 (including the `intake-cuebook-viewpoint` conversational front door that
 completes and verifies a fresh viewpoint before creation). Create may call
 Query; Query never calls Create.
@@ -63,10 +63,16 @@ before tagging a release.
 ## Validate
 
 ```bash
-node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook
-
-node --test 'plugins/cuebook/**/*.test.mjs'
+npm ci
+npm run validate
+npm test
+npm run build:release
+git diff --exit-code -- skills
 ```
+
+`validate` checks both the Query/Create package boundary and every local file
+or `$skill-name` reference. CI also rejects tracked Python runtime files and
+requires the generated public bundles to match their plugin source.
 
 Do not commit API keys, OAuth tokens, credentials, generated user output, or
 font files. Authentication remains in the Cuebook MCP connector.

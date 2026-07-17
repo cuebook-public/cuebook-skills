@@ -89,17 +89,22 @@ or generated artifact.
 
 ## Validate
 
-Run the package boundary validator:
+Install the repository's pinned JavaScript dependencies, then run the package
+boundary and resource-closure validators:
 
 ```bash
-node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook
+npm ci
+npm run validate
 ```
 
 Run all plugin tests:
 
 ```bash
-node --test 'plugins/cuebook/**/*.test.mjs'
+npm test
 ```
+
+Regenerate the generic Agent Skills bundles with `npm run build:release`; a
+clean `git diff --exit-code -- skills` proves the tracked bundles are current.
 
 Before release, keep the plugin version, catalog version, module map, menus,
 and workflow contracts aligned. Do not commit API keys, OAuth tokens,

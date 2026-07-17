@@ -1,0 +1,20 @@
+{
+  "name": "cuebook-skills",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Validation and release tooling for the Cuebook Agent Skills distribution.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build:release": "node plugins/cuebook/scripts/build_release_skills.mjs plugins/cuebook skills",
+    "validate:plugin": "node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook",
+    "validate:closure": "node plugins/cuebook/scripts/validate_skill_closure.mjs plugins/cuebook",
+    "validate": "npm run validate:plugin && npm run validate:closure",
+    "test": "node --test 'plugins/cuebook/**/*.test.mjs'",
+    "check": "npm run validate && npm test && npm run build:release && git diff --exit-code -- skills"
+  },
+  "devDependencies": {
+    "playwright": "1.61.1"
+  }
+}

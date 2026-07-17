@@ -71,8 +71,29 @@ test("bundles contain no plugin-level references", () => {
         const text = fs.readFileSync(md, "utf-8");
         assert.ok(!/\.\.\/\.\.\/assets\/(?!plugin\/)/.test(text), md);
         assert.ok(text.search(pattern) === -1, md);
+        assert.ok(!/SKILL\.md\/(?:assets|references|scripts)\//u.test(text), md);
       }
     }
+  });
+});
+
+test("cross-skill resource references resolve inside bundled skill directories", () => {
+  withTmpPath((tmpPath) => {
+    buildRelease(tmpPath);
+    const skillMd = path.join(
+      tmpPath,
+      "release",
+      "create-cuebook-content",
+      "references",
+      "skills",
+      "render-cuebook-viewpoint-visual",
+      "SKILL.md",
+    );
+    const text = fs.readFileSync(skillMd, "utf8");
+    assert.match(text, /\.\.\/direct-cuebook-viewpoint-visual\/assets\/cuebook-wordmark\.svg/u);
+    assert.doesNotMatch(text, /SKILL\.md\/(?:assets|references|scripts)\//u);
+    const resource = path.resolve(path.dirname(skillMd), "../direct-cuebook-viewpoint-visual/assets/cuebook-wordmark.svg");
+    assert.ok(fs.existsSync(resource), resource);
   });
 });
 

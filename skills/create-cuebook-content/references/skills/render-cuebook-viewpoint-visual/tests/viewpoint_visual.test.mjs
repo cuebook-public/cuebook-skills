@@ -286,12 +286,16 @@ test("renderer stays byte-compatible with migration goldens", () => {
 });
 
 const browserAvailable = [
+  process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
+  process.env.CHROME_PATH,
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   "/Applications/Chromium.app/Contents/MacOS/Chromium",
   "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
   "/usr/bin/google-chrome",
+  "/usr/bin/google-chrome-stable",
   "/usr/bin/chromium",
-].some(existsSync);
+  "/usr/bin/chromium-browser",
+].filter(Boolean).some(existsSync);
 
 test("rasterizer writes the atomic full and compact derivative pair", { skip: !browserAvailable }, () => {
   withTempDirectory((directory) => {

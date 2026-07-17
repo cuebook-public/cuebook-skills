@@ -52,7 +52,7 @@ Turn one normalized feed into a small, explicit editorial queue. Selection means
 ## Boundaries
 
 - Do not browse, calculate market facts, or fill research gaps in this skill.
-- Do not write hooks, titles for publication, body copy, visual briefs, or SEO metadata. The candidate `title` is an internal desk label.
+- Do not write hooks, titles for publication, body copy, visual briefs, or channel metadata. The candidate `title` is an internal desk label.
 - Do not infer that a selected opportunity should be traded.
 - Do not cherry-pick favorable trade history into the queue.
 

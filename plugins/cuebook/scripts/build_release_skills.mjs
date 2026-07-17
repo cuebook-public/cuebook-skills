@@ -79,6 +79,14 @@ export function skillRefPattern(skillNames) {
   return new RegExp(`\\$(${alternatives})\\b`, "g");
 }
 
+export function skillResourceRefPattern(skillNames) {
+  const alternatives = [...skillNames]
+    .sort((a, b) => b.length - a.length || (a < b ? -1 : a > b ? 1 : 0))
+    .map(escapeRegExp)
+    .join("|");
+  return new RegExp(`\\$(${alternatives})/((?:references|scripts|templates|assets|evals|tests)/[A-Za-z0-9][A-Za-z0-9._/@+%-]*)`, "g");
+}
+
 export function findClosure(pluginRoot, entry, skillNames) {
   const pattern = skillRefPattern(skillNames);
   const seen = [];
@@ -103,6 +111,12 @@ export function rewriteMarkdown(md, bundleRoot, skillNames, usedAssets) {
   text = text.replace(new RegExp(ASSET_REF_SOURCE, "g"), (_match, asset) => {
     usedAssets.add(asset);
     return path.relative(base, path.join(bundleRoot, "assets", "plugin", asset));
+  });
+  text = text.replace(skillResourceRefPattern(skillNames), (_match, name, resource) => {
+    const skillRoot = name === path.basename(bundleRoot)
+      ? bundleRoot
+      : path.join(bundleRoot, "references", "skills", name);
+    return path.relative(base, path.join(skillRoot, resource));
   });
   text = text.replace(skillRefPattern(skillNames), (_match, name) => {
     if (name === path.basename(bundleRoot)) {
@@ -162,6 +176,9 @@ export function checkBundle(bundleRoot, skillNames) {
     }
     if (text.search(refPattern) !== -1) {
       errors.push(issue("UNRESOLVED_SKILL_REF", `${bundleName}/${rel}`, "Bundle still contains a $skill-name invocation token."));
+    }
+    if (/SKILL\.md\/(?:references|scripts|templates|assets|evals|tests)\//u.test(text)) {
+      errors.push(issue("BROKEN_SKILL_RESOURCE_REF", `${bundleName}/${rel}`, "Bundle resource path incorrectly descends through SKILL.md."));
     }
     const targetPattern = /\]\((?!https?:\/\/|mailto:)([^)#\s]+)/g;
     for (const match of text.matchAll(targetPattern)) {

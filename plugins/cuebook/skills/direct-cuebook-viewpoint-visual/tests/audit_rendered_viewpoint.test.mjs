@@ -3,15 +3,31 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "no
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
+import { createRequire } from "node:module";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const script = path.join(root, "scripts", "audit_rendered_viewpoint.cjs");
-const runtime = path.join(os.homedir(), ".cache", "codex-runtimes", "codex-primary-runtime", "dependencies");
-const node = path.join(runtime, "node", "bin", "node");
-const nodeModules = path.join(runtime, "node", "node_modules");
-const canAudit = existsSync(node) && existsSync(nodeModules);
+const require = createRequire(import.meta.url);
+const browsers = [
+  process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
+  process.env.CHROME_PATH,
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "/Applications/Chromium.app/Contents/MacOS/Chromium",
+  "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+  "/usr/bin/google-chrome",
+  "/usr/bin/google-chrome-stable",
+  "/usr/bin/chromium",
+  "/usr/bin/chromium-browser",
+].filter(Boolean);
+let playwrightAvailable = true;
+try {
+  require.resolve("playwright");
+} catch {
+  playwrightAvailable = false;
+}
+const canAudit = playwrightAvailable && browsers.some(existsSync);
 
 function html(extraCss = "") {
   return `<!doctype html>
@@ -37,9 +53,9 @@ function audit(source) {
   const htmlPath = path.join(temp, "viewpoint.html");
   const output = path.join(temp, "audit");
   writeFileSync(htmlPath, source);
-  const completed = spawnSync(node, [script, htmlPath, output], {
+  const completed = spawnSync(process.execPath, [script, htmlPath, output], {
     encoding: "utf8",
-    env: { ...process.env, NODE_PATH: nodeModules },
+    env: process.env,
   });
   const report = JSON.parse(readFileSync(path.join(output, "render-audit.json"), "utf8"));
   rmSync(temp, { recursive: true, force: true });

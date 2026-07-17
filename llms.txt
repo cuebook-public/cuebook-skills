@@ -1,0 +1,29 @@
+# Cuebook Skills
+
+> Official Cuebook Agent Skills and Codex plugin distribution for source-linked market intelligence and creator-authored market content.
+
+## Public entrypoints
+
+- [Query Cuebook](plugins/cuebook/skills/query-cuebook/SKILL.md): read-only search, inspection, comparison, evidence, market data, and history. It never writes or invokes Create.
+- [Create Cuebook Content](plugins/cuebook/skills/create-cuebook-content/SKILL.md): turns a creator's seed into sourced text, static visuals, and optional settlement artifacts. It may invoke Query for evidence.
+
+Only these two skills are public entrypoints. The other 36 skills are internal capability nodes reached through them.
+
+## Architecture and distribution
+
+- [Plugin overview](plugins/cuebook/README.md): module boundary, authorization model, installation, and platform support.
+- [Canonical plugin index](plugins/cuebook/assets/plugin-index-v1.json): public entrypoints, catalog version, and package inventory.
+- [Module map](plugins/cuebook/assets/cuebook-modules-v1.json): the one-way `Create -> Query` dependency and skill ownership.
+- [MCP capability map](plugins/cuebook/assets/mcp-capability-map-v1.json): Cuebook MCP URL, read/write ownership, OAuth scopes, and release gates.
+- [Built generic bundles](skills/): self-contained `query-cuebook` and `create-cuebook-content` packages. These are generated artifacts; do not edit them directly.
+
+The source plugin is under `plugins/cuebook/`. Generic Agent Skills clients should install the two self-contained bundles under `skills/`. The Cuebook MCP connector is remote and authenticated; credentials never belong in this repository or generated artifacts.
+
+## Deterministic checks
+
+- `npm run validate` checks package/module policy, local resource closure, `$skill-name` closure, and retired capability references.
+- `npm test` runs the Node.js test suite.
+- `npm run build:release` regenerates both public bundles and `skills/release-manifest.json`.
+- `npm run check` runs validation, tests, regeneration, and verifies that the tracked bundles match source.
+
+Node.js 22 or newer is the supported validation runtime. Playwright plus Chromium is required for browser-backed render and audit tests.

@@ -68,7 +68,7 @@ For `previewed` and `selected` artifacts, every check must be true.
 ## Excluded Upstream Rules
 
 - Motion and GSAP rules: deferred while Cuebook focuses on static output.
-- Landing-page hero, CTA, navigation, logo-wall, and SEO rules: unrelated to a 2488 x 1056 market viewpoint.
+- Landing-page hero, CTA, navigation, and logo-wall rules: unrelated to a 2488 x 1056 market viewpoint.
 - Mandatory photography: market evidence may be a curve, number, event, comparison, or causal relationship.
 - Universal font and icon bans: Cuebook follows its own product and data-legibility constraints.
 - Random layout selection: Cuebook derives form from the thesis and source bindings.

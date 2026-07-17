@@ -1,0 +1,57 @@
+name: Quality
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-test-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install JavaScript dependencies
+        run: npm ci
+
+      - name: Install Chromium and system dependencies
+        run: npx playwright install --with-deps chromium
+
+      - name: Export Chromium executable
+        shell: bash
+        run: |
+          node -e 'process.stdout.write(`PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=${require("playwright").chromium.executablePath()}\n`)' >> "$GITHUB_ENV"
+
+      - name: Reject tracked Python runtime residue
+        shell: bash
+        run: |
+          if git ls-files 'plugins/cuebook/**/*.py' 'plugins/cuebook/**/*.pyc' 'skills/**/*.py' 'skills/**/*.pyc' | grep -q .; then
+            echo "Tracked Python runtime files remain after the JavaScript migration." >&2
+            exit 1
+          fi
+
+      - name: Validate plugin and skill closure
+        run: npm run validate
+
+      - name: Run test suite
+        run: npm test
+
+      - name: Verify generated release bundles are current
+        run: |
+          npm run build:release
+          git diff --exit-code -- skills
