@@ -2,7 +2,7 @@
 name: direct-cuebook-viewpoint-visual
 description: Execute a locked Cuebook visual intent route as three real, structurally different HTML-native financial arguments. Route the thesis through a market relationship, trading argument archetype, evidence contract, chart grammar, and composition archetype; preserve source-linked reasoning; derive creator-adaptive hierarchy and color; author at 1244 x 528; export the exact 2488 x 1056 publication image plus a 622 x 264 preview; and return VisualDirectionSetV1. Use when a market thesis, KOL idea, VisualArgumentV1, MarketViewSemanticsV1, creator note, or CreatorExpressionPlanV1 needs a clear static visual argument without making every creator look alike. Own grid, type, whitespace, semantic color, logic-route placement, and the presentation of numbers, curves, news, comparisons, term structures, and reasoning. Do not reclassify a valid upstream intent route, research missing market facts, change the creator's thesis, invent chart data, or render settlement backend fields.
 license: Proprietary. Cuebook internal; see the repository README for terms.
-compatibility: Requires Python 3.11+ for validators and Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
+compatibility: Requires Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
 ---
 
 # Compose Cuebook Viewpoint Layout

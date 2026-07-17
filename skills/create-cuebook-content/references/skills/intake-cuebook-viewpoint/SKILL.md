@@ -2,7 +2,7 @@
 name: intake-cuebook-viewpoint
 description: Run the conversational front door for a fresh Cuebook viewpoint. Triage free-form visitor input into 查询 versus 表达观点, extract asset, direction, horizon, and optional price anchor only from what the user actually said, elicit missing required fields at most two per round, verify them against Cuebook (search_assets, get_market_state), confirm one recap card, and hand a validated ViewpointIntakeV1 seed to create-cuebook-content or compile-cuebook-market-view-semantics. Use when a user 刚进来随口表达观点 (我觉得、我看多、帮我记个观点), when required view fields are missing or unverified, or when it is unclear whether the user wants to browse or create. Route pure lookups to query-cuebook and never force creation. Do not draft posts, design graphics, compile settlement claims, invent unstated fields, or nag a user who only wants to look around.
 license: Proprietary. Cuebook internal; see the repository README for terms.
-compatibility: Requires a connected Cuebook MCP server for asset resolution and market data; degrades to partial results, never invented values, when tools are unavailable. Python 3.11+ for validators.
+compatibility: Requires a connected Cuebook MCP server for asset resolution and market data; degrades to partial results, never invented values, when tools are unavailable. Node.js 18+ for validators.
 ---
 
 # Intake Cuebook Viewpoint
@@ -50,7 +50,7 @@ Every captured field carries provenance: `stated` (present in the raw input), `e
 Return `references/viewpoint-intake-v1.schema.json`. Validate with:
 
 ```bash
-python scripts/validate_viewpoint_intake.py viewpoint-intake-v1.json
+node scripts/validate_viewpoint_intake.mjs viewpoint-intake-v1.json
 ```
 
 Use only read tools declared in `../../../assets/plugin/mcp-capability-map-v1.json`. Downstream: `../query-cuebook/SKILL.md` for lookups, `../../../SKILL.md` or `../compile-cuebook-market-view-semantics/SKILL.md` for the confirmed seed.

@@ -2,7 +2,7 @@
 name: render-cuebook-viewpoint-visual
 description: Render an explicit creator market judgment as a readable Cuebook Feed visual. Default to an approved HTML-native VisualDirectionSetV1 direction so typography, hierarchy, composition, curves, numbers, causal logic, timelines, comparisons, and strategy maps can adapt to the actual thesis. Use the deterministic ViewpointVisualSpecV1 SVG renderer only for locked batch-compatible grammar output. Do not research missing inputs, invent market data, expose workflow or settlement backend text, or replace a full OHLC chart.
 license: Proprietary. Cuebook internal; see the repository README for terms.
-compatibility: Requires Python 3.11+ for validators and Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
+compatibility: Requires Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
 ---
 
 # Render Cuebook Viewpoint Visual
@@ -18,13 +18,13 @@ Use this route when the visual will appear in the creator Feed, the user asks fo
 1. Require a selected `VisualDirectionSetV1`. If it does not exist, run `../direct-cuebook-viewpoint-visual/SKILL.md` first and inspect its three real previews.
 2. Open the selected HTML and confirm its `data-binding-ref` values match the selected direction. When the expression recipe uses a news cluster, distribution, fan, composition, bridge, measured flow, ordered categories, or payoff curve, resolve its proof binding to a validated `EOBJ_*` in `ViewpointDataBundleV1.render_payload.evidence_object_refs` before rendering.
 3. Freeze the selected direction's `expression_recipe`, `layout_system`, concept, reading order, spatial skeleton, `form_from_content`, `cuebook-noi-v1` font profile, and approved font weights. A legacy V1 direction may omit `expression_recipe`; never add one during finalization. Final polish may fix craft defects but cannot choose a new communication job, evidence shape, primary grammar, grid, hierarchy, type scale, density, reading axis, or font profile.
-4. Require production `data-font-license-mode`, an artifact-local `fonts/font-assets-v1.json` from the director Skill's staging script, and the canonical `data-cuebook-wordmark="v1"` SVG in the bottom-right safe zone. Trial files may be used for local evaluation but are never release-eligible. If polish changed the HTML, rerun the director Skill's `scripts/stamp_cuebook_wordmark.py` as the last mutation, followed by its launch linter.
+4. Require production `data-font-license-mode`, an artifact-local `fonts/font-assets-v1.json` from the director Skill's staging script, and the canonical `data-cuebook-wordmark="v1"` SVG in the bottom-right safe zone. Trial files may be used for local evaluation but are never release-eligible. If polish changed the HTML, rerun the director Skill's `scripts/stamp_cuebook_wordmark.mjs` as the last mutation, followed by its launch linter.
 5. Capture both output sizes with the director Skill's `scripts/capture_html_viewpoint.cjs`; `viewpoint-2488.png` must be exactly 2488 x 1056 and `viewpoint-622.png` exactly 622 x 264, matching the direction's `preview_ref` and `compact_preview_ref`.
 6. Inspect both PNGs and run the director Skill's rendered audit. Confirm at least one `Cuebook Noi` face loaded, all visible non-brand copy leads with the approved stack, and CJK fallback did not change hierarchy or wrapping. Re-run the Cuebook visual critique after any typography, spacing, or composition change. Return to the layout Skill when the approved structure itself needs revision.
-7. Run `scripts/finalize_wide_viewpoint.py` to emit `ViewpointVisualV1` with `render_profile: wide_2488`, the selected `VDIR_` ref, HTML hash, production font-manifest hash, full PNG hash, compact PNG hash, palette preset, argument pattern, and source bindings. Freeze that manifest in the release artifact.
+7. Run `scripts/finalize_wide_viewpoint.mjs` to emit `ViewpointVisualV1` with `render_profile: wide_2488`, the selected `VDIR_` ref, HTML hash, production font-manifest hash, full PNG hash, compact PNG hash, palette preset, argument pattern, and source bindings. Freeze that manifest in the release artifact.
 
 ```bash
-python3 scripts/finalize_wide_viewpoint.py visual-direction-set-v1.json \
+node scripts/finalize_wide_viewpoint.mjs visual-direction-set-v1.json \
   --asset-root . \
   --observed-at 2026-07-15T07:00:00Z \
   --decision-cutoff-at 2026-07-15T07:00:00Z \
@@ -45,9 +45,9 @@ Use this route only when an upstream system explicitly provides the legacy 720 x
 5. Emit `ViewpointVisualV1` with `render_profile: legacy_720`. Treat the 11 compositions as compatibility templates, not the default creative ceiling.
 
 ```bash
-python3 scripts/validate_viewpoint_visual.py viewpoint-visual-spec-v1.json
-python3 scripts/render_viewpoint_visual.py viewpoint-visual-spec-v1.json --output-dir ./viewpoint-visual
-python3 scripts/validate_viewpoint_visual.py ./viewpoint-visual/viewpoint-visual-v1.json --asset-root ./viewpoint-visual
+node scripts/validate_viewpoint_visual.mjs viewpoint-visual-spec-v1.json
+node scripts/render_viewpoint_visual.mjs viewpoint-visual-spec-v1.json --output-dir ./viewpoint-visual
+node scripts/validate_viewpoint_visual.mjs ./viewpoint-visual/viewpoint-visual-v1.json --asset-root ./viewpoint-visual
 ```
 
 ## Public Image Contract
@@ -86,11 +86,11 @@ Route to `../render-cuebook-thesis-chart/SKILL.md` when OHLC, volume, multiple i
 - `../direct-cuebook-viewpoint-visual/SKILL.md`: default art-direction and three-preview workflow.
 - `../direct-cuebook-viewpoint-visual/SKILL.md/assets/cuebook-wordmark.svg`: single canonical brand source used by both HTML and compatibility SVG routes.
 - `../direct-cuebook-viewpoint-visual/SKILL.md/references/typography-benchmark-profiles-v1.json`: launch font profile and benchmark brand-distance contract.
-- `../direct-cuebook-viewpoint-visual/SKILL.md/scripts/stage_noi_font_assets.py`: artifact-local font staging and hashed license-mode manifest.
+- `../direct-cuebook-viewpoint-visual/SKILL.md/scripts/stage_noi_font_assets.mjs`: artifact-local font staging and hashed license-mode manifest.
 - `references/viewpoint-visual-spec-v1.schema.json`: deterministic compatibility input.
 - `references/viewpoint-visual-v1.schema.json`: unified launch and compatibility output manifest; `wide_2488` is the publication profile.
 - `references/cuebook-visual-tokens-v1.json`: shared Cuebook tokens.
 - `references/cuebook-editorial-signal-v2.md`: legacy 11-composition language.
-- `scripts/render_viewpoint_visual.py`: deterministic SVG compatibility renderer.
-- `scripts/finalize_wide_viewpoint.py`: deterministic selected-direction finalizer for the launch profile.
+- `scripts/render_viewpoint_visual.mjs`: deterministic SVG compatibility renderer.
+- `scripts/finalize_wide_viewpoint.mjs`: deterministic selected-direction finalizer for the launch profile.
 - `scripts/rasterize_viewpoint_visual.cjs`: deterministic SVG derivative publisher.

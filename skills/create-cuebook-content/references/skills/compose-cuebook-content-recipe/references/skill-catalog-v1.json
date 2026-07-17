@@ -168,10 +168,10 @@
           "distill-market-commentator-profile/references/profile-v1.schema.json"
         ],
         "validator_refs": [
-          "distill-market-commentator-profile/scripts/distill_posts.py"
+          "distill-market-commentator-profile/scripts/distill_posts.mjs"
         ],
         "test_refs": [
-          "distill-market-commentator-profile/tests/test_distill_posts.py"
+          "distill-market-commentator-profile/tests/distill_posts.test.mjs"
         ]
       },
       "replaced_by": null
@@ -921,10 +921,10 @@
           "plan-cuebook-creator-expression/references/visual-intent-route-registry-v1.json"
         ],
         "validator_refs": [
-          "plan-cuebook-creator-expression/scripts/validate_creator_expression_plan.py"
+          "plan-cuebook-creator-expression/scripts/validate_creator_expression_plan.mjs"
         ],
         "test_refs": [
-          "plan-cuebook-creator-expression/tests/test_validate_creator_expression_plan.py"
+          "plan-cuebook-creator-expression/tests/validate_creator_expression_plan.test.mjs"
         ]
       },
       "replaced_by": null
@@ -982,10 +982,10 @@
           "assemble-cuebook-viewpoint-data/references/viewpoint-data-bundle-v1.schema.json"
         ],
         "validator_refs": [
-          "assemble-cuebook-viewpoint-data/scripts/validate_viewpoint_data_bundle.py"
+          "assemble-cuebook-viewpoint-data/scripts/validate_viewpoint_data_bundle.mjs"
         ],
         "test_refs": [
-          "assemble-cuebook-viewpoint-data/tests/test_validate_viewpoint_data_bundle.py"
+          "assemble-cuebook-viewpoint-data/tests/validate_viewpoint_data_bundle.test.mjs"
         ]
       },
       "replaced_by": null
@@ -1111,19 +1111,19 @@
       "maintenance": {
         "owner": "cuebook-creator",
         "stability": "beta",
-        "last_verified_at": "2026-07-15T15:36:00+08:00",
+        "last_verified_at": "2026-07-17T12:43:06+08:00",
         "skill_path": "render-cuebook-viewpoint-visual",
         "schema_refs": [
           "render-cuebook-viewpoint-visual/references/viewpoint-visual-spec-v1.schema.json",
           "render-cuebook-viewpoint-visual/references/viewpoint-visual-v1.schema.json"
         ],
         "validator_refs": [
-          "render-cuebook-viewpoint-visual/scripts/validate_viewpoint_visual.py",
-          "render-cuebook-viewpoint-visual/scripts/finalize_wide_viewpoint.py",
-          "render-cuebook-viewpoint-visual/scripts/render_viewpoint_visual.py"
+          "render-cuebook-viewpoint-visual/scripts/validate_viewpoint_visual.mjs",
+          "render-cuebook-viewpoint-visual/scripts/finalize_wide_viewpoint.mjs",
+          "render-cuebook-viewpoint-visual/scripts/render_viewpoint_visual.mjs"
         ],
         "test_refs": [
-          "render-cuebook-viewpoint-visual/tests/test_viewpoint_visual.py"
+          "render-cuebook-viewpoint-visual/tests/viewpoint_visual.test.mjs"
         ]
       },
       "replaced_by": null
@@ -1293,10 +1293,10 @@
           "render-cuebook-logic-card/references/logic-card-v1.schema.json"
         ],
         "validator_refs": [
-          "render-cuebook-logic-card/scripts/validate_logic_card.py"
+          "render-cuebook-logic-card/scripts/validate_logic_card.mjs"
         ],
         "test_refs": [
-          "render-cuebook-logic-card/tests/test_logic_card.py"
+          "render-cuebook-logic-card/tests/logic_card.test.mjs"
         ]
       },
       "replaced_by": "render-cuebook-viewpoint-visual"
@@ -1355,10 +1355,10 @@
           "render-cuebook-market-figure/references/market-figure-v1.schema.json"
         ],
         "validator_refs": [
-          "render-cuebook-market-figure/scripts/validate_market_figure.py"
+          "render-cuebook-market-figure/scripts/validate_market_figure.mjs"
         ],
         "test_refs": [
-          "render-cuebook-market-figure/tests/test_market_figure.py"
+          "render-cuebook-market-figure/tests/market_figure.test.mjs"
         ]
       },
       "replaced_by": "render-cuebook-viewpoint-visual"
@@ -1596,10 +1596,10 @@
           "assemble-cuebook-publish-candidates/references/publish-candidate-set-v1.schema.json"
         ],
         "validator_refs": [
-          "assemble-cuebook-publish-candidates/scripts/validate_publish_candidate_set.py"
+          "assemble-cuebook-publish-candidates/scripts/validate_publish_candidate_set.mjs"
         ],
         "test_refs": [
-          "assemble-cuebook-publish-candidates/tests/test_validate_publish_candidate_set.py"
+          "assemble-cuebook-publish-candidates/tests/validate_publish_candidate_set.test.mjs"
         ]
       },
       "replaced_by": null

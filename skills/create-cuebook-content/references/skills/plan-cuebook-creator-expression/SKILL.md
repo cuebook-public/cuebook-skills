@@ -29,19 +29,19 @@ Read `references/expression-protocol.md` before creating or revising a plan. Rea
 12. Return `CreatorExpressionPlanV1` from `references/creator-expression-plan-v1.schema.json` and validate it:
 
 ```bash
-python scripts/validate_creator_expression_plan.py creator-expression-plan-v1.json
+node scripts/validate_creator_expression_plan.mjs creator-expression-plan-v1.json
 ```
 
 To calculate the fingerprint hash while assembling a plan:
 
 ```bash
-python scripts/validate_creator_expression_plan.py creator-expression-plan-v1.json --print-fingerprint-hash
+node scripts/validate_creator_expression_plan.mjs creator-expression-plan-v1.json --print-fingerprint-hash
 ```
 
 When the source semantic hash is available independently, enforce it too:
 
 ```bash
-python scripts/validate_creator_expression_plan.py creator-expression-plan-v1.json \
+node scripts/validate_creator_expression_plan.mjs creator-expression-plan-v1.json \
   --expected-source-semantics-hash sha256:<64-lowercase-hex>
 ```
 
@@ -84,5 +84,5 @@ Downstream outputs may compress or restyle the plan but must preserve the finger
 - `references/visual-intent-routing-v1.md`: intent-first Query, Skill, evidence-shape, renderer, and shortest-path protocol.
 - `references/visual-intent-route-registry-v1.json`: canonical candidate families, Query capability bindings, and visual Skill routes.
 - `references/archetype-routing.md`: routing for the 11 reverse-engineered source archetypes.
-- `scripts/validate_creator_expression_plan.py`: deterministic structural and cross-field validator.
-- `tests/test_validate_creator_expression_plan.py`: 11-archetype and policy regression suite.
+- `scripts/validate_creator_expression_plan.mjs`: deterministic structural and cross-field validator.
+- `tests/validate_creator_expression_plan.test.mjs`: 11-archetype and policy regression suite.

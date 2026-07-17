@@ -2,7 +2,7 @@
 name: render-cuebook-market-figure
 description: Compile and render a Cuebook market viewpoint into a compact, sourced Feed figure led by one meaningful curve or instrument map, one judgment, one dominant number, an optional news anchor, and an optional settlement rule; an editorial variant can retain secondary evidence. Use for event-reaction, relative-strength, expectation-revision, fundamental-driver, positioning-pressure, sensitivity/payoff, multi-vehicle risk-versus-exposure graphics, and clearly disclosed redraws of authorized source charts. Do not use for decorative trend lines, unsupported forecasts, generic logic diagrams, personalized allocation advice, or a standalone settlement price chart.
 license: Proprietary. Cuebook internal; see the repository README for terms.
-compatibility: Requires Python 3.11+ for validators and Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
+compatibility: Requires Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
 ---
 
 # Render Cuebook Market Figure
@@ -23,10 +23,10 @@ Build the Feed visual that answers: what happened, what I am betting on, why pri
 10. Rasterize only after SVG validation when a Feed PNG is needed, then repeat the visual review at final size.
 
 ```bash
-python3 scripts/validate_market_figure.py market-figure-spec-v1.json
-python3 scripts/render_market_figure.py market-figure-spec-v1.json --output-dir ./figure-output
+node scripts/validate_market_figure.mjs market-figure-spec-v1.json
+node scripts/render_market_figure.mjs market-figure-spec-v1.json --output-dir ./figure-output
 node scripts/rasterize_market_figure.cjs ./figure-output/market-figure.svg ./figure-output/market-figure.png
-python3 scripts/validate_market_figure.py ./figure-output/market-figure-v1.json --asset-root ./figure-output
+node scripts/validate_market_figure.mjs ./figure-output/market-figure-v1.json --asset-root ./figure-output
 ```
 
 ## Compact Composition
@@ -77,7 +77,7 @@ python3 scripts/validate_market_figure.py ./figure-output/market-figure-v1.json 
 - `references/curve-grammars.md`: routing rules and required inputs.
 - `references/visual-review.md`: post-render hierarchy, typography, contrast, optical-alignment, and motion audit adapted from three MIT-licensed design skill sets.
 - `references/source-chart-redraw.md`: exact-series versus chart-redraw modes, multi-series focus rules, and the Cuebook leverage-indicator data contract.
-- `scripts/validate_market_figure.py`: structural and semantic validation.
-- `scripts/render_market_figure.py`: dependency-free Cuebook SVG renderer.
+- `scripts/validate_market_figure.mjs`: structural and semantic validation.
+- `scripts/render_market_figure.mjs`: dependency-free Cuebook SVG renderer.
 - `scripts/rasterize_market_figure.cjs`: deterministic PNG rasterizer that follows the selected SVG dimensions.
-- `tests/test_market_figure.py`: regression coverage.
+- `tests/market_figure.test.mjs`: regression and byte-level golden coverage.
