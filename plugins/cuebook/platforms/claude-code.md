@@ -43,7 +43,7 @@ authorization; query is structurally read-only.
 ## Smoke test
 
 ```bash
-python3 plugins/cuebook/scripts/validate_cuebook_plugin.py plugins/cuebook
+node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook
 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -p no:cacheprovider plugins/cuebook
 ```
 

@@ -53,7 +53,7 @@ them; Create never publishes silently.
 ## Smoke test
 
 ```bash
-python3 plugins/cuebook/scripts/validate_cuebook_plugin.py plugins/cuebook
+node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook
 ```
 
 Then, in a fresh Codex task: ask `看看 USO 最近有什么叙事` and confirm the

@@ -11,7 +11,7 @@ metadata cost for internal capabilities it should never trigger directly.
 Build the self-contained public bundles instead:
 
 ```bash
-python3 plugins/cuebook/scripts/build_release_skills.py plugins/cuebook <output-dir>
+node plugins/cuebook/scripts/build_release_skills.mjs plugins/cuebook <output-dir>
 ```
 
 The builder packages each public entrypoint (from
@@ -62,5 +62,5 @@ skills-ref validate <output-dir>/create-cuebook-content
 ```
 
 Then confirm no `../../` or unresolved `$skill-name` references remain:
-the builder's own test suite (`tests/test_build_release_skills.py`) checks
+the builder's own test suite (`tests/build_release_skills.test.mjs`) checks
 both.

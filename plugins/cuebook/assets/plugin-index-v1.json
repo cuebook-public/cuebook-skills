@@ -17,7 +17,7 @@
   "query_menu_ref": "./query-menu-v1.json",
   "creation_menu_ref": "./creation-menu-v1.json",
   "mcp_capability_map_ref": "./mcp-capability-map-v1.json",
-  "validator_ref": "../scripts/validate_cuebook_plugin.py",
+  "validator_ref": "../scripts/validate_cuebook_plugin.mjs",
   "release_profile": {
     "static_visuals": "exact_2488x1056",
     "settlement_protocols": "claim_plus_formula_hash_pair",

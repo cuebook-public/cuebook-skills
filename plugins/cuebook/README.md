@@ -62,7 +62,7 @@ and MCP coverage lives in
 | --- | --- | --- |
 | Codex (plugin) | Tested | Primary distribution; see [platforms/codex.md](platforms/codex.md) |
 | Claude Code (plugin) | Planned | Same plugin layout loads; MCP + heavy-runtime skills unverified; see [platforms/claude-code.md](platforms/claude-code.md) |
-| Generic `.agents/skills` clients | Planned | Use the self-contained release bundles built by `scripts/build_release_skills.py`, not this source tree; see [platforms/generic-agent-skills.md](platforms/generic-agent-skills.md) |
+| Generic `.agents/skills` clients | Planned | Use the self-contained release bundles built by `scripts/build_release_skills.mjs`, not this source tree; see [platforms/generic-agent-skills.md](platforms/generic-agent-skills.md) |
 | Other Agent Skills clients | Unverified | Format follows the [Agent Skills spec](https://agentskills.io); behavior untested |
 
 Only the public entrypoints in `assets/plugin-index-v1.json` are meant for
@@ -92,7 +92,7 @@ or generated artifact.
 Run the package boundary validator:
 
 ```bash
-python3 plugins/cuebook/scripts/validate_cuebook_plugin.py plugins/cuebook
+node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook
 ```
 
 Run all plugin tests without local caches:
