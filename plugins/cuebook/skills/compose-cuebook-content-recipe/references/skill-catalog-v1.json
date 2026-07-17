@@ -921,10 +921,10 @@
           "plan-cuebook-creator-expression/references/visual-intent-route-registry-v1.json"
         ],
         "validator_refs": [
-          "plan-cuebook-creator-expression/scripts/validate_creator_expression_plan.py"
+          "plan-cuebook-creator-expression/scripts/validate_creator_expression_plan.mjs"
         ],
         "test_refs": [
-          "plan-cuebook-creator-expression/tests/test_validate_creator_expression_plan.py"
+          "plan-cuebook-creator-expression/tests/validate_creator_expression_plan.test.mjs"
         ]
       },
       "replaced_by": null
