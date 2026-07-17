@@ -1293,10 +1293,10 @@
           "render-cuebook-logic-card/references/logic-card-v1.schema.json"
         ],
         "validator_refs": [
-          "render-cuebook-logic-card/scripts/validate_logic_card.py"
+          "render-cuebook-logic-card/scripts/validate_logic_card.mjs"
         ],
         "test_refs": [
-          "render-cuebook-logic-card/tests/test_logic_card.py"
+          "render-cuebook-logic-card/tests/logic_card.test.mjs"
         ]
       },
       "replaced_by": "render-cuebook-viewpoint-visual"
