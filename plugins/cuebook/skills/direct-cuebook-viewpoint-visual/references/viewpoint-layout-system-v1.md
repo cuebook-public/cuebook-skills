@@ -66,7 +66,7 @@ Then hold the layout to `canvas-craft-v1.md`: the 2.36:1 canvas is short, not sm
 ## Type Scale
 
 - Use the fixed `cuebook-noi-v1` profile for launch HTML. Noi carries Latin, tickers, punctuation, and numerals; `PingFang SC`, `Noto Sans CJK SC`, then `Microsoft YaHei` carry missing CJK glyphs at the same requested weight.
-- Use only original renderer-local font files staged by `scripts/stage_noi_font_assets.py`. A Trial file is evaluation-only and cannot enter a release artifact.
+- Use only original renderer-local font files staged by `scripts/stage_noi_font_assets.mjs`. A Trial file is evaluation-only and cannot enter a release artifact.
 - Start with hierarchy ratios, then choose pixels.
 - At 1244px, hero text normally occupies 64-120px; body/supporting text 28-52px; metadata 18-30px.
 - Hero-to-body ratio should normally be at least 2.0. Small canvases may use weight, position, and whitespace in addition to size.

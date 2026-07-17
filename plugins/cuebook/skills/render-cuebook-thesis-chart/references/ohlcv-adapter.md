@@ -53,7 +53,7 @@ For exchange-traded daily bars, `observed_at` should represent the official sess
 ## Invocation
 
 ```bash
-python scripts/render_thesis_chart.py thesis-chart-v1.json \
+node scripts/render_thesis_chart.mjs thesis-chart-v1.json \
   --market-data market-series-batch-v1.json \
   --output-dir chart-output
 ```

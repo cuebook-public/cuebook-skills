@@ -24,7 +24,7 @@ Expose the trading play a reader would recognize in the viewpoint. The output se
    - `because_line`: the one mechanism that earns that action;
    - two to four tags drawn from strategy, mechanism, and expression.
 5. Preserve observed, inferred, provisional, and missing evidence only in `evidence_boundary`. Do not copy those labels into public lines or tags.
-6. Validate with `scripts/validate_trade_logic.py` and pass the profile to renderers.
+6. Validate with `scripts/validate_trade_logic.mjs` and pass the profile to renderers.
 
 ## Public Expression
 
@@ -51,5 +51,5 @@ Expose the trading play a reader would recognize in the viewpoint. The output se
 
 - `references/trade-logic-profile-v1.schema.json`: versioned output contract.
 - `references/trading-logic-taxonomy.md`: Cuebook categories, mappings, and public tag rules.
-- `scripts/validate_trade_logic.py`: structural and cross-field validator.
-- `tests/test_trade_logic.py`: taxonomy and public/private boundary regressions.
+- `scripts/validate_trade_logic.mjs`: structural and cross-field validator.
+- `tests/trade_logic.test.mjs`: taxonomy and public/private boundary regressions.

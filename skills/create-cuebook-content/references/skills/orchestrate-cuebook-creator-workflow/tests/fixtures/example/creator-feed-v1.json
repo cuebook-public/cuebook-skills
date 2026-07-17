@@ -1,0 +1,207 @@
+{
+  "schema_version": "creator-feed-v1",
+  "feed_id": "CF_1234abcd",
+  "generated_at": "2026-07-14T12:05:00+00:00",
+  "as_of": "2026-07-14T12:00:00+00:00",
+  "knowledge_cutoff_at": "2026-07-14T12:00:00+00:00",
+  "input_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "ruleset_version": "2026-07-14",
+  "brief": {
+    "workspace_ref": "cuebook-prod",
+    "creator_ref": "creator-vito",
+    "snapshot_ref": "snapshot-42",
+    "timezone": "Asia/Shanghai",
+    "locale": "zh-CN",
+    "universe": [
+      "US equities",
+      "semiconductors"
+    ],
+    "personalized_advice_allowed": false
+  },
+  "source_register": [
+    {
+      "id": "SRC_company_q2",
+      "revision_id": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_type": "company_release",
+      "publisher": "Example Corp",
+      "locator": "https://example.com/q2",
+      "external_id": "q2-2026",
+      "content_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "published_at": "2026-07-14T10:00:00+00:00",
+      "source_updated_at": null,
+      "observed_at": "2026-07-14T10:02:00+00:00",
+      "authorized_at": null,
+      "available_at": "2026-07-14T10:02:00+00:00",
+      "access": "public",
+      "reuse_rights": "summarize_allowed",
+      "trust_state": "verified",
+      "independent_cluster_id": "SC_example_q2"
+    }
+  ],
+  "entities": [
+    {
+      "id": "ENT_example",
+      "kind": "company",
+      "canonical_name": "Example Corp",
+      "symbol_aliases": [
+        {
+          "symbol": "EXM",
+          "venue": "NASDAQ",
+          "valid_from": null,
+          "valid_to": null
+        }
+      ]
+    }
+  ],
+  "news": [
+    {
+      "id": "NEWS_q2",
+      "revision_id": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "record_status": "active",
+      "headline": "Example reports Q2",
+      "summary": "Revenue rose.",
+      "entity_refs": [
+        "ENT_example"
+      ],
+      "source_refs": [
+        "SRC_company_q2"
+      ],
+      "cluster_id": "NC_q2",
+      "occurred_at": "2026-07-14T10:00:00+00:00",
+      "published_at": "2026-07-14T10:00:00+00:00",
+      "observed_at": "2026-07-14T10:02:00+00:00",
+      "available_at": "2026-07-14T10:02:00+00:00",
+      "evidence_role": "attributable_fact"
+    }
+  ],
+  "calendar_events": [
+    {
+      "id": "CAL_call",
+      "revision_id": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "record_status": "active",
+      "label": "Q2 earnings call",
+      "event_type": "earnings",
+      "event_status": "scheduled",
+      "entity_refs": [
+        "ENT_example"
+      ],
+      "source_refs": [
+        "SRC_company_q2"
+      ],
+      "scheduled_at": "2026-07-14T13:00:00+00:00",
+      "timezone": "America/New_York",
+      "available_at": "2026-07-14T10:02:00+00:00",
+      "previous_revision_refs": []
+    }
+  ],
+  "narratives": [
+    {
+      "id": "NAR_revision",
+      "revision_id": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "record_status": "active",
+      "origin": "model",
+      "narrative_class": "hypothesis",
+      "claim": "The quarter may lift the next two estimates.",
+      "entity_refs": [
+        "ENT_example"
+      ],
+      "source_refs": [
+        "SRC_company_q2"
+      ],
+      "created_at": "2026-07-14T10:10:00+00:00",
+      "available_at": "2026-07-14T10:10:00+00:00",
+      "horizon": "two quarters",
+      "mechanism": [
+        "reported revenue changes analyst models"
+      ],
+      "evidence_gaps": [
+        "consensus revision data"
+      ],
+      "falsifier": "Forward estimates remain flat."
+    }
+  ],
+  "trade_ideas": [
+    {
+      "id": "IDEA_watch",
+      "revision_id": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "record_status": "active",
+      "thesis": "Watch for a revision cycle after the call.",
+      "direction": "watch",
+      "entity_refs": [
+        "ENT_example"
+      ],
+      "source_refs": [
+        "SRC_company_q2"
+      ],
+      "catalyst_refs": [
+        "CAL_call",
+        "NAR_revision"
+      ],
+      "created_at": "2026-07-14T10:12:00+00:00",
+      "observed_at": "2026-07-14T10:12:00+00:00",
+      "available_at": "2026-07-14T10:12:00+00:00",
+      "horizon": "30 days",
+      "invalidation": "Guidance and estimates do not rise.",
+      "evidence_state": "partial",
+      "execution_state": "idea_only"
+    }
+  ],
+  "trade_history": [
+    {
+      "id": "TRADE_old",
+      "revision_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "record_status": "active",
+      "trade_type": "executed",
+      "entity_refs": [
+        "ENT_example"
+      ],
+      "source_refs": [],
+      "idea_ref": null,
+      "side": "long",
+      "lifecycle_state": "closed",
+      "opened_at": "2026-05-01T14:00:00+00:00",
+      "closed_at": "2026-05-20T14:00:00+00:00",
+      "recorded_at": "2026-05-20T14:05:00+00:00",
+      "available_at": "2026-05-20T14:05:00+00:00",
+      "execution_verification": "broker_reconciled",
+      "position_disclosure": "public_flat",
+      "commercial_relationship": "none",
+      "public_reuse_permission": "aggregate_only",
+      "performance": {
+        "return_pct": 4.2,
+        "pnl_amount": null,
+        "currency": null,
+        "fees_included": true,
+        "basis": "executed_reconciled"
+      }
+    }
+  ],
+  "links": [
+    {
+      "id": "LINK_news_narrative",
+      "from_ref": "NAR_revision",
+      "to_ref": "NEWS_q2",
+      "relation": "derived_from"
+    }
+  ],
+  "quality_report": {
+    "decision": "ready",
+    "hard_failures": [],
+    "warnings": [],
+    "checks": [
+      "cutoff-safe"
+    ],
+    "record_counts": {
+      "sources": 1,
+      "entities": 1,
+      "news": 1,
+      "calendar_events": 1,
+      "narratives": 1,
+      "trade_ideas": 1,
+      "trade_history": 1,
+      "links": 1,
+      "quarantined": 0
+    },
+    "quarantined_records": []
+  }
+}

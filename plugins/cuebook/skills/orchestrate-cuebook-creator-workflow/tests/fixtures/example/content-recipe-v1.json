@@ -1,0 +1,205 @@
+{
+  "schema_version": "content-recipe-v1",
+  "recipe_id": "RECIPE_1234abcd",
+  "revision": 1,
+  "state": "valid",
+  "catalog_version": "1.27.0",
+  "created_at": "2026-07-14T12:11:00+00:00",
+  "updated_at": "2026-07-14T12:12:00+00:00",
+  "as_of": "2026-07-14T12:00:00+00:00",
+  "decision_cutoff_at": "2026-07-14T12:00:00+00:00",
+  "feed_ref": "CF_1234abcd",
+  "opportunity_set_ref": "OS_1234abcd",
+  "selection_mode": "opportunity_first",
+  "preset_ref": "preset-thesis-watch",
+  "anchor": {
+    "opportunity_ref": "OPP_q2_revision",
+    "primary_ref": "NEWS_q2",
+    "title": "Q2 revision watch",
+    "entity_refs": [
+      "ENT_example"
+    ],
+    "lifecycle": "pre_event",
+    "horizon": "30 days"
+  },
+  "ingredients": {
+    "news_refs": [
+      "NEWS_q2"
+    ],
+    "calendar_refs": [
+      "CAL_call"
+    ],
+    "narrative_refs": [
+      "NAR_revision"
+    ],
+    "trade_idea_refs": [
+      "IDEA_watch"
+    ],
+    "trade_history_refs": [],
+    "history_use": "none"
+  },
+  "preparation": {
+    "editorial_job": "pre_event_watch",
+    "analysis_lenses": [
+      "expectation-gap",
+      "actor-forced",
+      "next-catalyst"
+    ],
+    "argument_shape": "scenario_tree",
+    "research_mode": "fresh_required",
+    "market_data_mode": "refresh_if_available",
+    "source_policy": "primary_first",
+    "include_countercase": true,
+    "include_invalidation": false
+  },
+  "flavor": {
+    "profile_ref": "PROFILE_creator_v1",
+    "voice_traits": [
+      "conversational",
+      "concrete",
+      "trade-aware"
+    ],
+    "stance": "watch",
+    "certainty": "conditional",
+    "density": "standard",
+    "language": "zh-CN",
+    "avoid_patterns": [
+      "living-author catchphrases",
+      "personalized orders"
+    ],
+    "originality_policy": "traits_only",
+    "authorship_mode": "cuebook_assisted",
+    "assistance_attribution": "none"
+  },
+  "plating": {
+    "bundle_strategy": "independent",
+    "deliverable_mode": "release_candidates",
+    "outputs": [
+      {
+        "output_id": "OUT_x_thread",
+        "channel": "x",
+        "format": "thread",
+        "count": 1,
+        "length": "standard",
+        "media_format_ref": "FORMAT_x_thread_v1",
+        "target_context": null
+      }
+    ]
+  },
+  "execution": {
+    "mode": "single",
+    "skill_selection_policy": "manual_plus_required",
+    "selected_skill_ids": [
+      "prepare-market-content-release",
+      "render-cuebook-viewpoint-visual"
+    ],
+    "resolved_skill_ids": [
+      "normalize-cuebook-creator-feed",
+      "compose-cuebook-content-recipe",
+      "select-cuebook-content-opportunities",
+      "validate-cuebook-projection",
+      "route-cuebook-narrative",
+      "build-market-research-pack",
+      "compile-cuebook-market-view-semantics",
+      "plan-cuebook-creator-expression",
+      "render-cuebook-market-post",
+      "prepare-market-content-release",
+      "orchestrate-cuebook-creator-workflow",
+      "assemble-cuebook-viewpoint-data",
+      "direct-cuebook-viewpoint-visual",
+      "render-cuebook-viewpoint-visual"
+    ],
+    "version_pins": [
+      {
+        "skill_id": "normalize-cuebook-creator-feed",
+        "version": "1.0.0"
+      },
+      {
+        "skill_id": "compose-cuebook-content-recipe",
+        "version": "1.0.0"
+      },
+      {
+        "skill_id": "select-cuebook-content-opportunities",
+        "version": "1.0.0"
+      },
+      {
+        "skill_id": "validate-cuebook-projection",
+        "version": "1.0.0"
+      },
+      {
+        "skill_id": "route-cuebook-narrative",
+        "version": "1.0.0"
+      },
+      {
+        "skill_id": "build-market-research-pack",
+        "version": "1.1.0"
+      },
+      {
+        "skill_id": "compile-cuebook-market-view-semantics",
+        "version": "1.0.0"
+      },
+      {
+        "skill_id": "plan-cuebook-creator-expression",
+        "version": "1.2.0"
+      },
+      {
+        "skill_id": "render-cuebook-market-post",
+        "version": "1.2.0"
+      },
+      {
+        "skill_id": "prepare-market-content-release",
+        "version": "1.1.0"
+      },
+      {
+        "skill_id": "orchestrate-cuebook-creator-workflow",
+        "version": "1.4.0"
+      },
+      {
+        "skill_id": "assemble-cuebook-viewpoint-data",
+        "version": "1.5.0"
+      },
+      {
+        "skill_id": "direct-cuebook-viewpoint-visual",
+        "version": "2.5.0"
+      },
+      {
+        "skill_id": "render-cuebook-viewpoint-visual",
+        "version": "1.6.0"
+      }
+    ],
+    "auto_fill_missing_research": true,
+    "stop_on_conditional": false,
+    "require_human_approval": true,
+    "dry_run": false
+  },
+  "extensions": [
+    {
+      "extension_id": "EXT_market_data_default",
+      "extension_point": "market_data",
+      "provider_ref": "cuebook-market-snapshot",
+      "required": false,
+      "config_ref": "CFG_market_default"
+    }
+  ],
+  "validation_report": {
+    "decision": "ready",
+    "hard_failures": [],
+    "warnings": [],
+    "checks": [
+      "ingredient refs",
+      "skill resolution",
+      "channel compatibility"
+    ],
+    "counts": {
+      "news": 1,
+      "calendar_events": 1,
+      "narratives": 1,
+      "trade_ideas": 1,
+      "trade_history": 0,
+      "outputs": 1,
+      "selected_skills": 2,
+      "resolved_skills": 14,
+      "extensions": 1
+    }
+  }
+}

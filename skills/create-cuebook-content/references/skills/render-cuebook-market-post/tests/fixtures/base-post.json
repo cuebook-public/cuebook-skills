@@ -1,0 +1,109 @@
+{
+  "schema_version": "post-v1",
+  "lineage": {
+    "artifact_id": "POST_storage_x",
+    "program_ref": null,
+    "content_item_ref": null,
+    "opportunity_refs": [
+      "OPP_storage"
+    ],
+    "input_artifact_refs": [
+      "ART_gate",
+      "ART_route"
+    ]
+  },
+  "brief": {
+    "platforms": [
+      "x"
+    ],
+    "content_class": "market_commentary",
+    "temporal_mode": "realtime",
+    "language": "zh-CN",
+    "as_of": "2026-07-14T08:00:00Z",
+    "reader": "market reader",
+    "decision_use": "understand the print",
+    "research_pack_ref": null
+  },
+  "gate": {
+    "decision": "pass",
+    "checks": [],
+    "repairs": []
+  },
+  "research_decision": null,
+  "policy_gate": {
+    "decision": "ready",
+    "checked_at": "2026-07-14T07:30:00Z",
+    "rules_checked": [],
+    "repairs": []
+  },
+  "disclosure_state": {
+    "position_status": "no_position",
+    "position_text": null,
+    "commercial_status": "none",
+    "commercial_text": null,
+    "identity_status": "not_required",
+    "ai_assistance_status": "not_required",
+    "public_disclosures": []
+  },
+  "route": {
+    "schema_version": "route-v1",
+    "taxonomy_version": "market-narrative-v2",
+    "cue_id": "cue-storage",
+    "event_type": "inventory-print",
+    "event_confidence": 0.667,
+    "candidates": [
+      {
+        "event_type": "inventory-print",
+        "score": 4.0
+      }
+    ],
+    "reasoning_lenses": [
+      "model-revision"
+    ],
+    "render_shape": "number-first",
+    "required_context": [],
+    "hard_numbers": [
+      "76B",
+      "67B"
+    ],
+    "abstain": false,
+    "abstain_reason": ""
+  },
+  "fact_ledger": [
+    {
+      "id": "F1",
+      "claim": "Storage exceeded consensus.",
+      "evidence_class": "source",
+      "source_url": "https://example.com/source",
+      "as_of": "2026-07-14T07:00:00Z",
+      "freshness": "current"
+    }
+  ],
+  "angle": {
+    "tension": "inventory versus positioning",
+    "forced_actor": "directional holders",
+    "why_selected": "hard comparator",
+    "profile_rule_ids": []
+  },
+  "drafts": {
+    "x": "库存高过预期，多头今天少了点想象空间。下一份数据要是还压不下来，反弹会更难做。",
+    "telegram": "",
+    "xhs": "",
+    "buy_side_note": ""
+  },
+  "draft_evidence": {
+    "x": [
+      "F1"
+    ],
+    "telegram": [],
+    "xhs": [],
+    "buy_side_note": []
+  },
+  "watch_items": [],
+  "quality_report": {
+    "scores": {},
+    "hard_failures": [],
+    "revisions": []
+  },
+  "publication_state": "ready"
+}

@@ -2,7 +2,7 @@
 name: create-cuebook-content
 description: Create Cuebook market posts, creator viewpoint graphics, settlement protocols, or publishing candidates from a user's explicit idea, selected Cuebook material, or an existing CuebookQueryBundleV1. Use when the requested deliverable is clearly a post, thread, trading viewpoint, viewpoint graphic, settlement condition, release bundle, or three publishing candidates. Preserve authorship, invoke query-cuebook whenever material current news, market data, fundamentals, comparators, history, or settlement bindings are missing, then return three calibrated candidates only when the workflow is not blocked. Do not use for read-only search, summaries, reports, data tables, or factual charts; do not silently publish, place trades, fabricate query results, or present a source opinion as the user's own view without explicit adoption.
 license: Proprietary. Cuebook internal; see the repository README for terms.
-compatibility: Requires a connected Cuebook MCP server for asset resolution and market data; degrades to partial results, never invented values, when tools are unavailable. Python 3.11+ for validators.
+compatibility: Requires a connected Cuebook MCP server for asset resolution and market data; degrades to partial results, never invented values, when tools are unavailable. Node.js 18+ for validators.
 ---
 
 # Create Cuebook Content
@@ -18,7 +18,7 @@ Provide one creation entrance for writing, viewpoint graphics, settlement expres
 5. Run `$compose-cuebook-content-recipe`, then `$orchestrate-cuebook-creator-workflow`. The workflow may use query-layer research skills through the explicit `create -> query` module edge.
 6. Preserve one meaning fingerprint across text, visual, and settlement branches. Produce exactly three meaning-equivalent candidates with real differences in expression and composition only when creation is `ready` or `conditional`.
 7. Compile a settlement claim and formula only when the creator supplied or accepted the required asset, direction or comparator, horizon, observation rule, and threshold semantics.
-8. When the deliverable is a Frame publication, assemble `FrameDraftAssemblyV1`: the FrameDraftV1-compatible draft (title, body, disclosures, media roles publication/compact — plus og for public or unlisted), the `SettlementIntentV1` built from the intake seed (family, explicit threshold, 1h-to-6-month horizon intent, direction-consistent targets), the visual-manifest lineage hash, and a fresh **UUIDv7** `idempotency_key` — the backend derives time-ordered dedupe state from it and rejects every other UUID version. Validate with `python scripts/validate_frame_draft_assembly.py assembly.json` before any backend call; non-settleable directions assemble no intent and stay store-only.
+8. When the deliverable is a Frame publication, assemble `FrameDraftAssemblyV1`: the FrameDraftV1-compatible draft (title, body, disclosures, media roles publication/compact — plus og for public or unlisted), the `SettlementIntentV1` built from the intake seed (family, explicit threshold, 1h-to-6-month horizon intent, direction-consistent targets), the visual-manifest lineage hash, and a fresh **UUIDv7** `idempotency_key` — the backend derives time-ordered dedupe state from it and rejects every other UUID version. Validate with `node scripts/validate_frame_draft_assembly.mjs assembly.json` before any backend call; non-settleable directions assemble no intent and stay store-only.
 9. Return `CuebookCreationBundleV1`. Selecting a settlement format only compiles artifacts; it never registers them. Saving, settlement registration, and publishing use the separate approved `write_actions` in the creation menu.
 10. When the Frame MCP tool family is available and the user explicitly approves publication, drive it in this order and never skip a receipt: `create_frame_draft` (or `update_frame_draft` under optimistic concurrency) → `begin_frame_media_upload` + `complete_frame_media_upload` per rendition → poll `get_frame_media` until every rendition receipt matches the manifest's canonical RGBA pixel `role_hashes` → `prepare_frame_publish` for the publish token → `publish_frame` to freeze the Frame and Settlement Contract atomically. Content fixes after release go through `create_frame_correction_draft` → `publish_frame_correction` (contract stays frozen); stopping distribution is `withdraw_frame`. A tool absent from `tools/list` or returning unavailable means the phase is not enabled — report that state; do not fall back to a legacy write.
 
@@ -54,8 +54,8 @@ Compatibility requires matching schema, plan revision, hashes, cutoff, freshness
 Return the contract in `references/cuebook-creation-bundle-v1.schema.json`. Validate it with:
 
 ```bash
-python scripts/validate_creator_seed.py creator-seed-v1.json
-python scripts/validate_creation_bundle.py creation-bundle-v1.json --query-bundle query-bundle-v1.json
+node scripts/validate_creator_seed.mjs creator-seed-v1.json
+node scripts/validate_creation_bundle.mjs creation-bundle-v1.json --query-bundle query-bundle-v1.json
 ```
 
 Use `../../assets/creation-menu-v1.json` for product-facing creation choices and `../../assets/cuebook-modules-v1.json` for the module dependency boundary.

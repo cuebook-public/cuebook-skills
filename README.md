@@ -51,23 +51,21 @@ plugins/cuebook/assets/           Module, menu, and capability contracts
 plugins/cuebook/scripts/          Package validators and release bundler
 skills/                           Self-contained public bundles for generic
                                   Agent Skills clients (built artifacts;
-                                  regenerate with build_release_skills.py,
+                                  regenerate with build_release_skills.mjs,
                                   do not edit by hand)
 ```
 
 This repository is a build artifact. Source lives in the internal
 `cuebook-mcp` repository; edit there and re-run
-`plugins/cuebook/scripts/build_release_skills.py plugins/cuebook skills`
+`node plugins/cuebook/scripts/build_release_skills.mjs plugins/cuebook skills`
 before tagging a release.
 
 ## Validate
 
 ```bash
-python3 plugins/cuebook/scripts/validate_cuebook_plugin.py plugins/cuebook
+node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook
 
-PYTHONDONTWRITEBYTECODE=1 python3 -m pytest \
-  -p no:cacheprovider \
-  plugins/cuebook
+node --test 'plugins/cuebook/**/*.test.mjs'
 ```
 
 Do not commit API keys, OAuth tokens, credentials, generated user output, or

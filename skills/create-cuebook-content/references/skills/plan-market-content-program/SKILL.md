@@ -20,7 +20,7 @@ Turn an editorial objective and bounded source set into a channel-independent pr
 8. Return `ContentProgramV1` and validate it:
 
 ```bash
-python scripts/validate_content_program.py content-program-v1.json
+node scripts/validate_content_program.mjs content-program-v1.json
 ```
 
 ## Inputs
@@ -44,7 +44,6 @@ python scripts/validate_content_program.py content-program-v1.json
 - Do not plan repeated promotion into multiple communities as a growth tactic.
 - Do not treat comments, votes, views, or follower count as evidence quality.
 - Do not include accounts, credentials, API modes, exact schedule timestamps, or approval state. Those belong to the release layer.
-- Do not treat SEO or GEO as writing styles. They are owned-web sidecars with separate plans and preflight artifacts.
 
 ## Output
 
@@ -53,7 +52,7 @@ Return `ContentProgramV1` using `references/content-program-v1.schema.json`. Eac
 Route downstream by renderer capability:
 
 - `compact_text`: `../render-cuebook-market-post/SKILL.md` for X, Telegram, simple Xiaohongshu text, or a buy-side note.
-- `structured_media`: `../render-cuebook-market-media/SKILL.md` for owned-web long-form, Reddit, Xiaohongshu carousel, or short video. For `website`, run `../optimize-cuebook-market-seo/SKILL.md` and any selected `../optimize-cuebook-market-geo/SKILL.md` plan before rendering, then preflight both against the final artifact.
+- `structured_media`: `../render-cuebook-market-media/SKILL.md` for owned-web long-form, Reddit, Xiaohongshu carousel, or short video.
 - `manual_authoring`: keep a human-authored or unsupported destination outside AI rendering.
 
 After all channel artifacts are final, call `../prepare-market-content-release/SKILL.md`. This skill never marks content published.
@@ -62,5 +61,5 @@ After all channel artifacts are final, call `../prepare-market-content-release/S
 
 - `references/planning-patterns.md`: topology, release-strategy, and measurement patterns.
 - `references/content-program-v1.schema.json`: output contract.
-- `scripts/validate_content_program.py`: deterministic graph and boundary validator.
-- `tests/test_validate_content_program.py`: regression cases.
+- `scripts/validate_content_program.mjs`: deterministic graph and boundary validator.
+- `tests/validate_content_program.test.mjs`: regression cases.

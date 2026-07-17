@@ -1,0 +1,182 @@
+{
+  "schema_version": "media-package.v1",
+  "lineage": {
+    "artifact_id": "MEDIA_kospi_xhs",
+    "program_ref": null,
+    "content_item_ref": null,
+    "opportunity_refs": [
+      "OPP_kospi"
+    ],
+    "input_artifact_refs": [
+      "ART_gate",
+      "ART_route"
+    ]
+  },
+  "brief": {
+    "channel": "xiaohongshu",
+    "format": "carousel_note",
+    "delivery_mode": "draft",
+    "content_class": "investment_analysis",
+    "temporal_mode": "realtime",
+    "language": "zh-CN",
+    "as_of": "2026-07-14T10:00:00Z",
+    "reader": "market reader",
+    "decision_use": "understand the event",
+    "target_community": null,
+    "target_duration_seconds": null,
+    "account_qualification": "unknown",
+    "research_pack_ref": null,
+    "profile_ref": null,
+    "media_format_ref": "media_format_test"
+  },
+  "gate": {
+    "decision": "pass",
+    "checks": [],
+    "repairs": []
+  },
+  "research_decision": null,
+  "policy_gate": {
+    "decision": "conditional",
+    "checked_at": "2026-07-14T09:00:00Z",
+    "rules_checked": [
+      {
+        "rule_id": "xhs.finance-qualification",
+        "status": "caution",
+        "detail": "Qualification is unknown.",
+        "source_url": "https://example.com/policy"
+      }
+    ],
+    "repairs": [
+      "Confirm account qualification before publication."
+    ]
+  },
+  "disclosure_state": {
+    "position_status": "unknown",
+    "position_text": null,
+    "commercial_status": "unknown",
+    "commercial_text": null,
+    "identity_status": "unknown",
+    "ai_assistance_status": "unknown",
+    "public_disclosures": [
+      "仅为公开市场信息整理，不构成个性化投资建议。"
+    ]
+  },
+  "route": {
+    "schema_version": "route-v1",
+    "taxonomy_version": "market-narrative-v2",
+    "cue_id": "cue-kospi",
+    "event_type": "price-action",
+    "event_confidence": 0.667,
+    "candidates": [
+      {
+        "event_type": "price-action",
+        "score": 4.0
+      }
+    ],
+    "reasoning_lenses": [
+      "actor-forced"
+    ],
+    "render_shape": "carousel",
+    "required_context": [],
+    "hard_numbers": [],
+    "abstain": false,
+    "abstain_reason": ""
+  },
+  "fact_ledger": [
+    {
+      "id": "F1",
+      "claim": "KOSPI triggered a market halt.",
+      "evidence_class": "verified-live",
+      "source_url": "https://example.com/source",
+      "as_of": "2026-07-14T08:00:00Z",
+      "freshness": "current"
+    },
+    {
+      "id": "F2",
+      "claim": "Forced deleveraging may amplify the move.",
+      "evidence_class": "hypothesis",
+      "source_url": "",
+      "as_of": "",
+      "freshness": "unknown"
+    }
+  ],
+  "angle": {
+    "tension": "fundamentals versus forced flow",
+    "forced_actor": "leveraged holders",
+    "why_selected": "Supported by the halt and liquidation context.",
+    "profile_rule_ids": [],
+    "media_rule_ids": [
+      "media.xhs.unit-card"
+    ]
+  },
+  "asset_plan": [
+    {
+      "id": "media_asset_chart",
+      "type": "chart",
+      "origin": "generated",
+      "reuse_allowed": true,
+      "direction": "Original event timeline with source label.",
+      "source_url": null,
+      "fact_ids": [
+        "F1"
+      ]
+    }
+  ],
+  "package": {
+    "kind": "carousel_note",
+    "cover": {
+      "headline": "韩股这次先看被迫卖盘",
+      "subhead": "熔断之后，谁还在降杠杆",
+      "visual_direction": "Original timeline, no copied screenshots.",
+      "asset_ids": [
+        "media_asset_chart"
+      ]
+    },
+    "cards": [
+      {
+        "index": 1,
+        "role": "context",
+        "headline": "发生了什么",
+        "body": "市场触发熔断，先把时间和来源摆清楚。",
+        "visual_direction": "Event marker.",
+        "fact_ids": [
+          "F1"
+        ],
+        "asset_ids": [
+          "media_asset_chart"
+        ]
+      },
+      {
+        "index": 2,
+        "role": "next_observable",
+        "headline": "接下来还要看",
+        "body": "杠杆资金是否继续收缩，决定这轮波动还有多少惯性；下一组成交与融资数据是关键。",
+        "visual_direction": "Next-observable checklist.",
+        "fact_ids": [
+          "F1",
+          "F2"
+        ],
+        "asset_ids": [
+          "media_asset_chart"
+        ]
+      }
+    ],
+    "caption": "先留意被迫去杠杆有没有停。",
+    "tags": [
+      "韩股",
+      "存储"
+    ],
+    "disclosures": [
+      "仅为公开市场信息整理，不构成个性化投资建议。"
+    ]
+  },
+  "watch_items": [
+    "financing balance"
+  ],
+  "quality_report": {
+    "scores": {},
+    "hard_failures": [],
+    "revisions": []
+  },
+  "publication_state": "conditional"
+}

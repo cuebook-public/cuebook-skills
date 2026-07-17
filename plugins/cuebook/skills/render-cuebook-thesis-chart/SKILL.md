@@ -2,7 +2,7 @@
 name: render-cuebook-thesis-chart
 description: Render a Cuebook PostV1, CreatorViewIntentV1, TradingThesisV1, SettlementClaimV1, ResearchPackV1, or explicit creator view into a sourced ThesisChartV1 plus a Cuebook-branded Feed chart. Use for adaptive price candles, sealed-versus-forming bars, aligned volume confirmation, open-ended price triggers, publication cutoffs, viewpoint-to-settlement timelines, targets, invalidations, event reactions, range bands, or normalized relative-performance comparisons. Do not use for unsupported technical levels, fabricated future paths, deep TradingView replay, order execution, or decorative charts detached from a thesis.
 license: Proprietary. Cuebook internal; see the repository README for terms.
-compatibility: Requires Python 3.11+ for validators and Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
+compatibility: Requires Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
 ---
 
 # Render Cuebook Thesis Chart
@@ -23,8 +23,8 @@ Turn the creator's actual claim into one chart job. The claim chooses the compar
 5. Resolve horizon, preferred interval, context window, and maximum bar count with `references/chart-selection.md`. Use exact contract timestamps before prose such as "one week." When the creator gives a trigger but no deadline, set `horizon_status: unspecified`, keep `horizon_end` and `horizon_seconds` null, use a continuous observed timeline, and render an evidence/thesis chart without an expiry or future region. Do not promote it to `settlement` until a deadline exists.
 6. Resolve the data layer with `references/data-supply-contract.md`. For Cuebook, call `market.candles`; for Cuebook's own OHLCV database, export `MarketSeriesBatchV1` and pass it with `--market-data`. Use `$build-market-research-pack` for estimate revisions, fundamentals, holdings, events, valuation, or other non-OHLC evidence. Record the returned interval, session, quote basis, adjustment basis, sealed/forming state, source time, license scope, and coverage. Never assume a requested interval was honored.
 7. Build and validate `ThesisChartV1`. A degraded interval or partial coverage remains `conditional`; an unmapped asset, missing benchmark, unsynchronized relative baseline, or missing source blocks the chart.
-8. Render with `scripts/render_thesis_chart.py`. The output contains observed data only. Shade the unresolved future window and draw the expiry marker; never draw a predicted price path.
-9. Run `scripts/audit_chart_svg.py` and inspect the raster at final size. Public Feed charts must not expose draft state, internal workflow narration, source legends, or settlement prose. Repair every failed check before release.
+8. Render with `scripts/render_thesis_chart.mjs`. The output contains observed data only. Shade the unresolved future window and draw the expiry marker; never draw a predicted price path.
+9. Run `scripts/audit_chart_svg.mjs` and inspect the raster at final size. Public Feed charts must not expose draft state, internal workflow narration, source legends, or settlement prose. Repair every failed check before release.
 10. Register the chart as a generated `media_asset` and bind it to fact IDs when `$render-cuebook-market-media` packages the final content.
 
 ## Cuebook Native Grammar
@@ -76,10 +76,10 @@ Turn the creator's actual claim into one chart job. The claim chooses the compar
 Return `ThesisChartV1` from `references/thesis-chart-v1.schema.json`, then validate and render:
 
 ```bash
-python scripts/validate_thesis_chart.py thesis-chart-v1.json
-python scripts/render_thesis_chart.py thesis-chart-v1.json --output-dir ./chart-output
-python scripts/render_thesis_chart.py thesis-chart-v1.json --market-data market-series-batch-v1.json --output-dir ./chart-output
-python scripts/audit_chart_svg.py ./chart-output/chart.svg
+node scripts/validate_thesis_chart.mjs thesis-chart-v1.json
+node scripts/render_thesis_chart.mjs thesis-chart-v1.json --output-dir ./chart-output
+node scripts/render_thesis_chart.mjs thesis-chart-v1.json --market-data market-series-batch-v1.json --output-dir ./chart-output
+node scripts/audit_chart_svg.mjs ./chart-output/chart.svg
 node scripts/rasterize_thesis_chart.cjs ./chart-output/chart.svg ./chart-output/chart.png
 ```
 
@@ -93,8 +93,8 @@ The renderer writes `chart.svg` and `chart-data.json`. `chart-data.json` records
 - `references/thesis-chart-v1.schema.json`: structured chart job contract.
 - `references/market-series-batch-v1.schema.json`: provider-neutral export contract for Cuebook's OHLCV database.
 - `references/ohlcv-adapter.md`: backend query boundary, field mapping, and bar-integrity rules.
-- `scripts/validate_thesis_chart.py`: semantic validator.
-- `scripts/render_thesis_chart.py`: Cuebook candle adapter and dependency-free SVG renderer.
-- `scripts/audit_chart_svg.py`: deterministic public-chart design and leakage audit.
+- `scripts/validate_thesis_chart.mjs`: semantic validator.
+- `scripts/render_thesis_chart.mjs`: Cuebook candle adapter and dependency-free SVG renderer.
+- `scripts/audit_chart_svg.mjs`: deterministic public-chart design and leakage audit.
 - `scripts/rasterize_thesis_chart.cjs`: exact-size PNG renderer with light-canvas health checks.
-- `tests/test_validate_thesis_chart.py`: regression tests.
+- `tests/validate_thesis_chart.test.mjs`: regression tests using `node:test`.

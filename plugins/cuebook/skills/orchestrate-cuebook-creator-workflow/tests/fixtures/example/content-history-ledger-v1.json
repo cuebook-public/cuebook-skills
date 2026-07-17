@@ -1,0 +1,119 @@
+{
+  "schema_version": "content-history-ledger-v1",
+  "ledger_id": "CHL_1234abcd",
+  "workflow_ref": "WF_1234abcd",
+  "release_refs": [
+    "ART_release"
+  ],
+  "as_of": "2026-07-15T13:10:00+00:00",
+  "reconciliation_cutoff_at": "2026-07-15T13:10:00+00:00",
+  "ruleset_version": "2026-07-14",
+  "publication_receipts": [
+    {
+      "receipt_id": "REC_x_post",
+      "release_ref": "ART_release",
+      "release_item_ref": "REL_item_1",
+      "platform": "x",
+      "status": "verified_published",
+      "attempted_at": "2026-07-14T13:00:00+00:00",
+      "acknowledged_at": "2026-07-14T13:00:01+00:00",
+      "verified_at": "2026-07-14T13:00:05+00:00",
+      "remote_id": "123456",
+      "remote_url": "https://x.com/example/status/123456",
+      "idempotency_key": "release-item-1-v1",
+      "payload_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "verification_method": "api",
+      "verification_locator": "api:x:123456"
+    }
+  ],
+  "corrections": [],
+  "artifact_invalidations": [],
+  "content_performance": [
+    {
+      "snapshot_id": "CPS_x_24h",
+      "receipt_ref": "REC_x_post",
+      "observed_at": "2026-07-15T13:00:00+00:00",
+      "window_start": "2026-07-14T13:00:05+00:00",
+      "window_end": "2026-07-15T12:00:00+00:00",
+      "metric_source": "authorized platform export",
+      "metrics": {
+        "impressions": 1000,
+        "clicks": 20
+      },
+      "status": "final",
+      "use_scope": "packaging_only"
+    }
+  ],
+  "market_outcomes": [],
+  "trade_reconciliations": [],
+  "learning_snapshots": [
+    {
+      "learning_snapshot_id": "LS_content_24h",
+      "created_at": "2026-07-15T13:05:00+00:00",
+      "task": "compare hook retention",
+      "cutoff_at": "2026-07-14T13:00:05+00:00",
+      "feature_revision_refs": [
+        "ART_post"
+      ],
+      "outcome_plane": "content_performance",
+      "outcome_refs": [
+        "CPS_x_24h"
+      ],
+      "policy_versions": [
+        "2026-07-14"
+      ],
+      "cohort_query_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "label_definition": "24h click-through rate",
+      "window": "24h",
+      "exclusions": [],
+      "split_method": "forward_time",
+      "status": "frozen"
+    }
+  ],
+  "audit_events": [
+    {
+      "event_id": "HEVT_attempt",
+      "object_ref": "REC_x_post",
+      "from_state": null,
+      "to_state": "attempted",
+      "actor": "publisher",
+      "occurred_at": "2026-07-14T13:00:00+00:00",
+      "reason": "request sent"
+    },
+    {
+      "event_id": "HEVT_ack",
+      "object_ref": "REC_x_post",
+      "from_state": "attempted",
+      "to_state": "acknowledged",
+      "actor": "publisher",
+      "occurred_at": "2026-07-14T13:00:01+00:00",
+      "reason": "platform acknowledged"
+    },
+    {
+      "event_id": "HEVT_verified",
+      "object_ref": "REC_x_post",
+      "from_state": "acknowledged",
+      "to_state": "verified_published",
+      "actor": "reconciler",
+      "occurred_at": "2026-07-14T13:00:05+00:00",
+      "reason": "remote object verified"
+    }
+  ],
+  "quality_report": {
+    "decision": "ready",
+    "hard_failures": [],
+    "warnings": [],
+    "checks": [
+      "receipt verified"
+    ],
+    "counts": {
+      "receipts": 1,
+      "corrections": 0,
+      "invalidations": 0,
+      "content_snapshots": 1,
+      "market_outcomes": 0,
+      "trade_reconciliations": 0,
+      "learning_snapshots": 1
+    }
+  }
+}

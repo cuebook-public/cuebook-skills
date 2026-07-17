@@ -19,7 +19,7 @@
 - Xiaohongshu: visual decomposition, one card job at a time, additive caption.
 - Douyin: spoken explanation, timed proof, short on-screen text, visible temporal context.
 - Long form: assumptions, evidence, countercase, valuation or scenario bridge, sources.
-- Owned website: canonical treatment, update and correction path, SEO eligibility, and optional GEO entity/citation sidecar.
+- Owned website: canonical treatment, source visibility, and a clear update and correction path.
 - Buy-side note: decision relevance, deltas, watch items, and invalidation.
 
 These are planning defaults, not guarantees of performance. Apply a current `MediaFormatV1` downstream when available.

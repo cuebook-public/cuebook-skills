@@ -6,7 +6,7 @@ Recheck official documentation before marking an automated release ready. Capabi
 
 | Platform | Conservative default | Potential verified modes | Required checks |
 | --- | --- | --- | --- |
-| Owned website or CMS | `manual_handoff` | Deferred until an owned adapter contract is modeled | Passing Cuebook SEO preflight; passing GEO preflight when selected; CMS ownership, draft/create support, rollback, and receipt semantics |
+| Owned website or CMS | `manual_handoff` | Deferred until an owned adapter contract is modeled | CMS ownership, draft/create support, rollback, and receipt semantics |
 | X | `manual_handoff` | `api_direct`; `api_scheduled` through a verified scheduler | OAuth scope, plan, media upload, create/edit limits, AI and paid-partnership fields |
 | Telegram | `manual_handoff` | `api_direct`; scheduler-controlled `api_scheduled` | Bot or channel rights, target chat, media group constraints, message receipt |
 | Reddit | `manual_handoff` | `api_direct` | OAuth, named community rules, post requirements, spam policy, flair and content type |
@@ -25,7 +25,6 @@ Recheck official documentation before marking an automated release ready. Capabi
 - Douyin content publishing: https://open.douyin.com/platform/resource/docs/ability/content-management/douyin-publish-solution
 - Xiaohongshu Ark introduction: https://school.xiaohongshu.com/en/open/quick-start/introduction.html
 - Seeking Alpha submission rules: https://about.seekingalpha.com/article-submission-guidelines
-- Google AI features and websites: https://developers.google.com/search/docs/appearance/ai-features
 
 ## Adapter Rules
 

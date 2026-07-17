@@ -34,7 +34,7 @@
       "required": ["node_id", "capability", "skill_name", "skill_version", "availability", "opportunity_refs", "depends_on", "input_artifact_refs", "output_contract", "state", "artifact_refs", "blocking", "human_gate", "owner", "reason"],
       "properties": {
         "node_id": {"type": "string", "pattern": "^NODE_[a-z0-9_:-]+$"},
-        "capability": {"anyOf": [{"enum": ["normalize_feed", "compose_recipe", "select_opportunities", "validate_projection", "route_narrative", "query_cuebook", "build_research_pack", "plan_content_program", "render_market_post", "render_market_media", "compile_settlement_claim", "optimize_market_seo", "optimize_market_geo", "prepare_release", "publish_external", "reconcile_history"]}, {"type": "string", "pattern": "^(catalog|extension):[a-z0-9-]+$"}]},
+        "capability": {"anyOf": [{"enum": ["normalize_feed", "compose_recipe", "select_opportunities", "validate_projection", "route_narrative", "query_cuebook", "build_research_pack", "plan_content_program", "render_market_post", "render_market_media", "compile_settlement_claim", "prepare_release", "publish_external", "reconcile_history"]}, {"type": "string", "pattern": "^(catalog|extension):[a-z0-9-]+$"}]},
         "skill_name": {"type": ["string", "null"]},
         "skill_version": {"type": ["string", "null"], "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
         "availability": {"enum": ["installed", "external", "deferred"]},

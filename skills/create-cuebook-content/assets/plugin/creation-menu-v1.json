@@ -393,8 +393,7 @@
           "option_id": "owned_web",
           "label": "自有网站长文",
           "skill_refs": [
-            "render-cuebook-market-media",
-            "optimize-cuebook-market-seo"
+            "render-cuebook-market-media"
           ]
         },
         {

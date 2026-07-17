@@ -2,6 +2,7 @@
 name: compose-cuebook-trading-thesis
 description: Compose a MarketViewSemanticsV1 with genuine avoid, conditional, or explicit trade intent, CreatorViewIntentV1, creator seed, Cuebook reasoning, validated ResearchPackV1, or selected opportunity into a versioned TradingThesisV1 with attributable idea development, evidence, countercase, action state, invalidation, disclosures, and a precommitted resolution contract. Skip pure observations, sentiment witnesses, and source anecdotes; they go from semantics to expression without a thesis. Do not use for final prose, order execution, settlement, reputation scoring, feed ranking, or imitation.
 license: Proprietary. Cuebook internal; see the repository README for terms.
+compatibility: Requires Node.js 18+ for validator scripts.
 ---
 
 # Compose Cuebook Trading Thesis
@@ -19,7 +20,7 @@ Turn a market view into a declaration that can be inspected later without rewrit
 7. Precommit the resolution contract before activation. Name the metric, operator, threshold, observation basis, time window, authoritative source, benchmark when needed, fallback policy, and scoring modes.
 8. Record public disclosure state for position, commercial relationship, identity, and AI assistance. AI-authored or AI-assisted public theses must say so.
 9. Keep `wait_for_trigger` work in `draft` or `conditional` until a lifecycle event activates it. Move an immediate thesis to `ready` only after evidence and resolution gates pass.
-10. To freeze, set `lifecycle_state` to `frozen`, compute the canonical hash with `scripts/validate_trading_thesis.py --print-canonical-hash`, store it in `lineage.canonical_hash`, and validate again. Any substantive change after freeze becomes a new revision or linked thesis.
+10. To freeze, set `lifecycle_state` to `frozen`, compute the canonical hash with `scripts/validate_trading_thesis.mjs --print-canonical-hash`, store it in `lineage.canonical_hash`, and validate again. Any substantive change after freeze becomes a new revision or linked thesis.
 11. Route the frozen thesis downstream. Use `$plan-market-content-program` for a release family, `$render-cuebook-market-post` for compact text, `$render-cuebook-market-media` for structured media, `$render-cuebook-thesis-chart` for a claim-bound market chart, `$compute-cuebook-market-indicators` for deterministic OHLCV evidence, `$assemble-cuebook-viewpoint-card` for the product preview, and `$prepare-market-content-release` for final handoff.
 
 Read `references/thesis-protocol.md` before composing or revising a thesis.
@@ -48,20 +49,20 @@ Read `references/thesis-protocol.md` before composing or revising a thesis.
 Return the exact shape in `references/trading-thesis-v1.schema.json`. Validate it with:
 
 ```bash
-python scripts/validate_trading_thesis.py trading-thesis-v1.json
+node scripts/validate_trading_thesis.mjs trading-thesis-v1.json
 ```
 
 To prepare a frozen object, calculate its hash after setting `lifecycle_state` to `frozen` and leaving `lineage.canonical_hash` null:
 
 ```bash
-python scripts/validate_trading_thesis.py trading-thesis-v1.json --print-canonical-hash
+node scripts/validate_trading_thesis.mjs trading-thesis-v1.json --print-canonical-hash
 ```
 
 ## Resources
 
 - `references/thesis-protocol.md`: product semantics, lifecycle, settlement, and rendering boundary.
 - `references/trading-thesis-v1.schema.json`: authoritative declaration contract.
-- `scripts/validate_trading_thesis.py`: deterministic cross-reference, cutoff, resolution, disclosure, and hash checks.
-- `tests/test_validate_trading_thesis.py`: regression suite.
+- `scripts/validate_trading_thesis.mjs`: deterministic cross-reference, cutoff, resolution, disclosure, and hash checks.
+- `tests/validate_trading_thesis.test.mjs`: regression suite.
 - `evals/trigger_cases.json`: routing examples.
 - `evals/rubric.md`: quality rubric for forward evaluation.

@@ -22,8 +22,7 @@ cross-invocation convention maps to Claude Code's Skill tool.
 
 ## Runtime dependencies
 
-- Python 3.11+ for validators.
-- Node.js 18+ with Playwright and local Chromium for render/audit skills.
+- Node.js 18+ for validators, with Playwright and local Chromium for render/audit skills.
   Claude Code has no bundled Codex runtime: install Playwright locally and
   pass `NODE_PATH` explicitly when running capture or audit scripts.
 
@@ -43,8 +42,8 @@ authorization; query is structurally read-only.
 ## Smoke test
 
 ```bash
-python3 plugins/cuebook/scripts/validate_cuebook_plugin.py plugins/cuebook
-PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -p no:cacheprovider plugins/cuebook
+node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook
+node --test 'plugins/cuebook/**/*.test.mjs'
 ```
 
 Then ask `看看 USO 最近有什么叙事` in a session with the plugin loaded and

@@ -4,7 +4,7 @@ This map targets `SkillCatalogV1` version `1.26.0`.
 
 ## Candidate Fast Path
 
-For `publish_candidate_set`, execute `reuse/freshness check -> seed Query for material semantics -> research -> semantics -> expression fingerprint + visual intent route -> gap-only mixed Query when needed -> market primitives -> parallel post batch + three visual directions + optional settlement -> batch capture -> candidate assembly`. Defer program, media, selected visual, SEO/GEO, release, and publication nodes until selection.
+For `publish_candidate_set`, execute `reuse/freshness check -> seed Query for material semantics -> research -> semantics -> expression fingerprint + visual intent route -> gap-only mixed Query when needed -> market primitives -> parallel post batch + three visual directions + optional settlement -> batch capture -> candidate assembly`. Defer program, media, selected visual, release, and publication nodes until selection.
 
 ## Capability Ownership
 
@@ -34,8 +34,6 @@ For `publish_candidate_set`, execute `reuse/freshness check -> seed Query for ma
 | Render | media package | `render-cuebook-market-media` | MediaPackageV1 |
 | Enrich | compute OHLCV indicators | `compute-cuebook-market-indicators` | IndicatorPackV1 |
 | Assemble | build product viewpoint card | `assemble-cuebook-viewpoint-card` | ViewpointCardV1 |
-| Discover | owned-web SEO | `optimize-cuebook-market-seo` | MarketSEOPackV1 |
-| Discover | answer-engine GEO | `optimize-cuebook-market-geo` | MarketGEOPackV1 |
 | Govern | prepare release | `prepare-market-content-release` | ReleaseBundleV1 |
 | Activate | platform publisher | external connector | PublicationReceiptV1 |
 | Reconcile | history and corrections | `reconcile-market-content-history` | ContentHistoryLedgerV1 |
@@ -86,7 +84,7 @@ For each render, candidate, card, media, and release node, walk current gate-bea
 | Direct candidate selection | research/creator input -> semantics -> expression -> three compact posts + data -> three static layouts at two sizes -> optional settlement proposal -> candidate set -> user selection |
 | Daily desk | intake -> recipe/triage -> gate/route -> research -> semantics -> expression -> program -> post/media -> release |
 | Event lifecycle | intake -> recipe/triage -> gate/route -> research -> semantics -> optional trade protocol -> expression -> program -> pre/live/post outputs -> optional settlement -> release/expiry |
-| Owned-web article | research -> semantics -> expression -> program -> post/media -> optional visual -> SEO -> GEO -> release |
+| Owned-web article | research -> semantics -> expression -> program -> post/media -> optional visual -> release |
 | Trade postmortem | intake -> triage -> reconcile authorized history -> research -> semantics -> expression -> post -> release |
 | Correction | intake -> correction selection -> reconcile/invalidate -> research correction -> semantics -> expression -> notice -> release |
 

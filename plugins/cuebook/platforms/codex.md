@@ -31,8 +31,7 @@ server are loaded.
 
 ## Runtime dependencies
 
-- Python 3.11+ for every validator script.
-- Node.js 18+ with Playwright and a local Chromium/Chrome executable for the
+- Node.js 18+ for every validator script, with Playwright and a local Chromium/Chrome executable for the
   seven render/audit skills (declared in their `compatibility` frontmatter).
   Codex runs supply these via the bundled runtime under
   `~/.cache/codex-runtimes/`; set `NODE_PATH` to a Playwright-bearing
@@ -53,7 +52,7 @@ them; Create never publishes silently.
 ## Smoke test
 
 ```bash
-python3 plugins/cuebook/scripts/validate_cuebook_plugin.py plugins/cuebook
+node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook
 ```
 
 Then, in a fresh Codex task: ask `看看 USO 最近有什么叙事` and confirm the

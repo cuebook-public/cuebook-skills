@@ -12,7 +12,7 @@ Route on orthogonal axes. Do not use one `lane` field to mix event semantics, re
 
 1. Require a cue plus a `GateV1` result from `validate-cuebook-projection`.
 2. Stop with `abstain: true` when the gate is `reject`.
-3. Run `scripts/route_narrative.py` for source-first classification.
+3. Run `scripts/route_narrative.mjs` for source-first classification.
 4. Verify event type and reasoning lenses against `references/narrative-taxonomy.md`.
 5. Return `RouteV1` from `references/route-v1.schema.json`.
 
@@ -27,5 +27,5 @@ Event type answers "what happened?". Reasoning lens answers "how can this change
 - `references/narrative-taxonomy.md`: event, lens, shape, and context definitions.
 - `references/route-v1.schema.json`: machine contract.
 - `references/route-regression-cases.json`: local and production examples.
-- `scripts/route_narrative.py`: deterministic router.
-- `scripts/test_route_narrative.py`: regression runner.
+- `scripts/route_narrative.mjs`: deterministic router.
+- `scripts/route_narrative.test.mjs`: regression runner.

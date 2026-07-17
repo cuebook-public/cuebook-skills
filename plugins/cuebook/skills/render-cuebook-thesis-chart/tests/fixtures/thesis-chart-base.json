@@ -1,0 +1,137 @@
+{
+  "schema_version": "thesis-chart-v1",
+  "chart_id": "CHART_usovsxle20260714",
+  "revision": 1,
+  "state": "conditional",
+  "lineage": {
+    "input_artifact_refs": [
+      "SETTLE_usovsxle20260714"
+    ],
+    "thesis_ref": null,
+    "settlement_claim_ref": "SETTLE_usovsxle20260714"
+  },
+  "role": "settlement",
+  "claim": {
+    "evaluation_kind": "relative_performance",
+    "direction": "outperform",
+    "action_state": "enter_now",
+    "statement": "USO total return exceeds XLE total return at expiry."
+  },
+  "time": {
+    "declared_at": "2026-07-14T07:37:13Z",
+    "horizon_end": "2026-07-14T20:00:00Z",
+    "timezone": "America/New_York",
+    "market_session": "regular",
+    "horizon_seconds": 44567,
+    "context_start": "2026-06-15T00:00:00Z",
+    "preferred_interval": "15m",
+    "observed_interval": "1d",
+    "interval_status": "degraded",
+    "bar_limit": 90
+  },
+  "series": [
+    {
+      "id": "S1",
+      "ticker": "USO",
+      "display_name": "United States Oil Fund",
+      "instrument_id": "USO:ARCX",
+      "asset_id": 198,
+      "role": "primary",
+      "transformation": "return_from_baseline",
+      "baseline": {
+        "value": 117.79,
+        "unit": "USD",
+        "observed_at": "2026-07-13T20:00:00Z",
+        "observation_basis": "last_close",
+        "market_state": "closed",
+        "source_ref": "cuebook:market.latest:asset:198"
+      },
+      "provider": {
+        "name": "Cuebook",
+        "endpoint": "https://cuebook.xyz/api/trpc/market.candles",
+        "requested_interval": "15m",
+        "observed_interval": "1d",
+        "coverage_status": "partial",
+        "as_of": "2026-07-14T08:00:00Z"
+      }
+    },
+    {
+      "id": "S2",
+      "ticker": "XLE",
+      "display_name": "Energy Select Sector SPDR Fund",
+      "instrument_id": "XLE:ARCX",
+      "asset_id": 148,
+      "role": "benchmark",
+      "transformation": "return_from_baseline",
+      "baseline": {
+        "value": 56.74,
+        "unit": "USD",
+        "observed_at": "2026-07-13T20:00:00Z",
+        "observation_basis": "last_close",
+        "market_state": "closed",
+        "source_ref": "cuebook:market.latest:asset:148"
+      },
+      "provider": {
+        "name": "Cuebook",
+        "endpoint": "https://cuebook.xyz/api/trpc/market.candles",
+        "requested_interval": "15m",
+        "observed_interval": "1d",
+        "coverage_status": "partial",
+        "as_of": "2026-07-14T08:00:00Z"
+      }
+    }
+  ],
+  "annotations": [
+    {
+      "id": "A1",
+      "kind": "baseline",
+      "series_ref": null,
+      "value": null,
+      "observed_at": "2026-07-13T20:00:00Z",
+      "label": "BASELINE",
+      "provenance": "explicit",
+      "source_ref": "SETTLE_usovsxle20260714"
+    },
+    {
+      "id": "A2",
+      "kind": "declaration",
+      "series_ref": null,
+      "value": null,
+      "observed_at": "2026-07-14T07:37:13Z",
+      "label": "DECLARED",
+      "provenance": "explicit",
+      "source_ref": "SETTLE_usovsxle20260714"
+    },
+    {
+      "id": "A3",
+      "kind": "expiry",
+      "series_ref": null,
+      "value": null,
+      "observed_at": "2026-07-14T20:00:00Z",
+      "label": "EXPIRY",
+      "provenance": "explicit",
+      "source_ref": "SETTLE_usovsxle20260714"
+    }
+  ],
+  "render": {
+    "mode": "relative_performance",
+    "chart_type": "line",
+    "y_axis": "return_pct",
+    "width": 1200,
+    "height": 560,
+    "future_region": true,
+    "show_volume": false,
+    "show_forming_bar": true,
+    "forecast_path": "none",
+    "title": "USO vs XLE",
+    "subtitle": "Returns from synchronized July 13 closes",
+    "success_label": "Success: USO return > XLE return at expiry"
+  },
+  "quality_report": {
+    "decision": "conditional",
+    "warnings": [
+      "Only daily bars are currently available for a one-session claim."
+    ],
+    "hard_failures": []
+  }
+}

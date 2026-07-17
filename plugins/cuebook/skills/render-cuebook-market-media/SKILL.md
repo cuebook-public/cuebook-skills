@@ -19,14 +19,14 @@ Build one grounded cross-media artifact. Research controls what may be said, cur
 7. Validate optional `MediaFormatV1` and `ProfileV1`. Resolve conflicts in this order: semantic lock and evidence, current policy, MediaFormatV1, ProfileV1.
 8. Read `references/channel-methods.md`. Check official platform and named-community rules live for any `publish_ready` request; record URLs and check time in `policy_gate`. Record position, commercial relationship, identity, and AI-assistance disclosure states separately from generic risk language.
 9. Create an asset plan with explicit rights status; do not reuse source media merely because it is public. Resolve data through `$assemble-cuebook-viewpoint-data`, then call `$render-cuebook-viewpoint-visual` for the primary compact argument and preserve its ref in both lineage and `asset_plan.artifact_ref`. Route only a long price history to `$render-cuebook-thesis-chart`, and only an oversized branching argument to the legacy visual-argument and logic-card pair.
-10. Draft the requested artifact. Bind each section, community body, card, chart, indicator, or video beat to fact or artifact IDs and return applied profile and media rule IDs. Render a `website` program item as `generic_long_form`; SEO and GEO stay as sidecar artifacts rather than prose instructions.
+10. Draft the requested artifact. Bind each section, community body, card, chart, indicator, or video beat to fact or artifact IDs and return applied profile and media rule IDs. Render a `website` program item as `generic_long_form`.
 11. Run separate semantic-lock, evidence, human-language, media-fit, rights, and policy passes.
 12. Validate with:
 
 ```bash
-python scripts/validate_media_package.py media-package-v1.json
+node scripts/validate_media_package.mjs media-package-v1.json
 ```
-13. For owned web, rerun selected `$optimize-cuebook-market-seo` and `$optimize-cuebook-market-geo` modules in `preflight` against the final artifact. Then route the final `MediaPackageV1` and sidecar references to `$prepare-market-content-release`; this skill performs no account or platform operation.
+13. Route the final `MediaPackageV1` to `$prepare-market-content-release`; this skill performs no account or platform operation.
 
 ## Input Contracts
 
@@ -35,7 +35,6 @@ python scripts/validate_media_package.py media-package-v1.json
 - `MediaFormatV1`: apply only grounded `cuebook_bridge.rules` and report their IDs.
 - `ProfileV1`: apply only grounded profile bridge rules; never reproduce identity or signature language.
 - `CreatorExpressionPlanV1`: preserve its meaning fingerprint, authorship ownership, rhetoric, image text budget, settlement eligibility, and forbidden transformations.
-- `MarketSEOPackV1` and `MarketGEOPackV1`: consume their planning constraints for owned web and keep their final preflight results as release sidecars.
 - `VisualArgumentV1` and `LogicCardV1`: consume as a bound semantic graph and rendered explanation; preserve node states, countercase, and settlement lineage.
 - `MarketFigureV1`: consume as one data-led editorial figure; preserve curve grammar, series/marker/key-number refs, provisional states, news lineage, countercase, and settlement line.
 - `ThesisChartV1` and `IndicatorPackV1`: consume as bound, sourced media assets; never redraw them into a different claim or hide provisional data state.
@@ -83,6 +82,6 @@ For a blocked result, return `package.kind = blocked` and a repair reason. The o
 
 - `references/channel-methods.md`: per-format structure and policy routing.
 - `references/media-package-v1.schema.json`: MediaPackageV1 contract.
-- `scripts/validate_media_package.py`: deterministic evidence, policy, timing, rights, and state checks.
-- `tests/test_validate_media_package.py`: format and safety regressions.
+- `scripts/validate_media_package.mjs`: deterministic evidence, policy, timing, rights, and state checks.
+- `tests/validate_media_package.test.mjs`: format and safety regressions.
 - `evals/trigger_cases.json`: positive, neighboring, and adversarial routing cases.

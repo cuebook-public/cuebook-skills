@@ -28,7 +28,7 @@ Turn one normalized feed into a small, explicit editorial queue. Selection means
 8. Decide `selected`, `defer`, `merge`, `reject`, or `no_action`. Record stable reason codes, missing requirements, expiry, dedupe target, and a deterministic tie-break key.
 9. Rank selected candidates with contiguous `selection_rank` values. Corrections and material risk alerts take `p0`; time-sensitive research takes `p1`; useful non-urgent work takes `p2`.
 10. Recommend only the next work mode: quick post, research pack, content program, correction workflow, or postmortem. Channel and asset topology stay in ContentRecipeV1 and `$plan-market-content-program`.
-11. Return `ContentOpportunitySetV1`, run `scripts/validate_content_opportunities.py` with the feed, and repair every error.
+11. Return `ContentOpportunitySetV1`, run `scripts/validate_content_opportunities.mjs` with the feed, and repair every error.
 
 ## Input-Specific Rules
 
@@ -77,8 +77,8 @@ Return the shape in `references/content-opportunity-set-v1.schema.json`:
 ## Resources
 
 - `references/content-opportunity-set-v1.schema.json`: authoritative contract.
-- `scripts/validate_content_opportunities.py`: deterministic feed-reference, ranking, dedupe, history-use, and gate checks.
-- `tests/test_validate_content_opportunities.py`: regression suite.
+- `scripts/validate_content_opportunities.mjs`: deterministic feed-reference, ranking, dedupe, history-use, and gate checks.
+- `tests/validate_content_opportunities.test.mjs`: regression suite.
 - `evals/trigger_cases.json`: routing cases.
 - `evals/rubric.md`: selection quality gate.
 - `evals/failure_cases.md`: stable selection failures.

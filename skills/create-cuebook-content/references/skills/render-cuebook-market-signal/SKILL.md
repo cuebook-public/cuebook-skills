@@ -2,7 +2,7 @@
 name: render-cuebook-market-signal
 description: "Render one sourced Cuebook market signal into a restrained 720 x 420 Feed SVG and MarketSignalV1 manifest. Use when a creator can express a decisive trade from one market number or one verified news item: what happened, what I would do, why the price should move, and the strategy tags hidden inside the idea. Route multi-step causal arguments to render-cuebook-logic-card or render-cuebook-market-figure, and price/settlement timelines to render-cuebook-thesis-chart. Keep evidence states in metadata; do not invent a curve, pad a weak signal with generic prose, research missing facts, or publish."
 license: Proprietary. Cuebook internal; see the repository README for terms.
-compatibility: Requires Python 3.11+ for validators and Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
+compatibility: Requires Node.js 18+; PNG preview additionally requires Playwright plus a local Chromium/Chrome executable. Local filesystem only; no network access at render time.
 ---
 
 # Render Cuebook Market Signal
@@ -23,7 +23,7 @@ Turn one verified number or news item into a compact creator viewpoint. The publ
 3. Choose exactly one mode. Never fabricate a companion number or decorative chart to fill space.
 4. Make the public headline a creator action: `因为这个变化，我做什么，窗口多久`. Make the interpretation the single price mechanism behind the action.
 5. Put signal time and readable strategy tags in the upper-left metadata. Put the Cuebook wordmark in the upper right. Keep source IDs, retrieval notes, evidence states, and settlement prose in the manifest.
-6. Render `market-signal.svg` and `market-signal-v1.json` with `scripts/render_market_signal.py`.
+6. Render `market-signal.svg` and `market-signal-v1.json` with `scripts/render_market_signal.mjs`.
 7. Validate the manifest and inspect the raster at full and 360px widths.
 
 ## Hard Gates
@@ -40,8 +40,8 @@ Turn one verified number or news item into a compact creator viewpoint. The publ
 ## Commands
 
 ```bash
-python scripts/render_market_signal.py market-signal-spec-v1.json --output-dir ./market-signal
-python scripts/validate_market_signal.py ./market-signal/market-signal-v1.json --asset-root ./market-signal
+node scripts/render_market_signal.mjs market-signal-spec-v1.json --output-dir ./market-signal
+node scripts/validate_market_signal.mjs ./market-signal/market-signal-v1.json --asset-root ./market-signal
 node scripts/rasterize_market_signal.cjs ./market-signal/market-signal.svg ./market-signal/market-signal.png
 ```
 
@@ -50,6 +50,7 @@ node scripts/rasterize_market_signal.cjs ./market-signal/market-signal.svg ./mar
 - `references/market-signal-spec-v1.schema.json`: validated render input.
 - `references/market-signal-v1.schema.json`: rendered manifest.
 - `references/signal-visual-grammar.md`: content routing and visual limits.
-- `scripts/render_market_signal.py`: dependency-free SVG renderer.
-- `scripts/validate_market_signal.py`: spec and manifest validator.
+- `scripts/render_market_signal.mjs`: dependency-free SVG renderer.
+- `scripts/validate_market_signal.mjs`: spec and manifest validator.
+- `scripts/pycompat.mjs`: local Python-parity helpers used by the renderer and validator.
 - `scripts/rasterize_market_signal.cjs`: PNG preview renderer.

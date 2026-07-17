@@ -45,7 +45,7 @@ Use three distinct registered presets. A signature preset may lead `creator_nati
 Run:
 
 ```bash
-python3 scripts/select_creator_palette.py palette-brief.json
+node scripts/select_creator_palette.mjs palette-brief.json
 ```
 
 The selector is deterministic and fast. It returns the three strategies, preset IDs, scores, and reasons. Human or frontend choice may override the ranking, but the override must keep semantic roles, contrast, and source fidelity intact.

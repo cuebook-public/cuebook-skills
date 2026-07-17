@@ -2,7 +2,7 @@
 name: query-cuebook
 description: Query, inspect, compare, visualize, or explain Cuebook market intelligence without creating publishable creator content or causing writes. Use whenever the user asks to 看、查、搜、读取、列出、比较 or verify Cuebook assets, stories, market state, news, evidence, fundamentals, valuation, OHLCV, indicators, data tables or factual curves, creator feed records, settlement outcomes, publication receipts, commentator profiles, or media patterns. Return a source-linked CuebookQueryBundleV1 and a concise human answer. Do not draft market posts, design creator viewpoint graphics, compile settlement claims, save artifacts, publish, or call any write tool. An explicit request for a post, creator viewpoint graphic, settlement protocol, or publishing candidate belongs to create-cuebook-content.
 license: Proprietary. Cuebook internal; see the repository README for terms.
-compatibility: Requires a connected Cuebook MCP server for asset resolution and market data; degrades to partial results, never invented values, when tools are unavailable. Python 3.11+ for validators.
+compatibility: Requires a connected Cuebook MCP server for asset resolution and market data; degrades to partial results, never invented values, when tools are unavailable. Node.js 18+ for validators.
 ---
 
 # Query Cuebook
@@ -21,8 +21,9 @@ Provide one read-only entrance for everything the user wants to see in Cuebook. 
    - evidence or valuation: `search_news`, `list_filings`, and `references/skills/build-market-research-pack/SKILL.md` when synthesis is requested;
    - curves or triggers: `get_candles`, `compute_market_metrics`, and `references/skills/compute-cuebook-market-indicators/SKILL.md` when deterministic local indicators are needed;
    - owned feed: `get_creator_feed`, then `references/skills/normalize-cuebook-creator-feed/SKILL.md`;
-   - settlement preparation: `resolve_settlement_binding`; return the read-only binding and never register a claim from Query;
+   - settlement preparation: `resolve_settlement_binding` (legacy; superseded by the Frame publication flow — prefer `get_frame` settlement state when the view lives in a Frame); return the read-only binding and never register a claim from Query;
    - outcomes and receipts: `list_settlements`, `get_publication_receipt`, and `references/skills/reconcile-market-content-history/SKILL.md` when a history ledger is requested;
+   - published Frames: `get_frame` for a Frame's releases, media, and settlement state; `get_frame_media` for rendition processing status and pixel-hash receipts;
    - public account or media study: the authorized corpus and distillation skills.
 5. Preserve provider timestamps, sealed/forming state, source identity, metric basis, and capability gaps. A missing backend tool produces a partial result, never an invented value.
 6. Return `CuebookQueryBundleV1`, then answer the user from that bundle. Include sources and freshness near the claims they support.
@@ -40,8 +41,8 @@ Provide one read-only entrance for everything the user wants to see in Cuebook. 
 Normalize input with `references/cuebook-query-request-v1.schema.json`. Return the contract in `references/cuebook-query-bundle-v1.schema.json`. Validate it with:
 
 ```bash
-python scripts/validate_query_request.py query-request-v1.json
-python scripts/validate_query_bundle.py query-bundle-v1.json
+node scripts/validate_query_request.mjs query-request-v1.json
+node scripts/validate_query_bundle.mjs query-bundle-v1.json
 ```
 
 Use `assets/plugin/query-menu-v1.json` for product-facing query types and `assets/plugin/cuebook-modules-v1.json` for the enforced module boundary.

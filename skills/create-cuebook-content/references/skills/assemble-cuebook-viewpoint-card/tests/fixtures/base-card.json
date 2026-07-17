@@ -1,0 +1,169 @@
+{
+  "schema_version": "viewpoint-card-v1",
+  "card_id": "VIEWCARD_usovsxle20260714",
+  "revision": 1,
+  "state": "conditional",
+  "lineage": {
+    "input_artifact_refs": [
+      "VIEWINTENT_usovsxle20260714",
+      "POST_uso_vs_xle_20260714",
+      "LOGICCARD_usovsxle20260714",
+      "CHART_usovsxle20260714",
+      "INDPACK_usovsxle20260714",
+      "SETTLE_usovsxle20260714"
+    ],
+    "creator_intent_ref": "VIEWINTENT_usovsxle20260714",
+    "thesis_ref": null,
+    "post_ref": "POST_uso_vs_xle_20260714",
+    "logic_card_ref": "LOGICCARD_usovsxle20260714",
+    "chart_ref": "CHART_usovsxle20260714",
+    "indicator_pack_ref": "INDPACK_usovsxle20260714",
+    "settlement_claim_ref": "SETTLE_usovsxle20260714"
+  },
+  "creator": {
+    "creator_ref": "creator:vito",
+    "display_name": "Vito",
+    "handle": null,
+    "author_type": "hybrid",
+    "decision_owner": "creator"
+  },
+  "header": {
+    "instrument_id": "USO:ARCX",
+    "ticker": "USO",
+    "direction": "outperform",
+    "direction_label": "跑赢 XLE",
+    "benchmark_instrument_id": "XLE:ARCX",
+    "benchmark_ticker": "XLE",
+    "deadline_at": "2026-07-14T20:00:00Z",
+    "deadline_label": "7 月 14 日收盘",
+    "status_label": "待确认"
+  },
+  "thesis": {
+    "headline": "油轮遇袭后，USO 会先于 XLE 吸收风险溢价",
+    "body": "袭击已经确认，保险区扩大仍待权威通知。观点用同步基准比较一日相对收益。",
+    "creator_text": "单看反应速度，我选 USO。保险区扩大仍是待验证条件。",
+    "creator_text_preserved": true,
+    "content_ref": "POST_uso_vs_xle_20260714"
+  },
+  "blocks": [
+    {
+      "id": "B1",
+      "order": 1,
+      "kind": "creator_text",
+      "role": "context",
+      "state": "ready",
+      "title": "我还想说",
+      "summary": "单看反应速度，我选 USO。保险区扩大仍是待验证条件。",
+      "artifact_ref": "VIEWINTENT_usovsxle20260714",
+      "fact_refs": [],
+      "source_refs": [],
+      "display_variant": "plain_text"
+    },
+    {
+      "id": "B2",
+      "order": 2,
+      "kind": "news",
+      "role": "supports",
+      "state": "ready",
+      "title": "油轮遇袭",
+      "summary": "UKMTO 收到油轮被导弹击中的报告。",
+      "artifact_ref": "research-pack-v1:uso-tanker",
+      "fact_refs": [
+        "F1"
+      ],
+      "source_refs": [
+        "https://example.com/news"
+      ],
+      "display_variant": "source_card"
+    },
+    {
+      "id": "B3",
+      "order": 3,
+      "kind": "logic_card",
+      "role": "supports",
+      "state": "conditional",
+      "title": "事件如何变成交易判断",
+      "summary": "事件经过航运、原油期货和资金动作，落到 AAA 相对 BBB 的先后重定价。",
+      "artifact_ref": "LOGICCARD_usovsxle20260714",
+      "fact_refs": [
+        "F1",
+        "F2"
+      ],
+      "source_refs": [
+        "https://example.com/news"
+      ],
+      "display_variant": "logic_card"
+    },
+    {
+      "id": "B4",
+      "order": 4,
+      "kind": "chart",
+      "role": "supports",
+      "state": "conditional",
+      "title": "USO 相对 XLE",
+      "summary": "当前形成中表现，仅供观察。",
+      "artifact_ref": "CHART_usovsxle20260714",
+      "fact_refs": [
+        "I2"
+      ],
+      "source_refs": [
+        "cuebook:market.candles"
+      ],
+      "display_variant": "thesis_chart"
+    },
+    {
+      "id": "B5",
+      "order": 5,
+      "kind": "indicator",
+      "role": "supports",
+      "state": "conditional",
+      "title": "相对强弱",
+      "summary": "形成中超额收益为正。",
+      "artifact_ref": "INDPACK_usovsxle20260714",
+      "fact_refs": [
+        "I2"
+      ],
+      "source_refs": [
+        "cuebook:market.candles"
+      ],
+      "display_variant": "indicator_strip"
+    },
+    {
+      "id": "B6",
+      "order": 6,
+      "kind": "settlement",
+      "role": "settles",
+      "state": "conditional",
+      "title": "如何结算",
+      "summary": "到期比较同步基准后的总收益。",
+      "artifact_ref": "SETTLE_usovsxle20260714",
+      "fact_refs": [],
+      "source_refs": [
+        "market-data:official-close"
+      ],
+      "display_variant": "settlement_footer"
+    }
+  ],
+  "settlement": {
+    "settleable": true,
+    "claim_ref": "SETTLE_usovsxle20260714",
+    "one_line": "USO 跑赢｜相对 XLE｜待确认",
+    "state": "needs_confirmation"
+  },
+  "disclosures": {
+    "position_status": "unknown",
+    "commercial_status": "unknown",
+    "identity_status": "unknown",
+    "ai_assistance_status": "disclosed",
+    "public_lines": [
+      "AI 协助补充研究与结构。"
+    ]
+  },
+  "quality_report": {
+    "decision": "conditional",
+    "warnings": [
+      "Chart and indicator use forming daily bars."
+    ],
+    "hard_failures": []
+  }
+}

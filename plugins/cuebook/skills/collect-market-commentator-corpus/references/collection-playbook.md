@@ -82,7 +82,7 @@ The corpus and each item must retain rights basis, source label, file SHA-256, r
 ## Command
 
 ```bash
-python scripts/normalize_corpus.py export.json archive.jsonl notes.csv \
+node scripts/normalize_corpus.mjs export.json archive.jsonl notes.csv \
   --rights-basis authorized \
   --source-label "user-authorized research archive" \
   --subject-name "Example Commentator" \

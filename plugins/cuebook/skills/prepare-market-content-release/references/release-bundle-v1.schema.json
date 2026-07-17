@@ -184,17 +184,6 @@
         "repairs": {"type": "array"}
       }
     },
-    "webDiscoveryGate": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["seo_pack_ref", "seo_state", "geo_pack_ref", "geo_state"],
-      "properties": {
-        "seo_pack_ref": {"type": ["string", "null"], "pattern": "^seo_pack_[a-f0-9]{16}$"},
-        "seo_state": {"enum": ["pass", "conditional", "blocked"]},
-        "geo_pack_ref": {"type": ["string", "null"], "pattern": "^geo_pack_[a-f0-9]{16}$"},
-        "geo_state": {"enum": ["not_requested", "pass", "conditional", "blocked"]}
-      }
-    },
     "releaseItem": {
       "type": "object",
       "additionalProperties": false,
@@ -214,8 +203,7 @@
         "idempotency_key": {"$ref": "#/$defs/nullableString"},
         "manual_handoff": {"$ref": "#/$defs/manualHandoff"},
         "rollback": {"$ref": "#/$defs/rollback"},
-        "preflight": {"$ref": "#/$defs/preflight"},
-        "web_discovery_gate": {"$ref": "#/$defs/webDiscoveryGate"}
+        "preflight": {"$ref": "#/$defs/preflight"}
       }
     },
     "qualityReport": {

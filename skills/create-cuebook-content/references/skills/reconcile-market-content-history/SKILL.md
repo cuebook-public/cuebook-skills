@@ -18,7 +18,7 @@ Build the append-only history plane for creator operations. A ReleaseBundleV1 is
 6. Reconcile trade history by type: idea, paper, or executed. Only complete, consented, broker-reconciled executed cohorts may become eligible for later performance-claim review.
 7. Append corrections with target hash, before/after patch, evidence, severity, approver, public action, affected artifacts, and replacement. Material corrections invalidate dependent artifacts and approvals.
 8. Freeze learning snapshots with cutoff, feature revisions, cohort query hash, label definition, window, exclusions, policy versions, and `forward_time` split.
-9. Return `ContentHistoryLedgerV1`, run `scripts/validate_content_history.py`, and repair every error.
+9. Return `ContentHistoryLedgerV1`, run `scripts/validate_content_history.mjs`, and repair every error.
 
 ## Publication States
 
@@ -88,8 +88,8 @@ Return the shape in `references/content-history-ledger-v1.schema.json`:
 
 - `references/outcome-policy.md`: state, outcome-plane, cohort, and claim rules.
 - `references/content-history-ledger-v1.schema.json`: authoritative contract.
-- `scripts/validate_content_history.py`: receipt, correction, outcome, cohort, and event checks.
-- `tests/test_validate_content_history.py`: regression suite.
+- `scripts/validate_content_history.mjs`: receipt, correction, outcome, cohort, and event checks.
+- `tests/validate_content_history.test.mjs`: regression suite.
 - `evals/trigger_cases.json`: routing cases.
 - `evals/rubric.md`: reconciliation quality gate.
 - `evals/failure_cases.md`: stable failures.

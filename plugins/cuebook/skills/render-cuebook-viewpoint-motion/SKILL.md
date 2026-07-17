@@ -2,7 +2,7 @@
 name: render-cuebook-viewpoint-motion
 description: Render an approved ViewpointMotionSpecV1 as a React and Motion for React component, deterministic keyframes, static poster fallback, and optional MP4 or WebM derivative. Use when Cuebook Feed cards, exported finance clips, or React creator tools need a short animated trading viewpoint. Preserve the approved visual direction and data bindings; do not invent motion-only facts, force audio, loop Feed animations, or replace the static poster.
 license: Proprietary. Cuebook internal; see the repository README for terms.
-compatibility: Requires Python 3.11+ for validators and Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
+compatibility: Requires Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
 ---
 
 # Render Cuebook Viewpoint Motion
@@ -27,7 +27,7 @@ Build the selected Cuebook motion direction as a production-compatible React com
 
 ```bash
 node scripts/capture_motion_keyframes.cjs http://localhost:3000/motion-preview ./keyframes 0,700,1700,2700,4000
-python3 scripts/validate_viewpoint_motion.py viewpoint-motion-v1.json --asset-root .
+node scripts/validate_viewpoint_motion.mjs viewpoint-motion-v1.json --asset-root .
 ```
 
 ## React Contract
@@ -68,4 +68,4 @@ Do not use GIF as the canonical asset. Lottie is suitable only for isolated deco
 - `assets/CuebookRemotionAdapter.tsx`: frame-time adapter for video export.
 - `references/viewpoint-motion-v1.schema.json`: frozen output manifest.
 - `scripts/capture_motion_keyframes.cjs`: deterministic Playwright capture.
-- `scripts/validate_viewpoint_motion.py`: output and asset validator.
+- `scripts/validate_viewpoint_motion.mjs`: output and asset validator.

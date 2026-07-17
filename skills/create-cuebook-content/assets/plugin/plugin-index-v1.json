@@ -2,7 +2,7 @@
   "schema_version": "cuebook-plugin-index-v1",
   "plugin_version": "0.2.0",
   "catalog_version": "1.27.0",
-  "skill_count": 40,
+  "skill_count": 38,
   "default_entrypoint": "query-cuebook",
   "module_entrypoints": {
     "query": "query-cuebook",
@@ -17,7 +17,7 @@
   "query_menu_ref": "./query-menu-v1.json",
   "creation_menu_ref": "./creation-menu-v1.json",
   "mcp_capability_map_ref": "./mcp-capability-map-v1.json",
-  "validator_ref": "../scripts/validate_cuebook_plugin.py",
+  "validator_ref": "../scripts/validate_cuebook_plugin.mjs",
   "release_profile": {
     "static_visuals": "exact_2488x1056",
     "settlement_protocols": "claim_plus_formula_hash_pair",

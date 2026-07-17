@@ -32,7 +32,7 @@ Turn an expression data request into one cutoff-safe, source-linked bundle. The 
 8. Validate against the exact expression-plan artifact before passing the bundle downstream.
 
 ```bash
-python3 scripts/validate_viewpoint_data_bundle.py viewpoint-data-bundle-v1.json \
+node scripts/validate_viewpoint_data_bundle.mjs viewpoint-data-bundle-v1.json \
   --expression-plan creator-expression-plan-v1.json
 ```
 
@@ -97,5 +97,5 @@ Return `ViewpointDataBundleV1` matching `references/viewpoint-data-bundle-v1.sch
 
 - `references/viewpoint-data-bundle-v1.schema.json`: normalized data and availability contract.
 - `references/cuebook-data-supply.md`: Cuebook DB fields and visual-grammar supply map.
-- `scripts/validate_viewpoint_data_bundle.py`: cutoff, OHLC, formula, reference, fallback, and state validator.
-- `tests/test_validate_viewpoint_data_bundle.py`: data and fallback regressions.
+- `scripts/validate_viewpoint_data_bundle.mjs`: cutoff, OHLC, formula, reference, fallback, and state validator.
+- `tests/validate_viewpoint_data_bundle.test.mjs`: data and fallback regressions.

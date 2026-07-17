@@ -2,6 +2,7 @@
 name: direct-cuebook-viewpoint-motion
 description: Direct an approved Cuebook viewpoint visual into a short, continuous, data-bound motion narrative as ViewpointMotionSpecV1. Use when a selected VisualDirectionSetV1 or ViewpointVisualV1 should become an animated React Feed card, motion graphic, social clip, or deterministic keyframe sequence. Preserve the creator's thesis and source bindings; do not invent curves, turn every element into a transition, force audio, or animate before a static visual direction has been approved.
 license: Proprietary. Cuebook internal; see the repository README for terms.
+compatibility: Requires Node.js 18+ for validators.
 ---
 
 # Direct Cuebook Viewpoint Motion
@@ -27,7 +28,7 @@ Turn one approved viewpoint visual into motion that explains the trade logic. Mo
 9. Inspect poster, 4-7 deterministic keyframes, reduced-motion output, and the complete playback. Revise the motion spec when a frame loses the claim or creates false causal certainty.
 
 ```bash
-python3 scripts/validate_viewpoint_motion_spec.py viewpoint-motion-spec-v1.json
+node scripts/validate_viewpoint_motion_spec.mjs viewpoint-motion-spec-v1.json
 ```
 
 ## Timing Defaults
@@ -63,4 +64,4 @@ python3 scripts/validate_viewpoint_motion_spec.py viewpoint-motion-spec-v1.json
 
 - `references/huashu-adaptation-v1.md`: Huashu-derived methods adapted to Cuebook.
 - `references/viewpoint-motion-spec-v1.schema.json`: canonical motion-direction contract.
-- `scripts/validate_viewpoint_motion_spec.py`: structural and semantic validator.
+- `scripts/validate_viewpoint_motion_spec.mjs`: structural and semantic validator.

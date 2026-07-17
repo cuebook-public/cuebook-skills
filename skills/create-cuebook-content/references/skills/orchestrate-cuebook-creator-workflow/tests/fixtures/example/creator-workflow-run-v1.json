@@ -1,0 +1,731 @@
+{
+  "schema_version": "creator-workflow-run-v1",
+  "workflow_id": "WF_1234abcd",
+  "feed_ref": "CF_1234abcd",
+  "opportunity_set_ref": "OS_1234abcd",
+  "recipe_ref": "RECIPE_1234abcd",
+  "catalog_version": "1.27.0",
+  "query_bundle_refs": [],
+  "selected_opportunity_refs": [
+    "OPP_q2_revision"
+  ],
+  "mode": "single",
+  "created_at": "2026-07-14T12:00:00+00:00",
+  "as_of": "2026-07-14T12:11:00+00:00",
+  "ruleset_version": "2026-07-14",
+  "state": "ready_for_handoff",
+  "nodes": [
+    {
+      "node_id": "NODE_normalize",
+      "capability": "normalize_feed",
+      "skill_name": "normalize-cuebook-creator-feed",
+      "skill_version": "1.0.0",
+      "availability": "installed",
+      "opportunity_refs": [],
+      "depends_on": [],
+      "input_artifact_refs": [],
+      "output_contract": "CreatorFeedV1",
+      "state": "completed",
+      "artifact_refs": [
+        "ART_feed"
+      ],
+      "blocking": true,
+      "human_gate": "none",
+      "owner": "ai",
+      "reason": null
+    },
+    {
+      "node_id": "NODE_select",
+      "capability": "select_opportunities",
+      "skill_name": "select-cuebook-content-opportunities",
+      "skill_version": "1.0.0",
+      "availability": "installed",
+      "opportunity_refs": [],
+      "depends_on": [
+        "NODE_normalize"
+      ],
+      "input_artifact_refs": [
+        "ART_feed"
+      ],
+      "output_contract": "ContentOpportunitySetV1",
+      "state": "completed",
+      "artifact_refs": [
+        "ART_ops"
+      ],
+      "blocking": true,
+      "human_gate": "none",
+      "owner": "ai",
+      "reason": null
+    },
+    {
+      "node_id": "NODE_recipe",
+      "capability": "compose_recipe",
+      "skill_name": "compose-cuebook-content-recipe",
+      "skill_version": "1.0.0",
+      "availability": "installed",
+      "opportunity_refs": [
+        "OPP_q2_revision"
+      ],
+      "depends_on": [
+        "NODE_normalize",
+        "NODE_select"
+      ],
+      "input_artifact_refs": [
+        "ART_feed",
+        "ART_ops"
+      ],
+      "output_contract": "ContentRecipeV1",
+      "state": "completed",
+      "artifact_refs": [
+        "ART_recipe"
+      ],
+      "blocking": true,
+      "human_gate": "none",
+      "owner": "ai",
+      "reason": null
+    },
+    {
+      "node_id": "NODE_gate",
+      "capability": "validate_projection",
+      "skill_name": "validate-cuebook-projection",
+      "skill_version": "1.0.0",
+      "availability": "installed",
+      "opportunity_refs": [
+        "OPP_q2_revision"
+      ],
+      "depends_on": [
+        "NODE_select",
+        "NODE_recipe"
+      ],
+      "input_artifact_refs": [
+        "ART_feed",
+        "ART_ops",
+        "ART_recipe"
+      ],
+      "output_contract": "GateV1",
+      "state": "completed",
+      "artifact_refs": [
+        "ART_gate"
+      ],
+      "blocking": true,
+      "human_gate": "none",
+      "owner": "ai",
+      "reason": null
+    },
+    {
+      "node_id": "NODE_route",
+      "capability": "route_narrative",
+      "skill_name": "route-cuebook-narrative",
+      "skill_version": "1.0.0",
+      "availability": "installed",
+      "opportunity_refs": [
+        "OPP_q2_revision"
+      ],
+      "depends_on": [
+        "NODE_gate"
+      ],
+      "input_artifact_refs": [
+        "ART_gate"
+      ],
+      "output_contract": "RouteV1",
+      "state": "completed",
+      "artifact_refs": [
+        "ART_route"
+      ],
+      "blocking": true,
+      "human_gate": "none",
+      "owner": "ai",
+      "reason": null
+    },
+    {
+      "node_id": "NODE_research",
+      "capability": "build_research_pack",
+      "skill_name": "build-market-research-pack",
+      "skill_version": "1.1.0",
+      "availability": "installed",
+      "opportunity_refs": [
+        "OPP_q2_revision"
+      ],
+      "depends_on": [
+        "NODE_gate",
+        "NODE_route"
+      ],
+      "input_artifact_refs": [
+        "ART_gate",
+        "ART_route"
+      ],
+      "output_contract": "ResearchPackV1",
+      "state": "completed",
+      "artifact_refs": [
+        "ART_research"
+      ],
+      "blocking": true,
+      "human_gate": "none",
+      "owner": "ai",
+      "reason": null
+    },
+    {
+      "node_id": "NODE_semantics",
+      "capability": "catalog:compile-market-view-semantics",
+      "skill_name": "compile-cuebook-market-view-semantics",
+      "skill_version": "1.0.0",
+      "availability": "installed",
+      "opportunity_refs": [
+        "OPP_q2_revision"
+      ],
+      "depends_on": [
+        "NODE_research"
+      ],
+      "input_artifact_refs": [
+        "ART_research"
+      ],
+      "output_contract": "MarketViewSemanticsV1",
+      "state": "completed",
+      "artifact_refs": [
+        "ART_semantics"
+      ],
+      "blocking": true,
+      "human_gate": "none",
+      "owner": "ai",
+      "reason": null
+    },
+    {
+      "node_id": "NODE_expression",
+      "capability": "catalog:plan-creator-expression",
+      "skill_name": "plan-cuebook-creator-expression",
+      "skill_version": "1.2.0",
+      "availability": "installed",
+      "opportunity_refs": [
+        "OPP_q2_revision"
+      ],
+      "depends_on": [
+        "NODE_semantics"
+      ],
+      "input_artifact_refs": [
+        "ART_semantics"
+      ],
+      "output_contract": "CreatorExpressionPlanV1",
+      "state": "completed",
+      "artifact_refs": [
+        "ART_expression"
+      ],
+      "blocking": true,
+      "human_gate": "none",
+      "owner": "ai",
+      "reason": null
+    },
+    {
+      "node_id": "NODE_render",
+      "capability": "render_market_post",
+      "skill_name": "render-cuebook-market-post",
+      "skill_version": "1.2.0",
+      "availability": "installed",
+      "opportunity_refs": [
+        "OPP_q2_revision"
+      ],
+      "depends_on": [
+        "NODE_expression"
+      ],
+      "input_artifact_refs": [
+        "ART_expression"
+      ],
+      "output_contract": "PostV1",
+      "state": "completed",
+      "artifact_refs": [
+        "ART_post"
+      ],
+      "blocking": true,
+      "human_gate": "none",
+      "owner": "ai",
+      "reason": null
+    },
+    {
+      "node_id": "NODE_data",
+      "capability": "catalog:assemble-viewpoint-data",
+      "skill_name": "assemble-cuebook-viewpoint-data",
+      "skill_version": "1.5.0",
+      "availability": "installed",
+      "opportunity_refs": [
+        "OPP_q2_revision"
+      ],
+      "depends_on": [
+        "NODE_expression"
+      ],
+      "input_artifact_refs": [
+        "ART_expression",
+        "ART_research"
+      ],
+      "output_contract": "ViewpointDataBundleV1",
+      "state": "completed",
+      "artifact_refs": [
+        "ART_data"
+      ],
+      "blocking": true,
+      "human_gate": "none",
+      "owner": "ai",
+      "reason": null
+    },
+    {
+      "node_id": "NODE_direction",
+      "capability": "catalog:direct-viewpoint-visual",
+      "skill_name": "direct-cuebook-viewpoint-visual",
+      "skill_version": "2.5.0",
+      "availability": "installed",
+      "opportunity_refs": [
+        "OPP_q2_revision"
+      ],
+      "depends_on": [
+        "NODE_expression",
+        "NODE_data"
+      ],
+      "input_artifact_refs": [
+        "ART_expression",
+        "ART_data"
+      ],
+      "output_contract": "VisualDirectionSetV1",
+      "state": "completed",
+      "artifact_refs": [
+        "ART_direction"
+      ],
+      "blocking": true,
+      "human_gate": "none",
+      "owner": "ai",
+      "reason": null
+    },
+    {
+      "node_id": "NODE_visual",
+      "capability": "catalog:render-viewpoint-visual",
+      "skill_name": "render-cuebook-viewpoint-visual",
+      "skill_version": "1.6.0",
+      "availability": "installed",
+      "opportunity_refs": [
+        "OPP_q2_revision"
+      ],
+      "depends_on": [
+        "NODE_direction"
+      ],
+      "input_artifact_refs": [
+        "ART_expression",
+        "ART_data",
+        "ART_direction"
+      ],
+      "output_contract": "ViewpointVisualV1",
+      "state": "completed",
+      "artifact_refs": [
+        "ART_visual"
+      ],
+      "blocking": true,
+      "human_gate": "none",
+      "owner": "ai",
+      "reason": null
+    },
+    {
+      "node_id": "NODE_release",
+      "capability": "prepare_release",
+      "skill_name": "prepare-market-content-release",
+      "skill_version": "1.1.0",
+      "availability": "installed",
+      "opportunity_refs": [
+        "OPP_q2_revision"
+      ],
+      "depends_on": [
+        "NODE_render",
+        "NODE_visual"
+      ],
+      "input_artifact_refs": [
+        "ART_post",
+        "ART_visual"
+      ],
+      "output_contract": "ReleaseBundleV1",
+      "state": "completed",
+      "artifact_refs": [
+        "ART_release"
+      ],
+      "blocking": true,
+      "human_gate": "release",
+      "owner": "ai",
+      "reason": null
+    },
+    {
+      "node_id": "NODE_publish",
+      "capability": "publish_external",
+      "skill_name": null,
+      "skill_version": null,
+      "availability": "external",
+      "opportunity_refs": [
+        "OPP_q2_revision"
+      ],
+      "depends_on": [
+        "NODE_release"
+      ],
+      "input_artifact_refs": [
+        "ART_release"
+      ],
+      "output_contract": "PublicationReceiptV1",
+      "state": "deferred",
+      "artifact_refs": [],
+      "blocking": false,
+      "human_gate": "release",
+      "owner": "external",
+      "reason": "publisher connector not configured"
+    }
+  ],
+  "artifact_registry": [
+    {
+      "artifact_id": "ART_feed",
+      "artifact_type": "CreatorFeedV1",
+      "schema_version": "CreatorFeedV1",
+      "content_hash": "sha256:1935b2dda6da3e9059c950dd890c2c7322c0df80f01ed32af183cdd72b80b5b0",
+      "locator": "memory://ART_feed",
+      "created_at": "2026-07-14T12:01:00+00:00",
+      "producer_node_ref": "NODE_normalize",
+      "input_artifact_refs": [],
+      "status": "current"
+    },
+    {
+      "artifact_id": "ART_ops",
+      "artifact_type": "ContentOpportunitySetV1",
+      "schema_version": "ContentOpportunitySetV1",
+      "content_hash": "sha256:aea9c9836fa468ff1191f1be18e1274ad7e503b6035e0234f8e3a7916895568e",
+      "locator": "memory://ART_ops",
+      "created_at": "2026-07-14T12:02:00+00:00",
+      "producer_node_ref": "NODE_select",
+      "input_artifact_refs": [
+        "ART_feed"
+      ],
+      "status": "current"
+    },
+    {
+      "artifact_id": "ART_recipe",
+      "artifact_type": "ContentRecipeV1",
+      "schema_version": "ContentRecipeV1",
+      "content_hash": "sha256:5067b99b2679d4736d4619fc8bb4d9accb80591d9f33207dec861ff072d8399d",
+      "locator": "memory://ART_recipe",
+      "created_at": "2026-07-14T12:03:00+00:00",
+      "producer_node_ref": "NODE_recipe",
+      "input_artifact_refs": [
+        "ART_feed",
+        "ART_ops"
+      ],
+      "status": "current"
+    },
+    {
+      "artifact_id": "ART_gate",
+      "artifact_type": "GateV1",
+      "schema_version": "GateV1",
+      "content_hash": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "locator": "memory://ART_gate",
+      "created_at": "2026-07-14T12:04:00+00:00",
+      "producer_node_ref": "NODE_gate",
+      "input_artifact_refs": [
+        "ART_feed",
+        "ART_ops",
+        "ART_recipe"
+      ],
+      "status": "current"
+    },
+    {
+      "artifact_id": "ART_route",
+      "artifact_type": "RouteV1",
+      "schema_version": "RouteV1",
+      "content_hash": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "locator": "memory://ART_route",
+      "created_at": "2026-07-14T12:05:00+00:00",
+      "producer_node_ref": "NODE_route",
+      "input_artifact_refs": [
+        "ART_gate"
+      ],
+      "status": "current"
+    },
+    {
+      "artifact_id": "ART_research",
+      "artifact_type": "ResearchPackV1",
+      "schema_version": "ResearchPackV1",
+      "content_hash": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "locator": "memory://ART_research",
+      "created_at": "2026-07-14T12:06:00+00:00",
+      "producer_node_ref": "NODE_research",
+      "input_artifact_refs": [
+        "ART_gate",
+        "ART_route"
+      ],
+      "status": "current",
+      "gate_summary": {
+        "quality_decision": "ready",
+        "artifact_state": "ready",
+        "unresolved_material_request_count": 0
+      }
+    },
+    {
+      "artifact_id": "ART_semantics",
+      "artifact_type": "MarketViewSemanticsV1",
+      "schema_version": "MarketViewSemanticsV1",
+      "content_hash": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "locator": "memory://ART_semantics",
+      "created_at": "2026-07-14T12:07:00+00:00",
+      "producer_node_ref": "NODE_semantics",
+      "input_artifact_refs": [
+        "ART_research"
+      ],
+      "status": "current"
+    },
+    {
+      "artifact_id": "ART_expression",
+      "artifact_type": "CreatorExpressionPlanV1",
+      "schema_version": "CreatorExpressionPlanV1",
+      "content_hash": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "locator": "memory://ART_expression",
+      "created_at": "2026-07-14T12:08:00+00:00",
+      "producer_node_ref": "NODE_expression",
+      "input_artifact_refs": [
+        "ART_semantics"
+      ],
+      "status": "current",
+      "gate_summary": {
+        "quality_decision": "ready",
+        "artifact_state": "ready",
+        "unresolved_material_request_count": 0
+      }
+    },
+    {
+      "artifact_id": "ART_post",
+      "artifact_type": "PostV1",
+      "schema_version": "PostV1",
+      "content_hash": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+      "locator": "memory://ART_post",
+      "created_at": "2026-07-14T12:09:00+00:00",
+      "producer_node_ref": "NODE_render",
+      "input_artifact_refs": [
+        "ART_expression"
+      ],
+      "status": "current"
+    },
+    {
+      "artifact_id": "ART_data",
+      "artifact_type": "ViewpointDataBundleV1",
+      "schema_version": "ViewpointDataBundleV1",
+      "content_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "locator": "memory://ART_data",
+      "created_at": "2026-07-14T12:10:00+00:00",
+      "producer_node_ref": "NODE_data",
+      "input_artifact_refs": [
+        "ART_expression",
+        "ART_research"
+      ],
+      "status": "current",
+      "gate_summary": {
+        "quality_decision": "ready",
+        "artifact_state": "ready",
+        "unresolved_material_request_count": 0
+      }
+    },
+    {
+      "artifact_id": "ART_direction",
+      "artifact_type": "VisualDirectionSetV1",
+      "schema_version": "VisualDirectionSetV1",
+      "content_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "locator": "memory://ART_direction",
+      "created_at": "2026-07-14T12:11:00+00:00",
+      "producer_node_ref": "NODE_direction",
+      "input_artifact_refs": [
+        "ART_expression",
+        "ART_data"
+      ],
+      "status": "current"
+    },
+    {
+      "artifact_id": "ART_visual",
+      "artifact_type": "ViewpointVisualV1",
+      "schema_version": "ViewpointVisualV1",
+      "content_hash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "locator": "memory://ART_visual",
+      "created_at": "2026-07-14T12:12:00+00:00",
+      "producer_node_ref": "NODE_visual",
+      "input_artifact_refs": [
+        "ART_expression",
+        "ART_data",
+        "ART_direction"
+      ],
+      "status": "current"
+    },
+    {
+      "artifact_id": "ART_release",
+      "artifact_type": "ReleaseBundleV1",
+      "schema_version": "ReleaseBundleV1",
+      "content_hash": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "locator": "memory://ART_release",
+      "created_at": "2026-07-14T12:13:00+00:00",
+      "producer_node_ref": "NODE_release",
+      "input_artifact_refs": [
+        "ART_post",
+        "ART_visual"
+      ],
+      "status": "current"
+    }
+  ],
+  "approvals": [
+    {
+      "approval_id": "APR_release",
+      "gate": "release",
+      "artifact_versions": [
+        {
+          "artifact_ref": "ART_release",
+          "content_hash": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        }
+      ],
+      "decision": "approved",
+      "reviewer_ref": "editor-vito",
+      "decided_at": "2026-07-14T12:14:00+00:00",
+      "policy_version": "2026-07-14",
+      "reason": "frozen payload approved"
+    }
+  ],
+  "state_events": [
+    {
+      "event_id": "EVT_normalize",
+      "node_ref": "NODE_normalize",
+      "from_state": null,
+      "to_state": "completed",
+      "actor": "system",
+      "occurred_at": "2026-07-14T12:01:00+00:00",
+      "reason": "validated output registered"
+    },
+    {
+      "event_id": "EVT_select",
+      "node_ref": "NODE_select",
+      "from_state": null,
+      "to_state": "completed",
+      "actor": "system",
+      "occurred_at": "2026-07-14T12:02:00+00:00",
+      "reason": "validated output registered"
+    },
+    {
+      "event_id": "EVT_recipe",
+      "node_ref": "NODE_recipe",
+      "from_state": null,
+      "to_state": "completed",
+      "actor": "system",
+      "occurred_at": "2026-07-14T12:03:00+00:00",
+      "reason": "validated output registered"
+    },
+    {
+      "event_id": "EVT_gate",
+      "node_ref": "NODE_gate",
+      "from_state": null,
+      "to_state": "completed",
+      "actor": "system",
+      "occurred_at": "2026-07-14T12:04:00+00:00",
+      "reason": "validated output registered"
+    },
+    {
+      "event_id": "EVT_route",
+      "node_ref": "NODE_route",
+      "from_state": null,
+      "to_state": "completed",
+      "actor": "system",
+      "occurred_at": "2026-07-14T12:05:00+00:00",
+      "reason": "validated output registered"
+    },
+    {
+      "event_id": "EVT_research",
+      "node_ref": "NODE_research",
+      "from_state": null,
+      "to_state": "completed",
+      "actor": "system",
+      "occurred_at": "2026-07-14T12:06:00+00:00",
+      "reason": "validated output registered"
+    },
+    {
+      "event_id": "EVT_semantics",
+      "node_ref": "NODE_semantics",
+      "from_state": null,
+      "to_state": "completed",
+      "actor": "system",
+      "occurred_at": "2026-07-14T12:07:00+00:00",
+      "reason": "validated output registered"
+    },
+    {
+      "event_id": "EVT_expression",
+      "node_ref": "NODE_expression",
+      "from_state": null,
+      "to_state": "completed",
+      "actor": "system",
+      "occurred_at": "2026-07-14T12:08:00+00:00",
+      "reason": "validated output registered"
+    },
+    {
+      "event_id": "EVT_render",
+      "node_ref": "NODE_render",
+      "from_state": null,
+      "to_state": "completed",
+      "actor": "system",
+      "occurred_at": "2026-07-14T12:09:00+00:00",
+      "reason": "validated output registered"
+    },
+    {
+      "event_id": "EVT_data",
+      "node_ref": "NODE_data",
+      "from_state": null,
+      "to_state": "completed",
+      "actor": "system",
+      "occurred_at": "2026-07-14T12:10:00+00:00",
+      "reason": "validated output registered"
+    },
+    {
+      "event_id": "EVT_direction",
+      "node_ref": "NODE_direction",
+      "from_state": null,
+      "to_state": "completed",
+      "actor": "system",
+      "occurred_at": "2026-07-14T12:11:00+00:00",
+      "reason": "validated output registered"
+    },
+    {
+      "event_id": "EVT_visual",
+      "node_ref": "NODE_visual",
+      "from_state": null,
+      "to_state": "completed",
+      "actor": "system",
+      "occurred_at": "2026-07-14T12:12:00+00:00",
+      "reason": "validated output registered"
+    },
+    {
+      "event_id": "EVT_release",
+      "node_ref": "NODE_release",
+      "from_state": null,
+      "to_state": "completed",
+      "actor": "system",
+      "occurred_at": "2026-07-14T12:13:00+00:00",
+      "reason": "validated output registered"
+    },
+    {
+      "event_id": "EVT_publish",
+      "node_ref": "NODE_publish",
+      "from_state": null,
+      "to_state": "deferred",
+      "actor": "system",
+      "occurred_at": "2026-07-14T12:09:00+00:00",
+      "reason": "external handoff only"
+    }
+  ],
+  "blockers": [],
+  "quality_report": {
+    "decision": "ready",
+    "hard_failures": [],
+    "warnings": [],
+    "checks": [
+      "recipe",
+      "catalog",
+      "dag",
+      "hash-bound approval"
+    ],
+    "counts": {
+      "nodes": 14,
+      "completed": 13,
+      "blocked": 0,
+      "deferred": 1,
+      "artifacts": 13,
+      "approvals_pending": 0
+    }
+  }
+}

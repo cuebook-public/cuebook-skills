@@ -19,7 +19,7 @@ Keep the post readable. Compile its main forward-looking commitment into a separ
 7. Resolve market-session and source ambiguity. `last trade`, `close`, `intraday high`, `official settlement`, `NAV`, `spot`, and `extended-hours trade` are different observations.
 8. Render two projections from the same contract: `public_view.settlement_summary` and deterministic `public_view.one_line`. A waiting directional claim renders as `条件看多` or `条件看空`.
 9. Keep unconfirmed defaults in `needs_confirmation`. A suggested horizon or default `terminal official close > baseline` can help the author decide, but it cannot silently become a ready claim.
-10. Validate with `scripts/validate_settlement_claim.py`. For a machine-settleable release, pass the ready or frozen claim to `../compile-cuebook-settlement-formula/SKILL.md`; formula blockers propagate back to the claim.
+10. Validate with `scripts/validate_settlement_claim.mjs`. For a machine-settleable release, pass the ready or frozen claim to `../compile-cuebook-settlement-formula/SKILL.md`; formula blockers propagate back to the claim.
 11. Freeze only after the creator confirms every proposed field, the claim hash matches, and the linked settlement formula validates.
 
 ## Minimums
@@ -58,21 +58,21 @@ For `USO 看多，到期高于 117.79`, use a terminal comparison: `official_clo
 Return `SettlementClaimV1` from `references/settlement-claim-v1.schema.json` and validate it:
 
 ```bash
-python scripts/validate_settlement_claim.py settlement-claim-v1.json
-python scripts/validate_settlement_claim.py settlement-claim-v1.json --print-one-line
+node scripts/validate_settlement_claim.mjs settlement-claim-v1.json
+node scripts/validate_settlement_claim.mjs settlement-claim-v1.json --print-one-line
 ```
 
 To freeze, set `state` to `frozen`, leave `lineage.canonical_hash` null, calculate the hash, then store and validate it:
 
 ```bash
-python scripts/validate_settlement_claim.py settlement-claim-v1.json --print-canonical-hash
+node scripts/validate_settlement_claim.mjs settlement-claim-v1.json --print-canonical-hash
 ```
 
 ## Resources
 
 - `references/settlement-patterns.md`: condition patterns, defaults, and examples.
 - `references/settlement-claim-v1.schema.json`: authoritative artifact schema.
-- `scripts/validate_settlement_claim.py`: contract, one-line, and hash validator.
-- `tests/test_validate_settlement_claim.py`: regression tests.
+- `scripts/validate_settlement_claim.mjs`: contract, one-line, and hash validator.
+- `tests/validate_settlement_claim.test.mjs`: regression tests.
 - `evals/trigger_cases.json`: routing examples.
 - `evals/rubric.md`: quality gate.

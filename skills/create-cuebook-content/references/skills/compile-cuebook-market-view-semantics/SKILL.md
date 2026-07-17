@@ -36,7 +36,7 @@ Normalize what a market source actually says without upgrading its voice, eviden
 Return one `MarketViewSemanticsV1` object matching `references/market-view-semantics-v1.schema.json`.
 
 ```bash
-python scripts/validate_market_view_semantics.py market-view-semantics-v1.json
+node scripts/validate_market_view_semantics.mjs market-view-semantics-v1.json
 ```
 
 A conditional or blocked artifact may still be structurally valid. Keep its limitations in `quality_report`; do not hide them in prose.
@@ -45,5 +45,5 @@ A conditional or blocked artifact may still be structurally valid. Keep its limi
 
 - `references/market-view-semantics-v1.schema.json`: authoritative output shape.
 - `references/market-view-semantics-taxonomy.md`: classification rules and 11 benchmark mappings.
-- `scripts/validate_market_view_semantics.py`: structural, referential, graph, and cross-field validator.
-- `tests/test_validate_market_view_semantics.py`: benchmark and hard-gate regressions.
+- `scripts/validate_market_view_semantics.mjs`: structural, referential, graph, and cross-field validator.
+- `tests/validate_market_view_semantics.test.mjs`: benchmark and hard-gate regressions.

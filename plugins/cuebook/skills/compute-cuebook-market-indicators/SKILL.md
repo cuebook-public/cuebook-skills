@@ -2,6 +2,7 @@
 name: compute-cuebook-market-indicators
 description: Compute deterministic, source-linked market indicators from Cuebook OHLCV or ThesisChartDataV1 for a creator's selected viewpoint and horizon. Use when a Cuebook author adds an indicator block, asks whether price or volume confirms a thesis, or needs RSI, moving-average distance, ATR, drawdown, volume ratio, VWAP distance, breakout distance, return, or relative strength as evidence. Do not use to invent technical levels, generate prose, choose a trade, draw a chart, place orders, or treat a forming bar as final.
 license: Proprietary. Cuebook internal; see the repository README for terms.
+compatibility: Requires Node.js 18+ for validators.
 ---
 
 # Compute Cuebook Market Indicators
@@ -12,7 +13,7 @@ Calculate only the indicators that test a stated view. Keep formulas, lookbacks,
 
 1. Accept registered OHLCV data or `ThesisChartDataV1`. Verify ticker mapping, interval, session, coverage, and sealed/forming state.
 2. Resolve the indicator request from the creator's selected block and claim horizon. Use the same series and baseline as the thesis chart.
-3. Compute with `scripts/compute_indicators.py`. Default to sealed bars. `include_forming: true` produces `provisional` results.
+3. Compute with `scripts/compute_indicators.mjs`. Default to sealed bars. `include_forming: true` produces `provisional` results.
 4. Return `IndicatorPackV1`. Each result records formula, lookback bars, source series, value, unit, observation time, and bar state.
 5. Return indicator semantics and placement hints without invoking a renderer. A downstream Create workflow decides where the indicator appears and whether it supports, challenges, or contextualizes the claim.
 
@@ -42,7 +43,7 @@ Calculate only the indicators that test a stated view. Keep formulas, lookbacks,
 Prepare an `IndicatorRequestV1`, then run:
 
 ```bash
-python scripts/compute_indicators.py indicator-request-v1.json --output indicator-pack-v1.json
+node scripts/compute_indicators.mjs indicator-request-v1.json --output indicator-pack-v1.json
 ```
 
 Validate the output against `references/indicator-pack-v1.schema.json` or consume the script's validated result directly.
@@ -50,5 +51,5 @@ Validate the output against `references/indicator-pack-v1.schema.json` or consum
 ## Resources
 
 - `references/indicator-pack-v1.schema.json`: deterministic output contract.
-- `scripts/compute_indicators.py`: indicator request validator and calculator.
-- `tests/test_compute_indicators.py`: formula and provisional-state regression tests.
+- `scripts/compute_indicators.mjs`: indicator request validator and calculator.
+- `tests/compute_indicators.test.mjs`: formula and provisional-state regression tests.
