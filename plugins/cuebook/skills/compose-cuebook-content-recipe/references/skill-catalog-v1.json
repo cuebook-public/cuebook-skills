@@ -1111,19 +1111,19 @@
       "maintenance": {
         "owner": "cuebook-creator",
         "stability": "beta",
-        "last_verified_at": "2026-07-15T15:36:00+08:00",
+        "last_verified_at": "2026-07-17T12:43:06+08:00",
         "skill_path": "render-cuebook-viewpoint-visual",
         "schema_refs": [
           "render-cuebook-viewpoint-visual/references/viewpoint-visual-spec-v1.schema.json",
           "render-cuebook-viewpoint-visual/references/viewpoint-visual-v1.schema.json"
         ],
         "validator_refs": [
-          "render-cuebook-viewpoint-visual/scripts/validate_viewpoint_visual.py",
-          "render-cuebook-viewpoint-visual/scripts/finalize_wide_viewpoint.py",
-          "render-cuebook-viewpoint-visual/scripts/render_viewpoint_visual.py"
+          "render-cuebook-viewpoint-visual/scripts/validate_viewpoint_visual.mjs",
+          "render-cuebook-viewpoint-visual/scripts/finalize_wide_viewpoint.mjs",
+          "render-cuebook-viewpoint-visual/scripts/render_viewpoint_visual.mjs"
         ],
         "test_refs": [
-          "render-cuebook-viewpoint-visual/tests/test_viewpoint_visual.py"
+          "render-cuebook-viewpoint-visual/tests/viewpoint_visual.test.mjs"
         ]
       },
       "replaced_by": null
