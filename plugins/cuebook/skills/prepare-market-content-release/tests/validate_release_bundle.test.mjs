@@ -63,19 +63,19 @@ test("settlement formula must link exact claim hash", () => {
   assert.ok(errorCodes(validate(artifact)).has("SETTLEMENT_PROTOCOL_HASH_MISMATCH"));
 });
 
-test("valid ready website handoff has discovery preflights", () => {
+test("valid ready website manual handoff", () => {
   const artifact = baseArtifact(); const release = artifact.items[0];
-  Object.assign(release, { platform: "website", account_ref: "site:cuebook:main", web_discovery_gate: {
-    seo_pack_ref: "seo_pack_1111111111111111", seo_state: "pass", geo_pack_ref: "geo_pack_1111111111111111", geo_state: "pass",
-  }});
+  Object.assign(release, { platform: "website", account_ref: "site:cuebook:main" });
   Object.assign(release.policy, { source_urls: ["https://example.com/publishing-policy"], notes: "Owned-site publishing policy checked." });
   assertValid(artifact);
 });
 
-test("website release cannot skip SEO preflight", () => {
+test("website automated execution remains blocked", () => {
   const artifact = baseArtifact(); const release = artifact.items[0];
-  release.platform = "website"; release.preflight = { status: "block", checks: [], repairs: ["Run Cuebook SEO preflight."] }; artifact.release_state = "blocked";
-  assert.ok(blockerCodes(assertValid(artifact)).has("WEB_DISCOVERY_GATE"));
+  makeXApi(release); release.platform = "website";
+  Object.assign(release.capability, { status: "verified", checked_at: "2026-07-13T12:00:00Z", official_source_url: "https://example.com/cms-api", adapter_id: "cms-adapter" });
+  release.preflight = { status: "block", checks: [], repairs: ["Use manual handoff until an owned CMS adapter contract exists."] }; artifact.release_state = "blocked";
+  assert.ok(blockerCodes(assertValid(artifact)).has("WEBSITE_MANUAL_DEFAULT"));
 });
 
 test("pending release approval is valid needs approval", () => {

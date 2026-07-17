@@ -147,30 +147,15 @@ test("reddit requires named community", () => {
   assert.ok(codes(artifact).has("COMMUNITY_CONTEXT"));
 });
 
-test("valid owned website routes through seo and geo", () => {
+test("valid owned website uses structured media", () => {
   const artifact = baseArtifact();
   artifact.brief.requested_platforms = ["website"];
   Object.assign(artifact.items[0], {
     platform: "website",
     format: "long_form_article",
     renderer: "structured_media",
-    optimization_modules: ["seo", "geo"],
   });
   assertValid(artifact);
-});
-
-test("owned website requires seo route", () => {
-  const artifact = baseArtifact();
-  artifact.brief.requested_platforms = ["website"];
-  Object.assign(artifact.items[0], { platform: "website", format: "long_form_article", renderer: "structured_media", optimization_modules: [] });
-  assert.ok(codes(artifact).has("WEBSITE_SEO_ROUTE"));
-});
-
-test("geo cannot bypass the seo floor", () => {
-  const artifact = baseArtifact();
-  artifact.brief.requested_platforms = ["website"];
-  Object.assign(artifact.items[0], { platform: "website", format: "long_form_article", renderer: "structured_media", optimization_modules: ["geo"] });
-  assert.ok(codes(artifact).has("GEO_REQUIRES_SEO"));
 });
 
 test("evergreen series requires evergreen items", () => {

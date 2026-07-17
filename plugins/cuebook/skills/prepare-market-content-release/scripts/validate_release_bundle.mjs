@@ -288,37 +288,8 @@ export function validate(item) {
     const adapterId = strOrEmpty(capability.adapter_id).trim();
     const supports = isDict(capability.supports) ? capability.supports : {};
     const automated = ["platform_draft", "api_direct", "api_scheduled"].includes(mode);
-    if (platform === "website") {
-      const discovery = entry.web_discovery_gate;
-      if (!isDict(discovery)) {
-        blockers.push(issue("WEB_DISCOVERY_GATE", `${path}.web_discovery_gate`, "Owned-web release requires Cuebook SEO and optional GEO preflight references."));
-        itemBlocker = true;
-      } else {
-        if (discovery.seo_state !== "pass" || !/^seo_pack_[a-f0-9]{16}$/.test(strOrEmpty(discovery.seo_pack_ref))) {
-          blockers.push(issue("WEBSITE_SEO_PREFLIGHT", `${path}.web_discovery_gate`, "Owned-web release requires a passing MarketSEOPackV1 preflight."));
-          itemBlocker = true;
-        }
-        const geoState = discovery.geo_state;
-        const geoRef = discovery.geo_pack_ref;
-        if (geoState === "pass" && !/^geo_pack_[a-f0-9]{16}$/.test(strOrEmpty(geoRef))) {
-          errors.push(issue("WEBSITE_GEO_REF", `${path}.web_discovery_gate.geo_pack_ref`, "A passing GEO state requires a MarketGEOPackV1 reference."));
-          itemBlocker = true;
-        }
-        if (geoState === "not_requested" && geoRef !== null && geoRef !== undefined) {
-          errors.push(issue("WEBSITE_GEO_UNUSED_REF", `${path}.web_discovery_gate.geo_pack_ref`, "geo_pack_ref must be null when GEO was not requested."));
-          itemBlocker = true;
-        }
-        if (["conditional", "blocked"].includes(geoState)) {
-          blockers.push(issue("WEBSITE_GEO_PREFLIGHT", `${path}.web_discovery_gate.geo_state`, "A requested GEO module must pass before release readiness."));
-          itemBlocker = true;
-        }
-      }
-      if (automated) {
-        blockers.push(issue("WEBSITE_MANUAL_DEFAULT", `${path}.execution_mode`, "Website and CMS execution defaults to manual handoff until an owned adapter and its official capability are modeled."));
-        itemBlocker = true;
-      }
-    } else if (Object.hasOwn(entry, "web_discovery_gate")) {
-      errors.push(issue("WEB_DISCOVERY_SCOPE", `${path}.web_discovery_gate`, "web_discovery_gate applies only to owned-web releases."));
+    if (platform === "website" && automated) {
+      blockers.push(issue("WEBSITE_MANUAL_DEFAULT", `${path}.execution_mode`, "Website and CMS execution defaults to manual handoff until an owned adapter and its official capability are modeled."));
       itemBlocker = true;
     }
     if (automated) {

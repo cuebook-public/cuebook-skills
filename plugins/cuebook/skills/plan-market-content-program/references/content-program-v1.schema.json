@@ -57,7 +57,6 @@
         "platform": {"enum": ["generic", "website", "x", "telegram", "reddit", "xiaohongshu", "douyin", "seeking_alpha", "buy_side"]},
         "format": {"type": "string", "minLength": 1},
         "renderer": {"enum": ["compact_text", "structured_media", "manual_authoring"]},
-        "optimization_modules": {"type": "array", "uniqueItems": true, "items": {"enum": ["seo", "geo"]}},
         "temporal_mode": {"enum": ["realtime", "historical_replay", "evergreen"]},
         "target_context": {"$ref": "#/$defs/nullableString"},
         "source_refs": {"$ref": "#/$defs/stringSet"},

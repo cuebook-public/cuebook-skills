@@ -48,34 +48,28 @@
       "order": 7
     },
     {
-      "category_id": "category-discovery",
-      "label": "搜索发现",
-      "description": "处理自有网页 SEO 与 GEO。",
-      "order": 8
-    },
-    {
       "category_id": "category-governance",
       "label": "审批交付",
       "description": "冻结内容、审批和发布交接。",
-      "order": 9
+      "order": 8
     },
     {
       "category_id": "category-history",
       "label": "历史复盘",
       "description": "核对发布、纠错、互动和交易记录。",
-      "order": 10
+      "order": 9
     },
     {
       "category_id": "category-orchestration",
       "label": "流程控制",
       "description": "生成 DAG、追踪工件和阻断状态。",
-      "order": 11
+      "order": 10
     },
     {
       "category_id": "category-modules",
       "label": "产品入口",
       "description": "查询与创作两个稳定入口，以及两者之间的单向调用边界。",
-      "order": 12
+      "order": 11
     }
   ],
   "skills": [
@@ -1978,116 +1972,6 @@
       "replaced_by": null
     },
     {
-      "skill_id": "optimize-cuebook-market-seo",
-      "version": "1.0.0",
-      "display_name": "Optimize Market SEO",
-      "description": "Preflight owned-web search intent, index eligibility, structure, and metadata.",
-      "category_id": "category-discovery",
-      "status": "stable",
-      "visibility": "selectable",
-      "execution": "installed",
-      "user_selectable": true,
-      "default_enabled": false,
-      "capabilities": [
-        "optimize-market-seo"
-      ],
-      "input_contracts": [
-        "MediaPackageV1",
-        "ResearchPackV1"
-      ],
-      "output_contract": "MarketSEOPackV1",
-      "requires_all": [
-        "render-cuebook-market-media"
-      ],
-      "supported_modes": [
-        "single",
-        "batch",
-        "event_lifecycle"
-      ],
-      "supported_channels": [
-        "owned_web"
-      ],
-      "ui": {
-        "surface": "creator",
-        "group": "搜索发现",
-        "order": 22,
-        "control_type": "toggle",
-        "icon": "search",
-        "summary": "为自有网页补搜索结构与发布检查。"
-      },
-      "maintenance": {
-        "owner": "cuebook-growth",
-        "stability": "stable",
-        "last_verified_at": "2026-07-14T13:00:00+08:00",
-        "skill_path": "optimize-cuebook-market-seo",
-        "schema_refs": [
-          "optimize-cuebook-market-seo/references/market-seo-pack-v1.schema.json"
-        ],
-        "validator_refs": [
-          "optimize-cuebook-market-seo/scripts/validate_market_seo_pack.py"
-        ],
-        "test_refs": [
-          "optimize-cuebook-market-seo/tests/test_validate_market_seo_pack.py"
-        ]
-      },
-      "replaced_by": null
-    },
-    {
-      "skill_id": "optimize-cuebook-market-geo",
-      "version": "1.0.0",
-      "display_name": "Optimize Market GEO",
-      "description": "Build entity, fact-card, answer-unit, and citation-support preflight for owned web.",
-      "category_id": "category-discovery",
-      "status": "stable",
-      "visibility": "selectable",
-      "execution": "installed",
-      "user_selectable": true,
-      "default_enabled": false,
-      "capabilities": [
-        "optimize-market-geo"
-      ],
-      "input_contracts": [
-        "MarketSEOPackV1",
-        "ResearchPackV1"
-      ],
-      "output_contract": "MarketGEOPackV1",
-      "requires_all": [
-        "optimize-cuebook-market-seo"
-      ],
-      "supported_modes": [
-        "single",
-        "batch",
-        "event_lifecycle"
-      ],
-      "supported_channels": [
-        "owned_web"
-      ],
-      "ui": {
-        "surface": "creator",
-        "group": "搜索发现",
-        "order": 23,
-        "control_type": "toggle",
-        "icon": "scan-search",
-        "summary": "增强答案单元、实体和引用支持。"
-      },
-      "maintenance": {
-        "owner": "cuebook-growth",
-        "stability": "stable",
-        "last_verified_at": "2026-07-14T13:00:00+08:00",
-        "skill_path": "optimize-cuebook-market-geo",
-        "schema_refs": [
-          "optimize-cuebook-market-geo/references/market-geo-pack-v1.schema.json"
-        ],
-        "validator_refs": [
-          "optimize-cuebook-market-geo/scripts/validate_market_geo_pack.py"
-        ],
-        "test_refs": [
-          "optimize-cuebook-market-geo/tests/test_validate_market_geo_pack.py"
-        ]
-      },
-      "replaced_by": null
-    },
-    {
       "skill_id": "prepare-market-content-release",
       "version": "1.1.0",
       "display_name": "Prepare Content Release",
@@ -2111,9 +1995,7 @@
         "ViewpointDataBundleV1",
         "ViewpointVisualV1",
         "MediaPackageV1",
-        "ViewpointCardV1",
-        "MarketSEOPackV1",
-        "MarketGEOPackV1"
+        "ViewpointCardV1"
       ],
       "output_contract": "ReleaseBundleV1",
       "requires_all": [],
@@ -2487,9 +2369,7 @@
       ],
       "optional_skill_ids": [
         "render-cuebook-viewpoint-visual",
-        "compute-cuebook-market-indicators",
-        "optimize-cuebook-market-seo",
-        "optimize-cuebook-market-geo"
+        "compute-cuebook-market-indicators"
       ]
     },
     {
@@ -2605,12 +2485,10 @@
         "plan-market-content-program",
         "render-cuebook-market-post",
         "render-cuebook-market-media",
-        "optimize-cuebook-market-seo",
         "prepare-market-content-release"
       ],
       "optional_skill_ids": [
-        "render-cuebook-viewpoint-visual",
-        "optimize-cuebook-market-geo"
+        "render-cuebook-viewpoint-visual"
       ]
     },
     {
@@ -3005,9 +2883,7 @@
       ],
       "optional_skill_ids": [
         "render-cuebook-market-media",
-        "render-cuebook-viewpoint-visual",
-        "optimize-cuebook-market-seo",
-        "optimize-cuebook-market-geo"
+        "render-cuebook-viewpoint-visual"
       ]
     }
   ],

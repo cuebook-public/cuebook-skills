@@ -21,8 +21,6 @@ const CAPABILITIES = new Map([
   ["render_market_media", ["render-cuebook-market-media", "MediaPackageV1"]],
   ["compile_settlement_claim", ["compile-cuebook-settlement-claim", "SettlementClaimV1"]],
   ["compile_settlement_formula", ["compile-cuebook-settlement-formula", "SettlementFormulaV1"]],
-  ["optimize_market_seo", ["optimize-cuebook-market-seo", "MarketSEOPackV1"]],
-  ["optimize_market_geo", ["optimize-cuebook-market-geo", "MarketGEOPackV1"]],
   ["prepare_release", ["prepare-market-content-release", "ReleaseBundleV1"]],
   ["publish_external", [null, "PublicationReceiptV1"]],
   ["reconcile_history", ["reconcile-market-content-history", "ContentHistoryLedgerV1"]],
@@ -685,9 +683,6 @@ export function validate(payload, opportunities = null, recipe = null, catalog =
         errors.push(issue("ORDER_SETTLEMENT_EXPRESSION", `${path}.depends_on`, "Settlement compilation must descend from the locked creator expression plan."));
       }
     }
-    if (capability === "optimize_market_geo" && !depends_on_capability(node, "optimize_market_seo")) {
-      errors.push(issue("ORDER_GEO", `${path}.depends_on`, "Owned-web GEO must depend on SEO."));
-    }
     if (capability === "prepare_release") {
       const render_node_ids = pySet();
       for (const [candidate_id, candidate] of nodes.entries()) {
@@ -701,13 +696,6 @@ export function validate(payload, opportunities = null, recipe = null, catalog =
       }
       if (![...orList(node.depends_on)].some((dep) => render_node_ids.has(dep))) {
         errors.push(issue("ORDER_RELEASE_RENDER", `${path}.depends_on`, "Release must depend on a render node."));
-      }
-      for (const preflight of ["optimize_market_seo", "optimize_market_geo"]) {
-        for (const preflight_node of capabilities.get(preflight) ?? []) {
-          if (!pyIncludes(orList(node.depends_on), preflight_node)) {
-            errors.push(issue("ORDER_RELEASE_PREFLIGHT", `${path}.depends_on`, `Release must depend on ${pystr(preflight_node)}.`));
-          }
-        }
       }
       for (const settlement_node of capabilities.get("compile_settlement_claim") ?? []) {
         if (!has_path(nodes, node_id, settlement_node)) {

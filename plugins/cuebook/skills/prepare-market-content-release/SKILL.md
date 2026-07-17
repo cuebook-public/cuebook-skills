@@ -14,7 +14,7 @@ Create a no-side-effect release bundle from finalized content. A release bundle 
 2. Read `references/platform-capabilities.md` for the requested destination. Recheck official capability and policy sources when the bundle may become `ready`.
 3. Choose one execution mode per item: `manual_handoff`, `platform_draft`, `api_direct`, or `api_scheduled`. Default to `manual_handoff` when official account capability is unverified.
 4. Freeze the artifact and final payload by SHA-256 reference. Record the selected variant, asset references, hashes, and rights. For a thesis derivative, record the versioned thesis ref and canonical hash. When the content has a settlement footer, bind the frozen `SettlementClaimV1` and `SettlementFormulaV1` references and canonical hashes to the release item. The formula must point back to that exact claim hash. A release hash never replaces either protocol hash. Do not copy credentials into the bundle.
-5. Record platform, opaque account reference, capability snapshot, policy snapshot, schedule, embargo, expiry, dependencies, manual checklist, and rollback path. Website items also record a passing SEO preflight and the GEO preflight state when that module was selected.
+5. Record platform, opaque account reference, capability snapshot, policy snapshot, schedule, embargo, expiry, dependencies, manual checklist, and rollback path.
 6. Record content approval and release approval separately. Pending approval produces `needs_approval`; a policy, rights, content, or capability blocker produces `blocked`.
 7. Add one unique idempotency key for every draft or API operation. It identifies the intended operation, not an access credential.
 8. Return `ReleaseBundleV1` and validate it:
@@ -39,7 +39,7 @@ This skill never calls those adapters.
 - API and platform-draft modes require verified capability, current official documentation, a named adapter, and supported operation flags.
 - Xiaohongshu defaults to manual handoff unless an account-specific official note-publishing capability is verified.
 - Seeking Alpha AI-assisted content remains blocked from submission. An internal outline is not a releasable article.
-- Owned-web release requires a passing `MarketSEOPackV1` preflight. A selected GEO sidecar must also pass; website execution remains manual until a separate owned CMS adapter contract exists.
+- Website execution remains manual until a separate owned CMS adapter contract exists.
 - Ready commentary, analysis, or marketing requires resolved position and commercial disclosures in the upstream artifact.
 - A thesis derivative must resolve to a frozen `TradingThesisV1`; claim drift, a missing canonical hash, or a resolution window that expired before the planned release blocks readiness.
 - A settlement footer must resolve to a hash-linked frozen `SettlementClaimV1` and frozen `SettlementFormulaV1`; drafts, unconfirmed fields, unsealed observation policies, and claim/formula hash drift block release.

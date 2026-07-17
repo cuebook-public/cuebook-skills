@@ -281,7 +281,6 @@ export function required_skills(payload) {
   if (outputs.length > 1 || total_units > 1 || plating.bundle_strategy !== "independent" || mode === "batch" || mode === "event_lifecycle") {
     required.set("plan-market-content-program", "plan-market-content-program");
   }
-  if (channels.has("owned_web")) required.set("optimize-cuebook-market-seo", "optimize-cuebook-market-seo");
   if (plating.deliverable_mode === "release_candidates") required.set("prepare-market-content-release", "prepare-market-content-release");
   if (mode === "postmortem" || mode === "correction") required.set("reconcile-market-content-history", "reconcile-market-content-history");
   return required;
@@ -402,9 +401,6 @@ export function validate(payload, feed = null, opportunities = null, catalog = n
   const missing_required = pySetDiff(required_skills(payload), resolved_set).sort();
   if (missing_required.length > 0) {
     errors.push(issue("REQUIRED_SKILL_MISSING", "$.execution.resolved_skill_ids", `Missing required skills: ${pyrepr(missing_required)}.`));
-  }
-  if (resolved_set.has("optimize-cuebook-market-geo") && !resolved_set.has("optimize-cuebook-market-seo")) {
-    errors.push(issue("GEO_REQUIRES_SEO", "$.execution.resolved_skill_ids", "GEO requires SEO in the same recipe."));
   }
   let pins = execution.version_pins;
   if (!Array.isArray(pins)) {

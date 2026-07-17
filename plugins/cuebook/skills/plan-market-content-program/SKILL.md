@@ -44,7 +44,6 @@ node scripts/validate_content_program.mjs content-program-v1.json
 - Do not plan repeated promotion into multiple communities as a growth tactic.
 - Do not treat comments, votes, views, or follower count as evidence quality.
 - Do not include accounts, credentials, API modes, exact schedule timestamps, or approval state. Those belong to the release layer.
-- Do not treat SEO or GEO as writing styles. They are owned-web sidecars with separate plans and preflight artifacts.
 
 ## Output
 
@@ -53,7 +52,7 @@ Return `ContentProgramV1` using `references/content-program-v1.schema.json`. Eac
 Route downstream by renderer capability:
 
 - `compact_text`: `$render-cuebook-market-post` for X, Telegram, simple Xiaohongshu text, or a buy-side note.
-- `structured_media`: `$render-cuebook-market-media` for owned-web long-form, Reddit, Xiaohongshu carousel, or short video. For `website`, run `$optimize-cuebook-market-seo` and any selected `$optimize-cuebook-market-geo` plan before rendering, then preflight both against the final artifact.
+- `structured_media`: `$render-cuebook-market-media` for owned-web long-form, Reddit, Xiaohongshu carousel, or short video.
 - `manual_authoring`: keep a human-authored or unsupported destination outside AI rendering.
 
 After all channel artifacts are final, call `$prepare-market-content-release`. This skill never marks content published.

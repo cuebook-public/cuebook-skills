@@ -5,7 +5,6 @@
 | Render runs after gate reject | Dependency state is ignored | Block render and downstream release |
 | Route abstention disappears | Reduced route object bypasses uncertainty | Carry abstention and block readiness |
 | Draft changes after approval | Approval points to stale content | Revoke and request new approval |
-| Release ignores SEO/GEO node | Applicable preflight is bypassed | Add dependency before release |
 | HTTP success has no remote identity | Attempt is called publication | Keep ambiguous or acknowledged |
 | Correction changes a source fact | Old derivatives remain current | Invalidate dependency subtree |
 | Engagement drives research truth | Packaging metric contaminates evidence | Keep outcome planes separate |

@@ -37,7 +37,7 @@ Read `references/recipe-method.md` when resolving modes, output channels, preset
 
 ## Skill Selection
 
-- `selected_skill_ids` contains choices exposed to the user, such as a settleable thesis, program planning, SEO, GEO, release preparation, or reconciliation.
+- `selected_skill_ids` contains choices exposed to the user, such as a settleable thesis, program planning, release preparation, or reconciliation.
 - `compose-cuebook-trading-thesis` is an explicit creator choice. When selected, research must produce `TradingThesisV1` before any renderer and every derivative must preserve its versioned reference and canonical hash.
 - `resolved_skill_ids` contains the full executable set, including automatic and internal safety skills.
 - A user cannot disable projection, routing, evidence, policy, or lineage guards.

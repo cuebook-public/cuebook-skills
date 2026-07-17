@@ -509,9 +509,6 @@ export function validate(payload, check_files = true, skills_root = null) {
     if (channels.keys().some((channel) => ["xiaohongshu", "reddit", "owned_web", "seeking_alpha_internal", "short_video", "douyin"].includes(channel)) && !required.has("render-cuebook-market-media")) {
       errors.push(issue("PRESET_MEDIA_RENDERER", path, "Preset requires the media renderer."));
     }
-    if (channels.has("owned_web") && !required.has("optimize-cuebook-market-seo")) {
-      errors.push(issue("PRESET_OWNED_WEB_SEO", path, "Owned-web preset requires SEO."));
-    }
     if (outputs.length > 1 && !required.has("plan-market-content-program")) {
       errors.push(issue("PRESET_PROGRAM_REQUIRED", path, "Multi-output preset requires content-program planning."));
     }

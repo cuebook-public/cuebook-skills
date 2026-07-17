@@ -176,11 +176,6 @@ const simpleMutations = [
   ["unresolved version pin", (item) => { item.execution.version_pins[0].skill_id = "unknown-skill"; }, "PIN_UNRESOLVED_SKILL"],
   ["missing version pin", (item) => { item.execution.version_pins.shift(); }, "MISSING_VERSION_PIN"],
   ["duplicate version pin", (item) => { item.execution.version_pins.push(structuredClone(item.execution.version_pins[0])); }, "DUPLICATE_VERSION_PIN"],
-  ["geo requires seo", (item) => {
-    item.execution.resolved_skill_ids.push("optimize-cuebook-market-geo");
-    item.execution.version_pins.push({ skill_id: "optimize-cuebook-market-geo", version: skillVersions["optimize-cuebook-market-geo"] });
-    item.validation_report.counts.resolved_skills = 14;
-  }, "GEO_REQUIRES_SEO"],
 ];
 
 for (const [name, mutate, expected] of simpleMutations) {

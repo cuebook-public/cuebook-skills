@@ -34,10 +34,9 @@ Operate the control plane for Cuebook creator work. Reuse existing skills as cap
 13. **Optional settlement**: when the expression plan marks a claim eligible and the recipe selects settlement, compile the claim and formula from the bound settlement result. Registration is a separate approved write action after both hashes are frozen. Non-trade semantics skip both.
 14. **Autonomous choices**: when the recipe requests `publish_candidate_set`, run `$assemble-cuebook-publish-candidates`. Generate three passed reasoning-complete `PostV1` siblings, derive compact selector excerpts, and pair them with the three passed `VisualDirectionSetV1` previews. A material news premise carries at least one linked evidence anchor in every candidate; a material metric premise carries a resolved same-basis value or an explicit `not meaningful` result. Complete research, market-data, policy, copy, and visual calibration internally; return only `PublishCandidateSetV1` in `ready_for_selection` or a blocked set with no partial candidates.
 15. **Media and viewpoint card**: assemble structured media after post and any selected visual/settlement artifacts. A `ViewpointCardV1` requires `PostV1` and `ViewpointVisualV1`; thesis, trade logic, and settlement remain optional inputs.
-16. **Discovery preflight**: resolve SEO/GEO from the recipe and owned-web outputs. GEO depends on SEO.
-17. **Govern and freeze**: run `$prepare-market-content-release` for `release_candidates`; bind decisions to exact artifact hashes.
-18. **Activation handoff**: pass an approved `ReleaseBundleV1` to an explicitly configured external publisher.
-19. **Reconcile and learn**: run `$reconcile-market-content-history` on receipts, revisions, corrections, engagement snapshots, and authorized outcomes.
+16. **Govern and freeze**: run `$prepare-market-content-release` for `release_candidates`; bind decisions to exact artifact hashes.
+17. **Activation handoff**: pass an approved `ReleaseBundleV1` to an explicitly configured external publisher.
+18. **Reconcile and learn**: run `$reconcile-market-content-history` on receipts, revisions, corrections, engagement snapshots, and authorized outcomes.
 
 Read `references/workflow-map.md` for scenario paths, role gates, and skill ownership.
 
@@ -68,7 +67,7 @@ Use this path whenever the requested output is only `publish_candidate_set`:
 5. Batch-capture all full and compact previews with bounded concurrency.
 6. Assemble and validate the candidate set. Retry only a failed sibling or stale primitive.
 
-Skip content-program planning, cross-platform media, selected-direction rendering, SEO/GEO, release freezing, and publishing handoff until the user chooses a candidate or the recipe explicitly requests them. A warm fast-path run does not revisit unchanged upstream nodes.
+Skip content-program planning, cross-platform media, selected-direction rendering, release freezing, and publishing handoff until the user chooses a candidate or the recipe explicitly requests them. A warm fast-path run does not revisit unchanged upstream nodes.
 
 ## Mode Rules
 
@@ -99,8 +98,7 @@ An approval records artifact IDs and their hashes. A changed hash requires a new
 - A material current premise with no hash-verified `CuebookQueryBundleV1`, a blocked Query bundle, an unavailable handed-off result, or a Create node that directly called a Query MCP tool: block the run.
 - Trade logic, trading thesis, or settlement required for source-only non-trade semantics: repair the DAG by removing the unsupported trade branch.
 - Completed node without its declared artifact: block.
-- GEO node without an SEO dependency on owned-web work: repair.
-- Release prepared before all applicable render and preflight nodes complete: block.
+- Release prepared before all applicable render nodes complete: block.
 - A settleable or reputation-linked output with no ready/frozen `SettlementClaimV1`, unconfirmed proposed fields, or a mismatch with its frozen thesis: block release of the settlement attachment. The prose may continue only when the recipe permits ordinary commentary without a settleable claim.
 - A `ViewpointCardV1` may preview in `conditional` state, but it cannot freeze while its unified visual is conditional, an included settlement needs confirmation, or material disclosures remain unknown.
 - A `PublishCandidateSetV1` in `ready_for_selection` requires exactly three passed candidates with one meaning fingerprint, three distinct copy angles, three distinct full/compact visual pairs, no blocked calibration stage, and no preselected candidate. Failed drafts remain internal.

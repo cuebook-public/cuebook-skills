@@ -23,7 +23,6 @@ const STRATEGIES = new Set(["single_channel", "staggered", "synchronized", "anch
 const RENDERERS = new Set(["compact_text", "structured_media", "manual_authoring"]);
 const COMPACT_TEXT_PLATFORMS = new Set(["x", "telegram", "xiaohongshu", "buy_side"]);
 const STRUCTURED_MEDIA_PLATFORMS = new Set(["generic", "website", "reddit", "xiaohongshu", "douyin", "seeking_alpha"]);
-const OPTIMIZATION_MODULES = new Set(["seo", "geo"]);
 // Python \b is Unicode-aware; emulate its word boundary with letter/digit/_
 // lookarounds so CJK neighbours suppress matches exactly like re does.
 const HYPE_PATTERN = /(?<![\p{L}\p{N}_])(?:viral|guaranteed reach|best posting time)(?![\p{L}\p{N}_])|爆款|保证流量|最佳发布时间/iu;
@@ -324,28 +323,6 @@ export function validate(item) {
     }
     if (renderer === "structured_media" && !STRUCTURED_MEDIA_PLATFORMS.has(platform)) {
       errors.push(issue("RENDERER_ROUTE", `${path}.renderer`, `Structured media rendering does not own ${pyrepr(platform)}.`));
-    }
-    const modulesRaw = Object.hasOwn(entry, "optimization_modules") ? entry.optimization_modules : [];
-    let modules;
-    if (!Array.isArray(modulesRaw)) {
-      errors.push(issue("OPTIMIZATION_MODULES", `${path}.optimization_modules`, "optimization_modules must be an array."));
-      modules = new Set();
-    } else {
-      modules = new Set(modulesRaw.filter((value) => typeof value === "string"));
-      const unknownModules = [...modules].filter((value) => !OPTIMIZATION_MODULES.has(value));
-      if (unknownModules.length || modules.size !== modulesRaw.length) {
-        errors.push(issue("OPTIMIZATION_MODULES", `${path}.optimization_modules`, `Unsupported or duplicate modules: ${pyrepr(unknownModules.sort())}.`));
-      }
-    }
-    if (platform === "website") {
-      if (!modules.has("seo")) {
-        errors.push(issue("WEBSITE_SEO_ROUTE", `${path}.optimization_modules`, "Owned-web content must route through the Cuebook SEO module."));
-      }
-      if (modules.has("geo") && !modules.has("seo")) {
-        errors.push(issue("GEO_REQUIRES_SEO", `${path}.optimization_modules`, "Cuebook GEO uses the SEO eligibility result as its upstream floor."));
-      }
-    } else if (modules.size) {
-      errors.push(issue("WEB_MODULE_SCOPE", `${path}.optimization_modules`, "SEO and GEO sidecars apply only to owned-web items."));
     }
     if (platform === "reddit" && !pyStr(orElse(entry.target_context, "")).trim()) {
       errors.push(issue("COMMUNITY_CONTEXT", `${path}.target_context`, "Reddit planning requires a named community."));
