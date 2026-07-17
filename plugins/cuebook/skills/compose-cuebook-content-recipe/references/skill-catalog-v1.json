@@ -982,10 +982,10 @@
           "assemble-cuebook-viewpoint-data/references/viewpoint-data-bundle-v1.schema.json"
         ],
         "validator_refs": [
-          "assemble-cuebook-viewpoint-data/scripts/validate_viewpoint_data_bundle.py"
+          "assemble-cuebook-viewpoint-data/scripts/validate_viewpoint_data_bundle.mjs"
         ],
         "test_refs": [
-          "assemble-cuebook-viewpoint-data/tests/test_validate_viewpoint_data_bundle.py"
+          "assemble-cuebook-viewpoint-data/tests/validate_viewpoint_data_bundle.test.mjs"
         ]
       },
       "replaced_by": null
