@@ -19,7 +19,6 @@ const PY_WS_TRAIL = new RegExp(`[${PY_WS_CLASS}]+$`, "u");
 export function pyStrip(value) {
   return value.replace(PY_WS_LEAD, "").replace(PY_WS_TRAIL, "");
 }
-
 export function pyLstrip(value) {
   return value.replace(PY_WS_LEAD, "");
 }
@@ -680,4 +679,3 @@ export function pySorted(iterable, keyFn = (item) => item) {
     })
     .map(([item]) => item);
 }
-

@@ -55,7 +55,6 @@ const PUBLIC_BACKEND_TERMS = ["已确认", "已计算", "推演", "待确认", "
 function isDict(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
-
 function pyTruthy(value) {
   if (value === null || value === undefined) return false;
   if (typeof value === "boolean") return value;
@@ -492,4 +491,3 @@ const isMain = (() => {
 if (isMain) {
   process.exit(main());
 }
-
