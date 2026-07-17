@@ -138,6 +138,21 @@ export function vendorSharedValidator(script, sharedHelper) {
   return true;
 }
 
+// Public entrypoint scripts live one directory shallower than they did in the
+// plugin tree. Rewrite direct sibling-skill imports into the vendored closure.
+export function rewriteEntrypointSkillImports(script, bundleRoot, skillNames) {
+  if (path.dirname(script) !== path.join(bundleRoot, "scripts")) return false;
+  let text = fs.readFileSync(script, "utf-8");
+  const original = text;
+  text = text.replace(/(["'])\.\.\/\.\.\/([a-z0-9]+(?:-[a-z0-9]+)*)\//g, (match, quote, skillName) => {
+    if (!skillNames.has(skillName) || skillName === path.basename(bundleRoot)) return match;
+    return `${quote}../references/skills/${skillName}/`;
+  });
+  if (text === original) return false;
+  fs.writeFileSync(script, text);
+  return true;
+}
+
 export function parseFrontmatter(skillMd) {
   const match = fs.readFileSync(skillMd, "utf-8").match(FRONTMATTER_PATTERN);
   if (!match) return {};
@@ -232,6 +247,7 @@ export function build(pluginRootArg, outputDirArg) {
     }
     const vendored = [];
     for (const script of rglob(bundleRoot, ".mjs")) {
+      rewriteEntrypointSkillImports(script, bundleRoot, skillNames);
       if (vendorSharedValidator(script, sharedHelper)) {
         vendored.push(path.relative(bundleRoot, script));
       }

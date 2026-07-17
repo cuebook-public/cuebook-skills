@@ -1,4 +1,4 @@
 interface:
   display_name: "Create With Cuebook"
   short_description: "Turn a trading idea into title, body, and one paired Frame image"
-  default_prompt: "Create three Cuebook Frame candidates from this trading idea. Preserve and elevate the creator's viewpoint, use Cuebook to support material current premises, and expose only one title, one concise body, and one paired image per candidate. Keep evidence, settlement, disclosures, tags, and workflow metadata backstage."
+  default_prompt: "Create one best Cuebook Frame fast preview from this trading idea: one title, one concise body, and one paired image. Preserve and elevate the creator's viewpoint, use Cuebook for material current premises, and show the preview before release packaging. Generate three only if I explicitly ask for alternatives."

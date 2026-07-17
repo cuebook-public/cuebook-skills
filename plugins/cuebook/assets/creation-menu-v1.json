@@ -351,14 +351,14 @@
     },
     {
       "step_id": "output",
-      "label": "发布到 Frame",
+      "label": "生成 Frame",
       "selection": "single",
       "minimum": 1,
       "maximum": 1,
       "options": [
         {
           "option_id": "frame",
-          "label": "Frame（标题 + 正文 + 图）",
+          "label": "Frame 快速预览（标题 + 正文 + 图）",
           "skill_refs": [
             "render-cuebook-market-post",
             "direct-cuebook-viewpoint-visual",

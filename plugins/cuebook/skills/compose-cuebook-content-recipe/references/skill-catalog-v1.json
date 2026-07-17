@@ -872,7 +872,7 @@
       "skill_id": "plan-cuebook-creator-expression",
       "version": "1.2.0",
       "display_name": "Plan Creator Expression",
-      "description": "Lock market meaning, authorship, three visual reader jobs, evidence shapes, exact Query tool bindings, Skill path, renderer route, and hashes into one shared expression plan.",
+      "description": "Lock market meaning, authorship, one selected visual job or three explicitly requested jobs, evidence shapes, Query bindings, renderer route, and hashes into one release expression plan.",
       "category_id": "category-thesis",
       "status": "beta",
       "visibility": "automatic",
@@ -994,7 +994,7 @@
       "skill_id": "direct-cuebook-viewpoint-visual",
       "version": "2.5.0",
       "display_name": "Compose Viewpoint Expression",
-      "description": "Execute locked fast-read, proof, and system jobs as structurally distinct HTML-native candidates using only their routed evidence shapes and data-gated financial grammars.",
+      "description": "Recompose one selected preview as a release-grade visual, or execute fast-read, proof, and system jobs when three alternatives were explicitly requested.",
       "category_id": "category-rendering",
       "status": "beta",
       "visibility": "automatic",
@@ -1484,7 +1484,7 @@
       "skill_id": "render-cuebook-market-post",
       "version": "1.2.0",
       "display_name": "Render Market Post",
-      "description": "Render one compact post or batch-generate three meaning-locked, independently passed PostV1 siblings for direct selection.",
+      "description": "Freeze one selected Frame copy or batch-generate three meaning-locked PostV1 siblings only for explicit alternatives.",
       "category_id": "category-rendering",
       "status": "stable",
       "visibility": "automatic",
@@ -1545,7 +1545,7 @@
       "skill_id": "assemble-cuebook-publish-candidates",
       "version": "1.2.0",
       "display_name": "Assemble Publish Candidates",
-      "description": "Use the cached fast path to assemble one locked market view into three concise choices that preserve required linked evidence, basis-compatible metrics, and optional settlement semantics.",
+      "description": "Freeze one selected Frame by default, or assemble three concise choices only when alternatives were explicitly requested.",
       "category_id": "category-rendering",
       "status": "beta",
       "visibility": "automatic",
@@ -1582,7 +1582,7 @@
         "order": 36,
         "control_type": "hidden",
         "icon": "gallery-thumbnails",
-        "summary": "生成三份 Frame 候选；每份只向用户展示标题、正文和配对图片。"
+        "summary": "默认冻结一份已选 Frame；明确要求时才生成三份候选。"
       },
       "maintenance": {
         "owner": "cuebook-creator",
@@ -2088,7 +2088,7 @@
       "skill_id": "orchestrate-cuebook-creator-workflow",
       "version": "1.4.0",
       "display_name": "Orchestrate Creator Workflow",
-      "description": "Resume from the latest valid artifact, separate semantic seed Query from intent-driven gap Query, and execute hash-locked text, visual, renderer, and settlement branches.",
+      "description": "After preview selection, resume from the latest valid artifact and execute only the retained release, settlement, and publication branches.",
       "category_id": "category-orchestration",
       "status": "stable",
       "visibility": "automatic",
@@ -2122,7 +2122,7 @@
         "order": 26,
         "control_type": "hidden",
         "icon": "workflow",
-        "summary": "先把观点里的新闻和数字需求查齐，再生成三份可追溯候选。"
+        "summary": "预览选定后再冻结可追溯内容、媒体与发布流程。"
       },
       "maintenance": {
         "owner": "cuebook-platform",
@@ -2660,8 +2660,8 @@
     },
     {
       "preset_id": "preset-publish-candidates",
-      "name": "Frame 三版直出",
-      "description": "自动补充事实并一次生成三套 Frame；每套只展示一个标题、一段正文和一张配对观点图。结算与证据保留在后台。",
+      "name": "Frame 快速直出",
+      "description": "默认快速生成一套最佳 Frame；只有明确要求时才生成三套。每套只展示标题、正文和配对观点图。",
       "state": "active",
       "selection_mode": "ingredient_first",
       "default_execution_mode": "single",
@@ -2689,13 +2689,13 @@
       },
       "default_analysis_lenses": [
         "autonomous-calibration",
-        "candidate-diversity"
+        "creator-lift"
       ],
       "default_outputs": [
         {
           "channel": "frame",
           "format": "publish_candidate_set",
-          "count": 3,
+          "count": 1,
           "length": "short"
         }
       ],

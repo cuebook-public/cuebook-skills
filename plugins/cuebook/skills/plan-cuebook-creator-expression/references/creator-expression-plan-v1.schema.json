@@ -286,7 +286,7 @@
             "reader_takeaway": {"type": "string", "minLength": 1, "maxLength": 240},
             "candidate_jobs": {
               "type": "array",
-              "minItems": 3,
+              "minItems": 1,
               "maxItems": 3,
               "items": {"$ref": "#/$defs/candidateJobTarget"}
             },

@@ -5,7 +5,7 @@
 // and CLI JSON output are contract.
 
 import { createHash } from "node:crypto";
-import { copyFileSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -99,7 +99,7 @@ export function stage(source, target, { license_mode, license_ref }) {
     const suffix = path.extname(sourcePath).toLowerCase();
     const outputName = `cuebook-noi-${weight}${suffix}`;
     const outputPath = path.join(target, outputName);
-    copyFileSync(sourcePath, outputPath);
+    if (!existsSync(outputPath) || digest(outputPath) !== digest(sourcePath)) copyFileSync(sourcePath, outputPath);
     records.push({
       weight: numericWeight,
       style: "normal",

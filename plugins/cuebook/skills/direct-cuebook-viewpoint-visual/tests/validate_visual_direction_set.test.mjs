@@ -34,6 +34,20 @@ const codes = (payload, options = {}, assetRoot = null) => new Set(validate(payl
 
 test("valid draft", () => assert.deepEqual(validate(basePayload()), []));
 
+test("selection freeze may retain only the chosen release-grade direction", () => {
+  const payload = basePayload("selected");
+  payload.directions = [payload.directions[0]];
+  payload.directions[0].capture_report_ref = "selected/capture-report.json";
+  payload.directions[0].render_audit_ref = "selected/render-audit.json";
+  assert.deepEqual(validate(payload, null, { require_expression_recipes: true, require_finance_route: true }), []);
+});
+
+test("a one-direction set is not a preselection preview shortcut", () => {
+  const payload = basePayload();
+  payload.directions = [payload.directions[0]];
+  assert.ok(codes(payload).has("DIRECTION_COUNT"));
+});
+
 test("schema requires upstream lineage and binding classification", () => {
   const schema = JSON.parse(readFileSync(path.join(root, "references", "visual-direction-set-v1.schema.json"), "utf8"));
   assert.ok(["fact_refs", "data_requirement_refs"].every((field) => schema.required.includes(field)));

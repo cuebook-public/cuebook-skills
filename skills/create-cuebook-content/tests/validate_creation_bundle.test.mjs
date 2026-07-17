@@ -122,10 +122,12 @@ test("query lineage is required", () => {
   assert.ok(codes(validate(item)).has("QUERY_LINEAGE"));
 });
 
-test("exactly three candidates", () => {
+test("frozen creation accepts one selected candidate", () => {
   const item = bundle();
+  item.candidate_refs = ["CAND_a"];
+  assert.ok(validate(item).valid);
   item.candidate_refs = ["CAND_a", "CAND_b"];
-  assert.ok(codes(validate(item)).has("THREE_CANDIDATES"));
+  assert.ok(codes(validate(item)).has("CANDIDATE_COUNT"));
 });
 
 test("unavailable query cannot be ready", () => {

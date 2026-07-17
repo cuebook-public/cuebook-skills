@@ -28,6 +28,14 @@ Provide one read-only entrance for everything the user wants to see in Cuebook. 
 5. Preserve provider timestamps, sealed/forming state, source identity, metric basis, and capability gaps. A missing backend tool produces a partial result, never an invented value.
 6. Return `CuebookQueryBundleV1`, then answer the user from that bundle. Include sources and freshness near the claims they support.
 
+## Connection and Latency
+
+- Use the host-installed `cuebook` MCP connector and its persisted OAuth session. Do not enumerate generic MCP resources repeatedly, implement OAuth discovery/DCR, exchange tokens, create a custom HTTP client, or store credentials in task files.
+- If the connector reports unauthorized, emit one normal host reconnect handoff and preserve the frozen request for resume. Do not spend the task retrying alternative authentication paths.
+- Resolve a named asset once. After resolution, run independent reads such as market state, candles, positioning, and cue detail concurrently when the runtime supports parallel calls.
+- Reuse a compatible query bundle by canonical asset, request class, basis, cutoff, and freshness. Refresh only stale result primitives; do not rebuild an unchanged bundle because a downstream renderer retried.
+- A creation fast preview gets one bounded query phase. Any optional enrichment that misses the latency budget is recorded as unavailable and must not delay already sufficient material evidence.
+
 ## Query Boundary
 
 - Query may summarize and compare retrieved material and may show a factual table, curve, or report for inspection. It does not turn that material into a publish-ready voice, market post, creator viewpoint graphic, settlement claim, or release bundle.

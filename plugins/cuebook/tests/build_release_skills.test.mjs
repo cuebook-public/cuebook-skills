@@ -46,12 +46,13 @@ test("builds every public entrypoint as valid bundle", () => {
   });
 });
 
-test("create bundle closure includes front door and query", () => {
+test("create bundle closure keeps the fast front door and query without mandatory intake", () => {
   withTmpPath((tmpPath) => {
     const manifest = buildRelease(tmpPath);
     const create = manifest.bundles.find((bundle) => bundle.skill === "create-cuebook-content");
-    assert.ok(create.closure.includes("intake-cuebook-viewpoint"));
     assert.ok(create.closure.includes("query-cuebook"));
+    assert.ok(create.closure.includes("direct-cuebook-viewpoint-visual"));
+    assert.ok(!create.closure.includes("intake-cuebook-viewpoint"));
   });
 });
 
@@ -102,8 +103,7 @@ test("vendored validators import without plugin tree", () => {
     const bundled = [
       path.join(tmpPath, "release", "query-cuebook", "scripts", "validate_query_bundle"),
       path.join(
-        tmpPath, "release", "create-cuebook-content", "references", "skills",
-        "intake-cuebook-viewpoint", "scripts", "validate_viewpoint_intake",
+        tmpPath, "release", "create-cuebook-content", "scripts", "validate_frame_preview",
       ),
     ];
     buildRelease(tmpPath);

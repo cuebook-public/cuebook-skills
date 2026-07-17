@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, statSync, utimesSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -46,4 +46,17 @@ test("production licensed source is release eligible", () => withTemp((root) => 
   const manifest = stage(source, path.join(root, "out"), { license_mode: "production", license_ref: "LICENSE_01" });
   assert.equal(manifest.release_eligible, true);
   assert.equal(manifest.license_mode, "production");
+}));
+
+test("reuses unchanged staged font files", () => withTemp((root) => {
+  const source = path.join(root, "licensed-noi");
+  const target = path.join(root, "shared-cache");
+  mkdirSync(source);
+  makeFonts(source);
+  stage(source, target, { license_mode: "production", license_ref: "LICENSE_01" });
+  const cached = path.join(target, "cuebook-noi-regular.ttf");
+  utimesSync(cached, 100000, 100000);
+  const before = statSync(cached).mtimeMs;
+  stage(source, target, { license_mode: "production", license_ref: "LICENSE_01" });
+  assert.equal(statSync(cached).mtimeMs, before);
 }));

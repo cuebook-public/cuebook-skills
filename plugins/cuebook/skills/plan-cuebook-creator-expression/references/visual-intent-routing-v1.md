@@ -10,13 +10,13 @@ This routing layer borrows one useful process idea from [Academic Figure Skills]
 
 1. **Reader question**: write the one question the image must answer at Feed distance.
 2. **Primary job**: select one communication job from the canonical registry.
-3. **Three candidate jobs**: lock exactly one `fast_read`, one `proof`, and one `system` job. They share one meaning fingerprint but answer three different reader questions.
+3. **Retained candidate jobs**: keep one selected job for a confirmed fast preview. Lock exactly one `fast_read`, one `proof`, and one `system` only for an explicit alternatives request.
 4. **Evidence shapes**: name only shapes that are supported by declared data requirements or creator-owned qualitative relationships.
 5. **Query route**: bind every visual data requirement to one Query capability and its exact Cuebook MCP tool path, including asset resolution when the request is asset-bound. An existing artifact may satisfy that route at runtime; it does not change the locked capability.
 6. **Skill path**: select the shortest registered Create path. Reuse a valid Query bundle, data bundle, direction set, or selected direction instead of rerunning an earlier stage.
 7. **Renderer route**: use the adaptive static viewpoint renderer by default. Add the thesis-chart detail renderer only when full OHLC, volume, indicators, long history, or an explicit chart clock is part of the requested expression.
 
-## Three Candidate Families
+## Candidate Families
 
 | Family | Reader need | Allowed jobs |
 | --- | --- | --- |
@@ -24,14 +24,14 @@ This routing layer borrows one useful process idea from [Academic Figure Skills]
 | `proof` | What is the strongest evidence or comparison? | `evidence_proof`, `relative_comparison`, `distribution_risk`, `trigger_watch` |
 | `system` | How does the thesis work or unfold? | `news_synthesis`, `mechanism_path`, `scenario_range`, `flow_map`, `strategy_map`, `cycle_map` |
 
-The primary job must appear in the three candidate targets. Candidate families are presentation entrances, not different theses.
+The primary job must appear in the retained candidate targets. Candidate families are presentation entrances, not different theses.
 
 ## Intent Contract
 
 The intent layer must finish with an executable contract, not a mood board:
 
 - one `primary_job`, `reader_question`, `primary_message`, and `reader_takeaway`;
-- exactly three candidate targets: one `fast_read`, one `proof`, and one `system`;
+- one selected candidate target, or exactly three explicit alternatives: one `fast_read`, one `proof`, and one `system`;
 - each candidate's own reader question, evidence shapes, and material `D*` requirement refs;
 - one Query capability and the exact MCP tool IDs for every visual `D*` ref;
 - one registered Skill path, primary renderer, optional detail renderer, resume policy, registry hash, and route hash.

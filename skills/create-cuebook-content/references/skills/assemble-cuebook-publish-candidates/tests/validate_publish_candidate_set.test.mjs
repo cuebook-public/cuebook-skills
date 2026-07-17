@@ -80,10 +80,20 @@ test("valid ready set without settlement", () => {
   assert.equal(result.valid, true, JSON.stringify(result.errors));
 });
 
-test("requires three candidates", () => {
+test("unselected alternatives require three candidates", () => {
   const item = baseSet();
   item.candidates.pop();
   assertCode(validate(item), "CANDIDATE_COUNT");
+});
+
+test("selection freeze may retain the sole recommended Frame", () => {
+  const item = baseSet();
+  item.generation_policy.candidate_count = 1;
+  item.candidates = [item.candidates[0]];
+  confirmSelection(item);
+  const result = validate(item);
+  assert.equal(result.valid, true, JSON.stringify(result.errors));
+  assert.equal(result.stats.candidate_count, 1);
 });
 
 test("angles are distinct", () => {

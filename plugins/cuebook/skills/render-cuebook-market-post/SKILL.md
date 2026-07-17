@@ -1,6 +1,6 @@
 ---
 name: render-cuebook-market-post
-description: Render a validated CreatorExpressionPlanV1, MarketViewSemanticsV1, ContentRecipeV1 output, selected opportunity, TradingThesisV1, Cuebook cue, or ResearchPackV1 into original Frame body copy. Use for one final Frame or three meaning-locked PostV1 siblings consumed by assemble-cuebook-publish-candidates. Preserve the creator's viewpoint, improve its reasoning and expression, and keep evidence, policy, settlement, and assistance provenance backstage. The only public destination is Frame, whose visible content is one title, one body, and one paired image. Use compile-cuebook-settlement-claim for optional internal settlement semantics. Do not use for social-platform variants, research without writing, corpus collection, commentator profiling, copying a living author's voice, automated publishing, or invented market facts.
+description: Render or freeze original Frame body copy. Default to one selected FramePreviewV1 and preserve its exact public copy during release freeze; generate three meaning-locked PostV1 siblings only when the creator explicitly requested alternatives. Preserve the creator's viewpoint and keep evidence, policy, settlement, and assistance provenance backstage. The only public destination is Frame. Do not use for social-platform variants, research without writing, living-author imitation, automated publishing, or invented market facts.
 license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
@@ -38,9 +38,13 @@ Read `references/rendering-method.md` for evidence classes, angle selection, pro
 - Keep viewpoint, inference, and observation honest: the viewpoint belongs to the creator; a mechanism may remain a hypothesis; hard market facts require Cuebook-linked evidence.
 - Never pad with generic context, repeated warnings, engagement bait, platform language, or workflow narration.
 
+## Selected Preview Freeze
+
+When the input is a confirmed `FramePreviewV1` candidate, do not draft again. Materialize one canonical `PostV1` whose Frame copy reconstructs the exact selected title/body pair, preserve its query/evidence refs, and run release checks only on that copy. Any editorial improvement requires returning a visibly revised preview to the creator for confirmation.
+
 ## Autonomous Candidate Mode
 
-When called by `$assemble-cuebook-publish-candidates`, use one batch generation pass to render exactly three passed, Frame-ready `PostV1` siblings from the same expression fingerprint and fact ledger. Use distinct openings: conviction first, evidence first, and catalyst/condition first. A substitute angle is allowed when one opening does not fit the source.
+When called for explicit alternatives by `$assemble-cuebook-publish-candidates`, use one batch generation pass to render exactly three passed, Frame-ready `PostV1` siblings from the same expression fingerprint and fact ledger. Use distinct openings: conviction first, evidence first, and catalyst/condition first. Do not enter this mode for the default one-preview path.
 
 - Return finished copy only. Do not expose outlines, rejected tensions, repair notes, or requests for another writing round.
 - Keep every canonical `PostV1` Frame-sized. The candidate assembler derives a title and its internal body/close split, then exposes only the canonical `title`, combined `body`, and paired `image` projection. Tags and split fields remain internal.

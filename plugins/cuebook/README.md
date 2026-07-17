@@ -26,11 +26,11 @@ claims, save artifacts, or publish.
 ## Create
 
 `create-cuebook-content` owns Frame writing and packaging. It preserves and
-improves the user's seed and authorship, calls Query when a material current
-claim needs support, and returns exactly three calibrated candidates through
-`CuebookCreationBundleV1`. Every candidate exposes only one title, one concise
-body, and one paired 2488 x 1056 viewpoint image. Evidence, disclosures,
-quality state, and an optional settlement claim/formula remain backstage.
+improves the user's seed, calls Query for material current claims, and returns
+one `FramePreviewV1` by default. Three alternatives are generated only when
+explicitly requested. Every Frame exposes one title, one concise body, and one
+paired 2488 x 1056 image; release contracts and extra derivatives wait until
+selection.
 
 Media upload, manifest registration, draft creation, prepare, first-party
 consent, and Frame publication remain explicit, authorized MCP steps. Create

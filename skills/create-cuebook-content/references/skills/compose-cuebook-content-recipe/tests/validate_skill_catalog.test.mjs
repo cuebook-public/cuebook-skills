@@ -86,6 +86,8 @@ test("legacy visuals stay internal and thesis chart stays automatic", () => {
   const preset = catalog.presets.find((item) => item.preset_id === "preset-publish-candidates");
   assert.ok(preset.optional_skill_ids.includes("render-cuebook-thesis-chart"));
   assert.ok(!preset.required_skill_ids.includes("render-cuebook-thesis-chart"));
+  assert.equal(preset.default_outputs[0].count, 1);
+  assert.match(preset.description, /明确要求/u);
 });
 
 const mutations = [

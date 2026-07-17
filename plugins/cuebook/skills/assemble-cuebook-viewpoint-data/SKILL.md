@@ -10,7 +10,7 @@ Turn an expression data request into one cutoff-safe, source-linked bundle. The 
 
 ## Workflow
 
-1. Validate `CreatorExpressionPlanV1` and freeze its root data requirements, text/visual surface routing, three candidate jobs, evidence shapes, exact Query tool bindings, visual Skill/renderer route hash, grammar, meaning fingerprint, decision cutoff, and temporal mode.
+1. Validate `CreatorExpressionPlanV1` and freeze its root data requirements, text/visual surface routing, retained candidate jobs, evidence shapes, exact Query tool bindings, visual Skill/renderer route hash, grammar, meaning fingerprint, decision cutoff, and temporal mode.
 2. Read `references/cuebook-data-supply.md`. Resolve instruments through durable entity and venue IDs before matching symbols.
 3. Resolve only the requested primitives from supplied `CuebookQueryBundleV1` result refs, `ResearchPackV1`, `MarketSeriesBatchV1`, `IndicatorPackV1`, or explicit caller data. Match every visual requirement to the exact capability and tool path locked in `visual_plan.execution_route.query_requests`; the route identifies provenance expectations but does not authorize this Create skill to call tools. A bounded tradable view should already carry the narrow proof-series request declared by the expression plan; do not broaden it into an everything package. Preserve query hash, result ref, source, observed time, available time, interval, timezone, unit, currency, rights, and sealed/forming state.
 4. Normalize each primitive without changing meaning:
@@ -65,7 +65,7 @@ For a publish-candidate run, return unresolved primitive requests to the parent 
 - Run independent quote, event, series, and official-source requests concurrently, then normalize once.
 - Cache by durable instrument ID, venue, interval, observation basis, provider/source hash, and time bucket. Preserve the original `observed_at` and `available_at` when a cached artifact is reused.
 - If an optional primitive misses its latency budget, take the expression plan's declared key-number or qualitative fallback. Do not hold the other candidate branches open.
-- Deduplicate identical requests across all three visual directions; one `ViewpointDataBundleV1` supplies the full candidate set.
+- Deduplicate identical requests across every retained visual direction; one `ViewpointDataBundleV1` supplies the selected direction or explicit candidate set.
 
 ## Hard Gates
 

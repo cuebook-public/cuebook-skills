@@ -677,8 +677,8 @@ export function validate(payload, { expectedSourceSemanticsHash = null } = {}) {
   }
 
   let candidateJobs = g(visualIntent, "candidate_jobs");
-  if (!Array.isArray(candidateJobs) || candidateJobs.length !== 3) {
-    errors.push(issue("VISUAL_CANDIDATE_JOBS", "$.visual_plan.intent.candidate_jobs", "Visual intent requires exactly three candidate jobs."));
+  if (!Array.isArray(candidateJobs) || ![1, 3].includes(candidateJobs.length)) {
+    errors.push(issue("VISUAL_CANDIDATE_JOBS", "$.visual_plan.intent.candidate_jobs", "Visual intent requires one selected job or three explicitly requested jobs."));
     candidateJobs = [];
   }
   const candidateFamilies = [];
@@ -710,14 +710,14 @@ export function validate(payload, { expectedSourceSemanticsHash = null } = {}) {
     const candidateRequirementRefs = new Set(stringList(g(candidate, "requirement_refs"), `${path}.requirement_refs`, errors));
     if (typeof family === "string") candidateRequirementRefsByFamily.set(family, candidateRequirementRefs);
   });
-  if (!setEquals(new Set(candidateFamilies), new Set(VISUAL_CANDIDATE_JOBS_BY_FAMILY.keys())) || candidateFamilies.length !== 3) errors.push(issue("VISUAL_CANDIDATE_FAMILY_COVERAGE", "$.visual_plan.intent.candidate_jobs", "Candidate jobs must include fast_read, proof, and system exactly once."));
-  if (VISUAL_CANDIDATE_JOBS.has(visualJob) && !candidateJobIds.includes(visualJob)) errors.push(issue("VISUAL_PRIMARY_JOB_COVERAGE", "$.visual_plan.intent.job", "The primary visual job must appear in the three candidate targets."));
+  if (candidateJobs.length === 3 && (!setEquals(new Set(candidateFamilies), new Set(VISUAL_CANDIDATE_JOBS_BY_FAMILY.keys())) || candidateFamilies.length !== 3)) errors.push(issue("VISUAL_CANDIDATE_FAMILY_COVERAGE", "$.visual_plan.intent.candidate_jobs", "Three requested jobs must include fast_read, proof, and system exactly once."));
+  if (VISUAL_CANDIDATE_JOBS.has(visualJob) && !candidateJobIds.includes(visualJob)) errors.push(issue("VISUAL_PRIMARY_JOB_COVERAGE", "$.visual_plan.intent.job", "The primary visual job must appear in the retained candidate targets."));
   if (candidateQuestions.length !== new Set(candidateQuestions).size) errors.push(issue("VISUAL_READER_QUESTION_UNIQUE", "$.visual_plan.intent.candidate_jobs", "Each candidate must answer a different reader question."));
 
   const targetEvidenceShapes = new Set(stringList(g(visualIntent, "target_evidence_shapes"), "$.visual_plan.intent.target_evidence_shapes", errors, { minimum: 1, maximum: 6 }));
   const unknownEvidenceShapes = setDifference(targetEvidenceShapes, EVIDENCE_SHAPES);
   if (unknownEvidenceShapes.size) errors.push(issue("VISUAL_EVIDENCE_SHAPE", "$.visual_plan.intent.target_evidence_shapes", `Unsupported evidence shapes: ${pyRepr(sorted(unknownEvidenceShapes))}.`));
-  if (!setEquals(candidateEvidenceShapeUnion, targetEvidenceShapes)) errors.push(issue("VISUAL_EVIDENCE_SHAPE_COVERAGE", "$.visual_plan.intent.target_evidence_shapes", "Target evidence shapes must equal the union of the three candidate shape sets."));
+  if (!setEquals(candidateEvidenceShapeUnion, targetEvidenceShapes)) errors.push(issue("VISUAL_EVIDENCE_SHAPE_COVERAGE", "$.visual_plan.intent.target_evidence_shapes", "Target evidence shapes must equal the union of the retained candidate shape sets."));
   const grammarRequired = new Set(["primary", "rationale"]);
   const grammarAllowed = new Set([...grammarRequired, "alternatives", "argument_grammar"]);
   const grammar = validateObject(g(visual, "grammar"), "$.visual_plan.grammar", grammarRequired, grammarAllowed, errors);

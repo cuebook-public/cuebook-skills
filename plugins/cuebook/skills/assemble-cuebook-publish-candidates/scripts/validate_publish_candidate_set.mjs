@@ -275,8 +275,9 @@ export function validate(payload, assetRoot = null) {
   if (settlementRef !== null && settlementRef !== undefined && !nonemptyString(settlementRef)) errors.push(issue("SETTLEMENT_REF", "$.lineage.settlement_claim_ref", "Settlement claim ref must be null or non-empty."));
 
   const policy = isObject(payload.generation_policy) ? payload.generation_policy : {};
-  const expectedPolicy = { candidate_count: 3, autonomous: true, user_iteration_required: false, calibration_owner: "skills", fallback_policy: "degrade_then_omit", linked_evidence_policy: "required_when_material" };
+  const expectedPolicy = { autonomous: true, user_iteration_required: false, calibration_owner: "skills", fallback_policy: "degrade_then_omit", linked_evidence_policy: "required_when_material" };
   for (const [key, expected] of Object.entries(expectedPolicy)) if (!pyEquals(policy[key], expected)) errors.push(issue("AUTONOMOUS_POLICY", `$.generation_policy.${key}`, `Expected ${pyrepr(expected)}.`));
+  if (![1, 3].includes(policy.candidate_count)) errors.push(issue("CANDIDATE_COUNT", "$.generation_policy.candidate_count", "Candidate count must be one selected Frame or three explicitly requested alternatives."));
   const retryLimit = policy.retry_limit;
   if (!pyInt(retryLimit) || pyNumber(retryLimit) < 0 || pyNumber(retryLimit) > 3) errors.push(issue("RETRY_LIMIT", "$.generation_policy.retry_limit", "Retry limit must be 0-3."));
   const budget = isObject(policy.copy_budget) ? policy.copy_budget : {};
@@ -348,7 +349,8 @@ export function validate(payload, assetRoot = null) {
   if (!Array.isArray(candidates)) { errors.push(issue("CANDIDATES", "$.candidates", "Candidates must be an array.")); candidates = []; }
   stats.candidate_count = candidates.length;
   if (candidates.length > 3) errors.push(issue("CANDIDATE_COUNT", "$.candidates", "At most three candidates are allowed."));
-  if (new Set(["ready_for_selection", "selected"]).has(state) && candidates.length !== 3) errors.push(issue("CANDIDATE_COUNT", "$.candidates", "Selectable state requires exactly three candidates."));
+  if (state === "ready_for_selection" && candidates.length !== 3) errors.push(issue("CANDIDATE_COUNT", "$.candidates", "Unselected alternatives require exactly three explicitly requested candidates."));
+  if (new Set(["ready_for_selection", "selected"]).has(state) && candidates.length !== policy.candidate_count) errors.push(issue("CANDIDATE_COUNT", "$.candidates", "Selectable output must match its declared one or three candidates."));
   if (state === "blocked" && candidates.length) errors.push(issue("BLOCKED_HAS_CANDIDATES", "$.candidates", "Blocked output must not expose partial candidates."));
 
   const ids = new Set(), labels = new Set(), angles = new Set(), posts = new Set(), directions = new Set(), previews = new Set(), compactPreviews = new Set(), htmlRefs = new Set(), normalizedCopies = new Set(), settlementProjections = new Set(), materialAnchorSets = new Set(), passedCandidates = new Set();

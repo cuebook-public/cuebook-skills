@@ -89,6 +89,21 @@ test("all 11 reverse-engineered archetypes validate", () => {
   assert.deepEqual(coveredPrimitives, PRIMITIVE_KINDS);
 });
 
+test("selection freeze may retain only the chosen visual job", () => {
+  const plan = makePlan(archetype("S1"));
+  const selected = plan.visual_plan.intent.candidate_jobs.find((item) => item.job === plan.visual_plan.intent.job);
+  plan.visual_plan.intent.candidate_jobs = [selected];
+  plan.visual_plan.intent.target_evidence_shapes = [...selected.evidence_shapes];
+  refreshVisualRoute(plan);
+  assertValid(plan);
+});
+
+test("visual planning rejects an accidental two-candidate middle state", () => {
+  const plan = makePlan(archetype("S1"));
+  plan.visual_plan.intent.candidate_jobs.pop();
+  assert.ok(resultCodes(validate(plan)).has("VISUAL_CANDIDATE_JOBS"));
+});
+
 test("argument grammar is optional and cannot replace the unified engine", () => {
   const plan = makePlan(archetype("X4"));
   delete plan.visual_plan.grammar.argument_grammar;

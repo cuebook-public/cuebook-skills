@@ -265,7 +265,7 @@ function readNetworkFreeHtml(htmlPath, requiredWidth, requiredHeight) {
   return html;
 }
 
-async function captureViewpoint(htmlArg, outputArg, browserOverride = null, ogHtmlArg = null) {
+async function captureViewpoint(htmlArg, outputArg, browserOverride = null, ogHtmlArg = null, options = {}) {
   const htmlPath = path.resolve(htmlArg);
   const outputDir = path.resolve(outputArg);
   const html = readNetworkFreeHtml(htmlPath, 1244, 528);
@@ -282,6 +282,7 @@ async function captureViewpoint(htmlArg, outputArg, browserOverride = null, ogHt
   const full = path.join(outputDir, "viewpoint-2488.png");
   const compact = path.join(outputDir, "viewpoint-622.png");
   const og = path.join(outputDir, "og-1200x630.png");
+  if (options.fullOnly === true) fs.rmSync(compact, { force: true });
   const startedAt = Date.now();
   const { chromium } = loadPlaywright();
   const browser = await chromium.launch({
@@ -290,16 +291,18 @@ async function captureViewpoint(htmlArg, outputArg, browserOverride = null, ogHt
     args: [...chromiumPlatformArgs(), "--font-render-hinting=none"],
   });
   try {
-    const captures = [
-      captureReliable(browser, htmlPath, 1244, 528, 2, full, allowDark),
-      captureReliable(browser, htmlPath, 622, 264, 1, compact, allowDark),
-    ];
+    const fullOnly = options.fullOnly === true;
+    const captures = [captureReliable(browser, htmlPath, 1244, 528, 2, full, allowDark)];
+    if (!fullOnly) captures.push(captureReliable(browser, htmlPath, 622, 264, 1, compact, allowDark));
     if (ogHtmlPath) captures.push(captureReliable(browser, ogHtmlPath, 1200, 630, 1, og, ogAllowDark));
-    const [fullPaint, compactPaint, ogPaint] = await Promise.all(captures);
+    const captured = await Promise.all(captures);
+    const fullPaint = captured[0];
+    const compactPaint = fullOnly ? null : captured[1];
+    const ogPaint = ogHtmlPath ? captured[fullOnly ? 1 : 2] : null;
     const derivatives = [
       { kind: "full", ref: path.basename(full), width: 2488, height: 1056, sha256: sha256(fs.readFileSync(full)), pixel_sha256: canonicalRgbaPixelSha256(full), painted_ratio: Number(fullPaint.paintedRatio.toFixed(6)) },
-      { kind: "compact_622", ref: path.basename(compact), width: 622, height: 264, sha256: sha256(fs.readFileSync(compact)), pixel_sha256: canonicalRgbaPixelSha256(compact), painted_ratio: Number(compactPaint.paintedRatio.toFixed(6)) },
     ];
+    if (!fullOnly) derivatives.push({ kind: "compact_622", ref: path.basename(compact), width: 622, height: 264, sha256: sha256(fs.readFileSync(compact)), pixel_sha256: canonicalRgbaPixelSha256(compact), painted_ratio: Number(compactPaint.paintedRatio.toFixed(6)) });
     if (ogHtmlPath) {
       derivatives.push({ kind: "og", ref: path.basename(og), source: path.basename(ogHtmlPath), width: 1200, height: 630, sha256: sha256(fs.readFileSync(og)), pixel_sha256: canonicalRgbaPixelSha256(og), painted_ratio: Number(ogPaint.paintedRatio.toFixed(6)) });
     }
@@ -309,7 +312,7 @@ async function captureViewpoint(htmlArg, outputArg, browserOverride = null, ogHt
       source_sha256: sha256(fs.readFileSync(htmlPath)),
       og_source: ogHtmlPath ? path.basename(ogHtmlPath) : null,
       og_source_sha256: ogHtmlPath ? sha256(fs.readFileSync(ogHtmlPath)) : null,
-      capture_mode: "parallel_sizes",
+      capture_mode: fullOnly ? "full_only" : "parallel_sizes",
       duration_ms: Date.now() - startedAt,
       derivatives,
     };
@@ -321,9 +324,12 @@ async function captureViewpoint(htmlArg, outputArg, browserOverride = null, ogHt
 }
 
 async function main() {
-  const [htmlArg, outputArg, ogArg] = process.argv.slice(2);
-  if (!htmlArg || !outputArg) throw new Error("Usage: capture_html_viewpoint.cjs <direction.html> <output-dir> [og-1200x630.html]");
-  const result = await captureViewpoint(htmlArg, outputArg, null, ogArg || null);
+  const args = process.argv.slice(2);
+  const fullOnly = args.includes("--full-only");
+  const positionals = args.filter((arg) => arg !== "--full-only");
+  const [htmlArg, outputArg, ogArg] = positionals;
+  if (!htmlArg || !outputArg || positionals.length > 3 || (fullOnly && ogArg)) throw new Error("Usage: capture_html_viewpoint.cjs <direction.html> <output-dir> [og-1200x630.html] [--full-only]");
+  const result = await captureViewpoint(htmlArg, outputArg, null, ogArg || null, { fullOnly });
   process.stdout.write(`${result.outputDir}\n`);
 }
 

@@ -1,10 +1,14 @@
 # Cuebook Creator Workflow Map
 
-This map targets `SkillCatalogV1` version `1.26.0`.
+This map targets `SkillCatalogV1` version `1.27.0`.
 
-## Candidate Fast Path
+## Creator Fast Preview
 
-For `publish_candidate_set`, execute `reuse/freshness check -> seed Query for material semantics -> research -> semantics -> expression fingerprint + visual intent route -> gap-only mixed Query when needed -> market primitives -> parallel post batch + three visual directions + optional settlement -> batch capture -> candidate assembly`. Defer program, media, selected visual, release, and publication nodes until selection.
+For an ordinary raw idea, execute `asset resolve -> one bounded parallel Query phase -> in-memory meaning lock -> one copy batch -> one stable-template render batch -> four lightweight checks -> FramePreviewV1`. Default to one candidate. Do not create the workflow DAG or the capability table below until selection. Three candidates are opt-in.
+
+## Selected Freeze Path
+
+After confirmation, execute `reuse selected preview/query refs -> minimal semantics/expression lineage -> selected PostV1 + selected visual direction -> full/compact/visibility-required OG -> deep audit + manifest -> one-candidate selected set -> Frame assembly`. Continue to upload and publication only when requested.
 
 ## Capability Ownership
 
@@ -25,12 +29,12 @@ For `publish_candidate_set`, execute `reuse/freshness check -> seed Query for ma
 | Program | plan derivatives | `plan-market-content-program` | ContentProgramV1 |
 | Text branch | compact text from expression plan | `render-cuebook-market-post` | PostV1 |
 | Data branch | resolve requested visual primitives | `assemble-cuebook-viewpoint-data` | ViewpointDataBundleV1 |
-| Viewpoint layout | generate and review three real typographic and spatial layouts | `direct-cuebook-viewpoint-visual` | VisualDirectionSetV1 |
+| Viewpoint layout | freeze one selected layout or generate three explicit alternatives | `direct-cuebook-viewpoint-visual` | VisualDirectionSetV1 |
 | Visual | render the selected adaptive compact visual | `render-cuebook-viewpoint-visual` | ViewpointVisualV1 |
 | Visual detail, optional | render real OHLC/K-line and settlement clock | `render-cuebook-thesis-chart` | ThesisChartV1 |
 | Settle, optional | compile post commitment | `compile-cuebook-settlement-claim` | SettlementClaimV1 |
 | Settlement math, automatic | compile executable variables, formulas, and lifecycle | `compile-cuebook-settlement-formula` | SettlementFormulaV1 |
-| Candidate assembly | pair three compact posts, three visuals, and shared settlement semantics for direct user selection | `assemble-cuebook-publish-candidates` | PublishCandidateSetV1 |
+| Candidate assembly | freeze one selected Frame or pair three explicit alternatives | `assemble-cuebook-publish-candidates` | PublishCandidateSetV1 |
 | Render | media package | `render-cuebook-market-media` | MediaPackageV1 |
 | Enrich | compute OHLCV indicators | `compute-cuebook-market-indicators` | IndicatorPackV1 |
 | Assemble | build product viewpoint card | `assemble-cuebook-viewpoint-card` | ViewpointCardV1 |
@@ -40,9 +44,11 @@ For `publish_candidate_set`, execute `reuse/freshness check -> seed Query for ma
 
 ProfileV1 and MediaFormatV1 are versioned library inputs. Corpus collectors and distillers run when those libraries need refreshing, not on every content run. `render-cuebook-logic-card`, `render-cuebook-market-figure`, and `render-cuebook-market-signal` remain internal compatibility modules and are not preset choices. `render-cuebook-thesis-chart` is not replaced: it remains the automatic optional full-chart route beside the primary compact viewpoint visual.
 
-The core Create branch is:
+The default Create branch is:
 
-`seed CuebookQueryBundleV1 + user input -> ResearchPackV1/MarketViewSemanticsV1 -> optional TradeLogicProfileV1/TradingThesisV1 -> CreatorExpressionPlanV1 + VisualIntentRouteV1 -> optional gap CuebookQueryBundleV1 -> (three PostV1 siblings || ViewpointDataBundleV1 -> three VisualDirectionSetV1 previews) -> optional SettlementClaimV1 -> PublishCandidateSetV1 -> user selection -> ViewpointVisualV1/ViewpointCardV1 -> ReleaseBundleV1`
+`user input -> bounded CuebookQueryBundleV1 -> FramePreviewV1 -> user selection -> selected release artifacts -> FrameDraftAssemblyV1 -> optional publish`
+
+The former full research/program/candidate DAG remains available for explicit advanced batches and postmortems; it is not the default preview route.
 
 `PostV1` and `ViewpointDataBundleV1` are parallel children of the same expression plan and compatible immutable Query bundles. Both downstream branches preserve its meaning fingerprint and visual route hash. No Create node calls a read MCP tool directly. Trade logic, thesis, and settlement are absent for source-only non-trade semantics.
 
@@ -79,9 +85,9 @@ For each render, candidate, card, media, and release node, walk current gate-bea
 | Scenario | Required path |
 | --- | --- |
 | Source-only commentary | intake -> recipe/triage -> gate/route -> research -> semantics -> expression -> post -> release |
-| Viewpoint visual | research/creator input -> semantics -> expression -> post + data -> three static layouts at two sizes -> selected compact visual -> optional full thesis chart -> release |
+| Viewpoint visual | raw idea -> one fast preview -> selection -> one release-grade layout at required sizes -> release |
 | Viewpoint card | research/creator input -> semantics -> optional trade protocol -> expression -> post + data -> static layouts -> selected visual -> optional settlement -> card/release |
-| Direct candidate selection | research/creator input -> semantics -> expression -> three compact posts + data -> three static layouts at two sizes -> optional settlement proposal -> candidate set -> user selection |
+| Direct candidate selection | explicit three-request -> shared evidence/meaning -> three batched copies + template previews -> user selection -> selected release freeze |
 | Daily desk | intake -> recipe/triage -> gate/route -> research -> semantics -> expression -> program -> post/media -> release |
 | Event lifecycle | intake -> recipe/triage -> gate/route -> research -> semantics -> optional trade protocol -> expression -> program -> pre/live/post outputs -> optional settlement -> release/expiry |
 | Owned-web article | research -> semantics -> expression -> program -> post/media -> optional visual -> release |

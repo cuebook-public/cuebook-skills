@@ -24,7 +24,7 @@
       "type": "object", "additionalProperties": false,
       "required": ["candidate_count", "autonomous", "user_iteration_required", "calibration_owner", "fallback_policy", "linked_evidence_policy", "retry_limit", "copy_budget", "visual_visible_char_max"],
       "properties": {
-        "candidate_count": {"const": 3},
+        "candidate_count": {"enum": [1, 3]},
         "autonomous": {"const": true},
         "user_iteration_required": {"const": false},
         "calibration_owner": {"const": "skills"},

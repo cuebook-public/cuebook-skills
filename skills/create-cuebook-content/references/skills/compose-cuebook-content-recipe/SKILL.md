@@ -1,12 +1,14 @@
 ---
 name: compose-cuebook-content-recipe
-description: Compose, validate, revise, or resolve a frontend-selected Cuebook Frame recipe from news, calendar events, narratives, trade ideas, trade history, creator profiles, visual formats, and optional creator skills. Use when a user wants to pick a few items from each Cuebook category like ingredients, apply a saved preset, choose analysis and voice controls, or turn those choices into a versioned ContentRecipeV1 before research and drafting. The public creation destination is always Frame, with one title, one body, and one paired image. Do not use to write final copy, bypass evidence gates, place trades, or publish externally.
+description: Compose or validate an advanced frontend-selected Cuebook Frame recipe after a fast preview, or when the user explicitly chooses ingredients, presets, analysis controls, batches, or three alternatives. The public destination is always Frame. Do not invoke this contract-heavy recipe step for an ordinary raw idea that only needs one quick Frame preview; do not write final copy, bypass evidence gates, place trades, or publish externally.
 license: Proprietary. Cuebook internal; see the repository README for terms.
 ---
 
 # Compose Cuebook Content Recipe
 
 Turn creator selections into one deterministic recipe that the workflow orchestrator can resolve. Keep the recipe as intent and configuration; facts, research, prose, approvals, and publication receipts stay in their owning artifacts.
+
+The ordinary raw-idea path bypasses this Skill and returns `FramePreviewV1` directly. Enter recipe composition only after preview selection or for explicit advanced controls. The default preset requests one Frame; a count of three is opt-in.
 
 ## Workflow
 

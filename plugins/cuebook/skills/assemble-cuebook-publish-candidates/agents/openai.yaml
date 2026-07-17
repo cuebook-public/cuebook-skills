@@ -1,4 +1,4 @@
 interface:
   display_name: "Assemble Frame Candidates"
-  short_description: "Build three Cuebook Frames with title, body, and paired image"
-  default_prompt: "Use the cached fast path to generate three concise Cuebook Frame candidates. Preserve the creator's viewpoint, attach typed evidence and optional settlement only as backstage metadata, pair each candidate with its launch-linted visual, and expose exactly title, body, and one image in the frontend projection."
+  short_description: "Freeze one selected Frame or three requested alternatives"
+  default_prompt: "Freeze the selected Cuebook Frame without regenerating siblings. Preserve its exact title, body, paired image, evidence refs, and creator ownership; generate three alternatives only when explicitly requested."

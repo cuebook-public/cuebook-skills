@@ -136,8 +136,8 @@ export function validate(payload, queryBundle = null) {
   if (state === "ready" && queryState === "partial") {
     errors.push(issue("READY_WITH_PARTIAL_QUERY", "$.state", "A partial query can produce only conditional creation."));
   }
-  if (["ready", "conditional"].includes(state) && (candidates.length !== 3 || candidates.length !== new Set(candidates).size || !truthy(candidateSetRef))) {
-    errors.push(issue("THREE_CANDIDATES", "$.candidate_refs", "Ready or conditional creation requires one set of exactly three unique candidates."));
+  if (["ready", "conditional"].includes(state) && (![1, 3].includes(candidates.length) || candidates.length !== new Set(candidates).size || !truthy(candidateSetRef))) {
+    errors.push(issue("CANDIDATE_COUNT", "$.candidate_refs", "Frozen creation requires one selected candidate or three explicitly requested unique candidates."));
   }
   if (state === "blocked" && !hardFailures.length) {
     errors.push(issue("BLOCKED_WITHOUT_FAILURE", "$.quality_report.hard_failures", "Blocked creation requires a hard failure."));

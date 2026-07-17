@@ -1,4 +1,4 @@
 interface:
   display_name: "编排 Cuebook 观点图"
-  short_description: "为 Frame 生成三套可校验、人物自适应的配对观点图"
-  default_prompt: "使用 $direct-cuebook-viewpoint-visual 保留创作者观点并锁定来源与交易逻辑递进，读取配对标题和正文后，让图补充两到四个推演节点、真实观察趋势和必要的观察期或到期标记；不重复整段正文、不画未来价格路径。按快速判断、证据证明、系统演绎生成三套静态图，并完成来源、逻辑、排版和品牌审计。"
+  short_description: "把已选 Frame 图冻结为可发布视觉"
+  default_prompt: "把已选中的 Frame 预览图重组为一套可发布视觉，保留创作者观点、来源绑定和交易逻辑；只为明确要求的备选方案生成三套方向。"

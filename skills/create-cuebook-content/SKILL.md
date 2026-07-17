@@ -1,41 +1,51 @@
 ---
 name: create-cuebook-content
-description: Create Cuebook Frames from a user's explicit idea, selected Cuebook material, or an existing CuebookQueryBundleV1. Use when the requested deliverable is a creator-owned market viewpoint expressed as one title, one body, and one paired image, optionally backed by hidden settlement semantics and a later approved Frame publication. Preserve authorship, improve the creator's expression, invoke query-cuebook whenever material current news, market data, fundamentals, comparators, history, or settlement bindings are missing, then return three calibrated Frame choices only when the workflow is not blocked. Do not create X, Xiaohongshu, Reddit, Telegram, thread, caption, or other social-platform variants; do not use for read-only search, summaries, reports, data tables, or factual charts; do not silently publish, place trades, fabricate query results, or present a source opinion as the user's own view without explicit adoption.
+description: Turn a user's market idea or selected Cuebook material into a creator-owned Frame with one title, one body, and one paired image. Default to one best fast preview; generate three choices only when the user explicitly asks for alternatives. Use Cuebook data for material current claims, preserve the user's judgment, improve its expression, and defer release-grade contracts, compact/OG renders, settlement freezing, upload, consent, and publication until the user selects and confirms. Do not create X, Xiaohongshu, Reddit, Telegram, thread, caption, or other social-platform variants; do not silently publish, place trades, fabricate query results, build a custom OAuth client, or present a source opinion as the user's own without explicit adoption.
 license: Proprietary. Cuebook internal; see the repository README for terms.
-compatibility: Requires a connected Cuebook MCP server for asset resolution and market data; degrades to partial results, never invented values, when tools are unavailable. Node.js 18+ for validators.
+compatibility: Requires a connected Cuebook MCP server for current market claims; degrades to a conditional or blocked preview, never invented values, when tools are unavailable. Node.js 18+ with Playwright and local Chromium/Chrome for deterministic preview rendering.
 ---
 
 # Create Cuebook Content
 
-Provide one creation entrance for Frame writing, its paired viewpoint image, optional settlement semantics, and release preparation. Creation owns the creator's expression. It may consume query output, but query data never becomes authorship by itself.
+Make the creator's idea clearer, sharper, and more visually legible. The visible creative is always one title, one body, and one paired image. Keep Cuebook evidence, ownership, warnings, settlement semantics, hashes, and workflow state backstage.
 
-## Workflow
+## Default: Fast Preview
 
-1. Capture and validate `CreatorSeedV1` from `references/creator-seed-v1.schema.json`. When the input is free-form visitor text still missing a verified asset, direction, or horizon, run `references/skills/intake-cuebook-viewpoint/SKILL.md` first: it triages 查询 versus 表达观点, elicits only the missing fields, verifies them, and returns a confirmed `ViewpointIntakeV1` seed — or routes a pure lookup to query without creation. Preserve the seed verbatim and classify authorship as `creator_led`, `cuebook_assisted`, or `cuebook_generated`. A source post or Cuebook story is material, not proof that the current creator adopts its trade.
-2. Compile the creator's requested subject, direction, horizon, mechanism, evidence needs, visual preference, and settlement intent. The destination is fixed to Frame; do not ask the user to choose a platform. A ready or conditional creation always includes both text and one paired visual.
-3. Detect the latest compatible supplied artifact: creator seed, Query bundle, semantics, expression plan, viewpoint-data bundle, visual direction set, selected visual, or release bundle. Resume from that stage and do not reconstruct already validated artifacts.
-4. Decide whether a seed query is required for semantics. Material current news, PR, price, valuation, comparator, history, or settlement premise requires a fresh or reusable `CuebookQueryBundleV1`. Freeze its query ID, content hash, result refs, source refs, state, `as_of`, freshness, warnings, and unavailable capabilities. After the expression plan locks the visual intent route, let the orchestrator issue one additional mixed Query only for unresolved routed requirements. Rendering branches never browse or call providers independently.
-5. Run `references/skills/compose-cuebook-content-recipe/SKILL.md`, then `references/skills/orchestrate-cuebook-creator-workflow/SKILL.md`. The workflow may use query-layer research skills through the explicit `create -> query` module edge.
-6. Preserve one meaning fingerprint across text, visual, and settlement branches. Produce exactly three meaning-equivalent Frame candidates with real differences in expression and composition only when creation is `ready` or `conditional`. Each candidate's only creator-facing projection is one title, one body, and one paired image.
-7. Compile a settlement claim and formula only when the creator supplied or accepted the required asset, direction or comparator, horizon, observation rule, and threshold semantics.
-8. Require one confirmed candidate and its paired selected visual direction before assembling `FrameDraftAssemblyV1`. Verify that its public projection contains exactly `frame.title`, `frame.body`, `frame.image_ref`, and image `alt_text`; render only the first three. Set `frame_draft.title` to the selected `copy.headline` exactly and `frame_draft.body` to trimmed `copy.body + "\n\n" + copy.close`; both must equal the public `frame` projection and must never be rewritten after selection. Carry the selected direction-set ref, the exact encoded PNG byte hash for each media role, the authoritative per-role manifest alt text, the `SettlementIntentV1` accepted during selection, the visual-manifest lineage hash, and a fresh **UUIDv7** `idempotency_key`. Manifest `role_hashes` are canonical RGBA8 pixel hashes and must never substitute for byte hashes. Run the pre-upload Frame handoff preflight below; non-settleable directions assemble no intent and stay store-only.
-9. Return `CuebookCreationBundleV1`. Selecting a settlement format only compiles artifacts; it never registers them. Saving, settlement registration, and publishing use the separate approved `write_actions` in the creation menu.
-10. When the user asks to publish and the Frame MCP family is available, follow the frozen sequence in `assets/plugin/mcp-capability-map-v1.json`: `get_frame_capabilities` → `begin_frame_media_upload` for each role → signed HTTPS PUT for each role → `complete_frame_media_upload` for each role → poll owner-only `get_frame_media_status` until encoded-byte and canonical-pixel receipts are ready → `register_frame_visual_manifest` → `create_frame_draft` with `FrameDraftAssemblyV1 + FrameDraftAssemblyBindingV1` (or `update_frame_draft` under optimistic concurrency) → `prepare_frame_publish` → the user approves the exact prepared hash on Cuebook's first-party consent page → poll `get_frame_action_consent` → `publish_frame` → `get_frame` using the receipt's versioned Frame ref. The status call returns processing and hashes only: never pull image bytes, dereference a display URL, or treat a rendition as an independently retrievable product. If the host cannot perform the signed PUT, return `blocked/client_upload_capability_required`; never fall back to base64. Run the registered handoff preflight below before draft creation.
-11. Give every mutation its own fresh lowercase UUIDv7. The assembly key belongs only to `create_frame_draft`; begin, complete, register, update, prepare, publish, correction, and withdrawal commands never reuse it or each other's keys. Replaying the same key with the same payload recovers the same receipt; changing the payload under that key is a conflict. Content fixes after release use `create_frame_correction_draft` → `prepare_frame_correction_publish` → first-party consent → `publish_frame_correction`, while preserving the frozen contract. Stopping distribution uses `prepare_frame_withdraw` → first-party consent → `withdraw_frame`. A tool absent from `tools/list` or returning unavailable means that phase is not enabled; report the state and do not fall back to a legacy write.
+Use `preview_fast` unless the user explicitly asks to freeze, upload, or publish an already selected Frame.
 
-## Creator Experience Contract
+1. Preserve the user's original wording and extract subject, direction, horizon, claim, proposed mechanism, and next observable in memory. Ask only when subject, direction, or horizon cannot be inferred safely. Treat the user's view as the idea to improve, not a claim to debunk before helping.
+2. Use the plugin-provided `cuebook` MCP connection. Resolve the asset once, then issue the smallest independent reads concurrently through `references/skills/query-cuebook/SKILL.md`. Reuse a compatible fresh query bundle or cache entry. Do not scan generic MCP resources repeatedly, implement OAuth/DCR, exchange tokens, or create a local HTTP client. If the host reports unauthorized, request the host's normal Cuebook reconnect once and resume from the frozen request.
+3. For material current news, prices, positioning, valuation, market series, comparators, or settlement premises, bind one `CuebookQueryBundleV1`. Batch compatible reads after asset resolution and freeze only the result refs actually used. A partial usable bundle yields a conditional preview; unavailable material data blocks the preview instead of triggering web-search substitution or invented values.
+4. Build one compact `FramePreviewV1` directly. Do **not** materialize CreatorFeedV1, ContentOpportunitySetV1, ContentRecipeV1, ResearchPackV1, MarketViewSemanticsV1, CreatorExpressionPlanV1, ViewpointDataBundleV1, PostV1, VisualDirectionSetV1, PublishCandidateSetV1, a workflow DAG, settlement formula, or release bundle before the creator sees the preview. Use those contracts only after selection or for an explicitly requested advanced workflow.
+5. Generate the title and body in one model pass. Default to one recommended candidate. Produce three only when the user explicitly requests alternatives; generate all three copy variants in one batch from the same meaning lock. Keep the creator's viewpoint, Cuebook-supported observation, and proposed mechanism distinct internally but fluent in public copy.
+6. Render the paired image with the stable `verdict`, `proof`, or `system` template through `scripts/render_frame_previews.mjs`. One candidate uses the best-fitting template; an explicit three-candidate request uses all three once. Render only the 2488 x 1056 publication preview at this stage. Do not hand-author HTML, copy fonts into every task, render compact/OG derivatives, or run release audits before selection. A host-approved shared Noi font cache may be referenced; otherwise use the preview fallback and stage production fonts during selection freeze.
+7. Run only four preview checks: creator ownership, source binding, copy fit, and successful image render. Validate with `scripts/validate_frame_preview.mjs`. Return the title, body, and image immediately when they pass. Internal packaging must never delay an already valid preview.
+8. Add one short handoff outside the Frame: name a specific strength in the creator's idea, say what Cuebook concretely helped support or structure, and suggest one useful next observation. Do not use generic praise or a marketing slogan.
 
-- Begin with the creator's actual judgment. Treat it as the idea to improve, not a claim to debunk before helping.
-- Keep three layers distinct internally: the creator-owned viewpoint, Cuebook-supported reasoning or hypothesis, and Cuebook-backed observed facts. Combine them fluently in the Frame without mislabeling ownership.
-- Evidence may strengthen, connect, narrow, or condition the viewpoint. If fresh Cuebook data creates a material contradiction, state the conflict plainly and let the creator choose an honest version; never silently replace their view or turn the Frame into a correction lesson.
-- Make the result feel like an upgrade: sharper title, concise causal body, and an image that makes the reasoning, observed trend, and time horizon easier to grasp. Support the user; do not lecture, score, or expose internal caveats unless they change the claim.
-- Keep text and image complementary. The title and body carry the hook, viewpoint, and concise mechanism. The image carries two to four reasoning beats, observed evidence or trend, and an observation-window, horizon, or accepted settlement marker when material. Never draw a fabricated future price path.
-- Keep tags, candidate labels, evidence ledgers, source counts, quality scores, settlement objects, disclosures, and workflow state backstage. The creative shown to the user is only title, body, and one image.
-- After delivering, selection, or publication, add one short conversational handoff outside the Frame: acknowledge a specific strength in the creator's idea, say what Cuebook concretely helped support or structure without taking ownership, and suggest one useful next watch, comparison, follow-up, or settlement check. Do not use generic praise or a marketing slogan.
+```bash
+node scripts/render_frame_previews.mjs frame-preview-render-v1.json ./preview-output
+node scripts/validate_frame_preview.mjs frame-preview-v1.json --asset-root ./preview-output
+```
 
-## Frame Handoff Preflight
+## Preview Latency Contract
 
-Before upload, prove the assembly still carries the exact user-selected content, paired visual direction, capture artifacts, and encoded PNG hashes:
+- Warm target: return one complete Frame in 90-180 seconds; never plan more than five minutes of preview work.
+- Use at most one asset-resolution step, one batched query phase, one copy generation pass, one template-render batch, and one lightweight validation pass.
+- Cache canonical asset resolution, compatible query bundles by hash and freshness, stable templates, browser discovery, and the host-approved font location.
+- Retry only the failed query, copy, or image candidate. Never restart the full chain.
+- If a valid title, body, and image exist, show them before doing any selection-freeze or publication work.
+
+## Selection Freeze
+
+Run this phase only after the user selects a preview or asks to continue with the sole recommended preview.
+
+1. Freeze the exact selected title, body, image, creator view, query refs, and image byte hash. Do not rewrite them silently.
+2. Run `references/skills/orchestrate-cuebook-creator-workflow/SKILL.md` from the selected preview, materializing only contracts required for the chosen Frame. Skip feed normalization, opportunity selection, recipe composition, program planning, and multi-candidate calibration unless the user explicitly requested those features.
+3. Use `references/skills/assemble-cuebook-publish-candidates/SKILL.md` only to convert the selected preview into release lineage; do not regenerate unselected siblings. Compile settlement claim/formula only when the user explicitly chose a settleable format and accepted every required field.
+4. Re-render only the selected direction with production Noi fonts. Reuse a validated shared font cache when available; otherwise stage fonts once. Produce compact and, for public/unlisted visibility, OG derivatives. Then run full typography, collision, binding, alt-text, byte-hash, canonical-pixel-hash, capture, and manifest checks.
+5. Assemble `FrameDraftAssemblyV1 + FrameDraftAssemblyBindingV1` only after the selected content and all required media roles are frozen. The assembly's media hashes are encoded PNG byte hashes; manifest `role_hashes` are canonical RGBA8 pixel hashes.
+
+Before upload, validate the selected handoff:
 
 ```bash
 node scripts/validate_frame_draft_assembly.mjs assembly.json \
@@ -44,53 +54,29 @@ node scripts/validate_frame_draft_assembly.mjs assembly.json \
   --capture-report capture-report.json
 ```
 
-After manifest registration, repeat the same proof with the server binding and locally built manifest. This adds registered lineage, authoritative alt text, and canonical pixel-hash checks:
+## Publish
 
-```bash
-node scripts/validate_frame_draft_assembly.mjs assembly.json \
-  --candidate-set publish-candidate-set-v1.json \
-  --direction-set visual-direction-set-v1.json \
-  --capture-report capture-report.json \
-  --binding binding.json \
-  --visual-manifest frame-visual-manifest-v1.json
-```
+Publish only after explicit user intent and only through the frozen Frame MCP sequence in `assets/plugin/mcp-capability-map-v1.json`:
 
-## Query Use
+`get_frame_capabilities` → begin each media upload → signed HTTPS PUT → complete each media upload → poll owner-only `get_frame_media_status` → `register_frame_visual_manifest` → create/update draft with assembly plus registered binding → prepare → first-party consent bound to `prepared_hash` → publish → `get_frame` readback.
 
-- Reuse a compatible query bundle when its subjects, basis, cutoff, and freshness satisfy the creation request.
-- Run a new seed query when a material semantic premise changed or expired. Run a gap query only after the expression plan declares a visual requirement not covered by compatible frozen results.
-- Mark `query_binding.required: false` only when the output contains no material current claim, such as a supplied evergreen explanation or formatting-only transformation.
-- A partial usable query makes creation `conditional`. An unavailable or blocked required query makes creation `blocked`, with no candidate set and no candidate refs.
+- Never pull image bytes back through MCP, browse a display URL, use a standalone media-retrieval operation, or fall back to base64.
+- Give every mutation its own fresh lowercase UUIDv7. Replay the same key only with the identical payload.
+- If a required capability is absent, stop at the latest completed phase without a legacy write fallback.
+- Corrections and withdrawals use their dedicated prepare → first-party consent → execute flows.
 
-## Artifact Entry Routing
+After manifest registration, repeat the assembly validator with `--binding` and `--visual-manifest` before draft creation.
 
-- `CreatorSeedV1` or raw idea: run the complete creation route.
-- `CuebookQueryBundleV1`: reuse it for semantics, then plan expression and query only visual gaps.
-- `MarketViewSemanticsV1`: start at expression planning.
-- `CreatorExpressionPlanV1`: verify its meaning and visual route hashes, then start at gap resolution or data assembly.
-- `ViewpointDataBundleV1`: start at visual direction composition.
-- `VisualDirectionSetV1`: start at selection or final rendering.
-- `ViewpointVisualV1`: skip visual work and continue with card, release, or approved write handling.
+## Creator Experience
 
-Compatibility requires matching schema, plan revision, hashes, cutoff, freshness, rights, basis, and passed gates. A merely present artifact is not automatically reusable.
+- Optimize the creator's intended judgment before adding caveats. Evidence may strengthen, connect, narrow, or condition it.
+- If fresh Cuebook data materially contradicts the view, state the conflict plainly and let the creator choose; never silently replace the idea or turn the result into a correction lesson.
+- The body carries the hook, judgment, and concise causal read. The image carries two to four reasoning beats, observed evidence or trend, and the observation window, horizon, or accepted settlement marker when material.
+- Never fabricate a future price path. A mechanism may remain labeled as the creator's hypothesis.
+- Show no tags, labels, source counts, scores, evidence ledgers, settlement panels, disclosures, or workflow state beside the creative.
 
-## Creation Boundary
+## Outputs
 
-- A read-only request routes to `references/skills/query-cuebook/SKILL.md` and stops there.
-- Creation may invoke query. Query may never invoke creation.
-- Do not write in a source commentator's first person, mimic signature language, or claim a source trade as the current creator's position.
-- A sourced stance requires explicit adopted claim refs and an adoption confirmation unless the artifact is clearly labeled `cuebook_generated`.
-- Do not place trades or silently publish. Frame drafts, media uploads, settlement registration, and publishing are separate authorized writes with explicit approval, exact hashes, OAuth scope, and UUIDv7 idempotency rules. The legacy `save_creator_artifact` and `register_settlement_claim` writes are superseded by the Frame draft/publish family and must not be reintroduced.
-
-## Output
-
-Return the contract in `references/cuebook-creation-bundle-v1.schema.json`. Validate it with:
-
-```bash
-node scripts/validate_creator_seed.mjs creator-seed-v1.json
-node scripts/validate_creation_bundle.mjs creation-bundle-v1.json --query-bundle query-bundle-v1.json
-```
-
-Use `references/skill-assembly-golden.json` as the cross-repository `FrameDraftAssemblyV1 + FrameDraftAssemblyBindingV1` compatibility fixture.
-
-Use `assets/plugin/creation-menu-v1.json` for product-facing creation choices and `assets/plugin/cuebook-modules-v1.json` for the module dependency boundary.
+- Fast preview: return `FramePreviewV1` from `references/frame-preview-v1.schema.json` and render only `candidate.frame.title`, `candidate.frame.body`, and `candidate.frame.image_ref`; attach `alt_text` to the image.
+- Selected/frozen creation: return `CuebookCreationBundleV1` from `references/cuebook-creation-bundle-v1.schema.json` and validate it with `scripts/validate_creation_bundle.mjs`.
+- Cross-repository Frame compatibility: keep `references/skill-assembly-golden.json` byte-compatible with the backend fixture.

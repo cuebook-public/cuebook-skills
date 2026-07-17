@@ -883,9 +883,11 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
   }
 
   let directions = payload.directions;
-  if (!Array.isArray(directions) || directions.length !== 3) {
-    errors.push(issue("DIRECTION_COUNT", "$.directions", "Exactly three directions are required."));
+  if (!Array.isArray(directions) || ![1, 3].includes(directions.length)) {
+    errors.push(issue("DIRECTION_COUNT", "$.directions", "Use one selected direction or three preview directions."));
     directions = [];
+  } else if (directions.length === 1 && state !== "selected") {
+    errors.push(issue("DIRECTION_COUNT", "$.directions", "A single release-grade direction is valid only after selection."));
   }
   const directionIds = new Set();
   const htmlRefs = new Set();
@@ -1729,10 +1731,10 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
     }
   }
 
-  if (!setEquals(designLogics, DESIGN_LOGICS)) {
+  if (directions.length === 3 && !setEquals(designLogics, DESIGN_LOGICS)) {
     errors.push(issue("DESIGN_LOGIC_COVERAGE", "$.directions", "Directions must include product_native, benchmark_transfer, and content_native exactly once."));
   }
-  if (expressionRecipeCount > 0 && expressionRecipeCount < 3) {
+  if (directions.length === 3 && expressionRecipeCount > 0 && expressionRecipeCount < 3) {
     errors.push(issue("EXPRESSION_RECIPE_PARTIAL", "$.directions", "Expression recipes must be absent for all legacy directions or present for all three."));
   }
   if (expressionRecipeCount === 3) {
@@ -1752,11 +1754,11 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
       errors.push(issue("NEWS_SYNTHESIS_REQUIRED", "$.directions", "Three or more selected material news events require one news-synthesis system candidate."));
     }
   }
-  if (financeRouteCount > 0 && financeRouteCount < 3) {
+  if (directions.length === 3 && financeRouteCount > 0 && financeRouteCount < 3) {
     errors.push(issue("FINANCE_ROUTE_PARTIAL", "$.directions", "Finance route fields must be present and valid for all three directions or omitted for legacy artifacts."));
   }
-  if (require_finance_route && financeRouteCount !== 3) {
-    errors.push(issue("FINANCE_ROUTE_COVERAGE", "$.directions", "Strict finance generation requires three complete finance routes."));
+  if (require_finance_route && financeRouteCount !== directions.length) {
+    errors.push(issue("FINANCE_ROUTE_COVERAGE", "$.directions", "Strict finance generation requires a complete route for every retained direction."));
   }
   if (financeRouteCount === 3) {
     if (compositionArchetypes.size !== 3) {
@@ -1767,7 +1769,7 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
       errors.push(issue("EDITORIAL_STATEMENT_CAP", "$.directions", "At most one direction may use the editorial_statement composition archetype."));
     }
   }
-  if (designVariance !== null && designVariance >= 7) {
+  if (directions.length === 3 && designVariance !== null && designVariance >= 7) {
     const structuralVariance = Boolean(
       setIntersects(layoutGrids, new Set(["asymmetric_stage", "comparison_field", "freeform"]))
       || setIntersects(layoutAlignments, new Set(["split", "mixed"])),
@@ -1782,10 +1784,10 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
   if (visualDensity !== null && visualDensity >= 8 && layoutDensities.has("quiet")) {
     errors.push(issue("DENSITY_DIAL_MISMATCH", "$.directions", "Visual density 8-10 cannot produce a quiet direction."));
   }
-  if (!setEquals(paletteStrategies, PALETTE_STRATEGIES)) {
+  if (directions.length === 3 && !setEquals(paletteStrategies, PALETTE_STRATEGIES)) {
     errors.push(issue("PALETTE_STRATEGY_COVERAGE", "$.directions", "Directions must include creator_native, thesis_native, and contrast_variant exactly once."));
   }
-  if (presetIds.size !== 3 || paletteFamilies.size !== 3) {
+  if (directions.length === 3 && (presetIds.size !== 3 || paletteFamilies.size !== 3)) {
     errors.push(issue("PALETTE_DIVERSITY", "$.directions", "Three sibling directions must use three distinct registered palette presets."));
   }
   for (const [strategy, presetId] of paletteChoices) {
@@ -1794,10 +1796,10 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
     }
   }
 
-  if (!routes.has("claim_first")) {
+  if (directions.length === 3 && !routes.has("claim_first")) {
     errors.push(issue("ROUTE_COVERAGE", "$.directions", "One claim-first direction is required."));
   }
-  if (!setIntersects(routes, new Set(["evidence_first", "reasoning_first", "strategy_first", "freeform"]))) {
+  if (directions.length === 3 && !setIntersects(routes, new Set(["evidence_first", "reasoning_first", "strategy_first", "freeform"]))) {
     errors.push(issue("ROUTE_COVERAGE", "$.directions", "At least one non-claim route is required."));
   }
 

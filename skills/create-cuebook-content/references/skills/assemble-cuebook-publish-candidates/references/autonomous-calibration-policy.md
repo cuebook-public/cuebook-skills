@@ -2,7 +2,7 @@
 
 ## Goal
 
-Deliver three selectable finished candidates without a conversational repair loop. Calibration is a production step, not public content.
+Freeze one selected finished Frame by default, or three selectable alternatives when explicitly requested, without a conversational repair loop. Calibration is a production step, not public content.
 
 ## Resolution Order
 
@@ -27,7 +27,7 @@ Compile material evidence into `material_evidence.requirements`. Each requiremen
 | `market_series` | Series and instrument refs, metric, interval, synchronized window, timezone, and observation basis. |
 | `settlement_reference` | Bound settlement claim ref and the five eligibility fields: metric, operator, threshold, deadline, and authoritative source. |
 
-Every candidate must include every required anchor. Preserve the same anchor ID, request class, source metadata, and typed payload across all three; copy or layout variation never authorizes evidence-type drift. A search snippet is not an anchor, `N/M` is a resolved metric result rather than missing data, and a bare price without its observation basis is unresolved.
+Every retained candidate must include every required anchor. Preserve the same anchor ID, request class, source metadata, and typed payload across explicit alternatives; copy or layout variation never authorizes evidence-type drift. A search snippet is not an anchor, `N/M` is a resolved metric result rather than missing data, and a bare price without its observation basis is unresolved.
 
 ## Fast Resolution
 
@@ -59,7 +59,7 @@ Research and market-data refresh run in parallel. Revalidate one stale primitive
 
 ## Retry Policy
 
-Use one repair round per failed branch by default and a second only for source or rendering failure. A failed attempt is never returned. Keep passed siblings and regenerate only the failed copy or layout. Block when three source-faithful candidates cannot be produced without inventing material meaning, or when any typed material requirement remains unresolved.
+Use one repair round per failed retained branch by default and a second only for source or rendering failure. A failed attempt is never returned. Keep passed work and regenerate only the failed copy or layout. Block when the requested one or three source-faithful candidates cannot be produced without inventing material meaning, or when any typed material requirement remains unresolved.
 
 ## Public Copy Budget
 
@@ -80,6 +80,7 @@ Use one dominant visual idea, one proof, and an optional condition. Keep total v
 ## Selection Semantics
 
 - `ready_for_selection`: all three candidates passed; no content is selected.
+- `selected` with `candidate_count: 1`: the creator confirmed the sole fast-preview Frame and release freeze retained only that pair.
 - Selecting a candidate confirms that exact copy and visual.
 - Settlement eligibility mirrors the expression-plan fields `metric`, `operator`, `threshold`, `deadline`, and `authoritative_source`; a bound claim is eligible only when all five are present.
 - Selection confirms settlement only when the exact subject, direction, baseline, market session, metric, operator, threshold, deadline, and authoritative source were visibly presented and the selection receipt explicitly records all nine confirmations.
@@ -87,13 +88,4 @@ Use one dominant visual idea, one proof, and an optional condition. Keep total v
 
 ## Public Surface
 
-Expose only:
-
-- candidate label;
-- headline, body, close, and tags;
-- full and compact visual;
-- linked typed evidence anchors with source metadata plus the metric, price, series, or settlement basis required by their `request_class`;
-- necessary public disclosures;
-- optional one-line settlement status.
-
-Keep calibration statuses, repairs, source routing, fingerprints, scores, and retry history internal.
+Expose only `frame.title`, `frame.body`, and the paired `frame.image_ref`; attach alt text to the image. Keep labels, copy splits, tags, compact/OG derivatives, evidence anchors, settlement status, disclosures, calibration, routing, fingerprints, scores, and retry history internal.
