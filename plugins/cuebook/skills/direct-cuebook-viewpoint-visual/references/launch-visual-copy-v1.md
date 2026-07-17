@@ -68,7 +68,7 @@ Prefer 55-95 total characters. Use the remaining budget only for a data-led comp
 
 ## Final Brand Lock
 
-- The last HTML mutation is `scripts/stamp_cuebook_wordmark.py`.
+- The last HTML mutation is `scripts/stamp_cuebook_wordmark.mjs`.
 - Use the exact canonical SVG at `right: 41px`, `bottom: 34px`, `width: 136px`, and `height: 26px` on the 1244 x 528 authoring canvas.
 - Use `#F2F3F4` on dark local backgrounds and `#101411` on light local backgrounds.
 - Do not add visible `Cuebook` text, a `C` badge, pill, plate, border, or shadow.
