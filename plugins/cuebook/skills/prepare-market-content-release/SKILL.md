@@ -20,7 +20,7 @@ Create a no-side-effect release bundle from finalized content. A release bundle 
 8. Return `ReleaseBundleV1` and validate it:
 
 ```bash
-python scripts/validate_release_bundle.py release-bundle-v1.json
+node scripts/validate_release_bundle.mjs release-bundle-v1.json
 ```
 
 ## Execution Modes
@@ -62,5 +62,5 @@ State rules:
 
 - `references/platform-capabilities.md`: current official capability routing and conservative defaults.
 - `references/release-bundle-v1.schema.json`: output contract.
-- `scripts/validate_release_bundle.py`: deterministic safety, state, dependency, schedule, and idempotency checks.
-- `tests/test_validate_release_bundle.py`: regression cases.
+- `scripts/validate_release_bundle.mjs`: deterministic safety, state, dependency, schedule, and idempotency checks.
+- `tests/validate_release_bundle.test.mjs`: regression cases.
