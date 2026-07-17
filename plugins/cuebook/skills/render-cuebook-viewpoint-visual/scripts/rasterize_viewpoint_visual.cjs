@@ -4,7 +4,6 @@
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
-const { spawn } = require("child_process");
 const { pathToFileURL } = require("url");
 const zlib = require("zlib");
 
@@ -116,6 +115,14 @@ function chromiumPlatformArgs(platform = process.platform) {
   return platform === "linux" ? ["--no-sandbox", "--disable-dev-shm-usage"] : [];
 }
 
+function loadPlaywright() {
+  try {
+    return require("playwright");
+  } catch (_error) {
+    throw new Error("Playwright is required for deterministic viewpoint rasterization. Run `npm ci` from the repository root.");
+  }
+}
+
 function htmlFor(svgText, width, height) {
   return [
     "<!doctype html>",
@@ -128,82 +135,34 @@ function htmlFor(svgText, width, height) {
   ].join("\n");
 }
 
-function delay(milliseconds) {
-  return new Promise((resolve) => setTimeout(resolve, milliseconds));
-}
-
-function terminateProcessGroup(child) {
-  if (!child || child.exitCode !== null) return;
-  try {
-    process.kill(-child.pid, "SIGKILL");
-  } catch (_error) {
-    try {
-      child.kill("SIGKILL");
-    } catch (_ignored) {
-      // The process may already have exited between checks.
-    }
-  }
-}
-
 async function renderPng(browser, svgText, width, height, output, workDir) {
   const htmlPath = path.join(workDir, `render-${width}.html`);
-  const profilePath = path.join(workDir, `profile-${width}`);
   fs.writeFileSync(htmlPath, htmlFor(svgText, width, height), "utf8");
-  const args = [
-    "--headless=new",
-    ...chromiumPlatformArgs(),
-    "--disable-gpu",
-    "--hide-scrollbars",
-    "--no-first-run",
-    "--no-default-browser-check",
-    "--password-store=basic",
-    "--disable-extensions",
-    "--disable-background-networking",
-    "--font-render-hinting=none",
-    "--force-device-scale-factor=1",
-    `--user-data-dir=${profilePath}`,
-    `--window-size=${width},${height}`,
-    `--screenshot=${output}`,
-    pathToFileURL(htmlPath).href,
-  ];
-  const child = spawn(browser, args, {
-    detached: true,
-    stdio: ["ignore", "ignore", "pipe"],
-    env: { ...process.env, HOME: workDir },
+  fs.rmSync(output, { force: true });
+  const context = await browser.newContext({
+    viewport: { width, height },
+    deviceScaleFactor: 1,
+    colorScheme: "light",
   });
-  let spawnError = null;
-  let stderrText = "";
-  child.once("error", (error) => {
-    spawnError = error;
-  });
-  child.stderr.on("data", (chunk) => {
-    stderrText = `${stderrText}${chunk}`.slice(-4096);
-  });
-  let stableSize = -1;
-  let stableChecks = 0;
   try {
-    for (let attempt = 0; attempt < 150; attempt += 1) {
-      if (spawnError) throw spawnError;
-      if (fs.existsSync(output)) {
-        const size = fs.statSync(output).size;
-        if (size > 100 && size === stableSize) stableChecks += 1;
-        else stableChecks = 0;
-        stableSize = size;
-        if (stableChecks >= 10) break;
-      }
-      if (child.exitCode !== null && !fs.existsSync(output)) break;
-      await delay(100);
-    }
+    await context.route(/^https?:\/\//u, (route) => route.abort());
+    const page = await context.newPage();
+    await page.goto(pathToFileURL(htmlPath).href, { waitUntil: "load" });
+    await page.evaluate(async () => {
+      if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    });
+    await page.screenshot({
+      path: output,
+      type: "png",
+      animations: "disabled",
+      caret: "hide",
+      omitBackground: false,
+    });
   } finally {
-    terminateProcessGroup(child);
-    await delay(100);
+    await context.close();
   }
-  if (!fs.existsSync(output) || fs.statSync(output).size <= 100 || stableChecks < 10) {
-    const detail = stderrText.trim();
-    throw new Error([
-      `Chromium did not produce a stable ${width}x${height} PNG within 15 seconds.`,
-      detail ? `Chromium stderr:\n${detail}` : null,
-    ].filter(Boolean).join("\n"));
+  if (!fs.existsSync(output) || fs.statSync(output).size <= 100) {
+    throw new Error(`Playwright did not produce a stable ${width}x${height} PNG.`);
   }
   const dimensions = pngDimensions(output);
   if (dimensions[0] !== width || dimensions[1] !== height) {
@@ -244,8 +203,8 @@ async function main() {
   const manifestPath = path.resolve(manifestArg);
   if (!fs.existsSync(svgPath)) throw new Error(`SVG does not exist: ${svgPath}`);
   if (!fs.existsSync(manifestPath)) throw new Error(`Manifest does not exist: ${manifestPath}`);
-  const browser = browserExecutable();
-  if (!browser) throw new Error("Node is available, but no supported Chromium executable was found.");
+  const browserPath = browserExecutable();
+  if (!browserPath) throw new Error("Node is available, but no supported Chromium executable was found.");
 
   const manifestDir = path.dirname(manifestPath);
   const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
@@ -263,7 +222,14 @@ async function main() {
   fs.mkdirSync(bundleStage);
   fs.mkdirSync(workDir);
 
+  let browser = null;
   try {
+    const { chromium } = loadPlaywright();
+    browser = await chromium.launch({
+      executablePath: browserPath,
+      headless: true,
+      args: [...chromiumPlatformArgs(), "--font-render-hinting=none"],
+    });
     const fullStage = path.join(bundleStage, "viewpoint-visual.png");
     const compactStage = path.join(bundleStage, "viewpoint-visual-360.png");
     const svgText = svgBytes.toString("utf8");
@@ -308,8 +274,12 @@ async function main() {
     atomicWriteJson(manifestPath, manifest);
     process.stdout.write(`${manifestPath}\n`);
   } finally {
-    fs.rmSync(bundleStage, { recursive: true, force: true });
-    fs.rmSync(workDir, { recursive: true, force: true });
+    try {
+      if (browser) await browser.close();
+    } finally {
+      fs.rmSync(bundleStage, { recursive: true, force: true });
+      fs.rmSync(workDir, { recursive: true, force: true });
+    }
   }
 }
 

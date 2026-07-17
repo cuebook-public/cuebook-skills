@@ -4,7 +4,6 @@
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
-const { spawn } = require("child_process");
 const { pathToFileURL } = require("url");
 const zlib = require("zlib");
 
@@ -29,6 +28,14 @@ function browserExecutable() {
 
 function chromiumPlatformArgs(platform = process.platform) {
   return platform === "linux" ? ["--no-sandbox", "--disable-dev-shm-usage"] : [];
+}
+
+function loadPlaywright() {
+  try {
+    return require("playwright");
+  } catch (_error) {
+    throw new Error("Playwright is required for deterministic viewpoint capture. Run `npm ci` from the repository root.");
+  }
 }
 
 function pngDimensions(file) {
@@ -188,74 +195,34 @@ function delay(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
-function terminate(child) {
-  if (!child || child.exitCode !== null) return;
-  try {
-    process.kill(-child.pid, "SIGKILL");
-  } catch (_error) {
-    try { child.kill("SIGKILL"); } catch (_ignored) {}
-  }
-}
-
-async function capture(browser, htmlPath, width, height, scaleFactor, output, workDir, allowDark) {
+async function capture(browser, htmlPath, width, height, scaleFactor, output, allowDark) {
   fs.rmSync(output, { force: true });
-  const profile = path.join(workDir, `profile-${width}-${scaleFactor}`);
-  fs.rmSync(profile, { recursive: true, force: true });
-  const args = [
-    "--headless=new",
-    ...chromiumPlatformArgs(),
-    "--disable-gpu",
-    "--hide-scrollbars",
-    "--no-first-run",
-    "--no-default-browser-check",
-    "--password-store=basic",
-    "--disable-extensions",
-    "--disable-background-networking",
-    "--font-render-hinting=none",
-    `--force-device-scale-factor=${scaleFactor}`,
-    `--user-data-dir=${profile}`,
-    `--window-size=${width},${height}`,
-    `--screenshot=${output}`,
-    pathToFileURL(htmlPath).href,
-  ];
-  const child = spawn(browser, args, {
-    detached: true,
-    stdio: ["ignore", "ignore", "pipe"],
-    env: { ...process.env, HOME: workDir },
+  const context = await browser.newContext({
+    viewport: { width, height },
+    deviceScaleFactor: scaleFactor,
+    colorScheme: "light",
   });
-  let spawnError = null;
-  let stderrText = "";
-  child.once("error", (error) => { spawnError = error; });
-  child.stderr.on("data", (chunk) => {
-    stderrText = `${stderrText}${chunk}`.slice(-4096);
-  });
-  let stableSize = -1;
-  let stableChecks = 0;
   try {
-    for (let attempt = 0; attempt < 150; attempt += 1) {
-      if (spawnError) throw spawnError;
-      if (fs.existsSync(output)) {
-        const size = fs.statSync(output).size;
-        if (size > 1000 && size === stableSize) stableChecks += 1;
-        else stableChecks = 0;
-        stableSize = size;
-        if (stableChecks >= 3) break;
-      }
-      if (child.exitCode !== null && !fs.existsSync(output)) break;
-      await delay(75);
-    }
+    await context.route(/^https?:\/\//u, (route) => route.abort());
+    const page = await context.newPage();
+    await page.goto(pathToFileURL(htmlPath).href, { waitUntil: "load" });
+    await page.evaluate(async () => {
+      if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    });
+    await page.screenshot({
+      path: output,
+      type: "png",
+      animations: "disabled",
+      caret: "hide",
+      omitBackground: false,
+    });
   } finally {
-    terminate(child);
-    await delay(100);
+    await context.close();
   }
   const expectedWidth = width * scaleFactor;
   const expectedHeight = height * scaleFactor;
-  if (!fs.existsSync(output) || stableChecks < 3) {
-    const detail = stderrText.trim();
-    throw new Error([
-      `Chromium did not produce a stable ${expectedWidth}x${expectedHeight} PNG.`,
-      detail ? `Chromium stderr:\n${detail}` : null,
-    ].filter(Boolean).join("\n"));
+  if (!fs.existsSync(output) || fs.statSync(output).size <= 1000) {
+    throw new Error(`Playwright did not produce a stable ${expectedWidth}x${expectedHeight} PNG.`);
   }
   const dimensions = pngDimensions(output);
   if (dimensions[0] !== expectedWidth || dimensions[1] !== expectedHeight) {
@@ -271,11 +238,11 @@ async function capture(browser, htmlPath, width, height, scaleFactor, output, wo
   return paint;
 }
 
-async function captureReliable(browser, htmlPath, width, height, scaleFactor, output, workDir, allowDark) {
+async function captureReliable(browser, htmlPath, width, height, scaleFactor, output, allowDark) {
   let lastError;
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
-      return await capture(browser, htmlPath, width, height, scaleFactor, output, workDir, allowDark);
+      return await capture(browser, htmlPath, width, height, scaleFactor, output, allowDark);
     } catch (error) {
       lastError = error;
       await delay(150);
@@ -309,21 +276,25 @@ async function captureViewpoint(htmlArg, outputArg, browserOverride = null, ogHt
     ogAllowDark = /data-theme=["']dark["']/i.test(ogHtml);
   }
   const allowDark = /data-theme=["']dark["']/i.test(html);
-  const browser = browserOverride || browserExecutable();
-  if (!browser) throw new Error("No supported Chromium executable found.");
+  const browserPath = browserOverride || browserExecutable();
+  if (!browserPath) throw new Error("No supported Chromium executable found.");
   fs.mkdirSync(outputDir, { recursive: true });
-  const workDir = path.join(outputDir, `.capture-${process.pid}`);
-  fs.mkdirSync(workDir);
   const full = path.join(outputDir, "viewpoint-2488.png");
   const compact = path.join(outputDir, "viewpoint-622.png");
   const og = path.join(outputDir, "og-1200x630.png");
   const startedAt = Date.now();
+  const { chromium } = loadPlaywright();
+  const browser = await chromium.launch({
+    executablePath: browserPath,
+    headless: true,
+    args: [...chromiumPlatformArgs(), "--font-render-hinting=none"],
+  });
   try {
     const captures = [
-      captureReliable(browser, htmlPath, 1244, 528, 2, full, workDir, allowDark),
-      captureReliable(browser, htmlPath, 622, 264, 1, compact, workDir, allowDark),
+      captureReliable(browser, htmlPath, 1244, 528, 2, full, allowDark),
+      captureReliable(browser, htmlPath, 622, 264, 1, compact, allowDark),
     ];
-    if (ogHtmlPath) captures.push(captureReliable(browser, ogHtmlPath, 1200, 630, 1, og, workDir, ogAllowDark));
+    if (ogHtmlPath) captures.push(captureReliable(browser, ogHtmlPath, 1200, 630, 1, og, ogAllowDark));
     const [fullPaint, compactPaint, ogPaint] = await Promise.all(captures);
     const derivatives = [
       { kind: "full", ref: path.basename(full), width: 2488, height: 1056, sha256: sha256(fs.readFileSync(full)), pixel_sha256: canonicalRgbaPixelSha256(full), painted_ratio: Number(fullPaint.paintedRatio.toFixed(6)) },
@@ -345,7 +316,7 @@ async function captureViewpoint(htmlArg, outputArg, browserOverride = null, ogHt
     fs.writeFileSync(path.join(outputDir, "capture-report.json"), `${JSON.stringify(report, null, 2)}\n`);
     return { outputDir, report };
   } finally {
-    fs.rmSync(workDir, { recursive: true, force: true });
+    await browser.close();
   }
 }
 
