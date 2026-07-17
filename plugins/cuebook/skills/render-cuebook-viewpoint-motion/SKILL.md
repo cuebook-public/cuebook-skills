@@ -27,7 +27,7 @@ Build the selected Cuebook motion direction as a production-compatible React com
 
 ```bash
 node scripts/capture_motion_keyframes.cjs http://localhost:3000/motion-preview ./keyframes 0,700,1700,2700,4000
-python3 scripts/validate_viewpoint_motion.py viewpoint-motion-v1.json --asset-root .
+node scripts/validate_viewpoint_motion.mjs viewpoint-motion-v1.json --asset-root .
 ```
 
 ## React Contract
@@ -68,4 +68,4 @@ Do not use GIF as the canonical asset. Lottie is suitable only for isolated deco
 - `assets/CuebookRemotionAdapter.tsx`: frame-time adapter for video export.
 - `references/viewpoint-motion-v1.schema.json`: frozen output manifest.
 - `scripts/capture_motion_keyframes.cjs`: deterministic Playwright capture.
-- `scripts/validate_viewpoint_motion.py`: output and asset validator.
+- `scripts/validate_viewpoint_motion.mjs`: output and asset validator.

@@ -2406,7 +2406,7 @@
       "ui": {
         "surface": "creator",
         "group": "安全入口",
-        "order": 6,
+        "order": 40,
         "control_type": "hidden",
         "icon": "message-circle-question",
         "summary": "分诊来访输入，补全并核验观点必要项，回传结构化种子。"
