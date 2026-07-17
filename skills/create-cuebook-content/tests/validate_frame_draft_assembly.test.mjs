@@ -1,7 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import * as V from "../scripts/validate_frame_draft_assembly.mjs";
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 function assembly() {
   return {
@@ -35,6 +40,15 @@ function assembly() {
 
 function codes(payload) {
   return new Set(V.validate(payload).errors.map((e) => e.code));
+}
+
+function visualManifestFor(payload) {
+  const roles = payload.frame_draft.media.map((item) => item.rendition_role);
+  return {
+    schema_version: "frame-visual-manifest-v1",
+    role_hashes: Object.fromEntries(roles.map((role, index) => [role, `sha256:${String(index + 1).repeat(64)}`])),
+    alt_text_by_role: Object.fromEntries(payload.frame_draft.media.map((item) => [item.rendition_role, item.alt_text])),
+  };
 }
 
 test("valid assembly", () => {
@@ -102,4 +116,34 @@ test("manifest lineage required", () => {
   const payload = assembly();
   payload.lineage.visual_manifest_sha256 = "sha256:short";
   assert.ok(codes(payload).has("LINEAGE_MANIFEST"));
+});
+
+test("cross-repository assembly and registered binding golden validates", () => {
+  const golden = JSON.parse(readFileSync(path.join(ROOT, "references", "skill-assembly-golden.json"), "utf8"));
+  const result = V.validate(golden.assembly, golden.binding, visualManifestFor(golden.assembly));
+  assert.ok(result.valid, JSON.stringify(result.errors));
+});
+
+test("registered binding must match the assembly manifest lineage", () => {
+  const payload = assembly();
+  const binding = {
+    media_asset_id: "0198a5b0-2222-7000-8000-000000000002",
+    visual_manifest_id: "0198a5b0-3333-7000-8000-000000000003",
+    visual_manifest_sha256: `sha256:${"e".repeat(64)}`,
+  };
+  const result = V.validate(payload, binding, visualManifestFor(payload));
+  assert.ok(new Set(result.errors.map((error) => error.code)).has("BINDING_MANIFEST_MISMATCH"));
+});
+
+test("visual manifest alt text is authoritative", () => {
+  const payload = assembly();
+  const binding = {
+    media_asset_id: "0198a5b0-2222-7000-8000-000000000002",
+    visual_manifest_id: "0198a5b0-3333-7000-8000-000000000003",
+    visual_manifest_sha256: payload.lineage.visual_manifest_sha256,
+  };
+  const manifest = visualManifestFor(payload);
+  manifest.alt_text_by_role.publication = "different alt text";
+  const result = V.validate(payload, binding, manifest);
+  assert.ok(new Set(result.errors.map((error) => error.code)).has("ALT_TEXT_MANIFEST_MISMATCH"));
 });

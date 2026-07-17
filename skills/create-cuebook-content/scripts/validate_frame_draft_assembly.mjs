@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 // generic UUID (v4 etc.) is rejected: only UUIDv7 carries the required
 // millisecond-ordered prefix. Mirrors uuidV7Schema in core frame assembly.
 const UUID_V7_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const SHA_PATTERN = /^sha256:[0-9a-f]{64}$/;
 const DECIMAL_PATTERN = /^-?\d+(\.\d+)?$/;
 const FAMILIES = ["single_asset_direction", "single_asset_price_target", "pair_asset_direction", "pair_asset_price_targets"];
@@ -173,7 +174,7 @@ export function check_leg(leg, needsTarget, needsThreshold, errors, path) {
   }
 }
 
-export function validate(payload) {
+export function validate(payload, binding = null, visualManifest = null) {
   if (!isDict(payload)) {
     return { valid: false, errors: [issue("ROOT_TYPE", "$", "Assembly must be an object.")] };
   }
@@ -223,7 +224,7 @@ export function validate(payload) {
       errors.push(issue("MEDIA_ALT_TEXT", `$.frame_draft.media[${index}]`, `Role ${role} needs non-empty alt_text.`));
     }
     if (!SHA_PATTERN.test(pystr(get(item, "sha256", "")))) {
-      errors.push(issue("MEDIA_HASH", `$.frame_draft.media[${index}]`, "Each media item carries its sha256."));
+      errors.push(issue("MEDIA_HASH", `$.frame_draft.media[${index}]`, "Each media item carries the exact encoded PNG byte sha256."));
     }
   });
   for (const required of ["publication", "compact"]) {
@@ -291,16 +292,91 @@ export function validate(payload) {
     errors.push(issue("INTENT_SHAPE", "$.settlement_intent", "Settlement intent must be an object or null."));
   }
 
+  const hasBinding = binding !== null && binding !== undefined;
+  const hasManifest = visualManifest !== null && visualManifest !== undefined;
+  if (hasBinding !== hasManifest) {
+    errors.push(issue("HANDOFF_INPUTS", "$", "Registered binding and visual manifest must be validated together before create_frame_draft."));
+  } else if (hasBinding && hasManifest) {
+    if (!isDict(binding)) {
+      errors.push(issue("BINDING_SHAPE", "$.binding", "FrameDraftAssemblyBindingV1 must be an object."));
+    } else {
+      for (const field of ["media_asset_id", "visual_manifest_id"]) {
+        if (!UUID_PATTERN.test(pystr(get(binding, field, "")))) {
+          errors.push(issue("BINDING_ID", `$.binding.${field}`, `${field} must be a lowercase UUID returned by the Frame service.`));
+        }
+      }
+      const bindingHash = pystr(get(binding, "visual_manifest_sha256", ""));
+      if (!SHA_PATTERN.test(bindingHash)) {
+        errors.push(issue("BINDING_MANIFEST_HASH", "$.binding.visual_manifest_sha256", "The registered binding must carry the visual manifest sha256."));
+      } else if (bindingHash !== pystr(get(lineage, "visual_manifest_sha256", ""))) {
+        errors.push(issue("BINDING_MANIFEST_MISMATCH", "$.binding.visual_manifest_sha256", "The registered binding hash must match assembly lineage."));
+      }
+    }
+
+    if (!isDict(visualManifest)) {
+      errors.push(issue("VISUAL_MANIFEST_SHAPE", "$.visual_manifest", "frame-visual-manifest-v1 must be an object."));
+    } else {
+      if (get(visualManifest, "schema_version") !== "frame-visual-manifest-v1") {
+        errors.push(issue("VISUAL_MANIFEST_VERSION", "$.visual_manifest.schema_version", "Expected frame-visual-manifest-v1."));
+      }
+      const roleHashes = isDict(get(visualManifest, "role_hashes")) ? get(visualManifest, "role_hashes") : {};
+      const manifestAlt = isDict(get(visualManifest, "alt_text_by_role")) ? get(visualManifest, "alt_text_by_role") : {};
+      const assemblyRoles = new Set(Object.keys(roles));
+      const hashRoles = new Set(Object.keys(roleHashes));
+      const altRoles = new Set(Object.keys(manifestAlt));
+      if (assemblyRoles.size !== hashRoles.size || [...assemblyRoles].some((role) => !hashRoles.has(role))) {
+        errors.push(issue("VISUAL_MANIFEST_ROLES", "$.visual_manifest.role_hashes", "Manifest pixel-hash roles must exactly match assembly media roles."));
+      }
+      if (assemblyRoles.size !== altRoles.size || [...assemblyRoles].some((role) => !altRoles.has(role))) {
+        errors.push(issue("VISUAL_MANIFEST_ALT_ROLES", "$.visual_manifest.alt_text_by_role", "Manifest alt-text roles must exactly match assembly media roles."));
+      }
+      const pixelHashes = [];
+      for (const role of hashRoles) {
+        const pixelHash = pystr(roleHashes[role]);
+        if (!SHA_PATTERN.test(pixelHash)) {
+          errors.push(issue("VISUAL_PIXEL_HASH", `$.visual_manifest.role_hashes.${role}`, "role_hashes must carry canonical RGBA8 pixel sha256 values."));
+        } else {
+          pixelHashes.push(pixelHash);
+        }
+      }
+      if (new Set(pixelHashes).size !== pixelHashes.length) {
+        errors.push(issue("VISUAL_PIXEL_HASH_DUPLICATE", "$.visual_manifest.role_hashes", "Each rendition role must bind distinct canonical pixels."));
+      }
+      for (const [role, item] of Object.entries(roles)) {
+        if (Object.hasOwn(manifestAlt, role) && manifestAlt[role] !== get(item, "alt_text")) {
+          errors.push(issue("ALT_TEXT_MANIFEST_MISMATCH", `$.frame_draft.media.${role}.alt_text`, "Assembly alt text must exactly match the authoritative visual manifest value."));
+        }
+      }
+    }
+  }
+
   return { valid: !errors.length, errors };
 }
 
 function main() {
   const args = process.argv.slice(2);
-  if (args.length !== 1 || args[0].startsWith("-")) {
-    process.stderr.write("usage: validate_frame_draft_assembly.mjs json_file\n");
+  const assemblyPath = args[0];
+  let bindingPath = null;
+  let visualManifestPath = null;
+  for (let index = 1; index < args.length; index += 2) {
+    const flag = args[index];
+    const value = args[index + 1];
+    if (flag === "--binding") bindingPath = value;
+    else if (flag === "--visual-manifest") visualManifestPath = value;
+    else {
+      process.stderr.write("usage: validate_frame_draft_assembly.mjs assembly.json [--binding binding.json --visual-manifest manifest.json]\n");
+      process.exit(2);
+    }
+  }
+  if (!assemblyPath || assemblyPath.startsWith("-") || args.length % 2 === 0 || (bindingPath === null) !== (visualManifestPath === null)) {
+    process.stderr.write("usage: validate_frame_draft_assembly.mjs assembly.json [--binding binding.json --visual-manifest manifest.json]\n");
     process.exit(2);
   }
-  const result = validate(JSON.parse(readFileSync(args[0], "utf-8")));
+  const result = validate(
+    JSON.parse(readFileSync(assemblyPath, "utf-8")),
+    bindingPath ? JSON.parse(readFileSync(bindingPath, "utf-8")) : null,
+    visualManifestPath ? JSON.parse(readFileSync(visualManifestPath, "utf-8")) : null,
+  );
   process.stdout.write(JSON.stringify(result, null, 2) + "\n");
   process.exit(result.valid ? 0 : 1);
 }

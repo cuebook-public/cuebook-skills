@@ -47,6 +47,67 @@ const setEq = (a, b) => a.size === b.size && [...a].every((item) => b.has(item))
 const intersects = (a, b) => [...a].some((item) => b.has(item));
 const isSubset = (a, b) => [...a].every((item) => b.has(item));
 
+const FRAME_TOOL_SCOPES = new Map([
+  ["get_frame_capabilities", "read:public"],
+  ["begin_frame_media_upload", "cuebook.frame.write"],
+  ["complete_frame_media_upload", "cuebook.frame.write"],
+  ["get_frame_media_status", "cuebook.frame.write"],
+  ["register_frame_visual_manifest", "cuebook.frame.write"],
+  ["create_frame_draft", "cuebook.frame.write"],
+  ["get_frame_draft", "cuebook.frame.read"],
+  ["update_frame_draft", "cuebook.frame.write"],
+  ["prepare_frame_publish", "cuebook.frame.publish"],
+  ["get_frame_action_consent", "cuebook.frame.publish"],
+  ["publish_frame", "cuebook.frame.publish"],
+  ["get_frame", "read:public"],
+  ["create_frame_correction_draft", "cuebook.frame.write"],
+  ["prepare_frame_correction_publish", "cuebook.frame.publish"],
+  ["publish_frame_correction", "cuebook.frame.publish"],
+  ["prepare_frame_withdraw", "cuebook.frame.publish"],
+  ["withdraw_frame", "cuebook.frame.publish"],
+]);
+
+const PAPER_TOOL_SCOPES = new Map([
+  ["get_paper_portfolio", "cuebook.paper.read"],
+  ["preview_paper_order", "cuebook.paper.read"],
+  ["list_paper_orders", "cuebook.paper.read"],
+  ["place_paper_order", "cuebook.paper.trade"],
+  ["close_paper_position", "cuebook.paper.trade"],
+]);
+
+const FORBIDDEN_FRAME_MEDIA_TOOLS = new Set([
+  "get_frame_media",
+  "list_frame_media",
+  "publish_frame_image",
+  "share_frame_to_agent",
+]);
+
+const FRAME_PUBLICATION_FLOW = {
+  image_transport: "signed_https_upload_only",
+  skill_may_pull_media: false,
+  status_tool: "get_frame_media_status",
+  status_returns: "processing_and_hash_receipts_only",
+  published_read_tool: "get_frame",
+  published_visual_semantics: "one_visual_attached_to_frame_release",
+  forbidden_tools: [...FORBIDDEN_FRAME_MEDIA_TOOLS],
+  initial_publish_sequence: [
+    "get_frame_capabilities",
+    "begin_frame_media_upload",
+    "https_put_each_role",
+    "complete_frame_media_upload",
+    "get_frame_media_status",
+    "register_frame_visual_manifest",
+    "create_or_update_frame_draft",
+    "prepare_frame_publish",
+    "first_party_consent",
+    "get_frame_action_consent",
+    "publish_frame",
+    "get_frame",
+  ],
+  mutation_idempotency: "distinct_lowercase_uuidv7_per_command",
+  replay_policy: "same_key_same_payload_returns_receipt_changed_payload_conflict",
+};
+
 export function validate(pluginRoot) {
   const errors = [];
 
@@ -106,6 +167,36 @@ export function validate(pluginRoot) {
   );
   const requiredTools = new Set(
     (capabilityMap.required_tools ?? []).filter(isDict).map((item) => norm(item.tool)),
+  );
+  const frameTools = new Set(
+    (capabilityMap.required_tools ?? [])
+      .filter((item) => isDict(item) && item.phase === "frame_phase_b")
+      .map((item) => norm(item.tool)),
+  );
+
+  check(
+    setEq(frameTools, new Set(FRAME_TOOL_SCOPES.keys())),
+    "FRAME_TOOL_SET",
+    "mcp-capability-map-v1.json.required_tools",
+    "Frame Phase B must expose exactly the frozen upload, draft, consent, publish, correction, withdrawal, and full-Frame read operations.",
+  );
+  check(
+    !intersects(new Set(tools.keys()), FORBIDDEN_FRAME_MEDIA_TOOLS),
+    "FRAME_MEDIA_TOOL",
+    "mcp-capability-map-v1.json.required_tools",
+    "Frame images are upload-only Skill inputs and release attachments; standalone media retrieval, browsing, publishing, and sharing tools are forbidden.",
+  );
+  check(
+    deepEqualPy(capabilityMap.frame_publication_flow, FRAME_PUBLICATION_FLOW),
+    "FRAME_FLOW_CONTRACT",
+    "mcp-capability-map-v1.json.frame_publication_flow",
+    "Frame publication must remain signed-upload-only and follow the frozen receipt, manifest, draft, consent, publish, then full-Frame verification sequence.",
+  );
+  check(
+    tools.get("create_frame_draft")?.input_contract === "FrameDraftAssemblyV1 + FrameDraftAssemblyBindingV1",
+    "FRAME_DRAFT_INPUT",
+    "mcp-capability-map-v1.json.required_tools.create_frame_draft.input_contract",
+    "create_frame_draft must receive the Skill assembly plus the registered server binding, never a bare FrameDraftV1.",
   );
 
   check(manifest.name === "cuebook", "PLUGIN_NAME", "plugin.json.name", "Unexpected plugin name.");
@@ -289,7 +380,7 @@ export function validate(pluginRoot) {
   check(!intersects(availableTools, requiredTools), "DUPLICATE_TOOL_PHASE", "mcp-capability-map-v1.json", "A tool cannot be both available and required.");
   const rules = capabilityMap.module_rules ?? {};
   check(deepEqualPy(rules.query, { allowed_access: ["read"], may_invoke: [] }), "QUERY_TOOL_RULE", "module_rules.query", "Query MCP rules must allow read only.");
-  check(deepEqualPy(rules.create, { allowed_access: ["write", "external_write"], may_invoke: ["query"] }), "CREATE_TOOL_RULE", "module_rules.create", "Create owns writes and may invoke Query for reads.");
+  check(deepEqualPy(rules.create, { allowed_access: ["read", "write", "external_write"], may_invoke: ["query"] }), "CREATE_TOOL_RULE", "module_rules.create", "Create owns writes, may perform narrow operational reads, and may invoke Query for market reads.");
   const skillToModule = skillOwner;
   const releaseRules = capabilityMap.release_rules ?? {};
   for (const ruleName of [
@@ -297,6 +388,10 @@ export function validate(pluginRoot) {
     "query_scope_cannot_call_write_tools",
     "write_tools_require_idempotency_key",
     "write_tools_require_explicit_approval",
+    "frame_images_are_upload_only",
+    "frame_media_status_returns_receipts_only",
+    "frame_get_returns_one_attached_visual",
+    "frame_mutations_use_distinct_uuidv7_keys",
   ]) {
     check(releaseRules[ruleName] === true, "RUNTIME_ENFORCEMENT", `release_rules.${ruleName}`, "Runtime enforcement rule must be enabled.");
   }
@@ -305,8 +400,15 @@ export function validate(pluginRoot) {
     const access = tool.access;
     const allowedAccess = new Set((((rules[moduleId]) ?? {}).allowed_access ?? []).map(norm));
     check(allowedAccess.has(norm(access)), "TOOL_ACCESS_MODULE", `tools.${toolName}`, `Tool access ${rep(access)} is invalid for module ${rep(moduleId)}.`);
-    const expectedScope = moduleId === "query" ? "cuebook.query" : (access === "external_write" ? "cuebook.publish" : "cuebook.create.write");
+    const expectedScope = FRAME_TOOL_SCOPES.get(toolName)
+      ?? PAPER_TOOL_SCOPES.get(toolName)
+      ?? (availableTools.has(toolName) && moduleId === "query"
+        ? "read:public"
+        : (moduleId === "query" ? "cuebook.query" : (access === "external_write" ? "cuebook.publish" : "cuebook.create.write")));
     check(tool.authorization_scope === expectedScope, "TOOL_AUTH_SCOPE", `tools.${toolName}.authorization_scope`, `Tool must require ${expectedScope}.`);
+    if (FRAME_TOOL_SCOPES.has(toolName)) {
+      check(tool.authorization_scope === expectedScope, "FRAME_TOOL_SCOPE", `tools.${toolName}.authorization_scope`, `Frame Tool ${toolName} must require ${expectedScope}.`);
+    }
     for (const skillId of tool.used_by ?? []) {
       const owner = skillToModule.get(skillId);
       check(owner !== undefined, "TOOL_SKILL_REF", `tools.${toolName}.used_by`, `Unknown Skill ${skillId}.`);
@@ -314,10 +416,21 @@ export function validate(pluginRoot) {
         const allowed = owner === moduleId || ((modules.get(owner) ?? {}).may_invoke ?? []).includes(moduleId);
         check(allowed, "TOOL_MODULE_EDGE", `tools.${toolName}.used_by`, `${owner} Skill ${skillId} cannot use ${moduleId} tool ${toolName}.`);
         if (moduleId === "query") {
-          check(owner === "query", "CREATE_DIRECT_READ", `tools.${toolName}.used_by`, `Create Skill ${skillId} must consume QueryBundleV1 instead of calling Query tool ${toolName} directly.`);
+          const isPublishedFrameVerification = toolName === "get_frame" && skillId === "create-cuebook-content";
+          check(owner === "query" || isPublishedFrameVerification, "CREATE_DIRECT_READ", `tools.${toolName}.used_by`, `Create Skill ${skillId} must consume QueryBundleV1 instead of calling Query tool ${toolName} directly.`);
         }
       }
     }
+  }
+
+  for (const skillId of ["create-cuebook-content", "query-cuebook"]) {
+    const body = readFileSync(path.join(pluginRoot, "skills", skillId, "SKILL.md"), "utf-8");
+    check(
+      !/\bget_frame_media\b/u.test(body),
+      "FRAME_SKILL_MEDIA_PULL",
+      `skills/${skillId}/SKILL.md`,
+      "Skill instructions must not call or reintroduce standalone Frame media retrieval; use owner-only status receipts during upload and get_frame after publish.",
+    );
   }
 
   for (const skillId of querySkills) {

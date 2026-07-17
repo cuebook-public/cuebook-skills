@@ -15,6 +15,7 @@
     },
     "create": {
       "allowed_access": [
+        "read",
         "write",
         "external_write"
       ],
@@ -27,7 +28,7 @@
     {
       "tool": "search_assets",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Resolve creator language to a canonical Cuebook asset.",
       "used_by": [
@@ -38,7 +39,7 @@
     {
       "tool": "get_market_state",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Bounded latest market snapshot, freshness, and session state per canonical ticker.",
       "used_by": [
@@ -49,7 +50,7 @@
     {
       "tool": "list_asset_cues",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Published Cuebook thesis cards one asset participates in, newest first with keyset cursor.",
       "used_by": [
@@ -59,7 +60,7 @@
     {
       "tool": "get_cues",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Single cue detail with narrative summary and license-gated citations.",
       "used_by": [
@@ -69,7 +70,7 @@
     {
       "tool": "list_cues_timeline",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Platform-wide published thesis cards newest first (discover-equivalent).",
       "used_by": [
@@ -79,7 +80,7 @@
     {
       "tool": "get_paper_portfolio",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "cuebook.paper.read",
       "access": "read",
       "purpose": "User simulated portfolio (cash, equity, positions); source marked SIMULATED.",
       "used_by": [
@@ -89,7 +90,7 @@
     {
       "tool": "preview_paper_order",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "cuebook.paper.read",
       "access": "read",
       "purpose": "Read-only market-order preview against the persisted price snapshot; never places an order.",
       "used_by": [
@@ -99,7 +100,7 @@
     {
       "tool": "place_paper_order",
       "module": "create",
-      "authorization_scope": "cuebook.create.write",
+      "authorization_scope": "cuebook.paper.trade",
       "access": "write",
       "purpose": "Submit a simulated market order with mandatory idempotency key; grant-scoped attribution.",
       "used_by": [
@@ -109,7 +110,7 @@
     {
       "tool": "close_paper_position",
       "module": "create",
-      "authorization_scope": "cuebook.create.write",
+      "authorization_scope": "cuebook.paper.trade",
       "access": "write",
       "purpose": "Reduce-only convenience close of an open simulated position via the same order command path.",
       "used_by": [
@@ -119,7 +120,7 @@
     {
       "tool": "list_paper_orders",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "cuebook.paper.read",
       "access": "read",
       "purpose": "User fill history newest first with placedBy attribution.",
       "used_by": [
@@ -129,7 +130,7 @@
     {
       "tool": "get_candles",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Sealed OHLCV history (never the forming tip); prices as decimal strings.",
       "used_by": [
@@ -143,7 +144,7 @@
     {
       "tool": "list_market_calendar",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Macro and earnings anchors in a bounded lookback/horizon window with revision dedupe.",
       "used_by": [
@@ -156,7 +157,7 @@
     {
       "tool": "list_filings",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Surviving filing artifact versions with license-gated evidence and fact attachments.",
       "used_by": [
@@ -169,7 +170,7 @@
     {
       "tool": "list_asset_disclosures",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Five-provider disclosure co-location records with exact amount payload text.",
       "used_by": [
@@ -182,7 +183,7 @@
     {
       "tool": "get_positioning",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Grounding snapshots per topic: options, crypto derivatives, analyst ratings, leverage ratio.",
       "used_by": [
@@ -195,7 +196,7 @@
     {
       "tool": "list_asset_events",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Token unlocks, onchain security, and breakout events per asset with per-item license tagging.",
       "used_by": [
@@ -208,7 +209,7 @@
     {
       "tool": "list_prediction_markets",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Latest prediction-market snapshots in a clamped 8-day window; resolved markets excluded.",
       "used_by": [
@@ -221,7 +222,7 @@
     {
       "tool": "get_news_cluster",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Publication-attached membership of one news story with per-member license gate.",
       "used_by": [
@@ -234,7 +235,7 @@
     {
       "tool": "list_market_briefings",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Published market briefings with fail-closed revision gate; Cuebook interpretation tagged.",
       "used_by": [
@@ -246,7 +247,7 @@
     {
       "tool": "list_themes",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Qualified theme aggregation with 180-day channel disclosure window.",
       "used_by": [
@@ -258,7 +259,7 @@
     {
       "tool": "get_cues_detail",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Narrative head and legs with optional price reactions; alive+published gate.",
       "used_by": [
@@ -270,7 +271,7 @@
     {
       "tool": "get_reasoning_graph",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Bounded reasoning graph; judge internals and unpublished lineage never leave.",
       "used_by": [
@@ -282,7 +283,7 @@
     {
       "tool": "list_settlements",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "access": "read",
       "purpose": "Settlement outcomes for ever-published narratives (deliberately not alive-gated).",
       "used_by": [
@@ -295,145 +296,243 @@
   ],
   "required_tools": [
     {
-      "tool": "create_frame_draft",
+      "tool": "get_frame_capabilities",
       "module": "create",
-      "authorization_scope": "cuebook.create.write",
+      "authorization_scope": "read:public",
       "phase": "frame_phase_b",
-      "access": "write",
-      "purpose": "Save a Skill-compiled FrameDraftV1 for the resource owner.",
+      "access": "read",
+      "purpose": "Read the deployed Frame schema, rendition roles, limits, policy, and enabled actions before uploading.",
+      "input_contract": "GetFrameCapabilitiesInputV1",
+      "output_contract": "FrameCapabilitiesV1",
       "used_by": [
-        "create-cuebook-content",
-        "intake-cuebook-viewpoint"
+        "create-cuebook-content"
       ],
-      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
-    },
-    {
-      "tool": "update_frame_draft",
-      "module": "create",
-      "authorization_scope": "cuebook.create.write",
-      "phase": "frame_phase_b",
-      "access": "write",
-      "purpose": "Revise a draft under optimistic concurrency.",
-      "used_by": [
-        "create-cuebook-content",
-        "intake-cuebook-viewpoint"
-      ],
-      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
+      "source": "Frame Remote MCP Phase B §6-7"
     },
     {
       "tool": "begin_frame_media_upload",
       "module": "create",
-      "authorization_scope": "cuebook.create.write",
+      "authorization_scope": "cuebook.frame.write",
       "phase": "frame_phase_b",
       "access": "write",
-      "purpose": "Create a quarantine upload reservation with a signed HTTPS target.",
+      "purpose": "Reserve a signed HTTPS upload for one authored rendition; declare encoded hash, mime, bytes, dimensions, and a distinct UUIDv7.",
+      "input_contract": "BeginFrameMediaUploadV1",
+      "output_contract": "FrameMediaUploadReservationV1",
       "used_by": [
-        "create-cuebook-content",
-        "intake-cuebook-viewpoint"
+        "create-cuebook-content"
       ],
-      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
+      "source": "Frame Remote MCP Phase B §6-7"
     },
     {
       "tool": "complete_frame_media_upload",
       "module": "create",
-      "authorization_scope": "cuebook.create.write",
+      "authorization_scope": "cuebook.frame.write",
       "phase": "frame_phase_b",
       "access": "write",
-      "purpose": "Confirm an upload and trigger idempotent processing.",
+      "purpose": "Confirm one signed upload and trigger processing with a command-specific UUIDv7.",
+      "input_contract": "CompleteFrameMediaUploadV1",
+      "output_contract": "FrameMediaUploadReceiptV1",
       "used_by": [
-        "create-cuebook-content",
-        "intake-cuebook-viewpoint"
+        "create-cuebook-content"
       ],
-      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
+      "source": "Frame Remote MCP Phase B §6-7"
     },
     {
-      "tool": "get_frame_media",
-      "module": "query",
-      "authorization_scope": "cuebook.query",
+      "tool": "get_frame_media_status",
+      "module": "create",
+      "authorization_scope": "cuebook.frame.write",
       "phase": "frame_phase_b",
       "access": "read",
-      "purpose": "Read media processing status and rendition receipts.",
+      "purpose": "Poll owner-only processing and encoded/pixel hash receipts; returns no image bytes, delivery URL, or browsing surface.",
+      "input_contract": "GetFrameMediaStatusV1",
+      "output_contract": "FrameMediaStatusV1 (processing and hash receipts only)",
       "used_by": [
-        "query-cuebook"
+        "create-cuebook-content"
       ],
-      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
+      "source": "Frame Remote MCP Phase B §6-7"
+    },
+    {
+      "tool": "register_frame_visual_manifest",
+      "module": "create",
+      "authorization_scope": "cuebook.frame.write",
+      "phase": "frame_phase_b",
+      "access": "write",
+      "purpose": "Bind the complete visual manifest to the processed media asset after both encoded-byte and canonical-pixel hashes match.",
+      "input_contract": "RegisterFrameVisualManifestV1",
+      "output_contract": "FrameDraftAssemblyBindingV1",
+      "used_by": [
+        "create-cuebook-content"
+      ],
+      "source": "Frame Remote MCP Phase B §6-7"
+    },
+    {
+      "tool": "create_frame_draft",
+      "module": "create",
+      "authorization_scope": "cuebook.frame.write",
+      "phase": "frame_phase_b",
+      "access": "write",
+      "purpose": "Materialize a Skill assembly only after the server returns a registered media/manifest binding.",
+      "input_contract": "FrameDraftAssemblyV1 + FrameDraftAssemblyBindingV1",
+      "output_contract": "FrameDraftAssemblyResultV1",
+      "used_by": [
+        "create-cuebook-content"
+      ],
+      "source": "Frame Remote MCP Phase B §6-7"
+    },
+    {
+      "tool": "get_frame_draft",
+      "module": "create",
+      "authorization_scope": "cuebook.frame.read",
+      "phase": "frame_phase_b",
+      "access": "read",
+      "purpose": "Resume an owner-only materialized draft and its revision; returns no media bytes or standalone visual URL.",
+      "input_contract": "GetFrameDraftInputV1",
+      "output_contract": "FrameDraftReadV1",
+      "used_by": [
+        "create-cuebook-content"
+      ],
+      "source": "Frame Remote MCP Phase B §6-7"
+    },
+    {
+      "tool": "update_frame_draft",
+      "module": "create",
+      "authorization_scope": "cuebook.frame.write",
+      "phase": "frame_phase_b",
+      "access": "write",
+      "purpose": "Revise a draft under optimistic concurrency using the assembly and registered binding with a distinct UUIDv7.",
+      "input_contract": "FrameDraftAssemblyV1 + FrameDraftAssemblyBindingV1 + expected_revision",
+      "output_contract": "FrameDraftAssemblyResultV1",
+      "used_by": [
+        "create-cuebook-content"
+      ],
+      "source": "Frame Remote MCP Phase B §6-7"
     },
     {
       "tool": "prepare_frame_publish",
       "module": "create",
-      "authorization_scope": "cuebook.create.write",
+      "authorization_scope": "cuebook.frame.publish",
       "phase": "frame_phase_b",
       "access": "write",
-      "purpose": "Validate assets, media, horizon, and formula intent; issue a publish token.",
+      "purpose": "Validate the draft and create a prepared hash, publish token, preview, and first-party consent request without publishing.",
+      "input_contract": "PrepareFramePublishInputV1",
+      "output_contract": "PreparedFramePublishV1",
       "used_by": [
-        "create-cuebook-content",
-        "intake-cuebook-viewpoint"
+        "create-cuebook-content"
       ],
-      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
+      "source": "Frame Remote MCP Phase B §6-7"
+    },
+    {
+      "tool": "get_frame_action_consent",
+      "module": "create",
+      "authorization_scope": "cuebook.frame.publish",
+      "phase": "frame_phase_b",
+      "access": "read",
+      "purpose": "Poll an opaque first-party consent request state; never returns a bearer-like consent token.",
+      "input_contract": "GetFrameActionConsentInputV1",
+      "output_contract": "FrameActionConsentStatusV1",
+      "used_by": [
+        "create-cuebook-content"
+      ],
+      "source": "Frame Remote MCP Phase B §6-7"
     },
     {
       "tool": "publish_frame",
       "module": "create",
-      "authorization_scope": "cuebook.create.write",
+      "authorization_scope": "cuebook.frame.publish",
       "phase": "frame_phase_b",
       "access": "write",
-      "purpose": "Freeze Frame and Settlement Contract in one atomic transaction.",
+      "purpose": "Consume approved first-party consent and freeze the Frame, release, visual binding, and Settlement Contract atomically.",
+      "input_contract": "PublishFrameInputV1",
+      "output_contract": "FramePublicationReceiptV1",
       "used_by": [
-        "create-cuebook-content",
-        "intake-cuebook-viewpoint"
+        "create-cuebook-content"
       ],
-      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
-    },
-    {
-      "tool": "create_frame_correction_draft",
-      "module": "create",
-      "authorization_scope": "cuebook.create.write",
-      "phase": "frame_phase_b",
-      "access": "write",
-      "purpose": "Copy-only correction draft; never accepts settlement intent.",
-      "used_by": [
-        "create-cuebook-content",
-        "intake-cuebook-viewpoint"
-      ],
-      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
-    },
-    {
-      "tool": "publish_frame_correction",
-      "module": "create",
-      "authorization_scope": "cuebook.create.write",
-      "phase": "frame_phase_b",
-      "access": "write",
-      "purpose": "Publish a new content release reusing the frozen contract.",
-      "used_by": [
-        "create-cuebook-content",
-        "intake-cuebook-viewpoint"
-      ],
-      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
+      "source": "Frame Remote MCP Phase B §6-7"
     },
     {
       "tool": "get_frame",
       "module": "query",
-      "authorization_scope": "cuebook.query",
+      "authorization_scope": "read:public",
       "phase": "frame_phase_b",
       "access": "read",
-      "purpose": "Read a public Frame, releases, media, and settlement state.",
+      "purpose": "Read one release-pinned full Frame with its single attached publication visual, settlement, discussion, and canonical URL; never returns media[] or a standalone media result.",
+      "input_contract": "FrameRefV1",
+      "output_contract": "FrameMcpViewV1 (full Frame plus one attached visual)",
       "used_by": [
-        "query-cuebook"
+        "query-cuebook",
+        "create-cuebook-content"
       ],
-      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
+      "source": "Frame Remote MCP Phase B §6-7"
+    },
+    {
+      "tool": "create_frame_correction_draft",
+      "module": "create",
+      "authorization_scope": "cuebook.frame.write",
+      "phase": "frame_phase_b",
+      "access": "write",
+      "purpose": "Create a copy/ref/visual-only correction draft; never accepts a new settlement intent.",
+      "input_contract": "CreateFrameCorrectionDraftInputV1",
+      "output_contract": "FrameCorrectionDraftV1",
+      "used_by": [
+        "create-cuebook-content"
+      ],
+      "source": "Frame Remote MCP Phase B §6-7"
+    },
+    {
+      "tool": "prepare_frame_correction_publish",
+      "module": "create",
+      "authorization_scope": "cuebook.frame.publish",
+      "phase": "frame_phase_b",
+      "access": "write",
+      "purpose": "Prove the economic hash is unchanged and create correction preview plus first-party consent.",
+      "input_contract": "PrepareFrameCorrectionPublishInputV1",
+      "output_contract": "PreparedFrameCorrectionPublishV1",
+      "used_by": [
+        "create-cuebook-content"
+      ],
+      "source": "Frame Remote MCP Phase B §6-7"
+    },
+    {
+      "tool": "publish_frame_correction",
+      "module": "create",
+      "authorization_scope": "cuebook.frame.publish",
+      "phase": "frame_phase_b",
+      "access": "write",
+      "purpose": "Consume correction consent, publish a new content release, and reuse the frozen economic contract.",
+      "input_contract": "PublishFrameCorrectionInputV1",
+      "output_contract": "FramePublicationReceiptV1",
+      "used_by": [
+        "create-cuebook-content"
+      ],
+      "source": "Frame Remote MCP Phase B §6-7"
+    },
+    {
+      "tool": "prepare_frame_withdraw",
+      "module": "create",
+      "authorization_scope": "cuebook.frame.publish",
+      "phase": "frame_phase_b",
+      "access": "write",
+      "purpose": "Create a withdrawal preview and one-time first-party consent request without changing distribution.",
+      "input_contract": "PrepareFrameWithdrawInputV1",
+      "output_contract": "PreparedFrameWithdrawV1",
+      "used_by": [
+        "create-cuebook-content"
+      ],
+      "source": "Frame Remote MCP Phase B §6-7"
     },
     {
       "tool": "withdraw_frame",
       "module": "create",
-      "authorization_scope": "cuebook.create.write",
+      "authorization_scope": "cuebook.frame.publish",
       "phase": "frame_phase_b",
       "access": "write",
-      "purpose": "Stop public distribution without deleting settlement audit.",
+      "purpose": "Consume withdrawal consent and stop distribution without deleting release, settlement, discussion, or audit history.",
+      "input_contract": "WithdrawFrameInputV1",
+      "output_contract": "FrameWithdrawalReceiptV1",
       "used_by": [
-        "create-cuebook-content",
-        "intake-cuebook-viewpoint"
+        "create-cuebook-content"
       ],
-      "source": "docs/plans/frame-backend-mcp-publishing-plan.md §10.2"
+      "source": "Frame Remote MCP Phase B §6-7"
     },
     {
       "tool": "search_news",
@@ -535,6 +634,36 @@
       ]
     }
   ],
+  "frame_publication_flow": {
+    "image_transport": "signed_https_upload_only",
+    "skill_may_pull_media": false,
+    "status_tool": "get_frame_media_status",
+    "status_returns": "processing_and_hash_receipts_only",
+    "published_read_tool": "get_frame",
+    "published_visual_semantics": "one_visual_attached_to_frame_release",
+    "forbidden_tools": [
+      "get_frame_media",
+      "list_frame_media",
+      "publish_frame_image",
+      "share_frame_to_agent"
+    ],
+    "initial_publish_sequence": [
+      "get_frame_capabilities",
+      "begin_frame_media_upload",
+      "https_put_each_role",
+      "complete_frame_media_upload",
+      "get_frame_media_status",
+      "register_frame_visual_manifest",
+      "create_or_update_frame_draft",
+      "prepare_frame_publish",
+      "first_party_consent",
+      "get_frame_action_consent",
+      "publish_frame",
+      "get_frame"
+    ],
+    "mutation_idempotency": "distinct_lowercase_uuidv7_per_command",
+    "replay_policy": "same_key_same_payload_returns_receipt_changed_payload_conflict"
+  },
   "release_rules": {
     "credentials_live_in_mcp_connector": true,
     "skills_must_not_collect_credentials": true,
@@ -542,6 +671,10 @@
     "query_scope_cannot_call_write_tools": true,
     "write_tools_require_idempotency_key": true,
     "write_tools_require_explicit_approval": true,
+    "frame_images_are_upload_only": true,
+    "frame_media_status_returns_receipts_only": true,
+    "frame_get_returns_one_attached_visual": true,
+    "frame_mutations_use_distinct_uuidv7_keys": true,
     "external_write_requires_exact_artifact_hash": true,
     "external_write_requires_release_approval": true,
     "publish_success_requires_verified_receipt": true,

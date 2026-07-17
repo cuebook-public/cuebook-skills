@@ -86,3 +86,71 @@ test("query skill cannot invoke create skill", () => {
     assert.ok(codes(validate(root)).has("QUERY_SKILL_EDGE"));
   });
 });
+
+test("Frame MCP tool set cannot lose a frozen operation", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, "assets", "mcp-capability-map-v1.json");
+    rewrite(filePath, (payload) => {
+      payload.required_tools = payload.required_tools.filter((item) => item.tool !== "publish_frame");
+    });
+    assert.ok(codes(validate(root)).has("FRAME_TOOL_SET"));
+  });
+});
+
+test("Frame MCP contract rejects independent media retrieval", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, "assets", "mcp-capability-map-v1.json");
+    rewrite(filePath, (payload) => {
+      const status = payload.required_tools.find((item) => ["get_frame_media", "get_frame_media_status"].includes(item.tool));
+      status.tool = "get_frame_media";
+    });
+    assert.ok(codes(validate(root)).has("FRAME_MEDIA_TOOL"));
+  });
+});
+
+test("Frame MCP tools retain their least-privilege scopes", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, "assets", "mcp-capability-map-v1.json");
+    rewrite(filePath, (payload) => {
+      payload.required_tools.find((item) => item.tool === "publish_frame").authorization_scope = "cuebook.frame.write";
+    });
+    assert.ok(codes(validate(root)).has("FRAME_TOOL_SCOPE"));
+  });
+});
+
+test("create_frame_draft requires assembly plus registered binding", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, "assets", "mcp-capability-map-v1.json");
+    rewrite(filePath, (payload) => {
+      payload.required_tools.find((item) => item.tool === "create_frame_draft").input_contract = "FrameDraftV1";
+    });
+    assert.ok(codes(validate(root)).has("FRAME_DRAFT_INPUT"));
+  });
+});
+
+test("Frame publication flow cannot become pull-based", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, "assets", "mcp-capability-map-v1.json");
+    rewrite(filePath, (payload) => {
+      payload.frame_publication_flow = {
+        ...(payload.frame_publication_flow ?? {}),
+        image_transport: "download_then_publish",
+      };
+    });
+    assert.ok(codes(validate(root)).has("FRAME_FLOW_CONTRACT"));
+  });
+});
+
+test("Skill instructions cannot reintroduce get_frame_media", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, "skills", "create-cuebook-content", "SKILL.md");
+    fs.writeFileSync(filePath, `${fs.readFileSync(filePath, "utf-8")}\nCall \`get_frame_media\` to fetch the image.\n`);
+    assert.ok(codes(validate(root)).has("FRAME_SKILL_MEDIA_PULL"));
+  });
+});

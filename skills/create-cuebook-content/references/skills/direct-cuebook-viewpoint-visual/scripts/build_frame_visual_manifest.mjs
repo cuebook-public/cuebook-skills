@@ -3,8 +3,9 @@
 //
 // The manifest is the handshake between the visual Skill and the Frame backend:
 // per-role rendition hashes, the rendered-audit verdict, the source bindings the
-// image displays, the font profile, and per-role alt text. The backend verifies
-// the uploaded bytes against `role_hashes` and stores the manifest JCS hash.
+// image displays, the font profile, and per-role alt text. `role_hashes` bind
+// canonical RGBA8 pixels, while FrameDraftAssemblyV1 binds encoded PNG bytes;
+// the backend verifies both independent hash chains and stores the manifest JCS hash.
 //
 // All scalar values are strings or booleans so the JCS hash is stable across
 // languages; floats are rejected. Port of build_frame_visual_manifest.py; the

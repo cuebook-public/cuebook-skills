@@ -9,6 +9,7 @@
     "module_rules",
     "available_tools",
     "required_tools",
+    "frame_publication_flow",
     "release_rules"
   ],
   "properties": {
@@ -71,6 +72,72 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/tool"
+      }
+    },
+    "frame_publication_flow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "image_transport",
+        "skill_may_pull_media",
+        "status_tool",
+        "status_returns",
+        "published_read_tool",
+        "published_visual_semantics",
+        "forbidden_tools",
+        "initial_publish_sequence",
+        "mutation_idempotency",
+        "replay_policy"
+      ],
+      "properties": {
+        "image_transport": {
+          "const": "signed_https_upload_only"
+        },
+        "skill_may_pull_media": {
+          "const": false
+        },
+        "status_tool": {
+          "const": "get_frame_media_status"
+        },
+        "status_returns": {
+          "const": "processing_and_hash_receipts_only"
+        },
+        "published_read_tool": {
+          "const": "get_frame"
+        },
+        "published_visual_semantics": {
+          "const": "one_visual_attached_to_frame_release"
+        },
+        "forbidden_tools": {
+          "const": [
+            "get_frame_media",
+            "list_frame_media",
+            "publish_frame_image",
+            "share_frame_to_agent"
+          ]
+        },
+        "initial_publish_sequence": {
+          "const": [
+            "get_frame_capabilities",
+            "begin_frame_media_upload",
+            "https_put_each_role",
+            "complete_frame_media_upload",
+            "get_frame_media_status",
+            "register_frame_visual_manifest",
+            "create_or_update_frame_draft",
+            "prepare_frame_publish",
+            "first_party_consent",
+            "get_frame_action_consent",
+            "publish_frame",
+            "get_frame"
+          ]
+        },
+        "mutation_idempotency": {
+          "const": "distinct_lowercase_uuidv7_per_command"
+        },
+        "replay_policy": {
+          "const": "same_key_same_payload_returns_receipt_changed_payload_conflict"
+        }
       }
     },
     "release_rules": {
@@ -141,12 +208,16 @@
         },
         "authorization_scope": {
           "enum": [
+            "read:public",
             "cuebook.query",
             "cuebook.create.write",
             "cuebook.publish",
             "cuebook.trade",
+            "cuebook.paper.read",
+            "cuebook.paper.trade",
             "cuebook.frame.read",
-            "cuebook.frame.write"
+            "cuebook.frame.write",
+            "cuebook.frame.publish"
           ]
         },
         "phase": {
