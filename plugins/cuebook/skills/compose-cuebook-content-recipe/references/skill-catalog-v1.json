@@ -1355,10 +1355,10 @@
           "render-cuebook-market-figure/references/market-figure-v1.schema.json"
         ],
         "validator_refs": [
-          "render-cuebook-market-figure/scripts/validate_market_figure.py"
+          "render-cuebook-market-figure/scripts/validate_market_figure.mjs"
         ],
         "test_refs": [
-          "render-cuebook-market-figure/tests/test_market_figure.py"
+          "render-cuebook-market-figure/tests/market_figure.test.mjs"
         ]
       },
       "replaced_by": "render-cuebook-viewpoint-visual"
