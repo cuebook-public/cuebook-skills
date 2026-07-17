@@ -120,7 +120,7 @@ An approval records artifact IDs and their hashes. A changed hash requires a new
 
 ## Output Contract
 
-Return `CreatorWorkflowRunV1` from `references/creator-workflow-run-v1.schema.json`, then run `scripts/validate_creator_workflow.py`:
+Return `CreatorWorkflowRunV1` from `references/creator-workflow-run-v1.schema.json`, then run `node scripts/validate_creator_workflow.mjs`:
 
 ```json
 {
@@ -145,9 +145,9 @@ Return `CreatorWorkflowRunV1` from `references/creator-workflow-run-v1.schema.js
 
 - `references/workflow-map.md`: canonical stages, scenario paths, roles, and capability ownership.
 - `references/creator-workflow-run-v1.schema.json`: authoritative control-plane contract.
-- `scripts/validate_creator_workflow.py`: DAG, state, artifact, approval, and mode checks.
-- `scripts/build_example_bundle.py`: generate and validate a no-database six-contract example bundle.
-- `tests/test_validate_creator_workflow.py`: regression suite.
+- `scripts/validate_creator_workflow.mjs`: DAG, state, artifact, approval, and mode checks.
+- `scripts/build_example_bundle.mjs`: generate and validate a no-database six-contract example bundle.
+- `tests/validate_creator_workflow.test.mjs`: regression suite using `node:test`.
 - `evals/trigger_cases.json`: routing cases.
 - `evals/rubric.md`: orchestration quality gate.
 - `evals/failure_cases.md`: stable orchestration failures.

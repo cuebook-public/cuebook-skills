@@ -1,0 +1,91 @@
+{
+  "schema_version": "content-opportunity-set-v1",
+  "opportunity_set_id": "OS_1234abcd",
+  "feed_ref": "CF_1234abcd",
+  "feed_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "as_of": "2026-07-14T12:00:00+00:00",
+  "decision_cutoff_at": "2026-07-14T12:00:00+00:00",
+  "ruleset_version": "2026-07-14",
+  "mode": "daily_desk",
+  "candidates": [
+    {
+      "opportunity_id": "OPP_q2_revision",
+      "title": "Q2 revision watch",
+      "anchor_refs": [
+        "NEWS_q2",
+        "NAR_revision",
+        "CAL_call"
+      ],
+      "entity_refs": [
+        "ENT_example"
+      ],
+      "lifecycle": "post_event",
+      "editorial_job": "test_narrative",
+      "thesis_seed": "Test whether the release changes forward estimates.",
+      "audience": "active equity investors",
+      "expires_at": "2026-07-15T12:00:00+00:00",
+      "eligibility": "researchable",
+      "evidence_state": "ready",
+      "missing_requirements": [],
+      "permission_state": "ready",
+      "disclosure_state": "ready",
+      "conflict_state": "clear",
+      "history_refs": [],
+      "history_use": null,
+      "factor_vector": {
+        "timeliness": "high",
+        "evidence_maturity": "high",
+        "novelty": "medium",
+        "audience_relevance": "high",
+        "explainability": "high",
+        "production_fit": "high",
+        "correction_risk": "low",
+        "conflict_risk": "low"
+      },
+      "decision": "selected",
+      "priority": "p1",
+      "reason_codes": [
+        "breaking_primary_source",
+        "evidence_ready"
+      ],
+      "dedupe_cluster_id": "OC_q2",
+      "merged_into": null,
+      "research_requirements": [
+        "compare actual with consensus"
+      ],
+      "recommended_mode": "research_pack",
+      "selection_rank": 1,
+      "tie_break_key": "20260714-q2-revision"
+    }
+  ],
+  "clusters": [
+    {
+      "cluster_id": "OC_q2",
+      "member_refs": [
+        "OPP_q2_revision"
+      ],
+      "canonical_ref": "OPP_q2_revision",
+      "reason": "one earnings event"
+    }
+  ],
+  "selected_order": [
+    "OPP_q2_revision"
+  ],
+  "quality_report": {
+    "decision": "ready",
+    "hard_failures": [],
+    "warnings": [],
+    "checks": [
+      "no lookahead"
+    ],
+    "counts": {
+      "candidates": 1,
+      "selected": 1,
+      "deferred": 0,
+      "merged": 0,
+      "rejected": 0,
+      "no_action": 0,
+      "blocked": 0
+    }
+  }
+}
