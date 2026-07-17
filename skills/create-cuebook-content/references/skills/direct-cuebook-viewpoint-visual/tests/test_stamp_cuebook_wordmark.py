@@ -33,6 +33,17 @@ class WordmarkStampTests(unittest.TestCase):
         self.assertFalse(changed)
         self.assertEqual(once, twice)
 
+    def test_restamp_with_other_background_flips_mark_color(self) -> None:
+        light, _ = MODULE.stamp("<style></style><main></main>", "light")
+        dark, changed = MODULE.stamp(light, "dark")
+        self.assertTrue(changed)
+        self.assertIn("color:#F2F3F4", dark)
+        self.assertNotIn("color:#101411", dark)
+        self.assertEqual(dark.count('data-cuebook-wordmark="v1"'), 1)
+        again, changed_again = MODULE.stamp(dark, "dark")
+        self.assertFalse(changed_again)
+        self.assertEqual(dark, again)
+
 
 if __name__ == "__main__":
     unittest.main()

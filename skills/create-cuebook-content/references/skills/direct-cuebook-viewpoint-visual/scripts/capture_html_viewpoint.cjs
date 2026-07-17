@@ -112,6 +112,74 @@ function paintStats(file) {
   };
 }
 
+// Canonical RGBA pixel hash: sha256 over the packed straight-alpha RGBA
+// stream (width * height * 4 bytes, row stride width * 4, top-to-bottom).
+// No dimensions, headers, ICC/EXIF/XMP data, or padding enter the preimage.
+// Must stay byte-identical to the Frame backend's sharp/libvips decode of the
+// same PNG (hashCanonicalRgbaPixelStream).
+function canonicalRgbaPixelSha256(file) {
+  const data = fs.readFileSync(file);
+  let offset = 8;
+  let width;
+  let height;
+  let bitDepth;
+  let colorType;
+  let interlace;
+  const compressed = [];
+  while (offset + 12 <= data.length) {
+    const length = data.readUInt32BE(offset);
+    const type = data.toString("ascii", offset + 4, offset + 8);
+    const payload = data.subarray(offset + 8, offset + 8 + length);
+    if (type === "IHDR") {
+      width = payload.readUInt32BE(0);
+      height = payload.readUInt32BE(4);
+      bitDepth = payload[8];
+      colorType = payload[9];
+      interlace = payload[12];
+    } else if (type === "IDAT") compressed.push(payload);
+    offset += length + 12;
+    if (type === "IEND") break;
+  }
+  if (!width || !height || bitDepth !== 8 || ![2, 6].includes(colorType) || interlace !== 0) {
+    throw new Error(`Unsupported Chromium PNG encoding for pixel hashing: ${file}`);
+  }
+  const channels = colorType === 2 ? 3 : 4;
+  const rowBytes = width * channels;
+  const raw = zlib.inflateSync(Buffer.concat(compressed));
+  const hash = crypto.createHash("sha256");
+  let previous = Buffer.alloc(rowBytes);
+  const rgbaRow = Buffer.alloc(width * 4);
+  for (let y = 0; y < height; y += 1) {
+    const start = y * (rowBytes + 1);
+    const filter = raw[start];
+    const row = Buffer.alloc(rowBytes);
+    for (let index = 0; index < rowBytes; index += 1) {
+      const encoded = raw[start + 1 + index];
+      const left = index >= channels ? row[index - channels] : 0;
+      const up = previous[index];
+      const upperLeft = index >= channels ? previous[index - channels] : 0;
+      let predictor = 0;
+      if (filter === 1) predictor = left;
+      else if (filter === 2) predictor = up;
+      else if (filter === 3) predictor = Math.floor((left + up) / 2);
+      else if (filter === 4) predictor = paeth(left, up, upperLeft);
+      row[index] = (encoded + predictor) & 0xff;
+    }
+    if (channels === 4) hash.update(row);
+    else {
+      for (let x = 0; x < width; x += 1) {
+        rgbaRow[x * 4] = row[x * 3];
+        rgbaRow[x * 4 + 1] = row[x * 3 + 1];
+        rgbaRow[x * 4 + 2] = row[x * 3 + 2];
+        rgbaRow[x * 4 + 3] = 0xff;
+      }
+      hash.update(rgbaRow);
+    }
+    previous = row;
+  }
+  return `sha256:${hash.digest("hex")}`;
+}
+
 function delay(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
@@ -238,11 +306,11 @@ async function captureViewpoint(htmlArg, outputArg, browserOverride = null, ogHt
     if (ogHtmlPath) captures.push(captureReliable(browser, ogHtmlPath, 1200, 630, 1, og, workDir, ogAllowDark));
     const [fullPaint, compactPaint, ogPaint] = await Promise.all(captures);
     const derivatives = [
-      { kind: "full", ref: path.basename(full), width: 2488, height: 1056, sha256: sha256(fs.readFileSync(full)), painted_ratio: Number(fullPaint.paintedRatio.toFixed(6)) },
-      { kind: "compact_622", ref: path.basename(compact), width: 622, height: 264, sha256: sha256(fs.readFileSync(compact)), painted_ratio: Number(compactPaint.paintedRatio.toFixed(6)) },
+      { kind: "full", ref: path.basename(full), width: 2488, height: 1056, sha256: sha256(fs.readFileSync(full)), pixel_sha256: canonicalRgbaPixelSha256(full), painted_ratio: Number(fullPaint.paintedRatio.toFixed(6)) },
+      { kind: "compact_622", ref: path.basename(compact), width: 622, height: 264, sha256: sha256(fs.readFileSync(compact)), pixel_sha256: canonicalRgbaPixelSha256(compact), painted_ratio: Number(compactPaint.paintedRatio.toFixed(6)) },
     ];
     if (ogHtmlPath) {
-      derivatives.push({ kind: "og", ref: path.basename(og), source: path.basename(ogHtmlPath), width: 1200, height: 630, sha256: sha256(fs.readFileSync(og)), painted_ratio: Number(ogPaint.paintedRatio.toFixed(6)) });
+      derivatives.push({ kind: "og", ref: path.basename(og), source: path.basename(ogHtmlPath), width: 1200, height: 630, sha256: sha256(fs.readFileSync(og)), pixel_sha256: canonicalRgbaPixelSha256(og), painted_ratio: Number(ogPaint.paintedRatio.toFixed(6)) });
     }
     const report = {
       schema_version: "viewpoint-html-capture-v1",
@@ -268,7 +336,7 @@ async function main() {
   process.stdout.write(`${result.outputDir}\n`);
 }
 
-module.exports = { browserExecutable, captureViewpoint, paintStats };
+module.exports = { browserExecutable, canonicalRgbaPixelSha256, captureViewpoint, paintStats };
 
 if (require.main === module) {
   main().catch((error) => {

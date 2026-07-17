@@ -82,6 +82,8 @@ The three directions also use the three palette strategies exactly once. Design 
 
 Use three different composition archetypes. At most one may be an editorial statement. A quantitative thesis includes at least one proof-led direction where evidence geometry owns roughly 55-72% of usable area.
 
+Read `canvas-craft-v1.md` before authoring. Score the set on its five diversity axes — entry corner, dominant axis, ground value, scale-extreme type, evidence integration — and require at least three axes of difference between every pair. The default "copy column beside a graphic on a flat ground" arrangement may appear at most once per set.
+
 ### 6. Build hierarchy before color
 
 - One entry group only.
@@ -91,6 +93,7 @@ Use three different composition archetypes. At most one may be an editorial stat
 - Level 4 is expendable context.
 - Four or fewer type sizes and weights.
 - Claims use natural balanced wrapping. Supporting copy uses natural pretty wrapping.
+- CJK copy is segmented into nowrap phrase spans before any wrapping rule applies; a semantic word or value-unit pair never splits across lines. Balanced wrapping chooses between phrases, never inside one.
 - Market numbers use tabular numerals.
 - Letter spacing stays at zero for stable Chinese and bilingual rendering.
 - The grayscale image must retain the same reading order.
@@ -102,6 +105,7 @@ Choose palette expression after hierarchy. Keep 70-85% neutral and use one to th
 
 ### 8. Complete the static craft pass
 
+- Run the `canvas-craft-v1.md` self-check: name the scale extreme (>=3x its runner-up), the active-field share (>=80%), the single deliberate void's meaning, and the depth planes (or the reason flat is the choice).
 - Align optically where geometric centering looks wrong.
 - Use one radius and surface rule; nested radii are concentric when nested surfaces are genuinely needed.
 - Use separators, area, and whitespace before decorative cards or borders.
@@ -122,7 +126,7 @@ Capture 2488 x 1056 and 622 x 264; audit DOM geometry at 1244 x 528 and 622 x 26
 - visible selected material bindings with declared upstream lineage;
 - grayscale hierarchy;
 - local color contrast;
-- natural wrapping and no orphan words;
+- natural wrapping, no orphan words, and no CJK word split across a line break;
 - optical alignment and surface consistency;
 - no clipping, overlap, placeholders, or external dependencies;
 - real structural difference across the three directions.

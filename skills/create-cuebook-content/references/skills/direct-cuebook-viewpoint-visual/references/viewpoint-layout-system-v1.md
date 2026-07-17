@@ -50,6 +50,8 @@ Remove a block when it repeats another block without adding meaning. For selecta
 
 Choose the `composition_archetype` from `finance-visual-argument-system-v1.md` before choosing a grid family. The composition expresses the financial relationship; the grid implements it.
 
+Then hold the layout to `canvas-craft-v1.md`: the 2.36:1 canvas is short, not small — compose in full-height seams, bleeding evidence fields, and horizontal bands; declare one scale extreme; build depth planes from the preset surfaces instead of floating elements on one flat ground.
+
 ## Grid Families
 
 | Grid | Best for |
@@ -74,6 +76,7 @@ Choose the `composition_archetype` from `finance-visual-argument-system-v1.md` b
 - Apply tabular numerals to market values and dates.
 - A key number may exceed the headline size when the number is the claim.
 - Use balanced natural wrapping for claims. Manual line breaks are invalid in launch visuals because they produce orphan verbs and unstable compact layouts.
+- Segment CJK copy into semantic nowrap phrase spans so balancing chooses break points between words, never inside one; see the line-breaking contract in `launch-visual-copy-v1.md`.
 
 ## Data Placement
 

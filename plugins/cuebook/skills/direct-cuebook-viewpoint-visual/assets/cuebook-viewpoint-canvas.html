@@ -30,6 +30,8 @@
   [data-role="claim"] { text-wrap: balance; line-break: strict; }
   [data-role="evidence"], [data-role="condition"] { text-wrap: pretty; }
   [data-binding-ref] { font-variant-numeric: tabular-nums; }
+  /* CJK word integrity: wrap each semantic phrase in <span class="w"> so lines break only between words. */
+  .w { white-space: nowrap; }
   @media (max-width: 1000px) {
     html, body { width: 622px; height: 264px; }
     .cuebook-canvas { transform: scale(.5); transform-origin: top left; }

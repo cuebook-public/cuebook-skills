@@ -20,9 +20,15 @@ from validate_json_schema import validate_instance  # noqa: E402
 SCHEMA = json.loads(
     (Path(__file__).resolve().parents[1] / "references" / "cuebook-creation-bundle-v1.schema.json").read_text(encoding="utf-8")
 )
+# The self-contained bundle vendors sibling skills under references/skills/;
+# the plugin layout keeps them as top-level siblings. Accept either.
+_QUERY_VALIDATOR_CANDIDATES = (
+    Path(__file__).resolve().parents[1] / "references" / "skills" / "query-cuebook" / "scripts" / "validate_query_bundle.py",
+    PLUGIN_ROOT / "skills" / "query-cuebook" / "scripts" / "validate_query_bundle.py",
+)
 QUERY_VALIDATOR_SPEC = importlib.util.spec_from_file_location(
     "cuebook_query_bundle_validator",
-    PLUGIN_ROOT / "skills" / "query-cuebook" / "scripts" / "validate_query_bundle.py",
+    next(path for path in _QUERY_VALIDATOR_CANDIDATES if path.exists()),
 )
 QUERY_VALIDATOR = importlib.util.module_from_spec(QUERY_VALIDATOR_SPEC)
 assert QUERY_VALIDATOR_SPEC and QUERY_VALIDATOR_SPEC.loader

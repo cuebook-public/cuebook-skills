@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import json
 import shutil
 import struct
 import subprocess
@@ -68,6 +69,12 @@ class CaptureViewpointTests(unittest.TestCase):
             self.assertEqual(completed.returncode, 0, completed.stderr)
             self.assertEqual(png_dimensions(output / "viewpoint-2488.png"), (2488, 1056))
             self.assertEqual(png_dimensions(output / "viewpoint-622.png"), (622, 264))
+            report = json.loads((output / "capture-report.json").read_text(encoding="utf-8"))
+            for derivative in report["derivatives"]:
+                self.assertRegex(derivative["pixel_sha256"], r"^sha256:[0-9a-f]{64}$")
+                self.assertNotEqual(derivative["pixel_sha256"], derivative["sha256"])
+            pixel_hashes = [derivative["pixel_sha256"] for derivative in report["derivatives"]]
+            self.assertEqual(len(set(pixel_hashes)), len(pixel_hashes))
         finally:
             temporary.cleanup()
 

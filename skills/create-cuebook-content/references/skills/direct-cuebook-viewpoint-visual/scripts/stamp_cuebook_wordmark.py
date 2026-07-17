@@ -13,11 +13,18 @@ MARKER = 'data-cuebook-wordmark="v1"'
 
 
 def stamp(html: str, background: str) -> tuple[str, bool]:
+    color = "#F2F3F4" if background == "dark" else "#101411"
     if MARKER in html:
+        # Idempotent means converging on the requested state: re-stamping an
+        # already-stamped file with the other background must flip the mark
+        # color, or a dark rebrand silently keeps an invisible ink-on-ink mark.
+        wrong = "#101411" if background == "dark" else "#F2F3F4"
+        needle = f"color:{wrong};z-index:50"
+        if needle in html:
+            return html.replace(needle, f"color:{color};z-index:50", 1), True
         return html, False
     if "</style>" not in html or "</main>" not in html:
         raise ValueError("Viewpoint HTML needs style and main closing tags.")
-    color = "#F2F3F4" if background == "dark" else "#101411"
     css = (
         f'.cuebook-wordmark{{position:absolute;right:41px;bottom:34px;width:136px;height:26px;'
         f'color:{color};z-index:50;pointer-events:none}}'
