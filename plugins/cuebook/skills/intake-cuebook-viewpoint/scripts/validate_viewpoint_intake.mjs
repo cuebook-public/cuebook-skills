@@ -161,6 +161,32 @@ export function validate(payload) {
     errors.push(issue("ELICIT_ROUND_DUPLICATE", "$.elicitation_log", "Each elicitation round number must be unique."));
   }
 
+  const creatorContextFields = new Set(["news_signal", "intuition"]);
+  const releaseFields = new Set(["settlement", "price_anchor"]);
+  const creatorInterviewEntries = log.filter((entry) => {
+    const asked = isDict(entry) && Array.isArray(get(entry, "asked")) ? get(entry, "asked") : [];
+    return asked.some((name) => creatorContextFields.has(name));
+  });
+  if (creatorInterviewEntries.length > 1) {
+    errors.push(issue("CREATOR_INTERVIEW_ROUNDS", "$.elicitation_log", "Offer creator context once; an answer or skip closes the interview."));
+  }
+  for (const entry of creatorInterviewEntries) {
+    const asked = get(entry, "asked");
+    if (asked.some((name) => !creatorContextFields.has(name))) {
+      errors.push(issue("CREATOR_INTERVIEW_FOCUS", "$.elicitation_log", "Keep the optional creator interview separate from rigid fields, settlement, and price."));
+    }
+  }
+  const creatorInterviewRound = creatorInterviewEntries.length ? get(creatorInterviewEntries[0], "round") : null;
+  const firstReleaseRound = log.reduce((found, entry) => {
+    const asked = isDict(entry) && Array.isArray(get(entry, "asked")) ? get(entry, "asked") : [];
+    if (!asked.some((name) => releaseFields.has(name))) return found;
+    const round = get(entry, "round");
+    return found === null || round < found ? round : found;
+  }, null);
+  if (creatorInterviewRound !== null && firstReleaseRound !== null && creatorInterviewRound >= firstReleaseRound) {
+    errors.push(issue("CREATOR_INTERVIEW_ORDER", "$.elicitation_log", "Creator news, signal, and intuition context must be invited before settlement or price."));
+  }
+
   const askedFields = new Set();
   for (const entry of log) {
     if (isDict(entry)) {

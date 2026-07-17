@@ -56,6 +56,21 @@ test("create bundle closure keeps the fast front door and query without mandator
   });
 });
 
+test("create bundle keeps the one-round creator interview before price", () => {
+  withTmpPath((tmpPath) => {
+    buildRelease(tmpPath);
+    const skillPath = path.join(tmpPath, "release", "create-cuebook-content", "SKILL.md");
+    const text = fs.readFileSync(skillPath, "utf-8");
+    const interview = text.indexOf("## One-Round Creator Interview");
+    const skip = text.indexOf("closes it immediately", interview);
+    const price = text.indexOf("This interview always precedes any price-target", interview);
+    assert.ok(interview >= 0, skillPath);
+    assert.ok(skip > interview, skillPath);
+    assert.ok(price > skip, skillPath);
+    assert.match(text, /Ask for a price only after the creator explicitly chooses a price-target settlement/u);
+  });
+});
+
 test("bundles contain no plugin-level references", () => {
   withTmpPath((tmpPath) => {
     const manifest = buildRelease(tmpPath);

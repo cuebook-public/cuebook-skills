@@ -1,7 +1,7 @@
 {
   "schema_version": "cuebook-release-skills-manifest-v1",
   "catalog_version": "1.27.0",
-  "plugin_version": "0.2.1",
+  "plugin_version": "0.2.2",
   "bundles": [
     {
       "skill": "query-cuebook",

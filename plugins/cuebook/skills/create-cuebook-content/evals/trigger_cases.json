@@ -24,7 +24,15 @@
     },
     {
       "prompt": "我觉得油价要涨。",
-      "route": "create-cuebook-content runs $intake-cuebook-viewpoint first to complete asset, horizon, and direction"
+      "route": "create-cuebook-content completes subject, horizon, and direction, then offers one optional creator-context interview before querying or generating"
+    },
+    {
+      "prompt": "BTC 未来 30 天偏多，直接做，不要再问了。",
+      "route": "create-cuebook-content treats the creator interview as skipped and starts the Cuebook query plus one-preview path immediately; it does not ask for a price"
+    },
+    {
+      "prompt": "我没有更多线索，就按这个做。",
+      "route": "continue the existing create-cuebook-content run immediately without repeating the interview, lowering quality, or opening a price question"
     }
   ],
   "adversarial": [

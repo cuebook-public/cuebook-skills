@@ -24,7 +24,8 @@ function intake() {
     },
     elicitation_log: [
       { round: 1, asked: ["asset", "horizon"], prompt_text: "记在哪个标的上（USO / CL / XLE）？看多久（48H / 30D / 90D）？", answered_verbatim: "USO，一个月吧" },
-      { round: 2, asked: ["settlement"], prompt_text: "到期按方向对错结算（阈值 0）可以吗？还是要挂一个目标价？", answered_verbatim: "方向对错就行" },
+      { round: 2, asked: ["intuition"], prompt_text: "你已经提到霍尔木兹；这个判断里最想保留的直觉是什么？没有更多也可以直接说就按这个做。", answered_verbatim: "风险溢价会在实际断供前先反映" },
+      { round: 3, asked: ["settlement"], prompt_text: "你要现在冻结结算吗？如果要，按方向对错（阈值 0）可以吗？", answered_verbatim: "方向对错就行" },
     ],
     verification: {
       asset_resolution: { status: "pass", method: "search_assets", resolved_ref: "asset:uso", note: null },
@@ -67,6 +68,51 @@ test("three fields in one round is rejected", () => {
   const payload = intake();
   payload.elicitation_log[0].asked = ["asset", "horizon", "price_anchor"];
   assert.equal(VALIDATOR.validate(payload).valid, false);
+});
+
+test("creator may skip the one-round interview without blocking handback", () => {
+  const payload = intake();
+  payload.elicitation_log[1] = {
+    round: 2,
+    asked: ["news_signal", "intuition"],
+    prompt_text: "还有什么新闻、signal 或直觉想保留？没有就说就按这个做。",
+    answered_verbatim: "就按这个做",
+  };
+  const result = VALIDATOR.validate(payload);
+  assert.ok(result.valid, JSON.stringify(result.errors));
+});
+
+test("creation preview can hand back without settlement or a target price", () => {
+  const payload = intake();
+  payload.fields.settlement = { family: null, threshold_bps: null, provenance: "missing" };
+  payload.elicitation_log = payload.elicitation_log.filter((entry) => !entry.asked.includes("settlement"));
+  payload.handback.target = "create-cuebook-content";
+  Object.assign(payload.handback.seed, {
+    settlement_family: null,
+    threshold_bps: null,
+    target_price: null,
+    target_operator: null,
+  });
+  const result = VALIDATOR.validate(payload);
+  assert.ok(result.valid, JSON.stringify(result.errors));
+});
+
+test("creator interview must precede settlement and price questions", () => {
+  const payload = intake();
+  payload.elicitation_log[1].round = 3;
+  payload.elicitation_log[2].round = 2;
+  assert.ok(codes(payload).has("CREATOR_INTERVIEW_ORDER"));
+});
+
+test("creator interview cannot turn into a repeated questionnaire", () => {
+  const payload = intake();
+  payload.elicitation_log.push({
+    round: 4,
+    asked: ["news_signal"],
+    prompt_text: "还有别的 signal 吗？",
+    answered_verbatim: "没有",
+  });
+  assert.ok(codes(payload).has("CREATOR_INTERVIEW_ROUNDS"));
 });
 
 test("elicited field requires a logged round", () => {
@@ -121,7 +167,7 @@ test("long target below reference is a conflict", () => {
   payload.fields.direction = { value: "short", provenance: "elicited" };
   payload.fields.price_anchor.operator = "lte";
   payload.handback.seed.direction = "short";
-  payload.elicitation_log.push({ round: 3, asked: ["direction"], prompt_text: "500 在现价 550 下方——你是想做空吗？", answered_verbatim: "对，是做空" });
+  payload.elicitation_log.push({ round: 4, asked: ["direction"], prompt_text: "500 在现价 550 下方——你是想做空吗？", answered_verbatim: "对，是做空" });
   const found = codes(payload);
   assert.ok(!found.has("TARGET_DIRECTION_CONFLICT"));
 });
@@ -139,7 +185,7 @@ test("pair family requires second asset", () => {
   assert.ok(codes(payload).has("PAIR_ASSET_MISSING"));
 
   payload.fields.pair_asset = { value: "asset:xle", display: "XLE", candidates: [], provenance: "elicited" };
-  payload.elicitation_log.push({ round: 3, asked: ["pair_asset"], prompt_text: "相对谁？", answered_verbatim: "XLE" });
+  payload.elicitation_log.push({ round: 4, asked: ["pair_asset"], prompt_text: "相对谁？", answered_verbatim: "XLE" });
   assert.ok(!codes(payload).has("PAIR_ASSET_MISSING"));
 });
 

@@ -26,11 +26,13 @@ claims, save artifacts, or publish.
 ## Create
 
 `create-cuebook-content` owns Frame writing and packaging. It preserves and
-improves the user's seed, calls Query for material current claims, and returns
-one `FramePreviewV1` by default. Three alternatives are generated only when
-explicitly requested. Every Frame exposes one title, one concise body, and one
-paired 2488 x 1056 image; release contracts and extra derivatives wait until
-selection.
+improves the user's seed, offers one optional follow-up about the news, clues,
+signals, or intuition behind it, calls Query for material current claims, and
+returns one `FramePreviewV1` by default. The follow-up always precedes any
+price-target question and a skip moves directly into creation. Three
+alternatives are generated only when explicitly requested. Every Frame exposes
+one title, one concise body, and one paired 2488 x 1056 image; release contracts
+and extra derivatives wait until selection.
 
 Media upload, manifest registration, draft creation, prepare, first-party
 consent, and Frame publication remain explicit, authorized MCP steps. Create

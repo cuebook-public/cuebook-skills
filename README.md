@@ -6,8 +6,10 @@ Cuebook exposes two public entrypoints:
 
 - `query-cuebook` reads source-linked market intelligence without writing.
 - `create-cuebook-content` turns a creator's trading idea into one fast Frame
-  preview by default; it generates three alternatives only when explicitly
-  requested. Every Frame exposes one title, one concise body, and one image.
+  preview by default. It offers one optional creator-context follow-up before
+  any price question, and continues immediately when skipped. It generates
+  three alternatives only when explicitly requested. Every Frame exposes one
+  title, one concise body, and one image.
 
 The repository packages 38 modular skills behind those two entrypoints
 (including the `intake-cuebook-viewpoint` conversational front door that
@@ -32,7 +34,7 @@ Install the current release:
 
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \
-  --ref v0.2.1 \
+  --ref v0.2.2 \
   --sparse .agents/plugins \
   --sparse plugins/cuebook
 

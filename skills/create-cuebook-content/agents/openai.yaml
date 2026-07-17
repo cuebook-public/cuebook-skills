@@ -1,4 +1,4 @@
 interface:
   display_name: "Create With Cuebook"
   short_description: "Turn a trading idea into title, body, and one paired Frame image"
-  default_prompt: "Create one best Cuebook Frame fast preview from this trading idea: one title, one concise body, and one paired image. Preserve and elevate the creator's viewpoint, use Cuebook for material current premises, and show the preview before release packaging. Generate three only if I explicitly ask for alternatives."
+  default_prompt: "Create one best Cuebook Frame fast preview from this trading idea: one title, one concise body, and one paired image. First recover subject, direction, and horizon, then offer one compact, optional follow-up about the news, clues, signals, intuition, or inspiration behind the view. This follow-up must come before any price question; if I say to continue or provide nothing more, immediately use Cuebook for material current premises and generate without asking again. Preserve and elevate my viewpoint, and show the preview before release packaging. Generate three only if I explicitly ask for alternatives."

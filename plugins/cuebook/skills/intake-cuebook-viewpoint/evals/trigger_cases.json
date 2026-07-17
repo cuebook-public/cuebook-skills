@@ -19,7 +19,11 @@
     },
     {
       "prompt": "USO 30 天偏多，入场 78.5，直接出图发布。",
-      "route": "create-cuebook-content directly; the minimum view contract is already complete"
+      "route": "create-cuebook-content directly; the minimum view contract is already complete and the volunteered price is preserved without another price prompt"
+    },
+    {
+      "prompt": "BTC 30 天偏多，但我没有更多线索，就按这个做。",
+      "route": "record the optional creator interview as skipped and hand off immediately; do not repeat it or ask for a target price"
     },
     {
       "prompt": "我就随便聊聊，不用记。",
