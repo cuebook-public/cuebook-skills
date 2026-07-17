@@ -1420,10 +1420,10 @@
           "render-cuebook-market-signal/references/market-signal-v1.schema.json"
         ],
         "validator_refs": [
-          "render-cuebook-market-signal/scripts/validate_market_signal.py"
+          "render-cuebook-market-signal/scripts/validate_market_signal.mjs"
         ],
         "test_refs": [
-          "render-cuebook-market-signal/tests/test_market_signal.py"
+          "render-cuebook-market-signal/tests/market_signal.test.mjs"
         ]
       },
       "replaced_by": "render-cuebook-viewpoint-visual"
