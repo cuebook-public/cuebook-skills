@@ -3,6 +3,7 @@ name: compile-cuebook-visual-argument
 description: >-
   Compile a Cuebook PostV1, selected public CorpusV1 item, CreatorViewIntentV1, TradingThesisV1, ResearchPackV1, SettlementClaimV1, or bounded creator narrative into VisualArgumentV1: an evidence-linked graph of events, mechanisms, actor actions, market effects, metrics, conditions, countercases, price levels, scenarios, and settlement semantics. Use before turning narrative logic or a verified commentator-post idea into Cuebook causal cards, metric panels, scenario maps, evidence balances, comparison visuals, or thesis charts. Do not render graphics, invent links, imitate a commentator, rewrite creator ownership, calculate market data, publish content, or place trades.
 license: Proprietary. Cuebook internal; see the repository README for terms.
+compatibility: Requires Node.js 18+ for validators.
 ---
 
 # Compile Cuebook Visual Argument
@@ -31,7 +32,7 @@ Create the shared semantic layer behind every Cuebook opinion visual. A renderer
    - `evidence_balance`: supporting evidence versus countercase;
    - `comparison`: two assets, instruments, companies, or regimes;
    - `price_timeline`: market path, trigger, target, invalidation, and settlement clock.
-10. Validate with `scripts/validate_visual_argument.py`.
+10. Validate with `scripts/validate_visual_argument.mjs`.
 
 ## Commentator Post Route
 
@@ -71,12 +72,12 @@ Use `$render-cuebook-logic-card` when the primary job is the graph itself and no
 Return `VisualArgumentV1` from `references/visual-argument-v1.schema.json` and validate it:
 
 ```bash
-python scripts/validate_visual_argument.py visual-argument-v1.json
+node scripts/validate_visual_argument.mjs visual-argument-v1.json
 ```
 
 ## Resources
 
 - `references/visual-argument-v1.schema.json`: shared semantic contract for every Cuebook opinion visual.
 - `references/kol-to-visual-routing.md`: KOL/commentator post classification, grammar routing, and evidence gates.
-- `scripts/validate_visual_argument.py`: graph, provenance, grammar, settlement, and state validator.
-- `tests/test_validate_visual_argument.py`: regression tests.
+- `scripts/validate_visual_argument.mjs`: graph, provenance, grammar, settlement, and state validator.
+- `tests/validate_visual_argument.test.mjs`: regression tests.

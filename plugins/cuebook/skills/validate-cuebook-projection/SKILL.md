@@ -11,7 +11,7 @@ Treat rejection recall as the primary metric. A clean rejection is better than p
 ## Workflow
 
 1. Normalize snake_case and camelCase Cuebook fields, evidence records, assets, aliases, and timestamps.
-2. Run `scripts/validate_projection.py` for a deterministic first pass.
+2. Run `scripts/validate_projection.mjs` for a deterministic first pass.
 3. Inspect every emitted check against `references/projection-rules.md`.
 4. Add human judgment only where the script reports missing metadata or an ambiguous proxy.
 5. Return `GateV1` exactly as defined in `references/gate-v1.schema.json`.
@@ -33,5 +33,5 @@ Keep sourced facts, derived claims, and unsupported claims separate. For current
 - `references/projection-rules.md`: gate codes and repair rules.
 - `references/gate-v1.schema.json`: machine contract.
 - `references/db-regression-cases.json`: representative local and production Cuebook cases.
-- `scripts/validate_projection.py`: deterministic validator.
-- `scripts/test_validate_projection.py`: regression runner.
+- `scripts/validate_projection.mjs`: deterministic validator.
+- `scripts/validate_projection.test.mjs`: regression runner.

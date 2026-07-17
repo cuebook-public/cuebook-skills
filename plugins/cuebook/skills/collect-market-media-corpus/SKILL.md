@@ -16,7 +16,7 @@ Create a bounded, attributable `media-corpus.v1` artifact. Preserve the content 
 4. Normalize JSON or JSONL records:
 
 ```bash
-python scripts/normalize_media_corpus.py INPUT.json \
+node scripts/normalize_media_corpus.mjs INPUT.json \
   --rights-basis public \
   --source-label "public sample set" \
   --sample-frame "recent plus baseline" \
@@ -40,5 +40,5 @@ python scripts/normalize_media_corpus.py INPUT.json \
 
 - `references/media-corpus-v1.schema.json`: authoritative MediaCorpusV1 schema.
 - `references/collection-playbook.md`: mapping, rights, provenance, and missing-data rules.
-- `scripts/normalize_media_corpus.py`: deterministic JSON/JSONL normalizer.
-- `tests/test_normalize_media_corpus.py`: regression tests for structure, provenance, and missing metrics.
+- `scripts/normalize_media_corpus.mjs`: deterministic JSON/JSONL normalizer.
+- `tests/normalize_media_corpus.test.mjs`: regression tests for structure, provenance, and missing metrics.

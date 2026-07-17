@@ -45,9 +45,9 @@ Turn one meaning-locked settlement claim into math that a deterministic service 
 Return `SettlementFormulaV1`, then run:
 
 ```bash
-python scripts/validate_settlement_formula.py settlement-formula-v1.json
-python scripts/validate_settlement_formula.py settlement-formula-v1.json --print-math
-python scripts/validate_settlement_formula.py settlement-formula-v1.json --print-canonical-hash
+node scripts/validate_settlement_formula.mjs settlement-formula-v1.json
+node scripts/validate_settlement_formula.mjs settlement-formula-v1.json --print-math
+node scripts/validate_settlement_formula.mjs settlement-formula-v1.json --print-canonical-hash
 ```
 
 ## Resources
@@ -56,6 +56,6 @@ python scripts/validate_settlement_formula.py settlement-formula-v1.json --print
 - `references/backend-db-contract.md`: Cuebook table bindings, evaluator semantics, persistence gaps, and MCP requirements.
 - `references/mcp-settlement-protocol.md`: registration, sealed observation, outcome, and receipt requirements for Cuebook MCP.
 - `references/settlement-formula-v1.schema.json`: authoritative typed formula contract.
-- `scripts/validate_settlement_formula.py`: type, lifecycle, public-math, and hash validator.
-- `tests/test_validate_settlement_formula.py`: deterministic regression cases.
+- `scripts/validate_settlement_formula.mjs`: type, lifecycle, public-math, and hash validator.
+- `tests/validate_settlement_formula.test.mjs`: deterministic regression cases.
 - `evals/trigger_cases.json`: routing examples.

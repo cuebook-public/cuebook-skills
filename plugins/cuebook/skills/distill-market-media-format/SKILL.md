@@ -2,6 +2,7 @@
 name: distill-market-media-format
 description: Distill a public or authorized MediaCorpusV1 into an evidence-backed MediaFormatV1 for long-form investment articles, Reddit posts or comments, Xiaohongshu image notes, and finance short videos. Use when the user wants reusable platform grammar, section or beat order, evidence placement, packaging, visual/audio structure, interaction behavior, and policy-aware Cuebook bridge rules. Do not use for collecting raw media, profiling a person, copying a living creator, claiming virality, drafting publishable content, or bypassing platform access controls.
 license: Proprietary. Cuebook internal; see the repository README for terms.
+compatibility: Requires Node.js 18+ for validators.
 ---
 
 # Distill Market Media Format
@@ -23,7 +24,7 @@ Turn an attributable `media-corpus.v1` sample into `media-format.v1`. Distill th
 4. Run:
 
 ```bash
-python scripts/distill_media_format.py media-corpus-v1.json \
+node scripts/distill_media_format.mjs media-corpus-v1.json \
   --output media-format-v1.json
 ```
 
@@ -53,6 +54,6 @@ python scripts/distill_media_format.py media-corpus-v1.json \
 - `references/media-format-v1.schema.json`: MediaFormatV1 contract.
 - `references/distillation-method.md`: format taxonomy, quality gates, and bridge rules.
 - `references/platform-policies.md`: dated policy routing notes and official-source links.
-- `scripts/distill_media_format.py`: deterministic MediaCorpusV1 distiller.
-- `tests/test_distill_media_format.py`: cross-format regression tests.
+- `scripts/distill_media_format.mjs`: deterministic MediaCorpusV1 distiller.
+- `tests/distill_media_format.test.mjs`: cross-format regression tests.
 - `evals/trigger_cases.json`: positive, neighboring, mixed, and adversarial routing cases.

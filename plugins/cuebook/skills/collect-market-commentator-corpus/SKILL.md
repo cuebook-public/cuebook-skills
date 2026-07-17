@@ -15,7 +15,7 @@ Create a bounded, attributable `corpus.v1` artifact. Normalize supplied material
 3. Run the deterministic normalizer:
 
 ```bash
-python scripts/normalize_corpus.py INPUT.json \
+node scripts/normalize_corpus.mjs INPUT.json \
   --rights-basis public \
   --source-label "public account export" \
   --output corpus-v1.json
@@ -39,4 +39,4 @@ Pass multiple input paths to combine JSON, JSONL, and CSV files. Add `--subject-
 
 - `references/corpus-v1.schema.json`: authoritative CorpusV1 JSON Schema.
 - `references/collection-playbook.md`: source, field-mapping, deduplication, and provenance rules.
-- `scripts/normalize_corpus.py`: standard-library JSON/JSONL/CSV normalizer.
+- `scripts/normalize_corpus.mjs`: standard-library JSON/JSONL/CSV normalizer.

@@ -20,7 +20,7 @@ Turn an editorial objective and bounded source set into a channel-independent pr
 8. Return `ContentProgramV1` and validate it:
 
 ```bash
-python scripts/validate_content_program.py content-program-v1.json
+node scripts/validate_content_program.mjs content-program-v1.json
 ```
 
 ## Inputs
@@ -62,5 +62,5 @@ After all channel artifacts are final, call `$prepare-market-content-release`. T
 
 - `references/planning-patterns.md`: topology, release-strategy, and measurement patterns.
 - `references/content-program-v1.schema.json`: output contract.
-- `scripts/validate_content_program.py`: deterministic graph and boundary validator.
-- `tests/test_validate_content_program.py`: regression cases.
+- `scripts/validate_content_program.mjs`: deterministic graph and boundary validator.
+- `tests/validate_content_program.test.mjs`: regression cases.

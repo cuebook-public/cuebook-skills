@@ -22,7 +22,7 @@ Turn a market question into a reusable research artifact. Keep reported facts, l
 10. Add only decision-relevant market context. For a trade watch, include data delay, session, spread or liquidity, volatility, and invalidation. For valuation, show a range and sensitivity rather than a false-precision point estimate.
 11. Write the thesis after the evidence and a short pre-mortem. Name the mechanism, forced or exposed actors, horizon, counterevidence, and a condition that would make the view wrong.
 12. Build at least two scenarios for a directional or trade-watch claim. Do not invent probabilities. Leave unavailable inputs in `gaps`.
-13. Return `ResearchPackV1`, run `scripts/validate_research_pack.py`, and repair all errors. Review warnings deliberately.
+13. Return `ResearchPackV1`, run `scripts/validate_research_pack.mjs`, and repair all errors. Review warnings deliberately.
 
 Proceed with a conditional pack when non-critical fields are missing. Ask a question only when the missing answer would change source identity, asset mapping, decision use, or the safety boundary.
 
@@ -125,8 +125,8 @@ Return the shape defined by `references/research-pack-v1.schema.json`:
 - `references/research-modules.md`: event-specific research modules and required fields.
 - `references/claim-enrichment-fast-path.md`: creator-language triggers, exact support requests, news-anchor selection, and metric-basis resolution.
 - `references/research-pack-v1.schema.json`: authoritative contract.
-- `scripts/validate_research_pack.py`: deterministic cross-reference and safety checks.
-- `tests/test_validate_research_pack.py`: regression suite.
+- `scripts/validate_research_pack.mjs`: deterministic cross-reference and safety checks.
+- `tests/validate_research_pack.test.mjs`: regression suite.
 - `evals/trigger_cases.json`: positive, neighboring, and adversarial routing cases.
 - `evals/rubric.md`: research quality gate.
 - `evals/failure_cases.md`: stable failure patterns.
