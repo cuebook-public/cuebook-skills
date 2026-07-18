@@ -409,22 +409,30 @@ export function validate(payload, assetRoot = null) {
     if (typeof direction !== "string" || !direction) errors.push(issue("DIRECTION_REF", `${path}.visual.direction_ref`, "Visual direction ref is required."));
     else if (directions.has(direction)) errors.push(issue("DUPLICATE_DIRECTION", `${path}.visual.direction_ref`, "Each candidate needs a distinct visual direction."));
     else directions.add(direction);
+    const rendererMode = visual.renderer_mode ?? "cuebook_template";
+    if (!new Set(["cuebook_template", "finished_bitmap"]).has(rendererMode)) {
+      errors.push(issue("RENDERER_MODE", `${path}.visual.renderer_mode`, "Use cuebook_template or finished_bitmap."));
+    }
     const htmlRef = visual.html_ref;
-    if (!safeRelativeRef(htmlRef, ".html")) errors.push(issue("VISUAL_REF", `${path}.visual.html_ref`, "Use a safe relative HTML ref."));
-    else if (htmlRefs.has(htmlRef)) errors.push(issue("DUPLICATE_VISUAL_REF", `${path}.visual.html_ref`, "HTML refs must be unique."));
-    else {
-      htmlRefs.add(htmlRef);
-      if (assetRoot !== null && assetRoot !== undefined) {
-        const htmlPath = isAbsolute(htmlRef) ? htmlRef : resolve(String(assetRoot), htmlRef);
-        if (!isFile(htmlPath)) errors.push(issue("VISUAL_MISSING", `${path}.visual.html_ref`, `Missing visual asset ${pyrepr(htmlRef)}.`));
-        else {
-          const html = readFileSync(htmlPath, "utf8");
-          const measuredChars = htmlVisibleCharCount(html);
-          if (!pyEquals(visual.visible_char_count, measuredChars)) errors.push(issue("VISUAL_CHAR_COUNT", `${path}.visual.visible_char_count`, `Expected ${measuredChars} from HTML.`));
-          const launchAudit = audit_html(html);
-          for (const launchError of launchAudit.errors) errors.push(issue(`VISUAL_${launchError.code}`, `${path}.visual.html_ref`, launchError.message));
+    if (rendererMode === "cuebook_template") {
+      if (!safeRelativeRef(htmlRef, ".html")) errors.push(issue("VISUAL_REF", `${path}.visual.html_ref`, "Template mode needs a safe relative HTML ref."));
+      else if (htmlRefs.has(htmlRef)) errors.push(issue("DUPLICATE_VISUAL_REF", `${path}.visual.html_ref`, "HTML refs must be unique."));
+      else {
+        htmlRefs.add(htmlRef);
+        if (assetRoot !== null && assetRoot !== undefined) {
+          const htmlPath = isAbsolute(htmlRef) ? htmlRef : resolve(String(assetRoot), htmlRef);
+          if (!isFile(htmlPath)) errors.push(issue("VISUAL_MISSING", `${path}.visual.html_ref`, `Missing visual asset ${pyrepr(htmlRef)}.`));
+          else {
+            const html = readFileSync(htmlPath, "utf8");
+            const measuredChars = htmlVisibleCharCount(html);
+            if (!pyEquals(visual.visible_char_count, measuredChars)) errors.push(issue("VISUAL_CHAR_COUNT", `${path}.visual.visible_char_count`, `Expected ${measuredChars} from HTML.`));
+            const launchAudit = audit_html(html);
+            for (const launchError of launchAudit.errors) errors.push(issue(`VISUAL_${launchError.code}`, `${path}.visual.html_ref`, launchError.message));
+          }
         }
       }
+    } else if (htmlRef !== null) {
+      errors.push(issue("BITMAP_HTML_UNEXPECTED", `${path}.visual.html_ref`, "finished_bitmap must use null and must not be blocked by missing original HTML."));
     }
     const declaredVisualChars = visual.visible_char_count;
     if (!pyInt(declaredVisualChars) || pyNumber(declaredVisualChars) < 1) errors.push(issue("VISUAL_CHAR_COUNT", `${path}.visual.visible_char_count`, "A positive visual character count is required."));

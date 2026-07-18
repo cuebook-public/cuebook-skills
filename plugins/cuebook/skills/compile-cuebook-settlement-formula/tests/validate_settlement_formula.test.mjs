@@ -436,6 +436,17 @@ test("long short pair requires one long and one short", () => {
   assert.ok(errorCodes(result).has("LONG_SHORT_SIDE"));
 });
 
+test("BTC and QQQ style mixed-session pair settlement degrades instead of pretending alignment", () => {
+  const item = longShortFormula();
+  item.execution_profile.legs[0].canonical_ticker = "btc";
+  item.execution_profile.legs[0].entry.market_session = "continuous";
+  item.execution_profile.legs[1].canonical_ticker = "qqq";
+  item.execution_profile.legs[1].entry.market_session = "regular";
+  const result = validate(item);
+  assert.equal(result.valid, false);
+  assert.ok(errorCodes(result).has("MIXED_SESSION_FAMILY"));
+});
+
 test("execution profile and ast cannot disagree", () => {
   const item = singleDirectionFormula();
   item.outcome.expression.args[1].value = "31";

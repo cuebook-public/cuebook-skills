@@ -54,7 +54,9 @@ function writeAssets(item, root) {
       mkdirSync(dirname(path), { recursive: true });
       writeFileSync(path, "png");
     }
-    writeFileSync(join(root, candidateItem.visual.html_ref), launchHtml(), "utf8");
+    if ((candidateItem.visual.renderer_mode ?? "cuebook_template") === "cuebook_template") {
+      writeFileSync(join(root, candidateItem.visual.html_ref), launchHtml(), "utf8");
+    }
   }
 }
 
@@ -62,6 +64,16 @@ test("valid ready set", () => {
   const result = validate(baseSet());
   assert.equal(result.valid, true, JSON.stringify(result.errors));
   assert.equal(result.stats.candidate_count, 3);
+});
+
+test("finished bitmap candidates do not require original HTML", () => {
+  const item = baseSet();
+  for (const candidateItem of item.candidates) {
+    candidateItem.visual.renderer_mode = "finished_bitmap";
+    candidateItem.visual.html_ref = null;
+  }
+  const result = validate(item);
+  assert.equal(result.valid, true, JSON.stringify(result.errors));
 });
 
 test("valid ready set without settlement", () => {

@@ -2,7 +2,7 @@
 name: direct-cuebook-viewpoint-visual
 description: Produce release-grade Cuebook Frame visual directions after a fast preview is selected: retain one chosen direction by default, or build three structurally different directions only when the creator explicitly requested alternatives. Preserve source-linked reasoning, divide labor with the Frame title and body, export required full/compact/OG derivatives, and return VisualDirectionSetV1. Do not use this release-grade workflow for an ordinary first preview; do not reclassify intent, research missing facts, change the creator's thesis, duplicate the body, invent chart data or a future path, or render settlement backend fields.
 license: Proprietary. Cuebook internal; see the repository README for terms.
-compatibility: Requires Node.js 18+ with Playwright plus a local Chromium/Chrome executable for capture, render, and audit scripts. Local filesystem only; no network access at render time.
+compatibility: Node.js 18+. cuebook_template uses Playwright plus local Chromium/Chrome for deterministic HTML capture and DOM audit. finished_bitmap needs only local finished PNGs and image inspection; original HTML and font files are optional. No network access at render time.
 ---
 
 # Compose Cuebook Viewpoint Layout
@@ -42,11 +42,11 @@ Do not hand-author HTML for a raw first preview. The public creation entrypoint 
    When three or more selected material news events exist, the system candidate must use `news_synthesis`. Other system candidates follow the thesis: mechanism, scenario, measured flow, strategy, or cycle.
    When a complete `market_series` binding is material to the claim, make the observed curve visible in all three selectable directions while changing its composition and hierarchy, not its data. When the series is supporting rather than material, make at least one direction curve-led and prefer it as the default selected route for a bounded trade unless another evidence form proves the central judgment more directly.
 6. For explicit alternatives, make the three composition archetypes and spatial skeletons visibly different. For a selected single direction, preserve the chosen structure and focus only on release fitness. A quantitative proof-led composition gives its evidence field roughly 55-72% of usable area; a giant number is an annotation when comparison, structure, series, distribution, or payoff is the proof.
-7. Reuse a validated host-approved Noi font cache when available. Otherwise stage original Noi files once into the selected release artifact's `fonts/` directory with `scripts/stage_noi_font_assets.mjs`. Never copy fonts for every discarded preview candidate. Production requires licensed non-Trial files and an opaque `license_ref`.
+7. Freeze `renderer_mode`. `cuebook_template` reuses a validated host-approved Noi font cache or stages original Noi files once into the selected release artifact's `fonts/` directory; production requires licensed non-Trial files and an opaque `license_ref`. `finished_bitmap` is the canonical mode for external/already-finished pixels: original HTML and Noi files are optional, and the artifact records `embedded-pixels-v1` with verification `not_asserted` instead of guessing a typeface from pixels.
 8. Complete the static craft, hierarchy, color, and reverse-deletion passes in the kernel, then score each direction with `references/cuebook-visual-critique-v1.md`. Revise any direction that fails data integrity, logic continuity, hierarchy, color logic, anti-default discipline, or the three-second comprehension gate.
 9. Run a reverse-deletion pass before finalizing geometry and responsive behavior. Temporarily remove each visible group; restore it only when its absence changes the claim, uniquely proves the claim, or changes the catalyst, horizon, next observable, or explicit invalidation. Restore a risk boundary only when the user selected it for display. Prefer four to six visible role groups, one evidence modality, and no decorative connector whose relation is already obvious. Reserve the bottom-right brand safe zone and remove handwritten `Cuebook`, `C`, badges, pills, or substitute logos. If every direction scores below 7.5, generate new directions before brand lock.
-10. **Run final brand lock as the last HTML mutation.** Stamp `assets/cuebook-wordmark.svg` with `scripts/stamp_cuebook_wordmark.mjs`, choosing the background directly behind the mark. Then run `scripts/lint_launch_viewpoint_html.mjs`, capture both sizes, and run `scripts/audit_rendered_viewpoint.cjs` against the actual DOM geometry. Inspect the PNGs, write the capture and render-audit references into `VisualDirectionSetV1`, then validate the set. After stamping, only validation and capture are allowed; any design edit requires repeating the brand-lock step.
-11. **For a Frame publication destined for public or unlisted visibility, also author the OG share card.** It is an independently composed `1200 x 630` canvas (`data-width="1200" data-height="630"`) that carries the claim, the core judgment, and the brand lock — never a crop or scale of the wide canvas. Capture it as the third derivative (`capture_html_viewpoint.cjs direction.html ./out og.html`), audit it with `--profile og`, then build the publication handshake with `scripts/build_frame_visual_manifest.mjs`. The builder accepts only a selected direction, requires capture and audit to bind that direction's HTML and full/compact refs, and includes only its selected display bindings. It emits per-role canonical RGBA8 pixel hashes, audit verdict, production font profile, and authoritative alt text. The assembly separately carries each encoded PNG byte hash. The Frame backend verifies both hash chains after signed upload; the Skill never downloads the uploaded image again.
+10. In `cuebook_template`, **run final brand lock as the last HTML mutation.** Stamp `assets/cuebook-wordmark.svg`, run the launch HTML linter, capture both sizes, and run the DOM render audit. After stamping, only validation and capture are allowed. In `finished_bitmap`, do not reconstruct or demand HTML: inspect the final PNGs, prepare `frame-finished-bitmap-audit-request-v1`, and run `scripts/audit_finished_bitmap.mjs`. A pass binds legibility, collision, imagery-policy review, mutable-price state, exact dimensions, encoded-byte hashes, and canonical pixel hashes to the final pixels.
+11. **Keep publication, compact, and OG composition.** Public/unlisted visibility still requires an independently composed 1200 x 630 OG share card, never a crop of the wide canvas. `cuebook_template` captures and audits HTML/DOM; `finished_bitmap` audits final PNGs only. `scripts/build_frame_visual_manifest.mjs` accepts either renderer mode and emits the same existing Frame manifest fields. The assembly separately carries encoded PNG byte hashes, the backend re-verifies both chains after signed upload, and the Skill never downloads uploaded media again.
 
 ```bash
 node scripts/stage_noi_font_assets.mjs /secure/noi ./fonts \
@@ -58,6 +58,8 @@ node scripts/lint_launch_viewpoint_html.mjs direction-a.html
 node scripts/capture_html_viewpoint.cjs direction-a.html ./direction-a-preview
 NODE_PATH=/path/to/playwright/node_modules node scripts/audit_rendered_viewpoint.cjs direction-a.html ./direction-a-preview
 node scripts/capture_html_viewpoints_batch.cjs capture-manifest.json
+node scripts/audit_finished_bitmap.mjs finished-bitmap-audit-request.json \
+  --asset-root ./selected --out ./selected/raster-audit.json
 ```
 
 ## Autonomous Candidate Mode
@@ -112,6 +114,7 @@ Write one sentence for `form_from_content`. If it could describe an unrelated st
 - Use creator-adaptive color through registered presets. Calm research, urgent calls, technical setups, personal stories, and macro conflict should not share one default visual voice.
 - Use public language. Hide workflow state, evidence counts, database field names, and settlement machinery.
 - Show settlement text outside the image unless its level or deadline is itself the argument.
+- Do not print a mutable current/entry price before publication unless a real backend quote/entry lock ref is bound. Prefer `BTC · 30D LONG` or equivalent asset/horizon/direction wording; do not confuse a changing quote with a frozen target or settlement level.
 - When horizon, observation window, or settlement timing matters, make it legible as a separate marker from the solid observed series.
 - Bind every displayed market fact or number. Factual and derived bindings must resolve to a declared fact or data-requirement ref; creator opinions resolve to a declared input ref and use `request_class: creator_judgment`.
 - Observed and reported material uses solid geometry. Conditional or future paths use dashed geometry.
@@ -122,7 +125,7 @@ Write one sentence for `form_from_content`. If it could describe an unrelated st
 
 ## Layout Contract
 
-Each direction must record a `layout_system` with hierarchy, grid, alignment, density, type scale, `craft_system`, data role, and 1244-to-622 responsive rule. It must also register one 2488 x 1056 publication preview and one 622 x 264 compact preview plus current capture and render-audit reports. A different palette with the same layout system is one direction, not two.
+Each direction must record a `layout_system` with hierarchy, grid, alignment, density, type scale, `craft_system`, data role, and 1244-to-622 responsive rule. It must also register one 2488 x 1056 publication preview and one 622 x 264 compact preview. `cuebook_template` registers HTML capture plus DOM render audit; `finished_bitmap` registers one `frame-raster-audit-v1` and sets `html_ref`/`render_audit_ref` to null. A different palette with the same layout system is one direction, not two.
 
 Every `binding_ref` is a display promise. A selected material binding must appear in `binding_refs`, in a visible logic step, and in `compact_step_ids` for every retained release direction. The launch linter and rendered audit must report it at both sizes.
 
@@ -212,5 +215,7 @@ Every `binding_ref` is a display promise. A selected material binding must appea
 - `scripts/capture_html_viewpoints_batch.cjs`: production batch capture with bounded concurrency.
 - `scripts/audit_rendered_viewpoint.cjs`: objective dual-size DOM geometry, typography, contrast, safe-zone, logic-node, and visible source-binding audit; `--profile og` audits the 1200 x 630 share card.
 - `scripts/build_frame_visual_manifest.mjs`: builds the `frame-visual-manifest-v1` publication handshake binding rendition hashes, audit verdict, display bindings, font profile, and alt text.
+- `scripts/audit_finished_bitmap.mjs`: validates final publication/compact/OG PNG dimensions and hashes, and binds a human/model image review without requiring HTML or claiming font verification.
+- `references/finished-bitmap-release-v1.md`: two-mode release contract and raster audit request/report example.
 - `scripts/stage_noi_font_assets.mjs`: stage original evaluation or production font files and write the hashed artifact-local font manifest.
 - `scripts/select_creator_palette.mjs`: deterministic palette-profile and three-candidate selector.

@@ -54,7 +54,9 @@ Run this phase only after the user selects a preview or asks to continue with th
 1. Freeze the exact selected title, body, image, creator view, query refs, and image byte hash. Do not rewrite them silently.
 2. Run `$orchestrate-cuebook-creator-workflow` from the selected preview, materializing only contracts required for the chosen Frame. Skip feed normalization, opportunity selection, recipe composition, program planning, and multi-candidate calibration unless the user explicitly requested those features.
 3. Use `$assemble-cuebook-publish-candidates` only to convert the selected preview into release lineage; do not regenerate unselected siblings. Compile settlement claim/formula only when the user explicitly chose a settleable format and accepted every required field.
-4. Re-render only the selected direction with production Noi fonts. Reuse a validated shared font cache when available; otherwise stage fonts once. Produce compact and, for public/unlisted visibility, OG derivatives. Then run full typography, collision, binding, alt-text, byte-hash, canonical-pixel-hash, capture, and manifest checks.
+4. Freeze one honest renderer mode before producing derivatives:
+   - `cuebook_template`: re-render the selected direction with licensed production Noi fonts; retain optional HTML/font provenance and run DOM typography, collision, binding, capture, alt-text, byte-hash, canonical-pixel-hash, and manifest checks.
+   - `finished_bitmap`: use this for an external or already-finished bitmap. Original HTML and production Noi files are not required and never block publication. Produce or retain exact publication, compact, and visibility-required OG PNGs, inspect every image for legibility, clipping/collision, and obvious external/untrusted imagery under the applicable policy, then run `frame-raster-audit-v1` for dimensions plus encoded-byte and canonical RGBA8 pixel hashes. Record `embedded-pixels-v1` with font verification not asserted. Backend malware, decode, EXIF/metadata, and upload-hash checks remain authoritative and are not replaced by this preflight.
 5. Assemble `FrameDraftAssemblyV1 + FrameDraftAssemblyBindingV1` only after the selected content and all required media roles are frozen. The assembly's media hashes are encoded PNG byte hashes; manifest `role_hashes` are canonical RGBA8 pixel hashes.
 
 Before upload, validate the selected handoff:
@@ -88,6 +90,8 @@ After manifest registration, repeat the assembly validator with `--binding` and 
 - If fresh Cuebook data materially contradicts the view, state the conflict plainly and let the creator choose; never silently replace the idea or turn the result into a correction lesson.
 - The body carries the hook, judgment, and concise causal read. The image carries two to four reasoning beats, sourced observation or clearly labeled creator hypothesis, and the observation window, horizon, or accepted settlement marker when material.
 - Never fabricate a future price path. A mechanism may remain labeled as the creator's hypothesis.
+- Until Cuebook returns a real backend quote/entry lock, do not print a mutable current or entry price inside a pre-publish image. Prefer relative thesis copy such as `BTC · 30D LONG`; historical axes and explicitly accepted target/settlement levels may remain when properly bound.
+- A comparison chart is not automatically a pair-settlement contract. In particular, BTC/QQQ equal-notional settlement mixes continuous and scheduled session families and is currently unsupported. If the creator asks to settle it, explicitly offer single-BTC settlement or block; never silently claim pair settlement.
 - Show no tags, labels, source counts, scores, evidence ledgers, settlement panels, disclosures, or workflow state beside the creative.
 
 ## Outputs

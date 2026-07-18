@@ -23,12 +23,35 @@ const renderAudit = (valid = true) => ({
   profile_version: "render-audit-wide-v1",
   audited_at: "2026-07-17T00:00:00.000Z",
 });
-const directionSet = () => ({
+const rasterAudit = (withOg = false) => ({
+  schema_version: "frame-raster-audit-v1",
+  profile_version: "frame-raster-audit-v1",
+  source_kind: "finished_bitmap",
+  font_profile: { profile: "embedded-pixels-v1", verification: "not_asserted" },
+  audited_at: "2026-07-17T00:00:00.000Z",
+  valid: true,
+  errors: [],
+  image_review: {
+    review_method: "image_inspection",
+    legibility: "pass",
+    collision: "pass",
+    imagery_result: "pass",
+    mutable_price: "absent",
+    reviewed_role_sha256: {
+      publication: `sha256:${"a".repeat(64)}`,
+      compact: `sha256:${"b".repeat(64)}`,
+      ...(withOg ? { og: `sha256:${"c".repeat(64)}` } : {}),
+    },
+  },
+  derivatives: captureReport(withOg).derivatives,
+});
+const directionSet = (rendererMode = "cuebook_template") => ({
   state: "selected",
   selected_direction_id: "VDIR_SELECTED",
   directions: [{
     direction_id: "VDIR_SELECTED",
-    html_ref: "viewpoint.html",
+    renderer_mode: rendererMode,
+    html_ref: rendererMode === "finished_bitmap" ? null : "viewpoint.html",
     preview_ref: "viewpoint-2488.png",
     compact_preview_ref: "viewpoint-622.png",
     binding_refs: ["BIND_VIEW"],
@@ -41,7 +64,7 @@ const directionSet = () => ({
   ],
 });
 
-function invoke({ withOg = false, auditValid = true, licenseMode = "production", alt = null, report = null, audit = null } = {}) {
+function invoke({ withOg = false, auditValid = true, licenseMode = "production", alt = null, report = null, audit = null, rendererMode = "cuebook_template" } = {}) {
   const root = mkdtempSync(path.join(os.tmpdir(), "cuebook-manifest-test-"));
   try {
     const fonts = path.join(root, "font-assets-v1.json");
@@ -49,8 +72,8 @@ function invoke({ withOg = false, auditValid = true, licenseMode = "production",
     return build(
       report ?? captureReport(withOg),
       audit ?? renderAudit(auditValid),
-      directionSet(),
-      fonts,
+      directionSet(rendererMode),
+      rendererMode === "finished_bitmap" ? null : fonts,
       alt ?? { publication: "USO 30 天偏多的观点图", compact: "USO 观点紧凑图", og: "USO 分享卡" },
     );
   } finally {
@@ -72,6 +95,42 @@ test("builds manifest with stable JCS hash", () => {
   const first = jcs_sha256(manifest);
   assert.equal(first, jcs_sha256(structuredClone(manifest)));
   assert.match(first, /^sha256:[0-9a-f]{64}$/);
+});
+
+test("finished bitmap builds the same wire manifest without HTML or font files", () => {
+  const [manifest, errors] = invoke({
+    withOg: true,
+    rendererMode: "finished_bitmap",
+    report: rasterAudit(true),
+    audit: null,
+  });
+  assert.deepEqual(errors, []);
+  assert.equal(manifest.schema_version, "frame-visual-manifest-v1");
+  assert.deepEqual(manifest.capture_audit, {
+    decision: "ready",
+    status: "passed",
+    profile_version: "frame-raster-audit-v1",
+    audited_at: "2026-07-17T00:00:00.000Z",
+  });
+  assert.equal(manifest.font_profile.profile, "embedded-pixels-v1");
+  assert.match(manifest.font_profile.manifest_sha256, /^sha256:[0-9a-f]{64}$/);
+  assert.deepEqual(new Set(Object.keys(manifest.role_hashes)), new Set(["publication", "compact", "og"]));
+});
+
+test("finished bitmap cannot claim a verified font or skip image review", () => {
+  const report = rasterAudit();
+  report.image_review.legibility = "pending";
+  const [manifest, errors] = invoke({ rendererMode: "finished_bitmap", report, audit: null });
+  assert.equal(manifest, null);
+  assert.ok(errorCodes(errors).has("RASTER_AUDIT_FAILED"));
+});
+
+test("finished bitmap review is bound to exact rendition bytes", () => {
+  const report = rasterAudit();
+  report.image_review.reviewed_role_sha256.publication = `sha256:${"8".repeat(64)}`;
+  const [manifest, errors] = invoke({ rendererMode: "finished_bitmap", report });
+  assert.equal(manifest, null);
+  assert.ok(errorCodes(errors).has("RASTER_REVIEW_BINDING"));
 });
 
 const failures = [

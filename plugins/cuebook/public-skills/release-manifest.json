@@ -22,7 +22,7 @@
       "references/modules/render-cuebook-thesis-chart/references/market-series-batch-v1.schema.json",
       "assets/plugin/mcp-capability-map-v1.json"
     ],
-    "cumulative_bytes": 87063,
+    "cumulative_bytes": 88484,
     "maximum_bytes_exclusive": 150000,
     "within_budget": true
   },

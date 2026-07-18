@@ -25,6 +25,7 @@ const JOB_SCHEMA = JSON.parse(readFileSync(new URL("../references/frame-preview-
 const CHART_SCHEMA = JSON.parse(readFileSync(new URL("../references/modules/render-cuebook-thesis-chart/references/thesis-chart-v1.schema.json", import.meta.url), "utf8"));
 const MARKET_SCHEMA = JSON.parse(readFileSync(new URL("../references/modules/render-cuebook-thesis-chart/references/market-series-batch-v1.schema.json", import.meta.url), "utf8"));
 const QUALITY_CHECKS = ["creator_ownership", "source_binding", "copy_fit", "image_render"];
+const MUTABLE_PRICE_LABEL = /(?:现价|当前价|最新价|入场价|current\s+price|latest\s+price|entry\s+price)/iu;
 
 function writeJson(file, value) {
   writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`, "utf8");
@@ -77,6 +78,11 @@ function validateJob(job) {
   }
   if (!job.preview.query_binding.required && job.preview.query_binding.status !== "not_required") {
     throw new Error("A non-required preview must use query status not_required.");
+  }
+  for (const [field, value] of Object.entries(job.visual)) {
+    if (typeof value === "string" && MUTABLE_PRICE_LABEL.test(value)) {
+      throw new Error(`visual.${field} cannot print a mutable current/entry price before a backend price lock exists.`);
+    }
   }
   const copyLimits = [
     [job.preview.candidate.frame.title, 32, "preview.candidate.frame.title"],
@@ -366,6 +372,7 @@ function makeMarketArtifacts(job) {
       style_profile: "cuebook_feed_v1",
       brand: "cuebook",
       watermark: true,
+      show_latest_metric: false,
       show_state_label: false,
       show_provenance_footer: false,
       show_guide: false,

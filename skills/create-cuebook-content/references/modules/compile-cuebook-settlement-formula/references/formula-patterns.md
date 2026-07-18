@@ -49,6 +49,8 @@ For `long_short`, compute simple returns from synchronized endpoints and subtrac
 
 The launch pair is equal-notional. Default `margin_bps` to `0` when the creator states only “A 跑赢 B” or “A 跑输 B”. A stated minimum excess return may freeze a positive margin. This is a raw long/short spread, not a beta-neutral or factor-alpha estimate.
 
+Both legs must belong to the same settlement session family. Continuous crypto and scheduled exchange sessions cannot be made compatible by choosing a convenient shared timestamp. BTC/QQQ may still be shown as a sourced comparison, but the current settlement engine must return `MIXED_SESSION_FAMILY`; the creator may explicitly choose a single-asset settlement or publish without settlement.
+
 `execution_profile` is the server dispatch contract. `outcome.expression` must be its canonical projection and is retained for inspection and receipts; registration rejects any mismatch.
 
 ## Standard patterns

@@ -80,6 +80,7 @@
         "style_profile": {"enum": ["cuebook_feed_v1", "cuebook_detail_v1"]},
         "brand": {"const": "cuebook"},
         "watermark": {"type": "boolean"},
+        "show_latest_metric": {"type": "boolean", "description": "Defaults true for legacy detail charts. Pre-publish Frame visuals set false unless a backend quote/entry lock is bound."},
         "show_state_label": {"type": "boolean"},
         "show_provenance_footer": {"type": "boolean"},
         "show_guide": {"type": "boolean"},

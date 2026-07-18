@@ -225,8 +225,25 @@ test("a directional horizon stays on a single-price axis with its own expiry clo
     const chart = JSON.parse(readFileSync(path.join(output, preview.candidates[0].candidate_id, "thesis-chart-v1.json"), "utf8"));
     assert.equal(chart.render.mode, "single_price");
     assert.equal(chart.render.y_axis, "price");
+    assert.equal(chart.render.show_latest_metric, false);
     assert.equal(chart.series.length, 1);
     assert.ok(chart.annotations.some((annotation) => annotation.kind === "expiry"));
+    const svg = readFileSync(path.join(output, preview.candidates[0].candidate_id, "frame-preview.svg"), "utf8");
+    assert.doesNotMatch(svg, /最新\s*·|Latest\s*·/u);
+  } finally {
+    rmSync(output, { recursive: true, force: true });
+  }
+});
+
+test("pre-publish chart copy rejects an unlocked current-price label", async () => {
+  const output = mkdtempSync(path.join(os.tmpdir(), "cuebook-fast-preview-"));
+  try {
+    const job = marketJob();
+    job.visual.title = "BTC 现价 70000";
+    await assert.rejects(
+      () => runFastPreviewJob(job, output, { rasterize: fakeRasterize }),
+      /cannot print a mutable current\/entry price/u,
+    );
   } finally {
     rmSync(output, { recursive: true, force: true });
   }

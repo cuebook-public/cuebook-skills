@@ -309,7 +309,8 @@
           "required": ["direction_ref", "html_ref", "preview_ref", "compact_preview_ref", "visible_char_count", "alt_text"],
           "properties": {
             "direction_ref": {"$ref": "#/$defs/nonemptyString"},
-            "html_ref": {"type": "string", "pattern": "^[^/].*\\.html$"},
+            "renderer_mode": {"enum": ["cuebook_template", "finished_bitmap"], "description": "Defaults to cuebook_template for legacy artifacts."},
+            "html_ref": {"type": ["string", "null"], "pattern": "^[^/].*\\.html$"},
             "preview_ref": {"type": "string", "pattern": "^[^/].*\\.png$"},
             "compact_preview_ref": {"type": "string", "pattern": "^[^/].*\\.png$"},
             "visible_char_count": {"type": "integer", "minimum": 1, "maximum": 120},

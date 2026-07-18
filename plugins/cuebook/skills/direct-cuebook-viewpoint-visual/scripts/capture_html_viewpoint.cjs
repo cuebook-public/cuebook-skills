@@ -333,7 +333,14 @@ async function main() {
   process.stdout.write(`${result.outputDir}\n`);
 }
 
-module.exports = { browserExecutable, canonicalRgbaPixelSha256, captureViewpoint, chromiumPlatformArgs, paintStats };
+module.exports = {
+  browserExecutable,
+  canonicalRgbaPixelSha256,
+  captureViewpoint,
+  chromiumPlatformArgs,
+  paintStats,
+  pngDimensions,
+};
 
 if (require.main === module) {
   main().catch((error) => {

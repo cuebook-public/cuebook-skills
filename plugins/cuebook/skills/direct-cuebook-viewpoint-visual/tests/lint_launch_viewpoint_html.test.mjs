@@ -42,6 +42,7 @@ const mutations = [
   ["safe font manifest ref required", (source) => source.replace(' data-font-manifest-ref="fonts/font-assets-v1.json"', ""), "FONT_MANIFEST_REF"],
   ["benchmark font rejected", (source) => source.replace('"Cuebook Noi"', '"Cuebook Noi","Capsule Sans"'), "BENCHMARK_FONT"],
   ["tabular numbers required", (source) => source.replace("font-variant-numeric:tabular-nums", "font-variant-numeric:normal"), "TABULAR_NUMBERS"],
+  ["unlocked mutable price", (source) => source.replace("HOOD · 30天", "HOOD · 现价 120 · 30天"), "MUTABLE_PRICE_UNLOCKED"],
 ];
 
 for (const [name, mutate, expected] of mutations) {
@@ -75,4 +76,12 @@ test("evaluation allows local Trial font", () => {
     .replace("</style>", '@font-face{font-family:"Cuebook Noi";src:url("./fonts/NoiGroteskTrial-Regular.ttf")}</style>');
   const result = audit_html(source);
   assert.equal(result.valid, true, JSON.stringify(result.errors));
+});
+
+test("a backend-bound price lock permits an explicitly labeled current price", () => {
+  const source = validHtml()
+    .replace("HOOD · 30天", "HOOD · 现价 120 · 30天")
+    .replace("data-cuebook-visual-contract=\"launch-v1\"", 'data-cuebook-visual-contract="launch-v1" data-backend-price-lock-ref="quote-lock:0198a5b0-1111"');
+  const result = audit_html(source);
+  assert.equal(codes(result).has("MUTABLE_PRICE_UNLOCKED"), false, JSON.stringify(result.errors));
 });

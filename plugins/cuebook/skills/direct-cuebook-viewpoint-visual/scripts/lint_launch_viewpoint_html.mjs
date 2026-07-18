@@ -507,6 +507,7 @@ class LaunchParser {
     this.font_profile = null;
     this.font_license_mode = null;
     this.font_manifest_ref = null;
+    this.backend_price_lock_ref = null;
     this.group_levels = [];
     this.color_roles = new Set();
     this.unknown_color_roles = new Set();
@@ -585,6 +586,7 @@ class LaunchParser {
       this.font_profile = attrGet(values, "data-font-profile");
       this.font_license_mode = attrGet(values, "data-font-license-mode");
       this.font_manifest_ref = attrGet(values, "data-font-manifest-ref");
+      this.backend_price_lock_ref = attrGet(values, "data-backend-price-lock-ref");
     }
     if (attrGet(values, "data-cuebook-wordmark") === "v1") this.wordmark = true;
     const explicitRole = attrGet(values, "data-role");
@@ -650,6 +652,8 @@ class LaunchParser {
 const LSTEP_ID_RE = /^LSTEP_[A-Za-z0-9_:-]{3,}$/;
 const PALETTE_FAMILY_RE = /^[a-z0-9]+(?:-[a-z0-9]+){1,5}$/;
 const FONT_MANIFEST_REF_RE = /^(?!\/)(?!.*(?:^|\/)\.\.(?:\/|$))[A-Za-z0-9._/-]+\.json$/;
+const BACKEND_PRICE_LOCK_REF_RE = /^(?:quote-lock|entry-lock):[A-Za-z0-9._:-]{8,}$/;
+const MUTABLE_PRICE_LABEL_RE = /(?:现价|当前价|最新价|入场价|current\s+price|latest\s+price|entry\s+price)/iu;
 
 export function audit_html(html) {
   const errors = [];
@@ -820,6 +824,10 @@ export function audit_html(html) {
   if (numericCopy && !/font-variant-numeric\s*:\s*tabular-nums/i.test(html)) {
     errors.push(issue("TABULAR_NUMBERS", "Market numbers and dates require font-variant-numeric: tabular-nums."));
   }
+  const visibleText = Object.values(roleText).join(" ");
+  if (MUTABLE_PRICE_LABEL_RE.test(visibleText) && !BACKEND_PRICE_LOCK_REF_RE.test(parser.backend_price_lock_ref ?? "")) {
+    errors.push(issue("MUTABLE_PRICE_UNLOCKED", "A pre-publish visual cannot print a mutable current/entry price without an actual backend quote-lock or entry-lock ref; use asset, horizon, and direction wording instead."));
+  }
 
   const roleCharCounts = {};
   for (const role of ALLOWED_ROLES) roleCharCounts[role] = cpLen(roleText[role]);
@@ -838,6 +846,7 @@ export function audit_html(html) {
       font_profile: parser.font_profile,
       font_license_mode: parser.font_license_mode,
       font_manifest_ref: parser.font_manifest_ref,
+      backend_price_lock_ref: parser.backend_price_lock_ref,
       visible_binding_refs: pySorted(visibleBindingRefs),
       visible_logic_step_ids: pySorted(visibleLogicStepIds),
     },

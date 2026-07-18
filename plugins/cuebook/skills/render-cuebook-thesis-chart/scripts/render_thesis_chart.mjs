@@ -852,7 +852,7 @@ export function render_svg(spec, fetched) {
     `<text x="${pyFloatRepr(left)}" y="${pyFixed(subtitleY, 2)}" fill="${COLORS.muted}" font-size="14">${escape(subtitle)}</text>`
   );
 
-  if (fetched.length === 1) {
+  if (fetched.length === 1 && g(render, "show_latest_metric", true)) {
     const metricValue = pyFloatConv(
       g(render, "chart_type") === "candles" && g(latestPrimary, "close") !== null
         ? g(latestPrimary, "close")

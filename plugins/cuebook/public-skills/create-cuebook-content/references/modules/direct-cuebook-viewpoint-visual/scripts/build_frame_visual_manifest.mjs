@@ -20,6 +20,8 @@ const SCHEMA_VERSION = "frame-visual-manifest-v1";
 const CAPTURE_KIND_TO_ROLE = { full: "publication", compact_622: "compact", og: "og" };
 const REQUIRED_ROLES = ["publication", "compact"];
 const SHA256_PATTERN = /^sha256:[0-9a-f]{64}$/;
+const RENDERER_MODES = new Set(["cuebook_template", "finished_bitmap"]);
+const EMBEDDED_PIXEL_PROFILE = { profile: "embedded-pixels-v1", verification: "not_asserted" };
 
 // Code-point ordering, matching Python sorted() on str.
 function cpCompare(a, b) {
@@ -107,6 +109,11 @@ export function build(captureReport, renderAudit, directionSet, fontsManifestPat
     }
   }
 
+  const rendererMode = selectedDirection?.renderer_mode ?? "cuebook_template";
+  if (!RENDERER_MODES.has(rendererMode)) {
+    errors.push(issue("RENDERER_MODE", "Use cuebook_template or finished_bitmap."));
+  }
+
   if (selectedDirection !== null) {
     const preflight = selectedDirection.preflight;
     if (preflight === null || typeof preflight !== "object" || Array.isArray(preflight) || !Object.values(preflight).length || Object.values(preflight).some((value) => value !== true)) {
@@ -116,14 +123,42 @@ export function build(captureReport, renderAudit, directionSet, fontsManifestPat
       errors.push(issue("DIRECTION_QUALITY", "The selected visual direction must carry a passing critique verdict."));
     }
 
-    if (captureReport.schema_version !== "viewpoint-html-capture-v1" || captureReport.source !== path.basename(selectedDirection.html_ref ?? "")) {
-      errors.push(issue("CAPTURE_SOURCE_MISMATCH", "Capture report must bind the selected direction HTML."));
-    }
-    if (!SHA256_PATTERN.test(captureReport.source_sha256 ?? "")) {
-      errors.push(issue("CAPTURE_SOURCE_MISMATCH", "Capture report must carry the selected HTML sha256."));
-    }
-    if (renderAudit.schema_version !== "viewpoint-render-audit-v1" || renderAudit.source_sha256 !== captureReport.source_sha256) {
-      errors.push(issue("AUDIT_SOURCE_MISMATCH", "Rendered audit and capture report must bind the same selected HTML bytes."));
+    if (rendererMode === "cuebook_template") {
+      if (captureReport.schema_version !== "viewpoint-html-capture-v1" || captureReport.source !== path.basename(selectedDirection.html_ref ?? "")) {
+        errors.push(issue("CAPTURE_SOURCE_MISMATCH", "Template capture report must bind the selected direction HTML."));
+      }
+      if (!SHA256_PATTERN.test(captureReport.source_sha256 ?? "")) {
+        errors.push(issue("CAPTURE_SOURCE_MISMATCH", "Template capture report must carry the selected HTML sha256."));
+      }
+      if (renderAudit?.schema_version !== "viewpoint-render-audit-v1" || renderAudit.source_sha256 !== captureReport.source_sha256) {
+        errors.push(issue("AUDIT_SOURCE_MISMATCH", "Rendered audit and capture report must bind the same selected HTML bytes."));
+      }
+    } else {
+      if (selectedDirection.html_ref !== null && selectedDirection.html_ref !== undefined) {
+        errors.push(issue("BITMAP_HTML_UNEXPECTED", "finished_bitmap must not claim an original HTML source."));
+      }
+      if (captureReport.schema_version !== "frame-raster-audit-v1" || captureReport.source_kind !== "finished_bitmap") {
+        errors.push(issue("RASTER_AUDIT_MISMATCH", "finished_bitmap requires frame-raster-audit-v1."));
+      }
+      const review = captureReport.image_review;
+      if (
+        captureReport.valid !== true
+        || !Array.isArray(captureReport.errors)
+        || captureReport.errors.length !== 0
+        || review?.legibility !== "pass"
+        || review?.collision !== "pass"
+        || review?.imagery_result !== "pass"
+        || !["absent", "backend_locked"].includes(review?.mutable_price)
+      ) {
+        errors.push(issue("RASTER_AUDIT_FAILED", "Finished bitmap must pass bound legibility, collision, imagery, and mutable-price image review."));
+      }
+      const reviewedRoleHashes = review?.reviewed_role_sha256;
+      for (const derivative of captureReport.derivatives ?? []) {
+        const role = CAPTURE_KIND_TO_ROLE[derivative?.kind];
+        if (role && reviewedRoleHashes?.[role] !== derivative.sha256) {
+          errors.push(issue("RASTER_REVIEW_BINDING", `Image review must bind the exact encoded ${role} PNG hash.`));
+        }
+      }
     }
 
     const derivatives = new Map((captureReport.derivatives ?? []).filter((item) => item !== null && typeof item === "object" && !Array.isArray(item)).map((item) => [item.kind, item]));
@@ -168,19 +203,20 @@ export function build(captureReport, renderAudit, directionSet, fontsManifestPat
     errors.push(issue("ROLE_HASH_DUPLICATE", "Each capture role must bind distinct normalized pixels; two renditions decoded to identical pixels."));
   }
 
-  if (renderAudit.valid !== true) {
-    errors.push(issue("AUDIT_NOT_PASSED", "Rendered audit must be valid before a manifest is issued."));
+  const audit = rendererMode === "finished_bitmap" ? captureReport : renderAudit;
+  if (audit?.valid !== true) {
+    errors.push(issue("AUDIT_NOT_PASSED", "Selected renderer audit must be valid before a manifest is issued."));
   }
-  let profileVersion = renderAudit.profile_version;
-  let auditedAt = renderAudit.audited_at;
+  let profileVersion = audit?.profile_version;
+  let auditedAt = audit?.audited_at;
   if (typeof profileVersion !== "string" || !profileVersion.trim() || typeof auditedAt !== "string" || !auditedAt.trim()) {
     errors.push(issue("AUDIT_METADATA_MISSING", "Rendered audit must carry profile_version and audited_at; re-audit with the current audit script."));
     profileVersion = pyStr(profileVersion || "");
     auditedAt = pyStr(auditedAt || "");
   }
   const captureAudit = {
-    decision: renderAudit.valid === true ? "ready" : "blocked",
-    status: renderAudit.valid === true ? "passed" : "failed",
+    decision: audit?.valid === true ? "ready" : "blocked",
+    status: audit?.valid === true ? "passed" : "failed",
     profile_version: profileVersion,
     audited_at: auditedAt,
   };
@@ -202,17 +238,24 @@ export function build(captureReport, renderAudit, directionSet, fontsManifestPat
   }
 
   let fontProfile = null;
-  try {
-    const fontsManifestBytes = readFileSync(fontsManifestPath);
-    const fonts = JSON.parse(fontsManifestBytes.toString("utf-8"));
-    const profile = pyStr(fonts.profile || fonts.font_profile || "cuebook-noi-v1");
-    fontProfile = { profile, manifest_sha256: `sha256:${createHash("sha256").update(fontsManifestBytes).digest("hex")}` };
-    if (pyStr(fonts.license_mode) === "evaluation") {
-      errors.push(issue("TRIAL_FONTS", "Evaluation/Trial fonts cannot enter a publishable manifest."));
+  if (rendererMode === "finished_bitmap") {
+    fontProfile = {
+      profile: EMBEDDED_PIXEL_PROFILE.profile,
+      manifest_sha256: jcs_sha256(EMBEDDED_PIXEL_PROFILE),
+    };
+  } else {
+    try {
+      const fontsManifestBytes = readFileSync(fontsManifestPath);
+      const fonts = JSON.parse(fontsManifestBytes.toString("utf-8"));
+      const profile = pyStr(fonts.profile || fonts.font_profile || "cuebook-noi-v1");
+      fontProfile = { profile, manifest_sha256: `sha256:${createHash("sha256").update(fontsManifestBytes).digest("hex")}` };
+      if (pyStr(fonts.license_mode) === "evaluation") {
+        errors.push(issue("TRIAL_FONTS", "Evaluation/Trial fonts cannot enter a publishable manifest."));
+      }
+    } catch {
+      errors.push(issue("FONTS_MANIFEST_UNREADABLE", `Cannot read fonts manifest at ${fontsManifestPath}.`));
+      fontProfile = null;
     }
-  } catch {
-    errors.push(issue("FONTS_MANIFEST_UNREADABLE", `Cannot read fonts manifest at ${fontsManifestPath}.`));
-    fontProfile = null;
   }
 
   for (const role of Object.keys(roleHashes)) {
@@ -289,17 +332,25 @@ function main(argv) {
     }
     args[spec[flag]] = value;
   }
-  const missing = Object.values(spec).filter((name) => !(name in args));
+  const alwaysRequired = ["capture_report", "direction_set", "alt_text", "out"];
+  const missing = alwaysRequired.filter((name) => !(name in args));
   if (missing.length) {
     process.stderr.write(`build_frame_visual_manifest.mjs: error: the following arguments are required: ${missing.map((name) => `--${name.replace(/_/g, "-")}`).join(", ")}\n`);
     process.exit(2);
   }
 
+  const directionSet = JSON.parse(readFileSync(pathStr(args.direction_set), "utf-8"));
+  const selectedDirection = (directionSet.directions ?? []).find((item) => item?.direction_id === directionSet.selected_direction_id);
+  const rendererMode = selectedDirection?.renderer_mode ?? "cuebook_template";
+  if (rendererMode === "cuebook_template" && (!args.render_audit || !args.fonts_manifest)) {
+    process.stderr.write("build_frame_visual_manifest.mjs: error: cuebook_template requires --render-audit and --fonts-manifest\n");
+    process.exit(2);
+  }
   const [manifest, errors] = build(
     JSON.parse(readFileSync(pathStr(args.capture_report), "utf-8")),
-    JSON.parse(readFileSync(pathStr(args.render_audit), "utf-8")),
-    JSON.parse(readFileSync(pathStr(args.direction_set), "utf-8")),
-    pathStr(args.fonts_manifest),
+    args.render_audit ? JSON.parse(readFileSync(pathStr(args.render_audit), "utf-8")) : null,
+    directionSet,
+    args.fonts_manifest ? pathStr(args.fonts_manifest) : null,
     JSON.parse(readFileSync(pathStr(args.alt_text), "utf-8")),
   );
   if (manifest === null) {

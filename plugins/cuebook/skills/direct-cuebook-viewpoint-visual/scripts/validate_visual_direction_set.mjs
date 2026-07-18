@@ -923,6 +923,10 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
       errors.push(issue("DIRECTION", path_, "Direction must be an object."));
       continue;
     }
+    const rendererMode = direction.renderer_mode ?? "cuebook_template";
+    if (!new Set(["cuebook_template", "finished_bitmap"]).has(rendererMode)) {
+      errors.push(issue("RENDERER_MODE", `${path_}.renderer_mode`, "Use cuebook_template or finished_bitmap."));
+    }
     const directionId = direction.direction_id === undefined ? null : direction.direction_id;
     if (!/^VDIR_[A-Za-z0-9_:-]{6,}$/.test(pyStr(directionId || ""))) {
       errors.push(issue("DIRECTION_ID", `${path_}.direction_id`, "Invalid direction ID."));
@@ -1511,8 +1515,18 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
     const compactPreviewRef = direction.compact_preview_ref === undefined ? null : direction.compact_preview_ref;
     const captureReportRef = direction.capture_report_ref === undefined ? null : direction.capture_report_ref;
     const renderAuditRef = direction.render_audit_ref === undefined ? null : direction.render_audit_ref;
+    if (rendererMode === "cuebook_template") {
+      if (!valid_ref(htmlRef) || !pyStr(htmlRef).endsWith(".html")) {
+        errors.push(issue("ASSET_REF", `${path_}.html_ref`, "Template mode needs a safe relative HTML ref."));
+      } else if (htmlRefs.has(htmlRef)) {
+        errors.push(issue("ASSET_REF_DUPLICATE", `${path_}.html_ref`, "Each template direction needs distinct HTML."));
+      } else {
+        htmlRefs.add(htmlRef);
+      }
+    } else if (htmlRef !== null) {
+      errors.push(issue("BITMAP_HTML_UNEXPECTED", `${path_}.html_ref`, "finished_bitmap must use null because original HTML is not required or verified."));
+    }
     for (const [key, ref, seen] of [
-      ["html_ref", htmlRef, htmlRefs],
       ["preview_ref", previewRef, previewRefs],
       ["compact_preview_ref", compactPreviewRef, compactPreviewRefs],
     ]) {
@@ -1524,10 +1538,10 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
         seen.add(ref);
       }
     }
-    for (const [key, ref, seen] of [
-      ["capture_report_ref", captureReportRef, captureReportRefs],
-      ["render_audit_ref", renderAuditRef, renderAuditRefs],
-    ]) {
+    const reportRefs = rendererMode === "finished_bitmap"
+      ? [["capture_report_ref", captureReportRef, captureReportRefs]]
+      : [["capture_report_ref", captureReportRef, captureReportRefs], ["render_audit_ref", renderAuditRef, renderAuditRefs]];
+    for (const [key, ref, seen] of reportRefs) {
       if (ref === null && state === "draft") continue;
       if (!valid_ref(ref) || !pyStr(ref).endsWith(".json")) {
         errors.push(issue("REPORT_REF", `${path_}.${key}`, "Previewed directions need a safe relative JSON report ref."));
@@ -1536,6 +1550,9 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
       } else {
         seen.add(pyStr(ref));
       }
+    }
+    if (rendererMode === "finished_bitmap" && renderAuditRef !== null) {
+      errors.push(issue("BITMAP_RENDER_AUDIT_UNEXPECTED", `${path_}.render_audit_ref`, "finished_bitmap uses one frame-raster-audit-v1 report and no DOM render audit."));
     }
 
     const critique = direction.critique;
@@ -1573,7 +1590,7 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
       errors.push(issue("ANTI_DEFAULT_VERDICT", `${path_}.critique.verdict`, "Anti-default score below 7 cannot pass."));
     }
 
-    if (assetRoot !== null && valid_ref(htmlRef)) {
+    if (rendererMode === "cuebook_template" && assetRoot !== null && valid_ref(htmlRef)) {
       const htmlPath = pyResolve(path.join(assetRoot, pyStr(htmlRef)));
       if (!isProperAncestor(pyResolve(assetRoot), htmlPath)) {
         errors.push(issue("ASSET_ESCAPE", `${path_}.html_ref`, "HTML escaped the asset root."));
@@ -1648,83 +1665,132 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
         }
       }
 
-      const htmlPath = valid_ref(htmlRef) ? pyResolve(path.join(assetRoot, pyStr(htmlRef))) : null;
-      const htmlSha = htmlPath && isFile(htmlPath) ? sha256_file(htmlPath) : null;
       const capturePath = valid_ref(captureReportRef) ? pyResolve(path.join(assetRoot, pyStr(captureReportRef))) : null;
       const captureReport = capturePath && isFile(capturePath) ? read_json_file(capturePath) : null;
-      if (!isObject(captureReport)) {
-        errors.push(issue("CAPTURE_REPORT", `${path_}.capture_report_ref`, "Missing or invalid capture report."));
-      } else {
-        if (captureReport.schema_version !== "viewpoint-html-capture-v1" || (captureReport.source_sha256 === undefined ? null : captureReport.source_sha256) !== htmlSha) {
-          errors.push(issue("CAPTURE_REPORT_SOURCE", `${path_}.capture_report_ref`, "Capture report must match the current HTML hash."));
-        }
-        const derivatives = captureReport.derivatives;
-        const byKind = new Map();
-        if (Array.isArray(derivatives)) {
-          for (const item of derivatives) {
-            if (isObject(item)) byKind.set(item.kind === undefined ? null : item.kind, item);
-          }
-        }
-        for (const [key, kind, dimensions] of [["preview_ref", "full", [2488, 1056]], ["compact_preview_ref", "compact_622", [622, 264]]]) {
-          const derivative = byKind.get(kind);
-          const previewPath = previewPaths.get(key);
-          if (!isObject(derivative) || derivative.width !== dimensions[0] || derivative.height !== dimensions[1]) {
-            errors.push(issue("CAPTURE_REPORT_DERIVATIVE", `${path_}.capture_report_ref`, `Capture report is missing ${kind}.`));
-          } else if (previewPath !== undefined && derivative.sha256 !== sha256_file(previewPath)) {
-            errors.push(issue("CAPTURE_REPORT_HASH", `${path_}.capture_report_ref`, `Capture hash does not match ${key}.`));
-          }
-          const paintedRatio = isObject(derivative) ? (derivative.painted_ratio === undefined ? null : derivative.painted_ratio) : null;
-          if (!finite_number(paintedRatio) || paintedRatio < 0.006) {
-            errors.push(issue("CAPTURE_REPORT_BLANK", `${path_}.capture_report_ref`, `${kind} must report at least 0.6% materially painted pixels.`));
-          }
-        }
-      }
-
-      const auditPath = valid_ref(renderAuditRef) ? pyResolve(path.join(assetRoot, pyStr(renderAuditRef))) : null;
-      const renderAudit = auditPath && isFile(auditPath) ? read_json_file(auditPath) : null;
-      if (!isObject(renderAudit)) {
-        errors.push(issue("RENDER_AUDIT", `${path_}.render_audit_ref`, "Missing or invalid rendered geometry audit."));
-      } else {
-        if (renderAudit.schema_version !== "viewpoint-render-audit-v1" || (renderAudit.source_sha256 === undefined ? null : renderAudit.source_sha256) !== htmlSha) {
-          errors.push(issue("RENDER_AUDIT_SOURCE", `${path_}.render_audit_ref`, "Rendered audit must match the current HTML hash."));
-        }
-        if (renderAudit.valid !== true || !(Array.isArray(renderAudit.errors) && renderAudit.errors.length === 0)) {
-          errors.push(issue("RENDER_AUDIT_FAILED", `${path_}.render_audit_ref`, "Rendered audit contains geometry, contrast, typography, or compact-layout failures."));
-        }
-        const fingerprint = renderAudit.layout_fingerprint_sha256 === undefined ? null : renderAudit.layout_fingerprint_sha256;
-        if (!/^sha256:[a-f0-9]{64}$/.test(pyStr(fingerprint || ""))) {
-          errors.push(issue("RENDER_LAYOUT_FINGERPRINT", `${path_}.render_audit_ref`, "Rendered audit needs a layout fingerprint."));
-        } else if (renderedLayoutFingerprints.has(fingerprint)) {
-          errors.push(issue("RENDER_LAYOUT_DUPLICATE", `${path_}.render_audit_ref`, "Rendered directions share the same coarse role geometry."));
+      if (rendererMode === "cuebook_template") {
+        const htmlPath = valid_ref(htmlRef) ? pyResolve(path.join(assetRoot, pyStr(htmlRef))) : null;
+        const htmlSha = htmlPath && isFile(htmlPath) ? sha256_file(htmlPath) : null;
+        if (!isObject(captureReport)) {
+          errors.push(issue("CAPTURE_REPORT", `${path_}.capture_report_ref`, "Missing or invalid capture report."));
         } else {
-          renderedLayoutFingerprints.add(pyStr(fingerprint));
-        }
-        const viewportReports = renderAudit.viewports;
-        const viewportMap = new Map();
-        if (Array.isArray(viewportReports)) {
-          for (const item of viewportReports) {
-            if (isObject(item)) {
-              viewportMap.set(`${typeof item.width}:${String(item.width)}|${typeof item.height}:${String(item.height)}`, item);
+          if (captureReport.schema_version !== "viewpoint-html-capture-v1" || (captureReport.source_sha256 === undefined ? null : captureReport.source_sha256) !== htmlSha) {
+            errors.push(issue("CAPTURE_REPORT_SOURCE", `${path_}.capture_report_ref`, "Capture report must match the current HTML hash."));
+          }
+          const derivatives = captureReport.derivatives;
+          const byKind = new Map();
+          if (Array.isArray(derivatives)) {
+            for (const item of derivatives) {
+              if (isObject(item)) byKind.set(item.kind === undefined ? null : item.kind, item);
+            }
+          }
+          for (const [key, kind, dimensions] of [["preview_ref", "full", [2488, 1056]], ["compact_preview_ref", "compact_622", [622, 264]]]) {
+            const derivative = byKind.get(kind);
+            const previewPath = previewPaths.get(key);
+            if (!isObject(derivative) || derivative.width !== dimensions[0] || derivative.height !== dimensions[1]) {
+              errors.push(issue("CAPTURE_REPORT_DERIVATIVE", `${path_}.capture_report_ref`, `Capture report is missing ${kind}.`));
+            } else if (previewPath !== undefined && derivative.sha256 !== sha256_file(previewPath)) {
+              errors.push(issue("CAPTURE_REPORT_HASH", `${path_}.capture_report_ref`, `Capture hash does not match ${key}.`));
+            }
+            const paintedRatio = isObject(derivative) ? (derivative.painted_ratio === undefined ? null : derivative.painted_ratio) : null;
+            if (!finite_number(paintedRatio) || paintedRatio < 0.006) {
+              errors.push(issue("CAPTURE_REPORT_BLANK", `${path_}.capture_report_ref`, `${kind} must report at least 0.6% materially painted pixels.`));
             }
           }
         }
-        const viewportExpectations = [
-          [[1244, 528], visibleSteps, usedRefSet],
-          [[622, 264], compactSteps, new Set([...compactRequiredBindings, ...selectedMaterialBindingIds])],
-        ];
-        for (const [dimensions, expectedSteps, expectedBindings] of viewportExpectations) {
-          const viewportReport = viewportMap.get(`number:${dimensions[0]}|number:${dimensions[1]}`);
-          if (!isObject(viewportReport) || viewportReport.valid !== true) {
-            errors.push(issue("RENDER_AUDIT_VIEWPORT", `${path_}.render_audit_ref`, `Missing passed audit for ${dimensions[0]} x ${dimensions[1]}.`));
-            continue;
+
+        const auditPath = valid_ref(renderAuditRef) ? pyResolve(path.join(assetRoot, pyStr(renderAuditRef))) : null;
+        const renderAudit = auditPath && isFile(auditPath) ? read_json_file(auditPath) : null;
+        if (!isObject(renderAudit)) {
+          errors.push(issue("RENDER_AUDIT", `${path_}.render_audit_ref`, "Missing or invalid rendered geometry audit."));
+        } else {
+          if (renderAudit.schema_version !== "viewpoint-render-audit-v1" || (renderAudit.source_sha256 === undefined ? null : renderAudit.source_sha256) !== htmlSha) {
+            errors.push(issue("RENDER_AUDIT_SOURCE", `${path_}.render_audit_ref`, "Rendered audit must match the current HTML hash."));
           }
-          const missingSteps = pySorted(setDifference(new Set(expectedSteps), new Set(viewportReport.logic_step_ids || [])));
-          if (missingSteps.length) {
-            errors.push(issue("RENDER_AUDIT_LOGIC", `${path_}.render_audit_ref`, `${dimensions[0]}px render hides required logic steps: ${pyreprList(missingSteps)}`));
+          if (renderAudit.valid !== true || !(Array.isArray(renderAudit.errors) && renderAudit.errors.length === 0)) {
+            errors.push(issue("RENDER_AUDIT_FAILED", `${path_}.render_audit_ref`, "Rendered audit contains geometry, contrast, typography, or compact-layout failures."));
           }
-          const missingBindings = pySorted(setDifference(expectedBindings, new Set(viewportReport.binding_refs || [])));
-          if (missingBindings.length) {
-            errors.push(issue("RENDER_AUDIT_BINDING", `${path_}.render_audit_ref`, `${dimensions[0]}px render hides required bindings: ${pyreprList(missingBindings)}`));
+          const fingerprint = renderAudit.layout_fingerprint_sha256 === undefined ? null : renderAudit.layout_fingerprint_sha256;
+          if (!/^sha256:[a-f0-9]{64}$/.test(pyStr(fingerprint || ""))) {
+            errors.push(issue("RENDER_LAYOUT_FINGERPRINT", `${path_}.render_audit_ref`, "Rendered audit needs a layout fingerprint."));
+          } else if (renderedLayoutFingerprints.has(fingerprint)) {
+            errors.push(issue("RENDER_LAYOUT_DUPLICATE", `${path_}.render_audit_ref`, "Rendered directions share the same coarse role geometry."));
+          } else {
+            renderedLayoutFingerprints.add(pyStr(fingerprint));
+          }
+          const viewportReports = renderAudit.viewports;
+          const viewportMap = new Map();
+          if (Array.isArray(viewportReports)) {
+            for (const item of viewportReports) {
+              if (isObject(item)) {
+                viewportMap.set(`${typeof item.width}:${String(item.width)}|${typeof item.height}:${String(item.height)}`, item);
+              }
+            }
+          }
+          const viewportExpectations = [
+            [[1244, 528], visibleSteps, usedRefSet],
+            [[622, 264], compactSteps, new Set([...compactRequiredBindings, ...selectedMaterialBindingIds])],
+          ];
+          for (const [dimensions, expectedSteps, expectedBindings] of viewportExpectations) {
+            const viewportReport = viewportMap.get(`number:${dimensions[0]}|number:${dimensions[1]}`);
+            if (!isObject(viewportReport) || viewportReport.valid !== true) {
+              errors.push(issue("RENDER_AUDIT_VIEWPORT", `${path_}.render_audit_ref`, `Missing passed audit for ${dimensions[0]} x ${dimensions[1]}.`));
+              continue;
+            }
+            const missingSteps = pySorted(setDifference(new Set(expectedSteps), new Set(viewportReport.logic_step_ids || [])));
+            if (missingSteps.length) {
+              errors.push(issue("RENDER_AUDIT_LOGIC", `${path_}.render_audit_ref`, `${dimensions[0]}px render hides required logic steps: ${pyreprList(missingSteps)}`));
+            }
+            const missingBindings = pySorted(setDifference(expectedBindings, new Set(viewportReport.binding_refs || [])));
+            if (missingBindings.length) {
+              errors.push(issue("RENDER_AUDIT_BINDING", `${path_}.render_audit_ref`, `${dimensions[0]}px render hides required bindings: ${pyreprList(missingBindings)}`));
+            }
+          }
+        }
+      } else if (!isObject(captureReport)) {
+        errors.push(issue("RASTER_AUDIT", `${path_}.capture_report_ref`, "Missing or invalid finished-bitmap raster audit."));
+      } else {
+        if (
+          captureReport.schema_version !== "frame-raster-audit-v1"
+          || captureReport.profile_version !== "frame-raster-audit-v1"
+          || captureReport.source_kind !== "finished_bitmap"
+          || captureReport.font_profile?.profile !== "embedded-pixels-v1"
+          || captureReport.font_profile?.verification !== "not_asserted"
+        ) {
+          errors.push(issue("RASTER_AUDIT_PROFILE", `${path_}.capture_report_ref`, "Finished bitmap audit must use honest frame-raster-audit-v1 and embedded-pixels-v1 profiles."));
+        }
+        const review = captureReport.image_review;
+        if (
+          captureReport.valid !== true
+          || !Array.isArray(captureReport.errors)
+          || captureReport.errors.length !== 0
+          || review?.review_method !== "image_inspection"
+          || review?.legibility !== "pass"
+          || review?.collision !== "pass"
+          || review?.imagery_result !== "pass"
+          || !["absent", "backend_locked"].includes(review?.mutable_price)
+        ) {
+          errors.push(issue("RASTER_AUDIT_FAILED", `${path_}.capture_report_ref`, "Finished bitmap must pass bound image-level legibility, collision, imagery, and mutable-price review."));
+        }
+        const byKind = new Map();
+        for (const item of Array.isArray(captureReport.derivatives) ? captureReport.derivatives : []) {
+          if (isObject(item)) byKind.set(item.kind, item);
+        }
+        for (const [key, kind, role, dimensions] of [["preview_ref", "full", "publication", [2488, 1056]], ["compact_preview_ref", "compact_622", "compact", [622, 264]]]) {
+          const derivative = byKind.get(kind);
+          const previewPath = previewPaths.get(key);
+          if (!isObject(derivative) || derivative.width !== dimensions[0] || derivative.height !== dimensions[1]) {
+            errors.push(issue("RASTER_AUDIT_DERIVATIVE", `${path_}.capture_report_ref`, `Raster audit is missing ${kind}.`));
+          } else if (previewPath !== undefined && derivative.sha256 !== sha256_file(previewPath)) {
+            errors.push(issue("RASTER_AUDIT_HASH", `${path_}.capture_report_ref`, `Raster audit hash does not match ${key}.`));
+          }
+          if (!/^sha256:[a-f0-9]{64}$/.test(pyStr(derivative?.pixel_sha256 || ""))) {
+            errors.push(issue("RASTER_AUDIT_PIXEL_HASH", `${path_}.capture_report_ref`, `${kind} needs a canonical RGBA8 pixel hash.`));
+          }
+          if (!finite_number(derivative?.painted_ratio) || derivative.painted_ratio < 0.006) {
+            errors.push(issue("RASTER_AUDIT_BLANK", `${path_}.capture_report_ref`, `${kind} must report at least 0.6% materially painted pixels.`));
+          }
+          if (review?.reviewed_role_sha256?.[role] !== derivative?.sha256) {
+            errors.push(issue("RASTER_REVIEW_BINDING", `${path_}.capture_report_ref`, `Image review must bind the exact encoded ${role} PNG hash.`));
           }
         }
       }

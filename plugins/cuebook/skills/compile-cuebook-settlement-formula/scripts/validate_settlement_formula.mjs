@@ -592,6 +592,7 @@ export function validateExecutionProfile(payload, variableTypes, variableSpecs, 
   const assetIds = [];
   const instrumentIds = [];
   const entryTimes = new Map();
+  const entrySessions = new Map();
   const expectedIds = legs.length === 1 ? ["A"] : legs.length === 2 ? ["A", "B"] : [];
   legs.forEach((leg, index) => {
     const path = `$.execution_profile.legs[${index}]`;
@@ -649,6 +650,12 @@ export function validateExecutionProfile(payload, variableTypes, variableSpecs, 
       }
       if (getv(entry, "source") !== "realtime" && getv(entry, "source") !== "candle_close") {
         errors.push(issue("ENTRY_SOURCE", `${entryPath}.source`, "Fixed entry requires realtime or candle_close source."));
+      }
+      const marketSession = getv(entry, "market_session");
+      if (!["regular", "extended", "all_sessions", "continuous"].includes(marketSession)) {
+        errors.push(issue("ENTRY_SESSION", `${entryPath}.market_session`, "Fixed entry requires its actual market session."));
+      } else if (typeof legId === "string") {
+        entrySessions.set(legId, marketSession);
       }
       if (!isUuid(getv(entry, "symbol_period_id"))) {
         errors.push(issue("ENTRY_SYMBOL_PERIOD", `${entryPath}.symbol_period_id`, "Fixed entry requires the observed market_symbol_periods UUID."));
@@ -791,6 +798,10 @@ export function validateExecutionProfile(payload, variableTypes, variableSpecs, 
       errors.push(issue("LONG_SHORT_THRESHOLD", "$.execution_profile.direction_threshold_bps", "long_short aggregation uses margin_bps, not a direction threshold."));
     }
     const longShortObj = asObject(longShort);
+    const sessionFamilies = new Set([...entrySessions.values()].map((session) => session === "continuous" ? "continuous" : "scheduled"));
+    if (sessionFamilies.size > 1) {
+      errors.push(issue("MIXED_SESSION_FAMILY", "$.execution_profile.legs", "Equal-notional pair settlement cannot mix continuous and scheduled market session families; degrade explicitly to a supported single-asset settlement or block."));
+    }
     if (!pyTruthy(longShortObj)) {
       errors.push(issue("LONG_SHORT_POLICY", "$.execution_profile.long_short", "long_short aggregation requires an explicit long_short policy."));
     } else {

@@ -126,6 +126,35 @@ function handoffFor(payload) {
   return { candidateSet, directionSet, captureReport };
 }
 
+function finishedBitmapHandoffFor(payload) {
+  const handoff = handoffFor(payload);
+  const direction = handoff.directionSet.directions[0];
+  direction.renderer_mode = "finished_bitmap";
+  direction.html_ref = null;
+  const visual = handoff.candidateSet.candidates[0].visual;
+  visual.renderer_mode = "finished_bitmap";
+  visual.html_ref = null;
+  handoff.captureReport = {
+    schema_version: "frame-raster-audit-v1",
+    profile_version: "frame-raster-audit-v1",
+    source_kind: "finished_bitmap",
+    font_profile: { profile: "embedded-pixels-v1", verification: "not_asserted" },
+    audited_at: "2026-07-18T10:00:00.000Z",
+    valid: true,
+    errors: [],
+    image_review: {
+      review_method: "image_inspection",
+      legibility: "pass",
+      collision: "pass",
+      imagery_result: "pass",
+      mutable_price: "absent",
+      reviewed_role_sha256: Object.fromEntries(payload.frame_draft.media.map((item) => [item.rendition_role, item.sha256])),
+    },
+    derivatives: handoff.captureReport.derivatives,
+  };
+  return handoff;
+}
+
 test("valid assembly", () => {
   const result = V.validate(assembly());
   assert.ok(result.valid, JSON.stringify(result.errors));
@@ -228,6 +257,28 @@ test("selected content and visual capture form one valid Frame handoff", () => {
   const handoff = handoffFor(payload);
   const result = V.validate(payload, null, null, handoff);
   assert.ok(result.valid, JSON.stringify(result.errors));
+});
+
+test("finished bitmap handoff needs no HTML or verified font claim", () => {
+  const payload = assembly();
+  const handoff = finishedBitmapHandoffFor(payload);
+  const binding = {
+    media_asset_id: "0198a5b0-2222-7000-8000-000000000002",
+    visual_manifest_id: "0198a5b0-3333-7000-8000-000000000003",
+    visual_manifest_sha256: payload.lineage.visual_manifest_sha256,
+  };
+  const manifest = visualManifestFor(payload);
+  manifest.font_profile = { profile: "embedded-pixels-v1", manifest_sha256: `sha256:${"7".repeat(64)}` };
+  const result = V.validate(payload, binding, manifest, handoff);
+  assert.ok(result.valid, JSON.stringify(result.errors));
+});
+
+test("finished bitmap handoff blocks a pending image review", () => {
+  const payload = assembly();
+  const handoff = finishedBitmapHandoffFor(payload);
+  handoff.captureReport.image_review.collision = "pending";
+  const result = V.validate(payload, null, null, handoff);
+  assert.ok(new Set(result.errors.map((error) => error.code)).has("RASTER_AUDIT_FAILED"));
 });
 
 test("registered handoff preserves both image hash chains", () => {

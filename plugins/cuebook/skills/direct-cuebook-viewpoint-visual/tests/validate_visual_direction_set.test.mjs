@@ -42,6 +42,18 @@ test("selection freeze may retain only the chosen release-grade direction", () =
   assert.deepEqual(validate(payload, null, { require_expression_recipes: true, require_finance_route: true }), []);
 });
 
+test("selected finished bitmap direction does not require original HTML or DOM audit", () => {
+  const payload = basePayload("selected");
+  payload.directions = [payload.directions[0]];
+  Object.assign(payload.directions[0], {
+    renderer_mode: "finished_bitmap",
+    html_ref: null,
+    capture_report_ref: "selected/raster-audit.json",
+    render_audit_ref: null,
+  });
+  assert.deepEqual(validate(payload, null, { require_expression_recipes: true, require_finance_route: true }), []);
+});
+
 test("a one-direction set is not a preselection preview shortcut", () => {
   const payload = basePayload();
   payload.directions = [payload.directions[0]];
@@ -54,6 +66,8 @@ test("schema requires upstream lineage and binding classification", () => {
   const binding = schema.properties.bindings.items;
   assert.ok(["request_class", "material_to_claim", "selected_for_display"].every((field) => binding.required.includes(field)));
   assert.ok(Object.hasOwn(schema.properties.directions.items.properties, "expression_recipe"));
+  assert.ok(Object.hasOwn(schema.properties.directions.items.properties, "renderer_mode"));
+  assert.ok(schema.properties.directions.items.properties.html_ref.type.includes("null"));
 });
 
 test("expression recipe is required in strict mode", () => {

@@ -225,6 +225,11 @@ function validate_generation_handoff(payload, draft, lineage, roles, visualManif
 
   if (isDict(selectedCandidate) && isDict(selectedDirection)) {
     const candidateVisual = isDict(get(selectedCandidate, "visual")) ? get(selectedCandidate, "visual") : {};
+    const candidateRendererMode = get(candidateVisual, "renderer_mode") ?? "cuebook_template";
+    const directionRendererMode = get(selectedDirection, "renderer_mode") ?? "cuebook_template";
+    if (candidateRendererMode !== directionRendererMode || !["cuebook_template", "finished_bitmap"].includes(directionRendererMode)) {
+      errors.push(issue("RENDERER_MODE_MISMATCH", "$.handoff", "Candidate and direction must use the same supported renderer mode."));
+    }
     if (get(candidateVisual, "direction_ref") !== selectedDirectionId) {
       errors.push(issue("CANDIDATE_DIRECTION_MISMATCH", "$.handoff.candidateSet.candidates", "Selected content must retain its paired selected visual direction."));
     }
@@ -276,14 +281,39 @@ function validate_generation_handoff(payload, draft, lineage, roles, visualManif
       errors.push(issue("CANDIDATE_ALT_MISMATCH", "$.frame_draft.media.publication.alt_text", "Publication alt text must match the selected candidate visual."));
     }
 
-    if (get(captureReport, "schema_version") !== "viewpoint-html-capture-v1" || get(captureReport, "source") !== basename(pystr(get(selectedDirection, "html_ref", ""))) || !SHA_PATTERN.test(pystr(get(captureReport, "source_sha256", "")))) {
-      errors.push(issue("CAPTURE_SOURCE_MISMATCH", "$.handoff.captureReport", "Capture report must bind the selected direction HTML."));
+    if (directionRendererMode === "cuebook_template") {
+      if (get(captureReport, "schema_version") !== "viewpoint-html-capture-v1" || get(captureReport, "source") !== basename(pystr(get(selectedDirection, "html_ref", ""))) || !SHA_PATTERN.test(pystr(get(captureReport, "source_sha256", "")))) {
+        errors.push(issue("CAPTURE_SOURCE_MISMATCH", "$.handoff.captureReport", "Template capture report must bind the selected direction HTML."));
+      }
+    } else {
+      const review = isDict(get(captureReport, "image_review")) ? get(captureReport, "image_review") : {};
+      if (
+        get(selectedDirection, "html_ref") !== null
+        || get(captureReport, "schema_version") !== "frame-raster-audit-v1"
+        || get(captureReport, "profile_version") !== "frame-raster-audit-v1"
+        || get(captureReport, "source_kind") !== "finished_bitmap"
+        || get(captureReport, "valid") !== true
+        || !Array.isArray(get(captureReport, "errors"))
+        || get(captureReport, "errors").length !== 0
+        || get(review, "legibility") !== "pass"
+        || get(review, "collision") !== "pass"
+        || get(review, "imagery_result") !== "pass"
+        || !["absent", "backend_locked"].includes(get(review, "mutable_price"))
+      ) {
+        errors.push(issue("RASTER_AUDIT_FAILED", "$.handoff.captureReport", "Finished bitmap must carry one passing image-bound raster audit and no claimed HTML source."));
+      }
+      if (isDict(visualManifest) && get(get(visualManifest, "font_profile", {}), "profile") !== "embedded-pixels-v1") {
+        errors.push(issue("RASTER_FONT_PROFILE", "$.visual_manifest.font_profile", "Finished bitmap manifests must use embedded-pixels-v1 without claiming verified font files."));
+      }
     }
     const derivatives = new Map();
     for (const item of Array.isArray(get(captureReport, "derivatives")) ? get(captureReport, "derivatives") : []) {
       if (isDict(item)) derivatives.set(get(item, "kind"), item);
     }
     const roleHashes = isDict(visualManifest) && isDict(get(visualManifest, "role_hashes")) ? get(visualManifest, "role_hashes") : null;
+    const reviewedRoleHashes = directionRendererMode === "finished_bitmap" && isDict(get(captureReport, "image_review")) && isDict(get(get(captureReport, "image_review"), "reviewed_role_sha256"))
+      ? get(get(captureReport, "image_review"), "reviewed_role_sha256")
+      : null;
     for (const [role, mediaItem] of Object.entries(roles)) {
       const kind = CAPTURE_KIND_BY_ROLE[role];
       const derivative = derivatives.get(kind);
@@ -299,6 +329,9 @@ function validate_generation_handoff(payload, draft, lineage, roles, visualManif
       }
       if (get(derivative, "sha256") !== get(mediaItem, "sha256")) {
         errors.push(issue("CAPTURE_ENCODED_HASH_MISMATCH", `$.frame_draft.media.${role}.sha256`, `Frame ${role} byte hash must match the captured PNG bytes.`));
+      }
+      if (directionRendererMode === "finished_bitmap" && (!isDict(reviewedRoleHashes) || get(reviewedRoleHashes, role) !== get(derivative, "sha256"))) {
+        errors.push(issue("RASTER_REVIEW_BINDING", `$.handoff.captureReport.image_review.reviewed_role_sha256.${role}`, `Image review must bind the exact encoded ${role} PNG hash.`));
       }
       if (!SHA_PATTERN.test(pystr(get(derivative, "pixel_sha256", "")))) {
         errors.push(issue("CAPTURE_PIXEL_HASH_MISMATCH", `$.handoff.captureReport.derivatives.${kind}.pixel_sha256`, `Capture ${kind} needs a canonical RGBA8 pixel hash.`));
