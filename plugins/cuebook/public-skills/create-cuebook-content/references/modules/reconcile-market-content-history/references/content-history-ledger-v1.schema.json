@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/content-history-ledger-v1.schema.json",
+  "title": "ContentHistoryLedgerV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "ledger_id", "workflow_ref", "release_refs", "as_of", "reconciliation_cutoff_at", "ruleset_version", "publication_receipts", "corrections", "artifact_invalidations", "content_performance", "market_outcomes", "trade_reconciliations", "learning_snapshots", "audit_events", "quality_report"],
+  "properties": {
+    "schema_version": {"const": "content-history-ledger-v1"},
+    "ledger_id": {"type": "string", "pattern": "^CHL_[a-z0-9]{8,64}$"},
+    "workflow_ref": {"type": "string", "pattern": "^WF_"},
+    "release_refs": {"$ref": "#/$defs/refs"},
+    "as_of": {"type": "string", "format": "date-time"},
+    "reconciliation_cutoff_at": {"type": "string", "format": "date-time"},
+    "ruleset_version": {"type": "string", "minLength": 1},
+    "publication_receipts": {"type": "array", "items": {"$ref": "#/$defs/receipt"}},
+    "corrections": {"type": "array", "items": {"$ref": "#/$defs/correction"}},
+    "artifact_invalidations": {"type": "array", "items": {"$ref": "#/$defs/invalidation"}},
+    "content_performance": {"type": "array", "items": {"$ref": "#/$defs/contentPerformance"}},
+    "market_outcomes": {"type": "array", "items": {"$ref": "#/$defs/marketOutcome"}},
+    "trade_reconciliations": {"type": "array", "items": {"$ref": "#/$defs/tradeReconciliation"}},
+    "learning_snapshots": {"type": "array", "items": {"$ref": "#/$defs/learning"}},
+    "audit_events": {"type": "array", "items": {"$ref": "#/$defs/event"}},
+    "quality_report": {"$ref": "#/$defs/quality"}
+  },
+  "$defs": {
+    "refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "nullableTime": {"type": ["string", "null"], "format": "date-time"},
+    "receipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["receipt_id", "release_ref", "release_item_ref", "platform", "status", "attempted_at", "acknowledged_at", "verified_at", "remote_id", "remote_url", "idempotency_key", "payload_hash", "verification_method", "verification_locator"],
+      "properties": {
+        "receipt_id": {"type": "string", "pattern": "^REC_[a-z0-9_:-]+$"},
+        "release_ref": {"type": "string"}, "release_item_ref": {"type": "string"},
+        "platform": {"type": "string", "minLength": 1},
+        "status": {"enum": ["not_attempted", "attempted", "acknowledged", "verified_published", "failed", "ambiguous", "edited", "corrected", "retracted", "removed"]},
+        "attempted_at": {"$ref": "#/$defs/nullableTime"}, "acknowledged_at": {"$ref": "#/$defs/nullableTime"},
+        "verified_at": {"$ref": "#/$defs/nullableTime"}, "remote_id": {"type": ["string", "null"]},
+        "remote_url": {"type": ["string", "null"]}, "idempotency_key": {"type": ["string", "null"]},
+        "payload_hash": {"$ref": "#/$defs/hash"},
+        "verification_method": {"enum": ["none", "api", "manual_authorized", "web_observation"]},
+        "verification_locator": {"type": ["string", "null"]}
+      }
+    },
+    "correction": {
+      "type": "object", "additionalProperties": false,
+      "required": ["correction_id", "target_artifact_ref", "target_content_hash", "category", "severity", "status", "detected_at", "effective_at", "evidence_refs", "before", "after", "reason", "approver_ref", "replacement_artifact_ref", "public_action", "affected_artifact_refs", "propagation_status"],
+      "properties": {
+        "correction_id": {"type": "string", "pattern": "^COR_[a-z0-9_:-]+$"},
+        "target_artifact_ref": {"type": "string"}, "target_content_hash": {"$ref": "#/$defs/hash"},
+        "category": {"enum": ["factual", "source", "market_data", "disclosure", "calculation", "format", "trade", "other"]},
+        "severity": {"enum": ["minor", "material", "critical"]},
+        "status": {"enum": ["pending", "approved", "propagating", "complete"]},
+        "detected_at": {"type": "string", "format": "date-time"}, "effective_at": {"type": "string", "format": "date-time"},
+        "evidence_refs": {"$ref": "#/$defs/refs"}, "before": {"type": "string"}, "after": {"type": "string"},
+        "reason": {"type": "string", "minLength": 1}, "approver_ref": {"type": ["string", "null"]},
+        "replacement_artifact_ref": {"type": ["string", "null"]},
+        "public_action": {"enum": ["none", "edit", "notice", "retraction"]},
+        "affected_artifact_refs": {"$ref": "#/$defs/refs"},
+        "propagation_status": {"enum": ["pending", "partial", "complete"]}
+      }
+    },
+    "invalidation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["invalidation_id", "artifact_ref", "previous_hash", "correction_ref", "reason", "invalidated_at", "status", "replacement_ref"],
+      "properties": {
+        "invalidation_id": {"type": "string", "pattern": "^INV_[a-z0-9_:-]+$"},
+        "artifact_ref": {"type": "string"}, "previous_hash": {"$ref": "#/$defs/hash"},
+        "correction_ref": {"type": "string"}, "reason": {"type": "string", "minLength": 1},
+        "invalidated_at": {"type": "string", "format": "date-time"},
+        "status": {"enum": ["invalidated", "superseded"]}, "replacement_ref": {"type": ["string", "null"]}
+      }
+    },
+    "contentPerformance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["snapshot_id", "receipt_ref", "observed_at", "window_start", "window_end", "metric_source", "metrics", "status", "use_scope"],
+      "properties": {
+        "snapshot_id": {"type": "string", "pattern": "^CPS_[a-z0-9_:-]+$"},
+        "receipt_ref": {"type": "string"}, "observed_at": {"type": "string", "format": "date-time"},
+        "window_start": {"type": "string", "format": "date-time"}, "window_end": {"type": "string", "format": "date-time"},
+        "metric_source": {"type": "string", "minLength": 1},
+        "metrics": {"type": "object", "additionalProperties": {"type": "number"}},
+        "status": {"enum": ["provisional", "final"]}, "use_scope": {"const": "packaging_only"}
+      }
+    },
+    "marketOutcome": {
+      "type": "object", "additionalProperties": false,
+      "required": ["outcome_id", "opportunity_ref", "observed_at", "window_start", "window_end", "benchmark", "methodology", "values", "source_refs", "status", "use_scope"],
+      "properties": {
+        "outcome_id": {"type": "string", "pattern": "^MOS_[a-z0-9_:-]+$"},
+        "opportunity_ref": {"type": "string", "pattern": "^OPP_"},
+        "observed_at": {"type": "string", "format": "date-time"}, "window_start": {"type": "string", "format": "date-time"},
+        "window_end": {"type": "string", "format": "date-time"}, "benchmark": {"type": "string", "minLength": 1},
+        "methodology": {"type": "string", "minLength": 1}, "values": {"type": "object", "additionalProperties": {"type": "number"}},
+        "source_refs": {"$ref": "#/$defs/refs"}, "status": {"enum": ["registered", "window_open", "window_closed", "frozen", "eligible", "excluded"]},
+        "use_scope": {"enum": ["idea_scorecard", "calibration_only"]}
+      }
+    },
+    "tradeReconciliation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["reconciliation_id", "trade_ref", "record_type", "verification", "fills_complete", "fees_included", "fx_treatment", "corporate_actions_treatment", "cohort_ref", "cohort_completeness", "consent", "public_claim_eligibility", "status", "exclusion_reason"],
+      "properties": {
+        "reconciliation_id": {"type": "string", "pattern": "^TRC_[a-z0-9_:-]+$"},
+        "trade_ref": {"type": "string", "pattern": "^TRADE_"},
+        "record_type": {"enum": ["idea", "paper", "executed"]},
+        "verification": {"enum": ["not_applicable", "self_reported", "broker_reconciled"]},
+        "fills_complete": {"type": "boolean"}, "fees_included": {"type": "boolean"},
+        "fx_treatment": {"enum": ["not_applicable", "included", "missing"]},
+        "corporate_actions_treatment": {"enum": ["not_applicable", "included", "missing"]},
+        "cohort_ref": {"type": "string", "minLength": 1},
+        "cohort_completeness": {"enum": ["complete", "partial", "unknown"]},
+        "consent": {"enum": ["private", "aggregate_only", "record_allowed", "unknown"]},
+        "public_claim_eligibility": {"enum": ["eligible", "aggregate_only", "ineligible"]},
+        "status": {"enum": ["pending", "eligible", "excluded"]},
+        "exclusion_reason": {"type": ["string", "null"]}
+      }
+    },
+    "learning": {
+      "type": "object", "additionalProperties": false,
+      "required": ["learning_snapshot_id", "created_at", "task", "cutoff_at", "feature_revision_refs", "outcome_plane", "outcome_refs", "policy_versions", "cohort_query_hash", "label_definition", "window", "exclusions", "split_method", "status"],
+      "properties": {
+        "learning_snapshot_id": {"type": "string", "pattern": "^LS_[a-z0-9_:-]+$"},
+        "created_at": {"type": "string", "format": "date-time"}, "task": {"type": "string", "minLength": 1},
+        "cutoff_at": {"type": "string", "format": "date-time"}, "feature_revision_refs": {"$ref": "#/$defs/refs"},
+        "outcome_plane": {"enum": ["content_performance", "market_calibration", "trade_performance"]},
+        "outcome_refs": {"$ref": "#/$defs/refs"}, "policy_versions": {"type": "array", "items": {"type": "string"}},
+        "cohort_query_hash": {"$ref": "#/$defs/hash"}, "label_definition": {"type": "string", "minLength": 1},
+        "window": {"type": "string", "minLength": 1}, "exclusions": {"type": "array", "items": {"type": "string"}},
+        "split_method": {"const": "forward_time"}, "status": {"enum": ["frozen", "eligible", "excluded"]}
+      }
+    },
+    "event": {
+      "type": "object", "additionalProperties": false,
+      "required": ["event_id", "object_ref", "from_state", "to_state", "actor", "occurred_at", "reason"],
+      "properties": {
+        "event_id": {"type": "string", "pattern": "^HEVT_[a-z0-9_:-]+$"}, "object_ref": {"type": "string"},
+        "from_state": {"type": ["string", "null"]}, "to_state": {"type": "string", "minLength": 1},
+        "actor": {"type": "string", "minLength": 1}, "occurred_at": {"type": "string", "format": "date-time"},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "quality": {
+      "type": "object", "additionalProperties": false,
+      "required": ["decision", "hard_failures", "warnings", "checks", "counts"],
+      "properties": {
+        "decision": {"enum": ["ready", "conditional", "blocked"]},
+        "hard_failures": {"type": "array", "items": {"type": "string"}},
+        "warnings": {"type": "array", "items": {"type": "string"}},
+        "checks": {"type": "array", "items": {"type": "string"}},
+        "counts": {
+          "type": "object", "additionalProperties": false,
+          "required": ["receipts", "corrections", "invalidations", "content_snapshots", "market_outcomes", "trade_reconciliations", "learning_snapshots"],
+          "properties": {
+            "receipts": {"type": "integer", "minimum": 0}, "corrections": {"type": "integer", "minimum": 0},
+            "invalidations": {"type": "integer", "minimum": 0}, "content_snapshots": {"type": "integer", "minimum": 0},
+            "market_outcomes": {"type": "integer", "minimum": 0}, "trade_reconciliations": {"type": "integer", "minimum": 0},
+            "learning_snapshots": {"type": "integer", "minimum": 0}
+          }
+        }
+      }
+    }
+  }
+}

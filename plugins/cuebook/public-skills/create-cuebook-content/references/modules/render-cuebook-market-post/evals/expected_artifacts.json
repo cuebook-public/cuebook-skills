@@ -1,0 +1,42 @@
+{
+  "schema_version": "post-v1",
+  "required_fields": [
+    "brief",
+    "lineage",
+    "gate",
+    "research_decision",
+    "policy_gate",
+    "disclosure_state",
+    "route",
+    "fact_ledger",
+    "angle",
+    "drafts",
+    "draft_evidence",
+    "watch_items",
+    "quality_report",
+    "publication_state"
+  ],
+  "invariants": [
+    "A reject decision has empty drafts and publication_state blocked.",
+    "A caution decision uses conditional wording and publication_state conditional.",
+    "publication_state is the stricter result of gate.decision and research_decision.",
+    "A blocked research decision has empty drafts even when GateV1 passes.",
+    "Every material fact or number in a draft maps to a fact_ledger item.",
+    "Every verified-live item has source_url and as_of.",
+    "ResearchPackV1 source and fact IDs are preserved when a pack is supplied.",
+    "The sole Frame draft returns the fact IDs it uses in draft_evidence.frame.",
+    "A research_pack_ref requires a non-null research_decision.",
+    "Every artifact identifies its selected opportunity, content-program item when present, and input artifact references in lineage.",
+    "A RouteV1 abstention has empty drafts and publication_state blocked.",
+    "A blocked or stale policy gate has empty drafts and publication_state blocked.",
+    "A ready artifact has known position and commercial disclosure states.",
+    "Conditional drafts name a condition, uncertainty, or confirmation check.",
+    "Drafts contain no personalized order quantity, sizing, leverage, or credential instruction.",
+    "Beat/miss, revision, valuation, and price-reaction wording preserves period, basis, and timestamp.",
+    "Profile rules used by the draft are returned by rule ID.",
+    "Internal gate codes and schema jargon do not appear in public drafts.",
+    "The draft does not imitate a living author or reuse exact catchphrases.",
+    "The public handoff contains exactly one title, one body, and one paired image; tags, evidence, settlement, and workflow metadata stay backstage.",
+    "The body improves and expresses the creator's viewpoint instead of defaulting to correction-first narration."
+  ]
+}

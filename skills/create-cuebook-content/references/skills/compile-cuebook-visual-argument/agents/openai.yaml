@@ -1,4 +1,0 @@
-interface:
-  display_name: "Cuebook Visual Argument"
-  short_description: "Compile narratives into sourced visual argument graphs"
-  default_prompt: "Compile this Cuebook narrative and its evidence into a VisualArgumentV1, preserving creator ownership, uncertainty, countercase, and settlement semantics."

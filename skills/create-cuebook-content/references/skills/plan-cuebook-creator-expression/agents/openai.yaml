@@ -1,4 +1,0 @@
-interface:
-  display_name: "Plan Cuebook Creator Expression"
-  short_description: "Lock meaning, voice, evidence, and visual execution routes"
-  default_prompt: "Use $plan-cuebook-creator-expression to preserve this creator-owned viewpoint, separate viewpoint, reasoning, and observed facts, and lock a Frame plan in which the concise body and paired image divide the argument. Route every material requirement to the right Cuebook Query capability without defaulting to correction-first rewriting."

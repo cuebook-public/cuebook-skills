@@ -1,0 +1,11 @@
+[
+  {"prompt": "正文写完了，帮我抽成一个可以结算的观点和一行摘要", "should_trigger": true},
+  {"prompt": "把这条 USO 推文整理成到期高于基准价就算成功的观点", "should_trigger": true},
+  {"prompt": "这个观点要同时满足油价和通航两个条件，怎么结算", "should_trigger": true},
+  {"prompt": "28.33 是发布时实时价，到期用官方收盘，帮我保留两种价格口径", "should_trigger": true},
+  {"prompt": "正文说等站上 28.33 再看多，把它编译成触发后才生效的条件观点", "should_trigger": true},
+  {"prompt": "BTC 放量收盘站上 65000 后，看多到下一次减半，帮我整理成可结算观点", "should_trigger": true},
+  {"prompt": "给我写一条像交易员发的推文", "should_trigger": false},
+  {"prompt": "查询这条观点最终赢没赢", "should_trigger": false},
+  {"prompt": "按这个信号替我下单", "should_trigger": false}
+]

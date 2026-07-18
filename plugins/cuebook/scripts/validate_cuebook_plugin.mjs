@@ -43,6 +43,20 @@ function deepEqualPy(a, b) {
   return false;
 }
 
+function findNamedFiles(root, fileName) {
+  const found = [];
+  const walk = (directory) => {
+    if (!existsSync(directory)) return;
+    for (const entry of readdirSync(directory, { withFileTypes: true })) {
+      const target = path.join(directory, entry.name);
+      if (entry.isDirectory()) walk(target);
+      else if (entry.name === fileName) found.push(target);
+    }
+  };
+  walk(root);
+  return found.sort();
+}
+
 const setEq = (a, b) => a.size === b.size && [...a].every((item) => b.has(item));
 const intersects = (a, b) => [...a].some((item) => b.has(item));
 const isSubset = (a, b) => [...a].every((item) => b.has(item));
@@ -329,6 +343,73 @@ export function validate(pluginRoot) {
   );
 
   check(manifest.name === "cuebook", "PLUGIN_NAME", "plugin.json.name", "Unexpected plugin name.");
+  check(
+    manifest.skills === "./public-skills/",
+    "PLUGIN_PUBLIC_SKILL_ROOT",
+    "plugin.json.skills",
+    "Codex must discover only the generated public-skills directory.",
+  );
+  const publicSkillsRoot = path.join(pluginRoot, "public-skills");
+  const publicSkillDocs = findNamedFiles(publicSkillsRoot, "SKILL.md");
+  const publicSkillIds = new Set(
+    existsSync(publicSkillsRoot)
+      ? readdirSync(publicSkillsRoot, { withFileTypes: true })
+        .filter((entry) => (
+          entry.isDirectory()
+          && existsSync(path.join(publicSkillsRoot, entry.name, "SKILL.md"))
+        ))
+        .map((entry) => entry.name)
+      : [],
+  );
+  const expectedPublicSkillIds = new Set((index.public_entrypoints ?? []).map(norm));
+  check(
+    publicSkillDocs.length === 2,
+    "PLUGIN_PUBLIC_SKILL_COUNT",
+    "public-skills",
+    "The Codex plugin release must expose exactly two SKILL.md files.",
+  );
+  check(
+    setEq(publicSkillIds, expectedPublicSkillIds),
+    "PLUGIN_PUBLIC_SKILL_SET",
+    "public-skills",
+    "Only query-cuebook and create-cuebook-content may be public Codex Skills.",
+  );
+  check(
+    publicSkillDocs.every((skillDoc) => (
+      path.dirname(path.relative(publicSkillsRoot, skillDoc)).split(path.sep).length === 1
+    )),
+    "PLUGIN_NESTED_SKILL",
+    "public-skills",
+    "Internal capabilities must be references/modules/*.md, never nested SKILL.md files.",
+  );
+  const publicReleaseManifestPath = path.join(publicSkillsRoot, "release-manifest.json");
+  check(
+    existsSync(publicReleaseManifestPath),
+    "PLUGIN_RELEASE_MANIFEST",
+    "public-skills/release-manifest.json",
+    "Generated public Skill manifest is missing.",
+  );
+  const publicReleaseManifest = existsSync(publicReleaseManifestPath)
+    ? load(publicReleaseManifestPath)
+    : {};
+  check(
+    publicReleaseManifest.schema_version === "cuebook-release-skills-manifest-v2",
+    "PLUGIN_RELEASE_MANIFEST_VERSION",
+    "public-skills/release-manifest.json.schema_version",
+    "Public Skill manifest must use the module-based v2 release contract.",
+  );
+  check(
+    (publicReleaseManifest.discovery_budget ?? {}).reduction_percent >= 60,
+    "PLUGIN_DISCOVERY_BUDGET",
+    "public-skills/release-manifest.json.discovery_budget",
+    "Public Skill discovery metadata must be at least 60% smaller than the legacy source surface.",
+  );
+  check(
+    (publicReleaseManifest.frame_fast_preview_budget ?? {}).cumulative_bytes < 150_000,
+    "PLUGIN_FAST_PREVIEW_BUDGET",
+    "public-skills/release-manifest.json.frame_fast_preview_budget",
+    "Fast Frame preview instruction and contract input must stay below 150k bytes.",
+  );
   const manifestVersion = String(manifest.version || "").split("+")[0];
   check(
     manifestVersion === index.plugin_version,
@@ -601,6 +682,13 @@ export function validate(pluginRoot) {
     errors,
     stats: {
       skill_count: skillDirs.size,
+      public_skill_count: publicSkillDocs.length,
+      discovery_reduction_percent: norm(
+        (publicReleaseManifest.discovery_budget ?? {}).reduction_percent,
+      ),
+      frame_fast_preview_bytes: norm(
+        (publicReleaseManifest.frame_fast_preview_budget ?? {}).cumulative_bytes,
+      ),
       catalog_version: norm(catalogVersion),
       module_skill_counts: Object.fromEntries(
         [...moduleSkillSets.keys()].sort().map((key) => [key, moduleSkillSets.get(key).size]),

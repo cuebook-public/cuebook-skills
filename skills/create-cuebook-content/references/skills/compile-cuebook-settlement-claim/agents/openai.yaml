@@ -1,4 +1,0 @@
-interface:
-  display_name: "Compile Settlement Claim"
-  short_description: "Compile a locked expression or post into a settleable claim"
-  default_prompt: "Use $compile-cuebook-settlement-claim after the expression fingerprint is locked. Compile one primary settleable claim in parallel with content rendering when possible, preserve quote type and action state, and return the full summary plus deterministic one-line footer."

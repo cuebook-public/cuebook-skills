@@ -1,0 +1,482 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/publish-candidate-set-v1.schema.json",
+  "title": "PublishCandidateSetV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "candidate_set_id", "revision", "state", "lineage", "generation_policy", "shared_view", "calibration", "candidates", "selection", "quality_report"],
+  "properties": {
+    "schema_version": {"const": "publish-candidate-set-v1"},
+    "candidate_set_id": {"type": "string", "pattern": "^PUBSET_[A-Za-z0-9_:-]{8,}$"},
+    "revision": {"type": "integer", "minimum": 1},
+    "state": {"enum": ["draft", "ready_for_selection", "selected", "blocked"]},
+    "lineage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["expression_plan_ref", "fingerprint_sha256", "input_artifact_refs", "settlement_claim_ref"],
+      "properties": {
+        "expression_plan_ref": {"$ref": "#/$defs/nonemptyString"},
+        "fingerprint_sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "input_artifact_refs": {"$ref": "#/$defs/stringSet"},
+        "settlement_claim_ref": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "generation_policy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["candidate_count", "autonomous", "user_iteration_required", "calibration_owner", "fallback_policy", "linked_evidence_policy", "retry_limit", "copy_budget", "visual_visible_char_max"],
+      "properties": {
+        "candidate_count": {"enum": [1, 3]},
+        "autonomous": {"const": true},
+        "user_iteration_required": {"const": false},
+        "calibration_owner": {"const": "skills"},
+        "fallback_policy": {"const": "degrade_then_omit"},
+        "linked_evidence_policy": {"const": "required_when_material"},
+        "retry_limit": {"type": "integer", "minimum": 0, "maximum": 3},
+        "copy_budget": {
+          "type": "object", "additionalProperties": false,
+          "required": ["headline_max", "body_max", "close_max", "total_max", "paragraph_max", "hard_number_max"],
+          "properties": {
+            "headline_max": {"type": "integer", "minimum": 12, "maximum": 32},
+            "body_max": {"type": "integer", "minimum": 80, "maximum": 220},
+            "close_max": {"type": "integer", "minimum": 20, "maximum": 56},
+            "total_max": {"type": "integer", "minimum": 160, "maximum": 300},
+            "paragraph_max": {"type": "integer", "minimum": 2, "maximum": 4},
+            "hard_number_max": {"type": "integer", "minimum": 1, "maximum": 3}
+          }
+        },
+        "visual_visible_char_max": {"type": "integer", "minimum": 60, "maximum": 120}
+      }
+    },
+    "shared_view": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ticker", "direction", "horizon", "claim", "caveat", "material_evidence", "settlement_eligibility"],
+      "properties": {
+        "ticker": {"$ref": "#/$defs/nonemptyString"},
+        "direction": {"enum": ["long", "short", "outperform", "underperform", "range", "avoid", "watch", "neutral", "explain"]},
+        "horizon": {"$ref": "#/$defs/nullableString"},
+        "claim": {"type": "string", "minLength": 2, "maxLength": 160},
+        "caveat": {"$ref": "#/$defs/nullableString"},
+        "material_evidence": {
+          "type": "object", "additionalProperties": false,
+          "required": ["requirements"],
+          "properties": {
+            "requirements": {
+              "type": "array", "maxItems": 8, "uniqueItems": true,
+              "items": {"$ref": "#/$defs/materialEvidenceRequirement"}
+            }
+          }
+        },
+        "settlement_eligibility": {"$ref": "#/$defs/settlementEligibility"}
+      }
+    },
+    "calibration": {
+      "type": "object", "additionalProperties": false,
+      "required": ["research", "market_data", "semantics", "policy", "visual", "settlement", "repairs"],
+      "properties": {
+        "research": {"$ref": "#/$defs/calibrationState"},
+        "market_data": {"$ref": "#/$defs/calibrationState"},
+        "semantics": {"$ref": "#/$defs/calibrationState"},
+        "policy": {"$ref": "#/$defs/calibrationState"},
+        "visual": {"$ref": "#/$defs/calibrationState"},
+        "settlement": {"$ref": "#/$defs/calibrationState"},
+        "repairs": {"type": "array", "maxItems": 20, "items": {"type": "string", "minLength": 2, "maxLength": 240}}
+      }
+    },
+    "candidates": {"type": "array", "minItems": 0, "maxItems": 3, "items": {"$ref": "#/$defs/candidate"}},
+    "selection": {
+      "type": "object", "additionalProperties": false,
+      "required": ["selected_candidate_id", "selection_receipt_ref", "content_confirmed", "settlement_confirmed", "settlement_confirmation_fields"],
+      "properties": {
+        "selected_candidate_id": {"$ref": "#/$defs/nullableString"},
+        "selection_receipt_ref": {"$ref": "#/$defs/nullableString"},
+        "content_confirmed": {"type": "boolean"},
+        "settlement_confirmed": {"type": "boolean"},
+        "settlement_confirmation_fields": {"$ref": "#/$defs/settlementConfirmationFieldSet"}
+      }
+    },
+    "quality_report": {
+      "type": "object", "additionalProperties": false,
+      "required": ["decision", "warnings", "hard_failures"],
+      "properties": {
+        "decision": {"enum": ["ready_for_selection", "selected", "blocked"]},
+        "warnings": {"$ref": "#/$defs/stringSet"},
+        "hard_failures": {"$ref": "#/$defs/stringSet"}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"required": ["state"], "properties": {"state": {"const": "ready_for_selection"}}},
+      "then": {
+        "properties": {
+          "selection": {
+            "properties": {
+              "selected_candidate_id": {"type": "null"},
+              "selection_receipt_ref": {"type": "null"},
+              "content_confirmed": {"const": false},
+              "settlement_confirmed": {"const": false},
+              "settlement_confirmation_fields": {"maxItems": 0}
+            }
+          },
+          "candidates": {
+            "items": {
+              "properties": {
+                "settlement": {"properties": {"state": {"not": {"const": "frozen"}}}}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": ["selection"],
+        "properties": {
+          "selection": {
+            "required": ["settlement_confirmed"],
+            "properties": {"settlement_confirmed": {"const": true}}
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "state": {"const": "selected"},
+          "lineage": {"properties": {"settlement_claim_ref": {"$ref": "#/$defs/nonemptyString"}}},
+          "selection": {
+            "properties": {
+              "selected_candidate_id": {"$ref": "#/$defs/nonemptyString"},
+              "selection_receipt_ref": {"$ref": "#/$defs/nonemptyString"},
+              "content_confirmed": {"const": true},
+              "settlement_confirmation_fields": {"minItems": 9, "maxItems": 9}
+            }
+          },
+          "candidates": {
+            "items": {"properties": {"settlement": {"properties": {"state": {"const": "frozen"}}}}}
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": ["selection"],
+        "properties": {
+          "selection": {
+            "required": ["settlement_confirmed"],
+            "properties": {"settlement_confirmed": {"const": false}}
+          }
+        }
+      },
+      "then": {"properties": {"selection": {"properties": {"settlement_confirmation_fields": {"maxItems": 0}}}}}
+    },
+    {
+      "if": {
+        "required": ["lineage"],
+        "properties": {
+          "lineage": {
+            "required": ["settlement_claim_ref"],
+            "properties": {"settlement_claim_ref": {"$ref": "#/$defs/nonemptyString"}}
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "shared_view": {
+            "properties": {
+              "settlement_eligibility": {
+                "properties": {
+                  "status": {"const": "eligible"},
+                  "requirements": {
+                    "properties": {
+                      "metric": {"const": true},
+                      "operator": {"const": true},
+                      "threshold": {"const": true},
+                      "deadline": {"const": true},
+                      "authoritative_source": {"const": true}
+                    }
+                  },
+                  "missing_requirements": {"maxItems": 0}
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "nonemptyString": {"type": "string", "minLength": 1},
+    "nullableString": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/nonemptyString"}]},
+    "dateTime": {"type": "string", "format": "date-time"},
+    "nullableDateTime": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/dateTime"}]},
+    "stringSet": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}},
+    "nonemptyStringSet": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}},
+    "calibrationState": {"enum": ["ready", "degraded", "not_applicable", "blocked"]},
+    "requestClass": {"enum": ["news_anchor", "official_event", "valuation_metric", "comparison_metric", "price_level", "market_series", "settlement_reference"]},
+    "settlementEligibilityField": {"enum": ["metric", "operator", "threshold", "deadline", "authoritative_source"]},
+    "settlementConfirmationField": {"enum": ["subject", "direction", "baseline", "market_session", "metric", "operator", "threshold", "deadline", "authoritative_source"]},
+    "settlementConfirmationFieldSet": {
+      "type": "array", "uniqueItems": true,
+      "items": {"$ref": "#/$defs/settlementConfirmationField"}
+    },
+    "materialEvidenceRequirement": {
+      "type": "object", "additionalProperties": false,
+      "required": ["requirement_id", "request_class", "required_anchor_ids"],
+      "properties": {
+        "requirement_id": {"type": "string", "pattern": "^D[1-9][0-9]*$"},
+        "request_class": {"$ref": "#/$defs/requestClass"},
+        "required_anchor_ids": {"$ref": "#/$defs/nonemptyStringSet"}
+      }
+    },
+    "settlementEligibility": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "requirements", "missing_requirements"],
+      "properties": {
+        "status": {"enum": ["ineligible", "candidate", "eligible", "blocked"]},
+        "requirements": {
+          "type": "object", "additionalProperties": false,
+          "required": ["metric", "operator", "threshold", "deadline", "authoritative_source"],
+          "properties": {
+            "metric": {"type": "boolean"},
+            "operator": {"type": "boolean"},
+            "threshold": {"type": "boolean"},
+            "deadline": {"type": "boolean"},
+            "authoritative_source": {"type": "boolean"}
+          }
+        },
+        "missing_requirements": {
+          "type": "array", "uniqueItems": true,
+          "items": {"$ref": "#/$defs/settlementEligibilityField"}
+        }
+      },
+      "allOf": [
+        {
+          "if": {"required": ["status"], "properties": {"status": {"const": "eligible"}}},
+          "then": {
+            "properties": {
+              "requirements": {
+                "properties": {
+                  "metric": {"const": true},
+                  "operator": {"const": true},
+                  "threshold": {"const": true},
+                  "deadline": {"const": true},
+                  "authoritative_source": {"const": true}
+                }
+              },
+              "missing_requirements": {"maxItems": 0}
+            }
+          }
+        },
+        {
+          "if": {"required": ["status"], "properties": {"status": {"const": "ineligible"}}},
+          "then": {
+            "properties": {
+              "requirements": {
+                "properties": {
+                  "metric": {"const": false},
+                  "operator": {"const": false},
+                  "threshold": {"const": false},
+                  "deadline": {"const": false},
+                  "authoritative_source": {"const": false}
+                }
+              },
+              "missing_requirements": {"maxItems": 0}
+            }
+          }
+        }
+      ]
+    },
+    "candidate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["candidate_id", "label", "angle", "meaning_fingerprint", "post_ref", "copy", "visual", "frame", "evidence_anchors", "settlement", "public_disclosures", "quality"],
+      "properties": {
+        "candidate_id": {"type": "string", "pattern": "^PUBCAND_[A-Za-z0-9_:-]{6,}$"},
+        "label": {"type": "string", "minLength": 1, "maxLength": 12},
+        "angle": {"enum": ["conviction", "evidence", "catalyst", "mechanism", "countercase"]},
+        "meaning_fingerprint": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "post_ref": {"$ref": "#/$defs/nonemptyString", "description": "Reference to the canonical Frame-sized PostV1."},
+        "copy": {
+          "type": "object", "additionalProperties": false, "description": "Internal title/body split retained for FrameDraftAssemblyV1 compatibility. Frontends must render frame instead.",
+          "required": ["headline", "body", "close", "tags", "visible_char_count"],
+          "properties": {
+            "headline": {"type": "string", "minLength": 2, "maxLength": 32},
+            "body": {"type": "string", "minLength": 20, "maxLength": 220},
+            "close": {"type": "string", "minLength": 2, "maxLength": 56},
+            "tags": {"type": "array", "minItems": 2, "maxItems": 4, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 12}},
+            "visible_char_count": {"type": "integer", "minimum": 1, "maximum": 300}
+          }
+        },
+        "visual": {
+          "type": "object", "additionalProperties": false,
+          "required": ["direction_ref", "html_ref", "preview_ref", "compact_preview_ref", "visible_char_count", "alt_text"],
+          "properties": {
+            "direction_ref": {"$ref": "#/$defs/nonemptyString"},
+            "html_ref": {"type": "string", "pattern": "^[^/].*\\.html$"},
+            "preview_ref": {"type": "string", "pattern": "^[^/].*\\.png$"},
+            "compact_preview_ref": {"type": "string", "pattern": "^[^/].*\\.png$"},
+            "visible_char_count": {"type": "integer", "minimum": 1, "maximum": 120},
+            "alt_text": {"type": "string", "minLength": 2, "maxLength": 120}
+          }
+        },
+        "frame": {
+          "type": "object", "additionalProperties": false, "description": "The only creator-facing projection. Render no sibling labels, tags, evidence panels, settlement panels, disclosures, or workflow metadata.",
+          "required": ["title", "body", "image_ref", "alt_text"],
+          "properties": {
+            "title": {"type": "string", "minLength": 2, "maxLength": 32},
+            "body": {"type": "string", "minLength": 20, "maxLength": 280},
+            "image_ref": {"type": "string", "pattern": "^[^/].*\\.png$"},
+            "alt_text": {"type": "string", "minLength": 2, "maxLength": 120}
+          }
+        },
+        "evidence_anchors": {
+          "type": "array", "maxItems": 8, "uniqueItems": true,
+          "items": {"$ref": "#/$defs/evidenceAnchor"}
+        },
+        "settlement": {
+          "type": "object", "additionalProperties": false,
+          "required": ["claim_ref", "one_line", "state"],
+          "properties": {
+            "claim_ref": {"$ref": "#/$defs/nullableString"},
+            "one_line": {"anyOf": [{"type": "null"}, {"type": "string", "minLength": 1, "maxLength": 240}]},
+            "state": {"enum": ["not_applicable", "needs_confirmation", "ready", "frozen"]}
+          }
+        },
+        "public_disclosures": {"type": "array", "maxItems": 3, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 160}},
+        "quality": {
+          "type": "object", "additionalProperties": false,
+          "required": ["claim_fidelity", "compression", "human_voice", "evidence_integrity", "visual_craft", "three_second", "weighted_score", "verdict"],
+          "properties": {
+            "claim_fidelity": {"$ref": "#/$defs/score"},
+            "compression": {"$ref": "#/$defs/score"},
+            "human_voice": {"$ref": "#/$defs/score"},
+            "evidence_integrity": {"$ref": "#/$defs/score"},
+            "visual_craft": {"$ref": "#/$defs/score"},
+            "three_second": {"$ref": "#/$defs/score"},
+            "weighted_score": {"$ref": "#/$defs/score"},
+            "verdict": {"enum": ["pass", "reject"]}
+          }
+        }
+      }
+    },
+    "metricObservation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "basis", "value_state", "value", "unit", "comparison_subject", "not_meaningful_reason"],
+      "properties": {
+        "name": {"$ref": "#/$defs/nonemptyString"},
+        "basis": {"$ref": "#/$defs/nonemptyString"},
+        "value_state": {"enum": ["numeric", "N/M"]},
+        "value": {"type": ["number", "null"]},
+        "unit": {"$ref": "#/$defs/nonemptyString"},
+        "comparison_subject": {"$ref": "#/$defs/nullableString"},
+        "not_meaningful_reason": {"$ref": "#/$defs/nullableString"}
+      },
+      "allOf": [
+        {
+          "if": {"required": ["value_state"], "properties": {"value_state": {"const": "numeric"}}},
+          "then": {"properties": {"value": {"type": "number"}, "not_meaningful_reason": {"type": "null"}}}
+        },
+        {
+          "if": {"required": ["value_state"], "properties": {"value_state": {"const": "N/M"}}},
+          "then": {"properties": {"value": {"type": "null"}, "not_meaningful_reason": {"$ref": "#/$defs/nonemptyString"}}}
+        }
+      ]
+    },
+    "priceObservation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["instrument_ref", "value", "unit", "observed_at", "observation_basis", "market_session"],
+      "properties": {
+        "instrument_ref": {"$ref": "#/$defs/nonemptyString"},
+        "value": {"type": "number"},
+        "unit": {"$ref": "#/$defs/nonemptyString"},
+        "observed_at": {"$ref": "#/$defs/dateTime"},
+        "observation_basis": {"enum": ["last_trade", "last_close", "midpoint", "official_close", "official_settlement", "spot", "intraday", "nav", "event_status"]},
+        "market_session": {"enum": ["regular", "extended", "all_sessions", "continuous", "event_window"]}
+      }
+    },
+    "marketSeries": {
+      "type": "object", "additionalProperties": false,
+      "required": ["series_ref", "instrument_refs", "metric", "interval", "window_start", "window_end", "timezone", "observation_basis"],
+      "properties": {
+        "series_ref": {"$ref": "#/$defs/nonemptyString"},
+        "instrument_refs": {"$ref": "#/$defs/nonemptyStringSet"},
+        "metric": {"$ref": "#/$defs/nonemptyString"},
+        "interval": {"$ref": "#/$defs/nonemptyString"},
+        "window_start": {"$ref": "#/$defs/dateTime"},
+        "window_end": {"$ref": "#/$defs/dateTime"},
+        "timezone": {"$ref": "#/$defs/nonemptyString"},
+        "observation_basis": {"$ref": "#/$defs/nonemptyString"}
+      }
+    },
+    "settlementReference": {
+      "type": "object", "additionalProperties": false,
+      "required": ["claim_ref", "eligibility_fields"],
+      "properties": {
+        "claim_ref": {"$ref": "#/$defs/nonemptyString"},
+        "eligibility_fields": {
+          "type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true,
+          "items": {"$ref": "#/$defs/settlementEligibilityField"}
+        }
+      }
+    },
+    "evidenceAnchor": {
+      "type": "object", "additionalProperties": false,
+      "required": ["anchor_id", "request_class", "kind", "title", "publisher", "url", "published_at", "as_of", "fact_refs"],
+      "properties": {
+        "anchor_id": {"type": "string", "pattern": "^EVA_[A-Za-z0-9_:-]{4,}$"},
+        "request_class": {"$ref": "#/$defs/requestClass"},
+        "kind": {"enum": ["news", "company_release", "filing", "official_data", "market_data", "estimate_data"]},
+        "title": {"type": "string", "minLength": 2, "maxLength": 160},
+        "publisher": {"type": "string", "minLength": 1, "maxLength": 80},
+        "url": {"anyOf": [{"type": "null"}, {"type": "string", "format": "uri", "pattern": "^https?://"}]},
+        "published_at": {"$ref": "#/$defs/nullableDateTime"},
+        "as_of": {"$ref": "#/$defs/dateTime"},
+        "fact_refs": {"$ref": "#/$defs/nonemptyStringSet"},
+        "metric": {"$ref": "#/$defs/metricObservation"},
+        "price_observation": {"$ref": "#/$defs/priceObservation"},
+        "market_series": {"$ref": "#/$defs/marketSeries"},
+        "settlement_reference": {"$ref": "#/$defs/settlementReference"}
+      },
+      "allOf": [
+        {
+          "if": {"required": ["kind"], "properties": {"kind": {"enum": ["news", "company_release"]}}},
+          "then": {"properties": {"published_at": {"$ref": "#/$defs/dateTime"}}}
+        },
+        {
+          "if": {"required": ["request_class"], "properties": {"request_class": {"enum": ["news_anchor", "official_event"]}}},
+          "then": {"not": {"anyOf": [{"required": ["metric"]}, {"required": ["price_observation"]}, {"required": ["market_series"]}, {"required": ["settlement_reference"]}]}}
+        },
+        {
+          "if": {"required": ["request_class"], "properties": {"request_class": {"enum": ["valuation_metric", "comparison_metric"]}}},
+          "then": {
+            "required": ["metric"],
+            "not": {"anyOf": [{"required": ["price_observation"]}, {"required": ["market_series"]}, {"required": ["settlement_reference"]}]}
+          }
+        },
+        {
+          "if": {"required": ["request_class"], "properties": {"request_class": {"const": "comparison_metric"}}},
+          "then": {"properties": {"metric": {"properties": {"comparison_subject": {"$ref": "#/$defs/nonemptyString"}}}}}
+        },
+        {
+          "if": {"required": ["request_class"], "properties": {"request_class": {"const": "price_level"}}},
+          "then": {
+            "required": ["price_observation"],
+            "not": {"anyOf": [{"required": ["metric"]}, {"required": ["market_series"]}, {"required": ["settlement_reference"]}]}
+          }
+        },
+        {
+          "if": {"required": ["request_class"], "properties": {"request_class": {"const": "market_series"}}},
+          "then": {
+            "required": ["market_series"],
+            "not": {"anyOf": [{"required": ["metric"]}, {"required": ["price_observation"]}, {"required": ["settlement_reference"]}]}
+          }
+        },
+        {
+          "if": {"required": ["request_class"], "properties": {"request_class": {"const": "settlement_reference"}}},
+          "then": {
+            "required": ["settlement_reference"],
+            "not": {"anyOf": [{"required": ["metric"]}, {"required": ["price_observation"]}, {"required": ["market_series"]}]}
+          }
+        }
+      ]
+    },
+    "score": {"type": "number", "minimum": 0, "maximum": 10}
+  }
+}

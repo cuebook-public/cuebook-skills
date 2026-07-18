@@ -1,4 +1,0 @@
-interface:
-  display_name: "Prepare Market Content Release"
-  short_description: "Freeze and preflight finance content releases"
-  default_prompt: "Prepare a no-side-effect release bundle from finalized market content, with platform capability, policy, approvals, scheduling, hashes, and idempotency."

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Distill Commentator Profile"
-  short_description: "Research and distill a commentator into ProfileV1"
-  default_prompt: "Use $distill-market-commentator-profile to build an evidence-backed ProfileV1 from this public commentator, supplied corpus, or authorized export."

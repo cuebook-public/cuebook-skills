@@ -7,13 +7,13 @@
     "node": ">=22"
   },
   "scripts": {
-    "build:release": "node plugins/cuebook/scripts/build_release_skills.mjs plugins/cuebook skills",
+    "build:release": "node plugins/cuebook/scripts/build_release_skills.mjs plugins/cuebook skills && node plugins/cuebook/scripts/build_release_skills.mjs plugins/cuebook plugins/cuebook/public-skills",
     "validate:plugin": "node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook",
     "validate:closure": "node plugins/cuebook/scripts/validate_skill_closure.mjs plugins/cuebook",
     "validate": "npm run validate:plugin && npm run validate:closure",
-    "test": "node --test 'plugins/cuebook/**/*.test.mjs'",
-    "test:ci": "node --test --test-concurrency=1 'plugins/cuebook/**/*.test.mjs'",
-    "check": "npm run validate && npm run test:ci && npm run build:release && git diff --exit-code -- skills"
+    "test": "node --test 'plugins/cuebook/skills/**/*.test.mjs' 'plugins/cuebook/tests/**/*.test.mjs'",
+    "test:ci": "node --test --test-concurrency=1 'plugins/cuebook/skills/**/*.test.mjs' 'plugins/cuebook/tests/**/*.test.mjs'",
+    "check": "npm run validate && npm run test:ci && npm run build:release && git diff --exit-code -- skills plugins/cuebook/public-skills"
   },
   "devDependencies": {
     "playwright": "1.61.1"

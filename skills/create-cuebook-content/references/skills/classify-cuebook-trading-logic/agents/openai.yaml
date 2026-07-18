@@ -1,4 +1,0 @@
-interface:
-  display_name: "Classify Cuebook Trading Logic"
-  short_description: "Classify the hidden trading play behind a viewpoint"
-  default_prompt: "Classify this market viewpoint into a Cuebook strategy family, price mechanism, trade expression, horizon, edge, and public tags."

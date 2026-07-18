@@ -16,10 +16,12 @@ Cuebook exposes two public entrypoints:
   Current evidence is Cuebook-first, with one bounded authorized Web fallback
   only when Cuebook leaves a material gap.
 
-The repository packages 38 modular skills behind those two entrypoints
+The repository keeps 38 source modules behind those two entrypoints
 (including the `intake-cuebook-viewpoint` conversational front door that
 completes and verifies a fresh viewpoint before creation). Create may call
-Query; Query never calls Create.
+Query; Query never calls Create. Codex discovers exactly the two public
+entrypoints. Internal modules are ordinary `references/modules/*.md` files
+loaded on demand, not recursively discoverable Skills.
 
 ## Platform Support
 
@@ -54,7 +56,8 @@ server are loaded.
 ```text
 .agents/plugins/marketplace.json  Marketplace entry
 plugins/cuebook/                  Cuebook plugin package (source of truth: cuebook-mcp)
-plugins/cuebook/skills/           Query and creation skills
+plugins/cuebook/skills/           Canonical source modules (development only)
+plugins/cuebook/public-skills/    Two generated Codex public Skills
 plugins/cuebook/assets/           Module, menu, and capability contracts
 plugins/cuebook/scripts/          Package validators and release bundler
 skills/                           Self-contained public bundles for generic
@@ -65,7 +68,7 @@ skills/                           Self-contained public bundles for generic
 
 This repository is a build artifact. Source lives in the internal
 `cuebook-mcp` repository; edit there and re-run
-`node plugins/cuebook/scripts/build_release_skills.mjs plugins/cuebook skills`
+`npm run build:release`
 before tagging a release.
 
 ## Validate
@@ -75,12 +78,14 @@ npm ci
 npm run validate
 npm test
 npm run build:release
-git diff --exit-code -- skills
+git diff --exit-code -- skills plugins/cuebook/public-skills
 ```
 
 `validate` checks both the Query/Create package boundary and every local file
 or `$skill-name` reference. CI also rejects tracked Python runtime files and
 requires the generated public bundles to match their plugin source.
+Do not mirror the Cuebook source modules into `~/.codex/skills`; install the
+plugin or only the two built public bundles.
 
 Do not commit API keys, OAuth tokens, credentials, generated user output, or
 font files. Authentication remains in the Cuebook MCP connector.

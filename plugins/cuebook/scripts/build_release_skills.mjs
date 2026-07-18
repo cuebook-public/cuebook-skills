@@ -9,9 +9,10 @@
 // This builder packages each public entrypoint (`assets/plugin-index-v1.json`
 // `public_entrypoints`) as one spec-conformant, self-contained skill:
 //
-// - the transitive `$skill-name` closure is bundled under `references/skills/`;
+// - the transitive `$skill-name` closure is bundled as non-discoverable
+//   `references/modules/<name>.md` documents plus sibling resource directories;
 // - referenced plugin assets are copied to `assets/plugin/` and paths rewritten;
-// - `$skill-name` tokens are rewritten to bundle-relative SKILL.md paths;
+// - `$skill-name` tokens are rewritten to bundle-root-relative module paths;
 // - the shared `validate_json_schema.mjs` helper is vendored next to every
 //   validator that imports it through the plugin-root scripts directory;
 // - the result is checked against the Agent Skills format rules before writing
@@ -26,7 +27,23 @@ const FRONTMATTER_PATTERN = /^---\n([\s\S]*?)\n---\n/;
 // ESM shared-validator import used by plugin skill scripts.
 const MJS_SHIM_IMPORT = "../../../scripts/validate_json_schema.mjs";
 const MJS_SHIM_LOCAL = "./validate_json_schema.mjs";
-const EXCLUDED_DIR_NAMES = new Set(["__pycache__", ".pytest_cache"]);
+const EXCLUDED_DIR_NAMES = new Set(["__pycache__", ".pytest_cache", "tests"]);
+const MODULE_EXCLUDED_DIR_NAMES = new Set([...EXCLUDED_DIR_NAMES, "agents"]);
+const MODULE_RESOURCE_DIRS = "references|scripts|templates|assets|evals|tests";
+const PUBLIC_SKILL_LIMIT = 2;
+const MIN_DISCOVERY_REDUCTION_PERCENT = 60;
+const FAST_PREVIEW_BYTE_LIMIT = 150_000;
+const FAST_PREVIEW_FILES = [
+  "SKILL.md",
+  "references/frame-preview-fast-job-v1.schema.json",
+  "references/modules/query-cuebook.md",
+  "references/modules/query-cuebook/references/cuebook-query-request-v1.schema.json",
+  "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json",
+  "references/modules/render-cuebook-thesis-chart.md",
+  "references/modules/render-cuebook-thesis-chart/references/thesis-chart-v1.schema.json",
+  "references/modules/render-cuebook-thesis-chart/references/market-series-batch-v1.schema.json",
+  "assets/plugin/mcp-capability-map-v1.json",
+];
 
 export function issue(code, issuePath, message) {
   return { code, path: issuePath, message };
@@ -65,7 +82,23 @@ export function copySkillDir(source, target) {
   fs.cpSync(source, target, {
     recursive: true,
     dereference: true,
-    filter: (src) => !EXCLUDED_DIR_NAMES.has(path.basename(src)),
+    filter: (src) => (
+      !EXCLUDED_DIR_NAMES.has(path.basename(src))
+      && !/\.test\.(?:mjs|cjs)$/u.test(path.basename(src))
+    ),
+  });
+}
+
+export function copyModuleResources(source, target) {
+  const sourceSkill = path.resolve(source, "SKILL.md");
+  fs.cpSync(source, target, {
+    recursive: true,
+    dereference: true,
+    filter: (src) => (
+      path.resolve(src) !== sourceSkill
+      && !MODULE_EXCLUDED_DIR_NAMES.has(path.basename(src))
+      && !/\.test\.(?:mjs|cjs)$/u.test(path.basename(src))
+    ),
   });
 }
 
@@ -84,7 +117,7 @@ export function skillResourceRefPattern(skillNames) {
     .sort((a, b) => b.length - a.length || (a < b ? -1 : a > b ? 1 : 0))
     .map(escapeRegExp)
     .join("|");
-  return new RegExp(`\\$(${alternatives})/((?:references|scripts|templates|assets|evals|tests)/[A-Za-z0-9][A-Za-z0-9._/@+%-]*)`, "g");
+  return new RegExp(`\\$(${alternatives})/((?:${MODULE_RESOURCE_DIRS})/[A-Za-z0-9][A-Za-z0-9._/@+%-]*)`, "g");
 }
 
 export function findClosure(pluginRoot, entry, skillNames) {
@@ -104,25 +137,58 @@ export function findClosure(pluginRoot, entry, skillNames) {
   return seen;
 }
 
+export function writeModuleDoc(sourceSkill, target, moduleName) {
+  const raw = fs.readFileSync(sourceSkill, "utf-8");
+  let body = raw.replace(FRONTMATTER_PATTERN, "").trimStart();
+  body = body
+    .split("\n")
+    .filter((line) => (
+      !/`tests\//u.test(line)
+      && !/`scripts\/[^`]+\.test\.(?:mjs|cjs)`/u.test(line)
+    ))
+    .join("\n");
+  const localResourcePattern = new RegExp(
+    `(?<![/A-Za-z0-9._@+%-])(${MODULE_RESOURCE_DIRS})/`,
+    "g",
+  );
+  body = body.replace(
+    localResourcePattern,
+    `references/modules/${moduleName}/$1/`,
+  );
+  const note = [
+    "<!-- Generated internal module: not a public Agent Skill. -->",
+    `> Module resources are rooted at \`references/modules/${moduleName}/\` from the public Skill directory.`,
+    "",
+  ].join("\n");
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  fs.writeFileSync(target, `${note}${body}`);
+}
+
+const relativeToBundle = (bundleRoot, target) => (
+  path.relative(bundleRoot, target).split(path.sep).join("/")
+);
+
 export function rewriteMarkdown(md, bundleRoot, skillNames, usedAssets) {
   let text = fs.readFileSync(md, "utf-8");
-  const base = path.dirname(md);
 
   text = text.replace(new RegExp(ASSET_REF_SOURCE, "g"), (_match, asset) => {
     usedAssets.add(asset);
-    return path.relative(base, path.join(bundleRoot, "assets", "plugin", asset));
+    return relativeToBundle(bundleRoot, path.join(bundleRoot, "assets", "plugin", asset));
   });
   text = text.replace(skillResourceRefPattern(skillNames), (_match, name, resource) => {
-    const skillRoot = name === path.basename(bundleRoot)
+    const moduleRoot = name === path.basename(bundleRoot)
       ? bundleRoot
-      : path.join(bundleRoot, "references", "skills", name);
-    return path.relative(base, path.join(skillRoot, resource));
+      : path.join(bundleRoot, "references", "modules", name);
+    return relativeToBundle(bundleRoot, path.join(moduleRoot, resource));
   });
   text = text.replace(skillRefPattern(skillNames), (_match, name) => {
     if (name === path.basename(bundleRoot)) {
-      return path.relative(base, path.join(bundleRoot, "SKILL.md"));
+      return "SKILL.md";
     }
-    return path.relative(base, path.join(bundleRoot, "references", "skills", name, "SKILL.md"));
+    return relativeToBundle(
+      bundleRoot,
+      path.join(bundleRoot, "references", "modules", `${name}.md`),
+    );
   });
   fs.writeFileSync(md, text);
 }
@@ -146,7 +212,7 @@ export function rewriteEntrypointSkillImports(script, bundleRoot, skillNames) {
   const original = text;
   text = text.replace(/(["'])\.\.\/\.\.\/([a-z0-9]+(?:-[a-z0-9]+)*)\//g, (match, quote, skillName) => {
     if (!skillNames.has(skillName) || skillName === path.basename(bundleRoot)) return match;
-    return `${quote}../references/skills/${skillName}/`;
+    return `${quote}../references/modules/${skillName}/`;
   });
   if (text === original) return false;
   fs.writeFileSync(script, text);
@@ -172,6 +238,18 @@ export function checkBundle(bundleRoot, skillNames) {
   const front = parseFrontmatter(path.join(bundleRoot, "SKILL.md"));
   const name = front.name ?? "";
   const description = front.description ?? "";
+  const discoveredSkillDocs = rglob(bundleRoot, "SKILL.md")
+    .filter((candidate) => path.basename(candidate) === "SKILL.md");
+  if (
+    discoveredSkillDocs.length !== 1
+    || path.resolve(discoveredSkillDocs[0] ?? "") !== path.resolve(bundleRoot, "SKILL.md")
+  ) {
+    errors.push(issue(
+      "NESTED_SKILL_DISCOVERY",
+      bundleName,
+      "A public bundle must contain exactly one root SKILL.md; internal capabilities are module documents.",
+    ));
+  }
   if (name !== bundleName) {
     errors.push(issue("BUNDLE_NAME", `${bundleName}/SKILL.md`, "Frontmatter name must match the bundle directory."));
   }
@@ -195,6 +273,9 @@ export function checkBundle(bundleRoot, skillNames) {
     if (/SKILL\.md\/(?:references|scripts|templates|assets|evals|tests)\//u.test(text)) {
       errors.push(issue("BROKEN_SKILL_RESOURCE_REF", `${bundleName}/${rel}`, "Bundle resource path incorrectly descends through SKILL.md."));
     }
+    if (/references\/skills\//u.test(text)) {
+      errors.push(issue("LEGACY_SKILL_NEST", `${bundleName}/${rel}`, "Internal capabilities must use references/modules, never references/skills."));
+    }
     const targetPattern = /\]\((?!https?:\/\/|mailto:)([^)#\s]+)/g;
     for (const match of text.matchAll(targetPattern)) {
       const target = path.resolve(path.dirname(md), match[1]);
@@ -204,6 +285,88 @@ export function checkBundle(bundleRoot, skillNames) {
     }
   }
   return errors;
+}
+
+function metadataBytes(skillDocs) {
+  return skillDocs.reduce((total, skillDoc) => {
+    const front = parseFrontmatter(skillDoc);
+    return total + Buffer.byteLength(`${front.name ?? ""}\n${front.description ?? ""}\n`, "utf-8");
+  }, 0);
+}
+
+function buildDiscoveryBudget(pluginRoot, outputDir, entrypoints, errors) {
+  const legacySkillDocs = rglob(path.join(pluginRoot, "skills"), "SKILL.md")
+    .filter((candidate) => path.basename(candidate) === "SKILL.md");
+  const publicSkillDocs = rglob(outputDir, "SKILL.md")
+    .filter((candidate) => path.basename(candidate) === "SKILL.md");
+  const expected = entrypoints
+    .map((entry) => path.resolve(outputDir, entry, "SKILL.md"))
+    .sort();
+  const actual = publicSkillDocs.map((candidate) => path.resolve(candidate)).sort();
+  if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+    errors.push(issue(
+      "PUBLIC_SKILL_SURFACE",
+      path.relative(pluginRoot, outputDir) || ".",
+      `Release discovery must expose only ${entrypoints.join(" and ")}.`,
+    ));
+  }
+  if (entrypoints.length !== PUBLIC_SKILL_LIMIT || publicSkillDocs.length !== PUBLIC_SKILL_LIMIT) {
+    errors.push(issue(
+      "PUBLIC_SKILL_COUNT",
+      path.relative(pluginRoot, outputDir) || ".",
+      `Codex release surface must contain exactly ${PUBLIC_SKILL_LIMIT} public Skills.`,
+    ));
+  }
+  const legacyBytes = metadataBytes(legacySkillDocs);
+  const publicBytes = metadataBytes(publicSkillDocs);
+  const reductionPercent = legacyBytes === 0
+    ? 0
+    : Number(((1 - (publicBytes / legacyBytes)) * 100).toFixed(1));
+  if (reductionPercent < MIN_DISCOVERY_REDUCTION_PERCENT) {
+    errors.push(issue(
+      "DISCOVERY_INPUT_BUDGET",
+      path.relative(pluginRoot, outputDir) || ".",
+      `Public discovery metadata must fall by at least ${MIN_DISCOVERY_REDUCTION_PERCENT}%.`,
+    ));
+  }
+  return {
+    legacy_skill_count: legacySkillDocs.length,
+    public_skill_count: publicSkillDocs.length,
+    legacy_metadata_bytes: legacyBytes,
+    public_metadata_bytes: publicBytes,
+    reduction_percent: reductionPercent,
+    minimum_reduction_percent: MIN_DISCOVERY_REDUCTION_PERCENT,
+  };
+}
+
+function buildFastPreviewBudget(outputDir, errors) {
+  const bundleRoot = path.join(outputDir, "create-cuebook-content");
+  let cumulativeBytes = 0;
+  for (const relativePath of FAST_PREVIEW_FILES) {
+    const target = path.join(bundleRoot, relativePath);
+    if (!fs.existsSync(target)) {
+      errors.push(issue(
+        "FAST_PREVIEW_BUDGET_FILE",
+        `create-cuebook-content/${relativePath}`,
+        "Fast-preview instruction or contract file is missing.",
+      ));
+      continue;
+    }
+    cumulativeBytes += fs.statSync(target).size;
+  }
+  if (cumulativeBytes >= FAST_PREVIEW_BYTE_LIMIT) {
+    errors.push(issue(
+      "FAST_PREVIEW_INPUT_BUDGET",
+      "create-cuebook-content",
+      `Fast-preview instruction and contract set must remain below ${FAST_PREVIEW_BYTE_LIMIT} bytes.`,
+    ));
+  }
+  return {
+    files: FAST_PREVIEW_FILES,
+    cumulative_bytes: cumulativeBytes,
+    maximum_bytes_exclusive: FAST_PREVIEW_BYTE_LIMIT,
+    within_budget: cumulativeBytes < FAST_PREVIEW_BYTE_LIMIT,
+  };
 }
 
 export function build(pluginRootArg, outputDirArg) {
@@ -232,7 +395,14 @@ export function build(pluginRootArg, outputDirArg) {
     const closure = findClosure(pluginRoot, entry, skillNames);
     copySkillDir(path.join(pluginRoot, "skills", entry), bundleRoot);
     for (const member of closure.slice(1)) {
-      copySkillDir(path.join(pluginRoot, "skills", member), path.join(bundleRoot, "references", "skills", member));
+      const source = path.join(pluginRoot, "skills", member);
+      const modulesRoot = path.join(bundleRoot, "references", "modules");
+      copyModuleResources(source, path.join(modulesRoot, member));
+      writeModuleDoc(
+        path.join(source, "SKILL.md"),
+        path.join(modulesRoot, `${member}.md`),
+        member,
+      );
     }
 
     const usedAssets = new Set();
@@ -258,17 +428,22 @@ export function build(pluginRootArg, outputDirArg) {
     bundles.push({
       skill: entry,
       closure,
-      bundled_internal_skills: closure.length - 1,
+      bundled_internal_modules: closure.length - 1,
       plugin_assets: [...usedAssets].sort(),
       vendored_shared_validators: vendored,
       valid: !bundleErrors.length,
     });
   }
 
+  const discoveryBudget = buildDiscoveryBudget(pluginRoot, outputDir, entrypoints, errors);
+  const fastPreviewBudget = buildFastPreviewBudget(outputDir, errors);
+
   const manifest = {
-    schema_version: "cuebook-release-skills-manifest-v1",
+    schema_version: "cuebook-release-skills-manifest-v2",
     catalog_version: index.catalog_version ?? null,
     plugin_version: index.plugin_version ?? null,
+    discovery_budget: discoveryBudget,
+    frame_fast_preview_budget: fastPreviewBudget,
     bundles,
     valid: !errors.length,
     errors,

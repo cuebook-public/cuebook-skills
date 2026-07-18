@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/content-recipe-v1.schema.json",
+  "title": "ContentRecipeV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "recipe_id", "revision", "state", "catalog_version", "created_at", "updated_at", "as_of", "decision_cutoff_at", "feed_ref", "opportunity_set_ref", "selection_mode", "preset_ref", "anchor", "ingredients", "preparation", "flavor", "plating", "execution", "extensions", "validation_report"],
+  "properties": {
+    "schema_version": {"const": "content-recipe-v1"},
+    "recipe_id": {"type": "string", "pattern": "^RECIPE_[a-z0-9]{8,64}$"},
+    "revision": {"type": "integer", "minimum": 1},
+    "state": {"enum": ["draft", "valid", "conditional", "blocked", "archived"]},
+    "catalog_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "as_of": {"type": "string", "format": "date-time"},
+    "decision_cutoff_at": {"type": "string", "format": "date-time"},
+    "feed_ref": {"type": "string", "pattern": "^CF_[a-z0-9]{8,64}$"},
+    "opportunity_set_ref": {"type": ["string", "null"], "pattern": "^OS_[a-z0-9]{8,64}$"},
+    "selection_mode": {"enum": ["ingredient_first", "opportunity_first", "preset_auto"]},
+    "preset_ref": {"type": ["string", "null"], "pattern": "^preset-[a-z0-9-]+$"},
+    "anchor": {"$ref": "#/$defs/anchor"},
+    "ingredients": {"$ref": "#/$defs/ingredients"},
+    "preparation": {"$ref": "#/$defs/preparation"},
+    "flavor": {"$ref": "#/$defs/flavor"},
+    "plating": {"$ref": "#/$defs/plating"},
+    "execution": {"$ref": "#/$defs/execution"},
+    "extensions": {"type": "array", "items": {"$ref": "#/$defs/extension"}},
+    "validation_report": {"$ref": "#/$defs/validation"}
+  },
+  "$defs": {
+    "refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true, "maxItems": 20},
+    "anchor": {
+      "type": "object", "additionalProperties": false,
+      "required": ["opportunity_ref", "primary_ref", "title", "entity_refs", "lifecycle", "horizon"],
+      "properties": {
+        "opportunity_ref": {"type": ["string", "null"], "pattern": "^OPP_"},
+        "primary_ref": {"type": ["string", "null"]},
+        "title": {"type": "string", "minLength": 1},
+        "entity_refs": {"type": "array", "items": {"type": "string", "pattern": "^ENT_"}, "uniqueItems": true},
+        "lifecycle": {"enum": [null, "breaking", "pre_event", "live_event", "post_event", "evergreen", "trade_postmortem", "correction"]},
+        "horizon": {"type": ["string", "null"]}
+      }
+    },
+    "ingredients": {
+      "type": "object", "additionalProperties": false,
+      "required": ["news_refs", "calendar_refs", "narrative_refs", "trade_idea_refs", "trade_history_refs", "history_use"],
+      "properties": {
+        "news_refs": {"type": "array", "items": {"type": "string", "pattern": "^NEWS_"}, "uniqueItems": true, "maxItems": 20},
+        "calendar_refs": {"type": "array", "items": {"type": "string", "pattern": "^CAL_"}, "uniqueItems": true, "maxItems": 10},
+        "narrative_refs": {"type": "array", "items": {"type": "string", "pattern": "^NAR_"}, "uniqueItems": true, "maxItems": 10},
+        "trade_idea_refs": {"type": "array", "items": {"type": "string", "pattern": "^IDEA_"}, "uniqueItems": true, "maxItems": 5},
+        "trade_history_refs": {"type": "array", "items": {"type": "string", "pattern": "^TRADE_"}, "uniqueItems": true, "maxItems": 10},
+        "history_use": {"enum": ["none", "disclosure", "postmortem", "calibration"]}
+      }
+    },
+    "preparation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["editorial_job", "analysis_lenses", "argument_shape", "research_mode", "market_data_mode", "source_policy", "include_countercase", "include_invalidation"],
+      "properties": {
+        "editorial_job": {"enum": ["explain_event", "test_narrative", "pre_event_watch", "post_event_debrief", "trade_postmortem", "risk_alert", "correction", "evergreen_education"]},
+        "analysis_lenses": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9-]+$"}, "minItems": 1, "uniqueItems": true},
+        "argument_shape": {"enum": ["single_thesis", "two_sided", "scenario_tree", "timeline", "scorecard", "explainer"]},
+        "research_mode": {"enum": ["auto", "supplied_only", "fresh_required"]},
+        "market_data_mode": {"enum": ["not_required", "use_snapshot", "refresh_if_available", "required_fresh"]},
+        "source_policy": {"enum": ["primary_first", "multi_source", "supplied_only"]},
+        "include_countercase": {"type": "boolean"},
+        "include_invalidation": {"type": "boolean"}
+      }
+    },
+    "flavor": {
+      "type": "object", "additionalProperties": false,
+      "required": ["profile_ref", "voice_traits", "stance", "certainty", "density", "language", "avoid_patterns", "originality_policy"],
+      "properties": {
+        "profile_ref": {"type": ["string", "null"]},
+        "voice_traits": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "stance": {"enum": ["neutral", "watch", "bullish", "bearish", "relative", "two_sided"]},
+        "certainty": {"enum": ["low", "medium", "high", "conditional"]},
+        "density": {"enum": ["compact", "standard", "deep"]},
+        "language": {"type": "string", "minLength": 2},
+        "avoid_patterns": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "originality_policy": {"const": "traits_only"},
+        "authorship_mode": {"enum": ["creator_led", "cuebook_assisted", "cuebook_generated"]},
+        "assistance_attribution": {"enum": ["none", "disclosure_only"]}
+      }
+    },
+    "plating": {
+      "type": "object", "additionalProperties": false,
+      "required": ["bundle_strategy", "deliverable_mode", "outputs"],
+      "properties": {
+        "bundle_strategy": {"enum": ["independent", "master_and_derivatives", "series", "event_lifecycle"]},
+        "deliverable_mode": {"enum": ["drafts", "release_candidates"]},
+        "outputs": {"type": "array", "items": {"$ref": "#/$defs/output"}, "minItems": 1, "maxItems": 12}
+      }
+    },
+    "output": {
+      "type": "object", "additionalProperties": false,
+      "required": ["output_id", "channel", "format", "count", "length", "media_format_ref", "target_context"],
+      "properties": {
+        "output_id": {"type": "string", "pattern": "^OUT_[a-z0-9_:-]+$"},
+        "channel": {"anyOf": [{"enum": ["frame", "x", "telegram", "xiaohongshu", "reddit", "owned_web", "seeking_alpha_internal", "buy_side_note", "short_video", "douyin", "generic"]}, {"type": "string", "pattern": "^custom:[a-z0-9-]+$"}]},
+        "format": {"type": "string", "pattern": "^[a-z0-9_-]+$"},
+        "count": {"type": "integer", "minimum": 1, "maximum": 20},
+        "length": {"enum": ["short", "standard", "long"]},
+        "media_format_ref": {"type": ["string", "null"]},
+        "target_context": {"type": ["string", "null"]}
+      }
+    },
+    "execution": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mode", "skill_selection_policy", "selected_skill_ids", "resolved_skill_ids", "version_pins", "auto_fill_missing_research", "stop_on_conditional", "require_human_approval", "dry_run"],
+      "properties": {
+        "mode": {"enum": ["plan_only", "single", "batch", "event_lifecycle", "postmortem", "correction"]},
+        "skill_selection_policy": {"enum": ["automatic", "manual_plus_required"]},
+        "selected_skill_ids": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9-]+$"}, "uniqueItems": true},
+        "resolved_skill_ids": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9-]+$"}, "minItems": 1, "uniqueItems": true},
+        "version_pins": {"type": "array", "items": {"$ref": "#/$defs/versionPin"}},
+        "auto_fill_missing_research": {"type": "boolean"},
+        "stop_on_conditional": {"type": "boolean"},
+        "require_human_approval": {"type": "boolean"},
+        "dry_run": {"type": "boolean"}
+      }
+    },
+    "versionPin": {
+      "type": "object", "additionalProperties": false,
+      "required": ["skill_id", "version"],
+      "properties": {
+        "skill_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"}
+      }
+    },
+    "extension": {
+      "type": "object", "additionalProperties": false,
+      "required": ["extension_id", "extension_point", "provider_ref", "required", "config_ref"],
+      "properties": {
+        "extension_id": {"type": "string", "pattern": "^EXT_[a-z0-9_:-]+$"},
+        "extension_point": {"enum": ["feed_adapter", "research_source", "market_data", "media_asset", "policy", "publisher", "analytics", "custom_renderer"]},
+        "provider_ref": {"type": "string", "minLength": 1},
+        "required": {"type": "boolean"},
+        "config_ref": {"type": ["string", "null"]}
+      }
+    },
+    "validation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["decision", "hard_failures", "warnings", "checks", "counts"],
+      "properties": {
+        "decision": {"enum": ["ready", "conditional", "blocked"]},
+        "hard_failures": {"type": "array", "items": {"type": "string"}},
+        "warnings": {"type": "array", "items": {"type": "string"}},
+        "checks": {"type": "array", "items": {"type": "string"}},
+        "counts": {
+          "type": "object", "additionalProperties": false,
+          "required": ["news", "calendar_events", "narratives", "trade_ideas", "trade_history", "outputs", "selected_skills", "resolved_skills", "extensions"],
+          "properties": {
+            "news": {"type": "integer", "minimum": 0},
+            "calendar_events": {"type": "integer", "minimum": 0},
+            "narratives": {"type": "integer", "minimum": 0},
+            "trade_ideas": {"type": "integer", "minimum": 0},
+            "trade_history": {"type": "integer", "minimum": 0},
+            "outputs": {"type": "integer", "minimum": 0},
+            "selected_skills": {"type": "integer", "minimum": 0},
+            "resolved_skills": {"type": "integer", "minimum": 0},
+            "extensions": {"type": "integer", "minimum": 0}
+          }
+        }
+      }
+    }
+  }
+}

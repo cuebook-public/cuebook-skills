@@ -1,0 +1,6 @@
+{
+  "schema_version": "media-package.v1",
+  "required_sections": ["lineage", "brief", "gate", "research_decision", "policy_gate", "disclosure_state", "route", "fact_ledger", "angle", "asset_plan", "package", "quality_report", "publication_state"],
+  "package_kinds": ["blocked", "article_outline", "long_form_article", "community_post", "community_comment", "carousel_note", "short_video"],
+  "hard_boundaries": ["selected opportunity and program-item lineage", "fact IDs per content unit", "full RouteV1 with abstention preserved", "explicit temporal mode", "current policy check", "known disclosure state", "explicit asset rights", "no personalized orders", "no Seeking Alpha AI submission"]
+}

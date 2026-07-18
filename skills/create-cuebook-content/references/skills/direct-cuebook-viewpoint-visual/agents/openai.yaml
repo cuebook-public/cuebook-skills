@@ -1,4 +1,0 @@
-interface:
-  display_name: "编排 Cuebook 观点图"
-  short_description: "把已选 Frame 图冻结为可发布视觉"
-  default_prompt: "把已选中的 Frame 预览图重组为一套可发布视觉，保留创作者观点、来源绑定和交易逻辑；只为明确要求的备选方案生成三套方向。"

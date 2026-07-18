@@ -1,4 +1,0 @@
-interface:
-  display_name: "Orchestrate Cuebook Creator Workflow"
-  short_description: "Freeze and publish a selected Cuebook Frame"
-  default_prompt: "Resume from the selected Frame preview, materialize only its release lineage and required media derivatives, then stop at the requested publication phase. Do not rebuild the raw-idea preview or generate siblings."

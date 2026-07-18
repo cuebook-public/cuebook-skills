@@ -1,0 +1,614 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/creator-expression-plan-v1.schema.json",
+  "title": "CreatorExpressionPlanV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "plan_id",
+    "revision",
+    "state",
+    "lineage",
+    "meaning_fingerprint",
+    "semantic_lock",
+    "authorship_assistance",
+    "narrative",
+    "voice_spec",
+    "data_requirements",
+    "text_blueprint",
+    "visual_plan",
+    "settlement_eligibility",
+    "source_style_firewall",
+    "quality_report"
+  ],
+  "properties": {
+    "schema_version": {"const": "creator-expression-plan-v1"},
+    "plan_id": {"type": "string", "pattern": "^CEXP_[A-Za-z0-9_:-]{8,}$"},
+    "revision": {"type": "integer", "minimum": 1},
+    "state": {"enum": ["draft", "conditional", "ready", "frozen", "blocked"]},
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "input_artifact_refs",
+        "market_view_semantics_ref",
+        "research_pack_ref",
+        "trading_thesis_ref",
+        "trade_logic_profile_ref",
+        "profile_ref",
+        "source_refs",
+        "decision_cutoff_at"
+      ],
+      "properties": {
+        "input_artifact_refs": {"$ref": "#/$defs/stringSet"},
+        "market_view_semantics_ref": {"$ref": "#/$defs/nonemptyString"},
+        "research_pack_ref": {"$ref": "#/$defs/nullableString"},
+        "trading_thesis_ref": {"$ref": "#/$defs/nullableString"},
+        "trade_logic_profile_ref": {"$ref": "#/$defs/nullableString"},
+        "profile_ref": {"$ref": "#/$defs/nullableString"},
+        "source_refs": {"$ref": "#/$defs/stringList"},
+        "decision_cutoff_at": {"$ref": "#/$defs/dateTime"}
+      }
+    },
+    "meaning_fingerprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_semantics_sha256",
+        "canonical_claim",
+        "claim_type",
+        "primary_subject",
+        "comparator",
+        "direction",
+        "horizon",
+        "mechanism",
+        "trade_intent",
+        "settlement_intent",
+        "action",
+        "claim_refs",
+        "supporting_fact_refs",
+        "required_caveats",
+        "creator_owned_experience_refs",
+        "fingerprint_sha256"
+      ],
+      "properties": {
+        "source_semantics_sha256": {"$ref": "#/$defs/sha256"},
+        "canonical_claim": {"type": "string", "minLength": 1, "maxLength": 500},
+        "claim_type": {"enum": ["observation", "explanation", "conditional_view", "directional_view", "relative_view", "sentiment_evidence"]},
+        "primary_subject": {"$ref": "#/$defs/nonemptyString"},
+        "comparator": {"$ref": "#/$defs/nullableString"},
+        "direction": {"enum": ["none", "bullish", "bearish", "outperform", "underperform", "range", "neutral", "custom"]},
+        "horizon": {"$ref": "#/$defs/nullableString"},
+        "mechanism": {"type": "string", "minLength": 1, "maxLength": 500},
+        "trade_intent": {"enum": ["none", "observe_only", "avoid", "conditional", "explicit"]},
+        "settlement_intent": {"enum": ["none", "candidate", "explicit"]},
+        "action": {"$ref": "#/$defs/nullableString"},
+        "claim_refs": {"$ref": "#/$defs/stringSet"},
+        "supporting_fact_refs": {"$ref": "#/$defs/stringList"},
+        "required_caveats": {"$ref": "#/$defs/stringSet"},
+        "creator_owned_experience_refs": {"$ref": "#/$defs/stringList"},
+        "fingerprint_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "semantic_lock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["locked", "authorship_locked", "fingerprint_sha256", "allowed_transformations", "forbidden_transformations", "downstream_verification_required"],
+      "properties": {
+        "locked": {"const": true},
+        "authorship_locked": {"const": true},
+        "fingerprint_sha256": {"$ref": "#/$defs/sha256"},
+        "allowed_transformations": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"enum": ["compress", "reorder", "translate", "format", "visualize"]}
+        },
+        "forbidden_transformations": {
+          "type": "array",
+          "minItems": 8,
+          "uniqueItems": true,
+          "items": {"enum": ["change_claim", "change_direction", "change_horizon", "add_trade", "add_settlement", "remove_caveat", "upgrade_certainty", "reassign_authorship"]}
+        },
+        "downstream_verification_required": {"const": true}
+      }
+    },
+    "authorship_assistance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "creator_seed",
+        "source_view_owner",
+        "cuebook_additions",
+        "creator_accepted_addition_ids",
+        "creator_rejected_addition_ids",
+        "idea_delta",
+        "public_attribution_required",
+        "public_attribution_line"
+      ],
+      "properties": {
+        "mode": {"enum": ["creator_original", "cuebook_assisted", "source_transformation"]},
+        "creator_seed": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["text", "preserved", "claim_refs"],
+          "properties": {
+            "text": {"$ref": "#/$defs/nullableString"},
+            "preserved": {"type": "boolean"},
+            "claim_refs": {"$ref": "#/$defs/stringList"}
+          }
+        },
+        "source_view_owner": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["owner_type", "owner_ref", "public_label"],
+          "properties": {
+            "owner_type": {"enum": ["current_creator", "external_creator", "mixed"]},
+            "owner_ref": {"$ref": "#/$defs/nonemptyString"},
+            "public_label": {"$ref": "#/$defs/nonemptyString"}
+          }
+        },
+        "cuebook_additions": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {"$ref": "#/$defs/cuebookAddition"}
+        },
+        "creator_accepted_addition_ids": {"$ref": "#/$defs/stringList"},
+        "creator_rejected_addition_ids": {"$ref": "#/$defs/stringList"},
+        "idea_delta": {"$ref": "#/$defs/nullableString"},
+        "public_attribution_required": {"type": "boolean"},
+        "public_attribution_line": {"$ref": "#/$defs/nullableString"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"mode": {"const": "cuebook_assisted"}}, "required": ["mode"]},
+          "then": {
+            "properties": {
+              "public_attribution_required": {"const": false},
+              "public_attribution_line": {"type": "null"}
+            }
+          }
+        }
+      ]
+    },
+    "narrative": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary_engine", "frame", "primitives"],
+      "properties": {
+        "primary_engine": {"$ref": "#/$defs/primaryEngine"},
+        "frame": {"type": "string", "minLength": 1, "maxLength": 300},
+        "primitives": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 8,
+          "items": {"$ref": "#/$defs/primitive"}
+        }
+      }
+    },
+    "voice_spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "language",
+        "register",
+        "energy",
+        "conviction",
+        "technicality",
+        "emotionality",
+        "compression",
+        "sentence_rhythm",
+        "humor",
+        "first_person_stance",
+        "first_person_experience",
+        "technical_terms",
+        "rhetorical_devices",
+        "profile_rule_refs",
+        "anti_ai_language"
+      ],
+      "properties": {
+        "language": {"$ref": "#/$defs/nonemptyString"},
+        "register": {"enum": ["desk", "explainer", "strategist", "cinematic", "confessional", "meme", "research_memo"]},
+        "energy": {"type": "integer", "minimum": 1, "maximum": 5},
+        "conviction": {"type": "integer", "minimum": 1, "maximum": 5},
+        "technicality": {"type": "integer", "minimum": 1, "maximum": 5},
+        "emotionality": {"type": "integer", "minimum": 1, "maximum": 5},
+        "compression": {"type": "integer", "minimum": 1, "maximum": 5},
+        "sentence_rhythm": {"enum": ["short", "mixed", "measured"]},
+        "humor": {"enum": ["none", "light", "dry", "meme"]},
+        "first_person_stance": {"enum": ["avoid", "allowed", "prefer"]},
+        "first_person_experience": {"enum": ["forbidden", "preserve_creator_owned_only"]},
+        "technical_terms": {"enum": ["plain", "define_once", "desk_native"]},
+        "rhetorical_devices": {
+          "type": "array",
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {"enum": ["contrast", "paradox", "question", "repetition", "analogy", "understatement", "imperative"]}
+        },
+        "profile_rule_refs": {"$ref": "#/$defs/stringList"},
+        "anti_ai_language": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["enabled", "banned_stock_phrases", "max_not_a_but_b_frames", "repeated_openings_allowed"],
+          "properties": {
+            "enabled": {"const": true},
+            "banned_stock_phrases": {"$ref": "#/$defs/stringSet"},
+            "max_not_a_but_b_frames": {"const": 1},
+            "repeated_openings_allowed": {"const": false}
+          }
+        }
+      }
+    },
+    "data_requirements": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {"$ref": "#/$defs/dataRequirement"}
+    },
+    "text_blueprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["format", "public_tags", "max_total_characters", "data_requirement_refs", "hook", "proof", "mechanism", "action", "caveat", "close"],
+      "properties": {
+        "format": {"enum": ["channel_neutral", "short_post", "thread", "memo", "article", "caption"]},
+        "public_tags": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 24}
+        },
+        "max_total_characters": {"type": "integer", "minimum": 120, "maximum": 12000},
+        "data_requirement_refs": {"$ref": "#/$defs/stringList"},
+        "hook": {"$ref": "#/$defs/textSection"},
+        "proof": {"$ref": "#/$defs/textSection"},
+        "mechanism": {"$ref": "#/$defs/textSection"},
+        "action": {"$ref": "#/$defs/actionSection"},
+        "caveat": {"$ref": "#/$defs/textSection"},
+        "close": {"$ref": "#/$defs/textSection"}
+      }
+    },
+    "visual_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["intent", "grammar", "data_requirement_refs", "execution_route", "fallback", "image_text_budget"],
+      "properties": {
+        "intent": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["job", "reader_question", "primary_message", "reader_takeaway", "candidate_jobs", "target_evidence_shapes"],
+          "properties": {
+            "job": {"$ref": "#/$defs/visualCandidateJob"},
+            "reader_question": {"type": "string", "minLength": 1, "maxLength": 160},
+            "primary_message": {"type": "string", "minLength": 1, "maxLength": 240},
+            "reader_takeaway": {"type": "string", "minLength": 1, "maxLength": 240},
+            "candidate_jobs": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 3,
+              "items": {"$ref": "#/$defs/candidateJobTarget"}
+            },
+            "target_evidence_shapes": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 6,
+              "uniqueItems": true,
+              "items": {"$ref": "#/$defs/evidenceShape"}
+            }
+          }
+        },
+        "grammar": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["primary", "rationale"],
+          "properties": {
+            "primary": {"$ref": "#/$defs/viewpointVisualGrammar"},
+            "alternatives": {"type": "array", "maxItems": 0},
+            "argument_grammar": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/argumentGrammar"}]},
+            "rationale": {"type": "string", "minLength": 1, "maxLength": 300}
+          }
+        },
+        "data_requirement_refs": {"$ref": "#/$defs/stringList"},
+        "execution_route": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["route_registry_ref", "route_registry_sha256", "route_id", "query_requests", "skill_path_ids", "primary_renderer_skill_id", "detail_renderer_skill_id", "resume_policy", "route_sha256"],
+          "properties": {
+            "route_registry_ref": {"const": "visual-intent-route-registry-v1"},
+            "route_registry_sha256": {"$ref": "#/$defs/sha256"},
+            "route_id": {"enum": ["viewpoint_static", "viewpoint_static_plus_thesis_chart", "no_visual"]},
+            "query_requests": {
+              "type": "array",
+              "maxItems": 16,
+              "items": {"$ref": "#/$defs/visualQueryRequest"}
+            },
+            "skill_path_ids": {
+              "type": "array",
+              "maxItems": 5,
+              "uniqueItems": true,
+              "items": {"enum": ["query-cuebook", "assemble-cuebook-viewpoint-data", "direct-cuebook-viewpoint-visual", "render-cuebook-viewpoint-visual", "render-cuebook-thesis-chart"]}
+            },
+            "primary_renderer_skill_id": {
+              "anyOf": [
+                {"type": "null"},
+                {"const": "render-cuebook-viewpoint-visual"}
+              ]
+            },
+            "detail_renderer_skill_id": {
+              "anyOf": [
+                {"type": "null"},
+                {"const": "render-cuebook-thesis-chart"}
+              ]
+            },
+            "resume_policy": {"const": "resume_from_latest_valid_artifact"},
+            "route_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "fallback": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["trigger", "strategy", "applies_to_requirement_refs", "preserves_fingerprint", "prohibited_substitutions"],
+          "properties": {
+            "trigger": {"enum": ["none", "missing_required_data", "rights_unavailable", "unverified_anecdote", "renderer_limit"]},
+            "strategy": {"enum": ["none", "qualitative", "key_numbers", "series", "text_only", "no_visual"]},
+            "applies_to_requirement_refs": {"$ref": "#/$defs/stringList"},
+            "preserves_fingerprint": {"const": true},
+            "prohibited_substitutions": {
+              "type": "array",
+              "minItems": 4,
+              "uniqueItems": true,
+              "items": {"enum": ["invent_metric", "proxy_without_bridge", "anecdote_as_market_fact", "decorative_chart"]}
+            }
+          }
+        },
+        "image_text_budget": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["unit", "title_max", "subtitle_max", "node_label_max", "callout_max", "source_line_max", "max_nodes", "max_callouts", "total_max"],
+          "properties": {
+            "unit": {"const": "characters"},
+            "title_max": {"type": "integer", "minimum": 8, "maximum": 48},
+            "subtitle_max": {"type": "integer", "minimum": 16, "maximum": 96},
+            "node_label_max": {"type": "integer", "minimum": 8, "maximum": 32},
+            "callout_max": {"type": "integer", "minimum": 12, "maximum": 56},
+            "source_line_max": {"type": "integer", "minimum": 24, "maximum": 120},
+            "max_nodes": {"type": "integer", "minimum": 2, "maximum": 7},
+            "max_callouts": {"type": "integer", "minimum": 0, "maximum": 4},
+            "total_max": {"type": "integer", "minimum": 80, "maximum": 320}
+          }
+        }
+      }
+    },
+    "settlement_eligibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reason_codes", "claim_ref", "requirements", "missing_requirements", "downstream_route"],
+      "properties": {
+        "status": {"enum": ["ineligible", "candidate", "eligible", "blocked"]},
+        "reason_codes": {"$ref": "#/$defs/stringSet"},
+        "claim_ref": {"$ref": "#/$defs/nullableString"},
+        "requirements": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["metric", "operator", "threshold", "deadline", "authoritative_source"],
+          "properties": {
+            "metric": {"type": "boolean"},
+            "operator": {"type": "boolean"},
+            "threshold": {"type": "boolean"},
+            "deadline": {"type": "boolean"},
+            "authoritative_source": {"type": "boolean"}
+          }
+        },
+        "missing_requirements": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["metric", "operator", "threshold", "deadline", "authoritative_source"]}
+        },
+        "downstream_route": {"anyOf": [{"type": "null"}, {"const": "compile-cuebook-settlement-claim"}]}
+      }
+    },
+    "source_style_firewall": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_attribution_required",
+        "factual_claims_require_refs",
+        "fact_interpretation_separated",
+        "anecdote_policy",
+        "unverified_anecdote_as_proof",
+        "first_person_experience",
+        "living_creator_imitation",
+        "signature_phrasing_reuse",
+        "sentence_sequence_copy",
+        "identity_impersonation",
+        "original_composition_required",
+        "max_verbatim_words",
+        "public_backend_terms_allowed"
+      ],
+      "properties": {
+        "source_attribution_required": {"const": true},
+        "factual_claims_require_refs": {"const": true},
+        "fact_interpretation_separated": {"const": true},
+        "anecdote_policy": {"enum": ["not_present", "context_only", "sentiment_only", "creator_owned_only"]},
+        "unverified_anecdote_as_proof": {"const": false},
+        "first_person_experience": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "allowed_claim_refs"],
+          "properties": {
+            "mode": {"enum": ["forbid", "preserve_creator_owned_only"]},
+            "allowed_claim_refs": {"$ref": "#/$defs/stringList"}
+          }
+        },
+        "living_creator_imitation": {"const": false},
+        "signature_phrasing_reuse": {"const": false},
+        "sentence_sequence_copy": {"const": false},
+        "identity_impersonation": {"const": false},
+        "original_composition_required": {"const": true},
+        "max_verbatim_words": {"type": "integer", "minimum": 0, "maximum": 25},
+        "public_backend_terms_allowed": {"const": false}
+      }
+    },
+    "quality_report": {"$ref": "#/$defs/quality"}
+  },
+  "$defs": {
+    "nonemptyString": {"type": "string", "minLength": 1},
+    "nullableString": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/nonemptyString"}]},
+    "dateTime": {"type": "string", "format": "date-time"},
+    "sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "stringList": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}},
+    "stringSet": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}},
+    "primaryEngine": {"$ref": "#/$defs/viewpointVisualGrammar"},
+    "primitiveKind": {"enum": ["reaction_test", "parallel_contrast", "category_reframe", "forced_flow_loop", "event_unwind", "expectation_ladder", "sentiment_witness", "binary_level", "derived_signal", "analogy", "decision", "caveat"]},
+    "cuebookAddition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "summary", "support_refs"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^CA[1-9][0-9]*$"},
+        "kind": {"enum": ["evidence", "connection", "countercase", "rule"]},
+        "summary": {"type": "string", "minLength": 1, "maxLength": 300},
+        "support_refs": {"$ref": "#/$defs/stringSet"}
+      }
+    },
+    "primitive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "purpose", "semantic_claim_refs", "analogy"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^P[1-9][0-9]*$"},
+        "kind": {"$ref": "#/$defs/primitiveKind"},
+        "purpose": {"type": "string", "minLength": 1, "maxLength": 240},
+        "semantic_claim_refs": {"$ref": "#/$defs/stringSet"},
+        "analogy": {
+          "anyOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["source_domain", "target_domain", "mapping", "breakpoint"],
+              "properties": {
+                "source_domain": {"$ref": "#/$defs/nonemptyString"},
+                "target_domain": {"$ref": "#/$defs/nonemptyString"},
+                "mapping": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 5,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["source_element", "target_element"],
+                    "properties": {
+                      "source_element": {"$ref": "#/$defs/nonemptyString"},
+                      "target_element": {"$ref": "#/$defs/nonemptyString"}
+                    }
+                  }
+                },
+                "breakpoint": {"type": "string", "minLength": 1, "maxLength": 240}
+              }
+            }
+          ]
+        }
+      }
+    },
+    "textSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "purpose", "semantic_refs", "max_characters", "omission_reason"],
+      "properties": {
+        "mode": {"enum": ["include", "omit"]},
+        "purpose": {"$ref": "#/$defs/nullableString"},
+        "semantic_refs": {"$ref": "#/$defs/stringList"},
+        "max_characters": {"type": "integer", "minimum": 0, "maximum": 1200},
+        "omission_reason": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "actionSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "action_kind", "purpose", "semantic_refs", "max_characters", "omission_reason"],
+      "properties": {
+        "mode": {"enum": ["include", "omit"]},
+        "action_kind": {"enum": ["omit", "observe", "avoid", "conditional_trade", "trade"]},
+        "purpose": {"$ref": "#/$defs/nullableString"},
+        "semantic_refs": {"$ref": "#/$defs/stringList"},
+        "max_characters": {"type": "integer", "minimum": 0, "maximum": 1200},
+        "omission_reason": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "viewpointVisualGrammar": {"enum": ["reaction_test", "parallel_contrast", "category_reframe", "relative_value_trigger", "policy_pivot", "sentiment_witness", "event_unwind", "feedback_loop", "binary_level", "expectation_gap", "factor_rotation"]},
+    "argumentGrammar": {"enum": ["causal_chain", "metric_thesis", "scenario_tree", "evidence_balance", "comparison", "price_timeline"]},
+    "visualCandidateJob": {"enum": ["conviction_snapshot", "evidence_proof", "relative_comparison", "distribution_risk", "trigger_watch", "news_synthesis", "mechanism_path", "scenario_range", "flow_map", "strategy_map", "cycle_map"]},
+    "candidateJobTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["family", "job", "reader_question", "evidence_shapes", "requirement_refs"],
+      "properties": {
+        "family": {"enum": ["fast_read", "proof", "system"]},
+        "job": {"$ref": "#/$defs/visualCandidateJob"},
+        "reader_question": {"type": "string", "minLength": 1, "maxLength": 160},
+        "evidence_shapes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/evidenceShape"}
+        },
+        "requirement_refs": {"$ref": "#/$defs/stringList"}
+      }
+    },
+    "evidenceShape": {"enum": ["creator_judgment", "point_metric", "level", "ordered_series", "multi_series", "ohlcv_series", "event_set", "news_cluster", "calendar_events", "qualitative_relation", "causal_graph", "pair_spread", "distribution_sample", "quantile_scenarios", "part_to_whole", "additive_components", "quantified_flow", "ordered_categories", "payoff_series", "comparison_pair", "revision_series", "term_structure"]},
+    "visualQueryRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requirement_ref", "capability_id", "tool_ids", "run_policy"],
+      "properties": {
+        "requirement_ref": {"type": "string", "pattern": "^D[1-9][0-9]*$"},
+        "capability_id": {"enum": ["market_evidence", "published_story", "asset_narrative", "fundamental_metrics", "market_series", "derived_metrics", "current_market_state", "settlement_reference"]},
+        "tool_ids": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {"enum": ["search_assets", "search_news", "get_cues", "list_asset_cues", "list_filings", "get_candles", "get_market_state"]}
+        },
+        "run_policy": {"const": "reuse_or_query_gap"}
+      }
+    },
+    "dataRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "request_class", "purpose", "required", "material_to_claim", "expression_surfaces", "status", "fact_refs", "source_refs"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^D[1-9][0-9]*$"},
+        "kind": {"enum": ["qualitative", "key_numbers", "series"]},
+        "request_class": {"enum": ["qualitative_evidence", "news_anchor", "official_event", "valuation_metric", "comparison_metric", "market_series", "price_level", "settlement_reference"]},
+        "purpose": {"type": "string", "minLength": 1, "maxLength": 240},
+        "required": {"type": "boolean"},
+        "material_to_claim": {"type": "boolean"},
+        "expression_surfaces": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {"enum": ["text", "visual"]}
+        },
+        "status": {"enum": ["available", "missing"]},
+        "fact_refs": {"$ref": "#/$defs/stringList"},
+        "source_refs": {"$ref": "#/$defs/stringList"}
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "warnings", "hard_failures"],
+      "properties": {
+        "decision": {"enum": ["ready", "conditional", "blocked"]},
+        "warnings": {"$ref": "#/$defs/stringList"},
+        "hard_failures": {"$ref": "#/$defs/stringList"}
+      }
+    }
+  }
+}

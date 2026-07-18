@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/creator-view-intent-v1.schema.json",
+  "title": "CreatorViewIntentV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "intent_id", "revision", "state", "creator_ref", "created_at", "market", "deadline", "outcome", "evidence_preferences", "creator_text", "selected_artifact_refs", "ai_assistance_requested", "quality_report"],
+  "properties": {
+    "schema_version": {"const": "creator-view-intent-v1"},
+    "intent_id": {"type": "string", "pattern": "^VIEWINTENT_[A-Za-z0-9_:-]{8,}$"},
+    "revision": {"type": "integer", "minimum": 1},
+    "state": {"enum": ["draft", "ready"]},
+    "creator_ref": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "format": "date-time"},
+    "market": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["instrument_id", "ticker", "display_name", "asset_class", "venue", "quote_currency"],
+      "properties": {
+        "instrument_id": {"type": "string", "minLength": 1},
+        "ticker": {"type": "string", "minLength": 1},
+        "display_name": {"type": "string", "minLength": 1},
+        "asset_class": {"enum": ["equity", "etf", "index", "commodity", "future", "fx", "rate", "bond", "crypto", "other"]},
+        "venue": {"type": "string", "minLength": 1},
+        "quote_currency": {"type": "string", "minLength": 1}
+      }
+    },
+    "deadline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["at", "timezone", "market_session"],
+      "properties": {
+        "at": {"type": "string", "format": "date-time"},
+        "timezone": {"type": "string", "minLength": 1},
+        "market_session": {"enum": ["regular", "extended", "all_sessions", "continuous", "event_window"]}
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "benchmark_instrument_id", "benchmark_ticker", "lower_bound", "upper_bound", "unit", "custom_statement"],
+      "properties": {
+        "kind": {"enum": ["up", "down", "outperform", "underperform", "range", "custom"]},
+        "benchmark_instrument_id": {"type": ["string", "null"]},
+        "benchmark_ticker": {"type": ["string", "null"]},
+        "lower_bound": {"type": ["number", "null"]},
+        "upper_bound": {"type": ["number", "null"]},
+        "unit": {"type": ["string", "null"]},
+        "custom_statement": {"type": ["string", "null"]}
+      }
+    },
+    "evidence_preferences": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"enum": ["fundamental", "news_event", "technical", "flow", "macro", "creator_only"]}
+    },
+    "creator_text": {"type": "string", "minLength": 1},
+    "selected_artifact_refs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["news_refs", "chart_refs", "indicator_refs", "metric_refs"],
+      "properties": {
+        "news_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "chart_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "indicator_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "metric_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "ai_assistance_requested": {"type": "boolean"},
+    "quality_report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["missing_fields", "warnings"],
+      "properties": {
+        "missing_fields": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "warnings": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}

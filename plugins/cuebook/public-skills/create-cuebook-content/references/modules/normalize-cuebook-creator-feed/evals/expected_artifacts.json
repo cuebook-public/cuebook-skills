@@ -1,0 +1,12 @@
+{
+  "schema_version": "creator-feed-v1",
+  "required_sections": ["brief", "source_register", "entities", "news", "calendar_events", "narratives", "trade_ideas", "trade_history", "links", "quality_report"],
+  "invariants": [
+    "Every object and revision has a stable unique identity.",
+    "Every active record was available at or before the knowledge cutoff.",
+    "Every source and entity reference resolves.",
+    "Calendar schedules, narratives, ideas, executions, and outcomes remain distinct types.",
+    "Unknown permissions and disclosures never become permissive defaults.",
+    "Trade history is not promoted into evidence for a fresh thesis."
+  ]
+}

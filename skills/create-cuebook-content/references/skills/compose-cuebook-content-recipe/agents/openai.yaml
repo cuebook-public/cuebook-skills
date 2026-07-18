@@ -1,4 +1,0 @@
-interface:
-  display_name: "Compose Cuebook Content Recipe"
-  short_description: "Turn selected Cuebook ingredients into a recipe"
-  default_prompt: "Compose these selected Cuebook records into a validated ContentRecipeV1 with analysis, authorship mode, private assistance provenance, voice, channels, and execution preferences, without drafting final content or adding Cuebook workflow narration to public copy."

@@ -40,7 +40,7 @@ jobs:
       - name: Reject tracked Python runtime residue
         shell: bash
         run: |
-          if git ls-files 'plugins/cuebook/**/*.py' 'plugins/cuebook/**/*.pyc' 'skills/**/*.py' 'skills/**/*.pyc' | grep -q .; then
+          if git ls-files 'plugins/cuebook/**/*.py' 'plugins/cuebook/**/*.pyc' 'skills/**/*.py' 'skills/**/*.pyc' 'plugins/cuebook/public-skills/**/*.py' 'plugins/cuebook/public-skills/**/*.pyc' | grep -q .; then
             echo "Tracked Python runtime files remain after the JavaScript migration." >&2
             exit 1
           fi
@@ -54,4 +54,4 @@ jobs:
       - name: Verify generated release bundles are current
         run: |
           npm run build:release
-          git diff --exit-code -- skills
+          git diff --exit-code -- skills plugins/cuebook/public-skills

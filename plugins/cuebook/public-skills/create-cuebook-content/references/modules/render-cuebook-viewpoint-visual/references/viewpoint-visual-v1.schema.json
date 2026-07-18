@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/viewpoint-visual-v1.schema.json",
+  "title": "ViewpointVisualV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "visual_id", "render_profile", "spec_ref", "grammar", "payload_mode", "visual_job", "state", "generated_at", "dimensions", "theme", "lineage", "content", "asset", "quality_report"],
+  "properties": {
+    "schema_version": {"const": "viewpoint-visual-v1"},
+    "visual_id": {"type": "string", "pattern": "^VVIS_[A-Za-z0-9_:-]{8,}$"},
+    "render_profile": {"enum": ["wide_2488", "legacy_720"]},
+    "spec_ref": {"type": "string", "pattern": "^(?:VDIR|VVSPEC)_[A-Za-z0-9_:-]{8,}$"},
+    "grammar": {"$ref": "#/$defs/grammar"},
+    "payload_mode": {"enum": ["qualitative", "key_numbers", "series", "mixed"]},
+    "visual_job": {"$ref": "#/$defs/visualJob"},
+    "state": {"enum": ["conditional", "ready", "frozen"]},
+    "generated_at": {"$ref": "#/$defs/dateTime"},
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height"],
+      "properties": {
+        "width": {"enum": [720, 2488]},
+        "height": {"enum": [420, 1056]}
+      }
+    },
+    "theme": {"type": "string", "minLength": 3, "maxLength": 64},
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_artifact_refs", "source_refs", "series_refs", "value_refs", "level_refs", "event_refs", "node_refs", "edge_refs", "rail_refs", "stage_refs", "decision_cutoff_at"],
+      "properties": {
+        "input_artifact_refs": {"$ref": "#/$defs/stringSet"},
+        "source_refs": {"$ref": "#/$defs/stringSet"},
+        "series_refs": {"$ref": "#/$defs/stringList"},
+        "value_refs": {"$ref": "#/$defs/stringList"},
+        "level_refs": {"$ref": "#/$defs/stringList"},
+        "event_refs": {"$ref": "#/$defs/stringList"},
+        "node_refs": {"$ref": "#/$defs/stringList"},
+        "edge_refs": {"$ref": "#/$defs/stringList"},
+        "rail_refs": {"$ref": "#/$defs/stringList"},
+        "stage_refs": {"$ref": "#/$defs/stringList"},
+        "decision_cutoff_at": {"$ref": "#/$defs/dateTime"}
+      }
+    },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["headline", "observation", "observed_at", "strategy_tags", "alt_text", "watermark"],
+      "properties": {
+        "headline": {"type": "string", "minLength": 1},
+        "observation": {"type": "string", "minLength": 1},
+        "observed_at": {"$ref": "#/$defs/dateTime"},
+        "strategy_tags": {"type": "array", "minItems": 1, "maxItems": 4, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "alt_text": {"type": "string", "minLength": 1},
+        "watermark": {"const": "Cuebook"}
+      }
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["html", "svg", "png_derivatives", "derivative_bundle_hash"],
+      "properties": {
+        "html": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/assetRef"}]},
+        "svg": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/assetRef"}]},
+        "font_manifest": {"$ref": "#/$defs/assetRef"},
+        "png_derivatives": {"type": "array", "minItems": 0, "maxItems": 2, "items": {"$ref": "#/$defs/pngDerivative"}},
+        "derivative_bundle_hash": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/hash"}]}
+      }
+    },
+    "quality_report": {"$ref": "#/$defs/quality"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"render_profile": {"const": "wide_2488"}}, "required": ["render_profile"]},
+      "then": {
+        "properties": {
+          "spec_ref": {"pattern": "^VDIR_[A-Za-z0-9_:-]{8,}$"},
+          "grammar": {"enum": ["reaction_test", "event_transmission", "expectation_revision", "valuation_reframe", "relative_value", "cycle_rotation", "flow_pressure", "technical_trigger", "scenario_branch", "strategy_ladder", "custom"]},
+          "visual_job": {"const": "render_selected_direction"},
+          "theme": {"pattern": "^[a-z0-9]+(?:-[a-z0-9]+){1,5}$"},
+          "dimensions": {"properties": {"width": {"const": 2488}, "height": {"const": 1056}}},
+          "asset": {"required": ["font_manifest"], "properties": {"html": {"$ref": "#/$defs/assetRef"}, "svg": {"type": "null"}, "font_manifest": {"$ref": "#/$defs/assetRef"}}}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"render_profile": {"const": "legacy_720"}}, "required": ["render_profile"]},
+      "then": {
+        "properties": {
+          "spec_ref": {"pattern": "^VVSPEC_[A-Za-z0-9_:-]{8,}$"},
+          "grammar": {"enum": ["reaction_test", "parallel_contrast", "category_reframe", "relative_value_trigger", "policy_pivot", "sentiment_witness", "event_unwind", "feedback_loop", "binary_level", "expectation_gap", "factor_rotation"]},
+          "visual_job": {"enum": ["test_reaction", "compare_paths", "reframe_category", "show_relative_trigger", "show_policy_pivot", "show_sentiment_witness", "show_event_unwind", "explain_feedback_loop", "test_binary_level", "show_expectation_gap", "show_factor_rotation"]},
+          "theme": {"const": "cuebook_accessible_light"},
+          "dimensions": {"properties": {"width": {"const": 720}, "height": {"const": 420}}},
+          "asset": {"properties": {"html": {"type": "null"}, "svg": {"$ref": "#/$defs/assetRef"}}}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "nonemptyString": {"type": "string", "minLength": 1},
+    "dateTime": {"type": "string", "format": "date-time"},
+    "hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "stringSet": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}},
+    "stringList": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}},
+    "grammar": {"enum": ["reaction_test", "parallel_contrast", "category_reframe", "relative_value_trigger", "policy_pivot", "sentiment_witness", "event_unwind", "feedback_loop", "binary_level", "expectation_gap", "factor_rotation", "event_transmission", "expectation_revision", "valuation_reframe", "relative_value", "cycle_rotation", "flow_pressure", "technical_trigger", "scenario_branch", "strategy_ladder", "custom"]},
+    "visualJob": {"enum": ["test_reaction", "compare_paths", "reframe_category", "show_relative_trigger", "show_policy_pivot", "show_sentiment_witness", "show_event_unwind", "explain_feedback_loop", "test_binary_level", "show_expectation_gap", "show_factor_rotation", "render_selected_direction"]},
+    "assetRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "sha256"],
+      "properties": {"ref": {"$ref": "#/$defs/nonemptyString"}, "sha256": {"$ref": "#/$defs/hash"}}
+    },
+    "pngDerivative": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "ref", "width", "height", "sha256"],
+      "properties": {
+        "kind": {"enum": ["full", "compact_622", "compact_360"]},
+        "ref": {"$ref": "#/$defs/nonemptyString"},
+        "width": {"enum": [360, 622, 720, 2488]},
+        "height": {"enum": [210, 264, 420, 1056]},
+        "sha256": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "warnings", "hard_failures"],
+      "properties": {
+        "decision": {"enum": ["ready", "conditional", "blocked"]},
+        "warnings": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}},
+        "hard_failures": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}}
+      }
+    }
+  }
+}

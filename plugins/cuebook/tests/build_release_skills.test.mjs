@@ -43,6 +43,37 @@ test("builds every public entrypoint as valid bundle", () => {
     const built = new Set(manifest.bundles.map((bundle) => bundle.skill));
     assert.deepEqual(built, new Set(["query-cuebook", "create-cuebook-content"]));
     assert.ok(manifest.bundles.every((bundle) => bundle.valid));
+    assert.equal(manifest.discovery_budget.public_skill_count, 2);
+    assert.ok(manifest.discovery_budget.reduction_percent >= 60);
+    assert.ok(manifest.frame_fast_preview_budget.within_budget);
+    assert.ok(manifest.frame_fast_preview_budget.cumulative_bytes < 150_000);
+  });
+});
+
+test("release discovery exposes exactly two root Skills and ordinary internal modules", () => {
+  withTmpPath((tmpPath) => {
+    const manifest = buildRelease(tmpPath);
+    const releaseRoot = path.join(tmpPath, "release");
+    const skillDocs = rglobMd(releaseRoot)
+      .filter((candidate) => path.basename(candidate) === "SKILL.md")
+      .map((candidate) => path.relative(releaseRoot, candidate))
+      .sort();
+    assert.deepEqual(skillDocs, [
+      "create-cuebook-content/SKILL.md",
+      "query-cuebook/SKILL.md",
+    ]);
+    for (const bundle of manifest.bundles) {
+      const modulesRoot = path.join(releaseRoot, bundle.skill, "references", "modules");
+      const moduleDocs = fs.readdirSync(modulesRoot)
+        .filter((name) => name.endsWith(".md"));
+      assert.equal(moduleDocs.length, bundle.bundled_internal_modules);
+      for (const moduleDoc of moduleDocs) {
+        const text = fs.readFileSync(path.join(modulesRoot, moduleDoc), "utf-8");
+        assert.doesNotMatch(text, /^---\n/u);
+        assert.match(text, /Generated internal module: not a public Agent Skill/u);
+      }
+      assert.ok(!fs.existsSync(path.join(releaseRoot, bundle.skill, "references", "skills")));
+    }
   });
 });
 
@@ -123,14 +154,18 @@ test("cross-skill resource references resolve inside bundled skill directories",
       "release",
       "create-cuebook-content",
       "references",
-      "skills",
-      "render-cuebook-viewpoint-visual",
-      "SKILL.md",
+      "modules",
+      "render-cuebook-viewpoint-visual.md",
     );
     const text = fs.readFileSync(skillMd, "utf8");
-    assert.match(text, /\.\.\/direct-cuebook-viewpoint-visual\/assets\/cuebook-wordmark\.svg/u);
+    assert.match(text, /references\/modules\/direct-cuebook-viewpoint-visual\/assets\/cuebook-wordmark\.svg/u);
     assert.doesNotMatch(text, /SKILL\.md\/(?:assets|references|scripts)\//u);
-    const resource = path.resolve(path.dirname(skillMd), "../direct-cuebook-viewpoint-visual/assets/cuebook-wordmark.svg");
+    const resource = path.resolve(
+      tmpPath,
+      "release",
+      "create-cuebook-content",
+      "references/modules/direct-cuebook-viewpoint-visual/assets/cuebook-wordmark.svg",
+    );
     assert.ok(fs.existsSync(resource), resource);
   });
 });
@@ -142,6 +177,9 @@ test("vendored validators import without plugin tree", () => {
       path.join(
         tmpPath, "release", "create-cuebook-content", "scripts", "validate_frame_preview",
       ),
+      path.join(
+        tmpPath, "release", "create-cuebook-content", "scripts", "run_fast_preview",
+      ),
     ];
     buildRelease(tmpPath);
     for (const stem of bundled) {
@@ -149,7 +187,13 @@ test("vendored validators import without plugin tree", () => {
       const helper = path.join(path.dirname(script), "validate_json_schema.mjs");
       assert.ok(fs.existsSync(script), script);
       assert.ok(fs.existsSync(helper), path.dirname(script));
-      const completed = spawnSync(process.execPath, [script, "--help"], { encoding: "utf-8" });
+      const completed = spawnSync(process.execPath, [script, "--help"], {
+        encoding: "utf-8",
+        env: {
+          ...process.env,
+          NODE_PATH: path.resolve(PLUGIN_ROOT, "..", "..", "node_modules"),
+        },
+      });
       // --help exit codes are not contractual; assert the vendored import
       // graph resolved instead.
       assert.ok(completed.status !== null, completed.stderr);

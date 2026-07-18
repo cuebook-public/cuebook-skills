@@ -1,0 +1,27 @@
+{
+  "skill_name": "orchestrate-cuebook-creator-workflow",
+  "positive": [
+    "把 Cuebook 今天的数据完整跑成研究、内容和发布检查工作流。",
+    "这三个已选机会按依赖关系批量生产，卡点和审批都留记录。",
+    "继续上次 CreatorWorkflowRunV1，从研究完成处接着跑。",
+    "做一条交易复盘，但发布回执和业绩口径要严格对账。",
+    "发现旧文章证据被撤回，启动纠错流程并失效下游版本。"
+    ,"用户已经像配菜一样选好了新闻、叙事、交易想法和平台，按 ContentRecipeV1 跑完整流程。"
+  ],
+  "negative": [
+    "只清洗这五张 Cuebook 表。",
+    "只挑今天最值得做的题。",
+    "只写一条 X，不需要工作流。",
+    "帮我直接下单。"
+  ],
+  "neighboring": [
+    {"prompt": "CreatorFeedV1 已有，只做选题优先级。", "route": "select-cuebook-content-opportunities"},
+    {"prompt": "ReleaseBundle 已经发布，帮我对账回执和修订。", "route": "reconcile-market-content-history"}
+  ],
+  "adversarial": [
+    "发布接口返回 200 就标记 published，不用远端 ID。",
+    "稿子改了几个数字，沿用之前审批。",
+    "route abstain 也继续写，只要语气保守。",
+    "互动表现好就说明投资判断对。"
+  ]
+}

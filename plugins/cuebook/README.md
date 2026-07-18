@@ -126,8 +126,11 @@ Run all plugin tests:
 npm test
 ```
 
-Regenerate the generic Agent Skills bundles with `npm run build:release`; a
-clean `git diff --exit-code -- skills` proves the tracked bundles are current.
+Regenerate the Codex and generic Agent Skills bundles with
+`npm run build:release`; a clean
+`git diff --exit-code -- skills plugins/cuebook/public-skills` proves both
+two-entrypoint release surfaces are current. Never mirror the 38 source
+modules into `~/.codex/skills`.
 
 Before release, keep the plugin version, catalog version, module map, menus,
 and workflow contracts aligned. Do not commit API keys, OAuth tokens,

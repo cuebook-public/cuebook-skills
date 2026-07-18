@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/thesis-chart-v1.schema.json",
+  "title": "ThesisChartV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "chart_id", "revision", "state", "lineage", "role", "claim", "time", "series", "annotations", "render", "quality_report"],
+  "properties": {
+    "schema_version": {"const": "thesis-chart-v1"},
+    "chart_id": {"type": "string", "pattern": "^CHART_[A-Za-z0-9_:-]{8,}$"},
+    "revision": {"type": "integer", "minimum": 1},
+    "state": {"enum": ["draft", "conditional", "ready", "frozen"]},
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_artifact_refs", "thesis_ref", "settlement_claim_ref"],
+      "properties": {
+        "input_artifact_refs": {"$ref": "#/$defs/stringSet"},
+        "thesis_ref": {"$ref": "#/$defs/nullableString"},
+        "settlement_claim_ref": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "role": {"enum": ["evidence", "thesis", "settlement"]},
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evaluation_kind", "direction", "action_state", "statement"],
+      "properties": {
+        "evaluation_kind": {"enum": ["price_target", "directional_return", "relative_performance", "range", "event_occurrence"]},
+        "direction": {"enum": ["long", "short", "outperform", "underperform", "range", "event_yes", "event_no", "neutral"]},
+        "action_state": {"enum": ["enter_now", "wait_for_trigger", "observe_only", "hold", "avoid", "exit"]},
+        "statement": {"$ref": "#/$defs/nonemptyString"}
+      }
+    },
+    "time": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["declared_at", "horizon_end", "timezone", "market_session", "horizon_seconds", "context_start", "preferred_interval", "observed_interval", "interval_status", "bar_limit"],
+      "properties": {
+        "declared_at": {"$ref": "#/$defs/dateTime"},
+        "horizon_end": {"$ref": "#/$defs/nullableDateTime"},
+        "horizon_status": {"enum": ["explicit", "unspecified"]},
+        "timezone": {"$ref": "#/$defs/nonemptyString"},
+        "market_session": {"enum": ["regular", "extended", "all_sessions", "continuous", "event_window"]},
+        "horizon_seconds": {"anyOf": [{"type": "null"}, {"type": "integer", "minimum": 1}]},
+        "context_start": {"$ref": "#/$defs/dateTime"},
+        "preferred_interval": {"$ref": "#/$defs/nonemptyString"},
+        "observed_interval": {"$ref": "#/$defs/nullableString"},
+        "interval_status": {"enum": ["matched", "degraded", "unavailable"]},
+        "bar_limit": {"type": "integer", "minimum": 10, "maximum": 500}
+      }
+    },
+    "series": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": {"$ref": "#/$defs/series"}
+    },
+    "annotations": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {"$ref": "#/$defs/annotation"}
+    },
+    "render": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "chart_type", "y_axis", "width", "height", "future_region", "show_volume", "show_forming_bar", "forecast_path", "title", "subtitle", "success_label"],
+      "properties": {
+        "mode": {"enum": ["single_price", "relative_performance", "range_band", "event_reaction"]},
+        "chart_type": {"enum": ["line", "candles"]},
+        "y_axis": {"enum": ["price", "return_pct", "excess_return_pct"]},
+        "width": {"type": "integer", "minimum": 640, "maximum": 2488},
+        "height": {"type": "integer", "minimum": 280, "maximum": 1600},
+        "future_region": {"type": "boolean"},
+        "show_volume": {"type": "boolean"},
+        "volume_average_window": {"type": "integer", "minimum": 5, "maximum": 100},
+        "show_forming_bar": {"type": "boolean"},
+        "forecast_path": {"const": "none"},
+        "theme": {"enum": ["cuebook_light", "cuebook_dark"]},
+        "style_profile": {"enum": ["cuebook_feed_v1", "cuebook_detail_v1"]},
+        "brand": {"const": "cuebook"},
+        "watermark": {"type": "boolean"},
+        "show_state_label": {"type": "boolean"},
+        "show_provenance_footer": {"type": "boolean"},
+        "show_guide": {"type": "boolean"},
+        "locale": {"enum": ["zh-CN", "en-US"]},
+        "timeline_layout": {"enum": ["continuous_time", "decision_split"]},
+        "decision_split_ratio": {"type": "number", "minimum": 0.45, "maximum": 0.82},
+        "show_settlement_panel": {"type": "boolean"},
+        "title": {"$ref": "#/$defs/nonemptyString"},
+        "subtitle": {"$ref": "#/$defs/nonemptyString"},
+        "success_label": {"$ref": "#/$defs/nonemptyString"}
+      }
+    },
+    "quality_report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "warnings", "hard_failures"],
+      "properties": {
+        "decision": {"enum": ["ready", "conditional", "blocked"]},
+        "warnings": {"$ref": "#/$defs/stringSet"},
+        "hard_failures": {"$ref": "#/$defs/stringSet"}
+      }
+    }
+  },
+  "$defs": {
+    "nonemptyString": {"type": "string", "minLength": 1},
+    "nullableString": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/nonemptyString"}]},
+    "nullableNumber": {"anyOf": [{"type": "null"}, {"type": "number"}]},
+    "dateTime": {"type": "string", "format": "date-time"},
+    "nullableDateTime": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/dateTime"}]},
+    "stringSet": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}},
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "unit", "observed_at", "observation_basis", "market_state", "source_ref"],
+      "properties": {
+        "value": {"type": "number"},
+        "unit": {"$ref": "#/$defs/nonemptyString"},
+        "observed_at": {"$ref": "#/$defs/dateTime"},
+        "observation_basis": {"enum": ["last_trade", "last_close", "midpoint", "official_close", "official_settlement", "spot", "intraday", "nav"]},
+        "market_state": {"enum": ["regular", "pre", "after", "overnight", "closed", "continuous", "unknown"]},
+        "source_ref": {"$ref": "#/$defs/nonemptyString"}
+      }
+    },
+    "provider": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "endpoint", "requested_interval", "observed_interval", "coverage_status", "as_of"],
+      "properties": {
+        "name": {"$ref": "#/$defs/nonemptyString"},
+        "endpoint": {"$ref": "#/$defs/nonemptyString"},
+        "requested_interval": {"$ref": "#/$defs/nonemptyString"},
+        "observed_interval": {"$ref": "#/$defs/nullableString"},
+        "coverage_status": {"enum": ["complete", "partial", "unavailable", "unknown"]},
+        "as_of": {"$ref": "#/$defs/dateTime"}
+      }
+    },
+    "series": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "ticker", "display_name", "instrument_id", "asset_id", "role", "transformation", "baseline", "provider"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^S[1-9][0-9]*$"},
+        "ticker": {"$ref": "#/$defs/nonemptyString"},
+        "display_name": {"$ref": "#/$defs/nonemptyString"},
+        "instrument_id": {"$ref": "#/$defs/nonemptyString"},
+        "asset_id": {"anyOf": [{"type": "null"}, {"type": "integer", "minimum": 1}]},
+        "role": {"enum": ["primary", "benchmark", "context"]},
+        "transformation": {"enum": ["raw_price", "return_from_baseline", "normalized_index", "excess_return"]},
+        "baseline": {"$ref": "#/$defs/baseline"},
+        "provider": {"$ref": "#/$defs/provider"}
+      }
+    },
+    "annotation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "series_ref", "value", "observed_at", "label", "provenance", "source_ref"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^A[1-9][0-9]*$"},
+        "kind": {"enum": ["event", "declaration", "baseline", "target", "trigger", "invalidation", "expiry", "range_lower", "range_upper", "note"]},
+        "series_ref": {"$ref": "#/$defs/nullableString"},
+        "value": {"$ref": "#/$defs/nullableNumber"},
+        "observed_at": {"$ref": "#/$defs/nullableDateTime"},
+        "label": {"$ref": "#/$defs/nonemptyString"},
+        "provenance": {"enum": ["explicit", "derived"]},
+        "source_ref": {"$ref": "#/$defs/nonemptyString"}
+      }
+    }
+  }
+}

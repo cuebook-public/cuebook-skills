@@ -38,11 +38,35 @@ test("valid plugin package", () => {
   const result = validate(PLUGIN_ROOT);
   assert.ok(result.valid, JSON.stringify(result));
   assert.deepEqual(result.stats.module_skill_counts, { create: 27, query: 11 });
+  assert.equal(result.stats.public_skill_count, 2);
+  assert.ok(result.stats.discovery_reduction_percent >= 60);
+  assert.ok(result.stats.frame_fast_preview_bytes < 150_000);
   const modules = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "cuebook-modules-v1.json"), "utf-8"),
   );
   assert.ok(modules.routing_rules.query_deliverables.includes("factual_chart"));
   assert.ok(modules.routing_rules.create_deliverables.includes("creator_viewpoint_graphic"));
+});
+
+test("plugin discovery points only at the two generated public Skills", () => {
+  const manifest = JSON.parse(
+    fs.readFileSync(path.join(PLUGIN_ROOT, ".codex-plugin", "plugin.json"), "utf-8"),
+  );
+  assert.equal(manifest.skills, "./public-skills/");
+  const publicRoot = path.join(PLUGIN_ROOT, "public-skills");
+  const skillDocs = [];
+  const walk = (directory) => {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const target = path.join(directory, entry.name);
+      if (entry.isDirectory()) walk(target);
+      else if (entry.name === "SKILL.md") skillDocs.push(path.relative(publicRoot, target));
+    }
+  };
+  walk(publicRoot);
+  assert.deepEqual(skillDocs.sort(), [
+    "create-cuebook-content/SKILL.md",
+    "query-cuebook/SKILL.md",
+  ]);
 });
 
 test("active, planned, and superseded tool surfaces stay separate", () => {

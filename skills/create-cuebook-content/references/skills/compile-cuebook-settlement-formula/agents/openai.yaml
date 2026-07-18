@@ -1,4 +1,0 @@
-interface:
-  display_name: "Cuebook 结算公式"
-  short_description: "把观点冻结成四类可执行公式，支持双资产多空组合"
-  default_prompt: "Use $compile-cuebook-settlement-formula to compile this confirmed Cuebook claim and DB-bound entry snapshot into one constrained, hash-frozen settlement formula."

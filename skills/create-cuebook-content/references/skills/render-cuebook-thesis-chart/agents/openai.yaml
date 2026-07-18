@@ -1,4 +1,0 @@
-interface:
-  display_name: "Cuebook Thesis Chart"
-  short_description: "Render sourced Cuebook price, volume, and settlement charts"
-  default_prompt: "Turn this Cuebook trigger, thesis, or settlement claim into a sourced chart whose interval, comparison mode, numeric levels, volume confirmation, and horizon match the creator view. Use an observed open-ended timeline when no deadline exists, and keep internal diagnostics outside the Feed image."

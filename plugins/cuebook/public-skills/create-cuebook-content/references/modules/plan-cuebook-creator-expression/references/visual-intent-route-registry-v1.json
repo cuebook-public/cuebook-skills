@@ -1,0 +1,95 @@
+{
+  "schema_version": "visual-intent-route-registry-v1",
+  "candidate_families": {
+    "fast_read": ["conviction_snapshot"],
+    "proof": ["evidence_proof", "relative_comparison", "distribution_risk", "trigger_watch"],
+    "system": ["news_synthesis", "mechanism_path", "scenario_range", "flow_map", "strategy_map", "cycle_map"]
+  },
+  "evidence_shapes": [
+    "creator_judgment",
+    "point_metric",
+    "level",
+    "ordered_series",
+    "multi_series",
+    "ohlcv_series",
+    "event_set",
+    "news_cluster",
+    "calendar_events",
+    "qualitative_relation",
+    "causal_graph",
+    "pair_spread",
+    "distribution_sample",
+    "quantile_scenarios",
+    "part_to_whole",
+    "additive_components",
+    "quantified_flow",
+    "ordered_categories",
+    "payoff_series",
+    "comparison_pair",
+    "revision_series",
+    "term_structure"
+  ],
+  "query_capabilities": [
+    {
+      "capability_id": "market_evidence",
+      "tool_ids": ["search_assets", "search_news"],
+      "request_classes": ["qualitative_evidence", "news_anchor", "official_event"]
+    },
+    {
+      "capability_id": "published_story",
+      "tool_ids": ["search_assets", "get_cues"],
+      "request_classes": ["qualitative_evidence", "news_anchor"]
+    },
+    {
+      "capability_id": "asset_narrative",
+      "tool_ids": ["search_assets", "list_asset_cues"],
+      "request_classes": ["qualitative_evidence"]
+    },
+    {
+      "capability_id": "fundamental_metrics",
+      "tool_ids": ["search_assets", "list_filings"],
+      "request_classes": ["valuation_metric", "comparison_metric"]
+    },
+    {
+      "capability_id": "market_series",
+      "tool_ids": ["search_assets", "get_candles"],
+      "request_classes": ["comparison_metric", "market_series", "price_level"]
+    },
+    {
+      "capability_id": "derived_metrics",
+      "tool_ids": ["search_assets", "get_candles"],
+      "request_classes": ["comparison_metric", "market_series", "price_level"]
+    },
+    {
+      "capability_id": "current_market_state",
+      "tool_ids": ["search_assets", "get_market_state"],
+      "request_classes": ["price_level"]
+    },
+    {
+      "capability_id": "settlement_reference",
+      "tool_ids": ["search_assets", "get_market_state"],
+      "request_classes": ["settlement_reference"]
+    }
+  ],
+  "routes": [
+    {
+      "route_id": "viewpoint_static",
+      "skill_path_ids": ["query-cuebook", "assemble-cuebook-viewpoint-data", "direct-cuebook-viewpoint-visual", "render-cuebook-viewpoint-visual"],
+      "primary_renderer_skill_id": "render-cuebook-viewpoint-visual",
+      "detail_renderer_skill_id": null
+    },
+    {
+      "route_id": "viewpoint_static_plus_thesis_chart",
+      "skill_path_ids": ["query-cuebook", "assemble-cuebook-viewpoint-data", "direct-cuebook-viewpoint-visual", "render-cuebook-viewpoint-visual", "render-cuebook-thesis-chart"],
+      "primary_renderer_skill_id": "render-cuebook-viewpoint-visual",
+      "detail_renderer_skill_id": "render-cuebook-thesis-chart"
+    },
+    {
+      "route_id": "no_visual",
+      "skill_path_ids": [],
+      "primary_renderer_skill_id": null,
+      "detail_renderer_skill_id": null
+    }
+  ],
+  "resume_policy": "resume_from_latest_valid_artifact"
+}

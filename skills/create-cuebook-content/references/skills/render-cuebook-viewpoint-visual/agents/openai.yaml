@@ -1,4 +1,0 @@
-interface:
-  display_name: "定稿 Cuebook 静态观点图"
-  short_description: "按已选排版冻结双尺寸观点图并执行统一右下角品牌锁定"
-  default_prompt: "使用 $render-cuebook-viewpoint-visual 按已选 HTML 排版定稿这份交易观点，保留网格、层级、字号与阅读顺序，导出精确 2488×1056 成图与 622×264 预览，并锁定右下角标准字。"

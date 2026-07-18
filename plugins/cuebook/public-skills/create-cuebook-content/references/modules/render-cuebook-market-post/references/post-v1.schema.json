@@ -1,0 +1,216 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/post-v1.schema.json",
+  "title": "Cuebook PostV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "lineage",
+    "brief",
+    "gate",
+    "research_decision",
+    "policy_gate",
+    "disclosure_state",
+    "route",
+    "fact_ledger",
+    "angle",
+    "drafts",
+    "draft_evidence",
+    "watch_items",
+    "quality_report",
+    "publication_state"
+  ],
+  "properties": {
+    "schema_version": {"const": "post-v1"},
+    "lineage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["artifact_id", "program_ref", "content_item_ref", "opportunity_refs", "input_artifact_refs"],
+      "properties": {
+        "artifact_id": {"type": "string", "pattern": "^POST_[A-Za-z0-9_:-]+$"},
+        "program_ref": {"type": ["string", "null"]},
+        "content_item_ref": {"type": ["string", "null"]},
+        "opportunity_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "input_artifact_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "thesis_binding": {
+          "anyOf": [
+            {
+              "type": "object", "additionalProperties": false,
+              "required": ["thesis_ref", "canonical_hash"],
+              "properties": {
+                "thesis_ref": {"type": "string", "pattern": "^THESIS_[a-z0-9]{8,64}@r[1-9][0-9]*$"},
+                "canonical_hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"}
+              }
+            },
+            {"type": "null"}
+          ]
+        },
+        "expression_binding": {
+          "anyOf": [
+            {
+              "type": "object", "additionalProperties": false,
+              "required": ["plan_ref", "fingerprint_sha256"],
+              "properties": {
+                "plan_ref": {"type": "string", "pattern": "^CEXP_[A-Za-z0-9_:-]{8,}@r[1-9][0-9]*$"},
+                "fingerprint_sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"}
+              }
+            },
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "brief": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["platforms", "content_class", "temporal_mode", "language", "as_of", "reader", "decision_use", "research_pack_ref"],
+      "properties": {
+        "platforms": {"type": "array", "minItems": 1, "maxItems": 1, "uniqueItems": true, "items": {"const": "frame"}},
+        "content_class": {"enum": ["market_commentary", "financial_education", "investment_analysis", "product_marketing", "personalized_advice"]},
+        "temporal_mode": {"enum": ["realtime", "historical_replay", "evergreen"]},
+        "language": {"type": "string", "minLength": 1},
+        "as_of": {"type": "string"},
+        "reader": {"type": "string"},
+        "decision_use": {"type": "string"},
+        "research_pack_ref": {
+          "anyOf": [
+            {"type": "string", "minLength": 1},
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "gate": {
+      "type": "object",
+      "required": ["decision", "checks", "repairs"],
+      "properties": {
+        "decision": {"enum": ["pass", "caution", "reject"]},
+        "checks": {"type": "array"},
+        "repairs": {"type": "array"}
+      }
+    },
+    "research_decision": {
+      "type": ["string", "null"],
+      "enum": ["ready", "conditional", "blocked", null]
+    },
+    "policy_gate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["decision", "checked_at", "rules_checked", "repairs"],
+      "properties": {
+        "decision": {"enum": ["ready", "conditional", "blocked"]},
+        "checked_at": {"type": ["string", "null"]},
+        "rules_checked": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["rule_id", "status", "detail", "source_url"], "properties": {"rule_id": {"type": "string"}, "status": {"enum": ["pass", "caution", "block"]}, "detail": {"type": "string"}, "source_url": {"type": "string"}}}},
+        "repairs": {"type": "array"}
+      }
+    },
+    "disclosure_state": {
+      "type": "object", "additionalProperties": false,
+      "required": ["position_status", "position_text", "commercial_status", "commercial_text", "identity_status", "ai_assistance_status", "public_disclosures"],
+      "properties": {
+        "position_status": {"enum": ["declared", "no_position", "unknown", "not_required"]},
+        "position_text": {"type": ["string", "null"]},
+        "commercial_status": {"enum": ["declared", "none", "unknown", "not_required"]},
+        "commercial_text": {"type": ["string", "null"]},
+        "identity_status": {"enum": ["verified", "declared", "unknown", "not_required"]},
+        "ai_assistance_status": {"enum": ["disclosed", "not_disclosed", "unknown", "not_required"]},
+        "public_disclosures": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "taxonomy_version", "cue_id", "event_type", "event_confidence", "candidates", "reasoning_lenses", "render_shape", "required_context", "hard_numbers", "abstain", "abstain_reason"],
+      "properties": {
+        "schema_version": {"const": "route-v1"},
+        "taxonomy_version": {"const": "market-narrative-v2"},
+        "cue_id": {"type": "string"},
+        "event_type": {"type": "string"},
+        "event_confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "candidates": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["event_type", "score"], "properties": {"event_type": {"type": "string"}, "score": {"type": "number"}}}},
+        "reasoning_lenses": {"type": "array", "items": {"type": "string"}},
+        "render_shape": {"type": "string"},
+        "required_context": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["kind", "fields", "why"], "properties": {"kind": {"type": "string"}, "fields": {"type": "array", "items": {"type": "string"}}, "why": {"type": "string"}}}},
+        "hard_numbers": {"type": "array", "items": {"type": "string"}},
+        "abstain": {"type": "boolean"},
+        "abstain_reason": {"type": "string"}
+      }
+    },
+    "fact_ledger": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "claim", "evidence_class", "source_url", "as_of", "freshness"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "claim": {"type": "string", "minLength": 1},
+          "evidence_class": {"enum": ["source", "verified-live", "derived", "hypothesis"]},
+          "source_url": {"type": "string"},
+          "as_of": {"type": "string"},
+          "freshness": {"enum": ["current", "stale", "unknown"]}
+        }
+      }
+    },
+    "assisted_discovery": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "creator_seed", "cuebook_contribution", "creator_judgment", "idea_delta", "final_trade_idea", "fact_refs", "public_attribution"],
+          "properties": {
+            "mode": {"enum": ["none", "cuebook_assisted"]},
+            "creator_seed": {"type": ["string", "null"]},
+            "cuebook_contribution": {"type": ["string", "null"]},
+            "creator_judgment": {"type": ["string", "null"]},
+            "idea_delta": {"enum": ["unchanged", "strengthened", "weakened", "narrowed", "conditionalized", "reversed", "abandoned", null]},
+            "final_trade_idea": {"type": ["string", "null"]},
+            "fact_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+            "public_attribution": {"const": false}
+          }
+        },
+        {"type": "null"}
+      ]
+    },
+    "angle": {
+      "type": "object",
+      "required": ["tension", "forced_actor", "why_selected", "profile_rule_ids"],
+      "properties": {"profile_rule_ids": {"type": "array", "items": {"type": "string"}}}
+    },
+    "drafts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame"],
+      "properties": {
+        "frame": {"type": "string"}
+      }
+    },
+    "draft_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame"],
+      "properties": {
+        "frame": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "watch_items": {"type": "array"},
+    "quality_report": {
+      "type": "object",
+      "required": ["scores", "hard_failures", "revisions"]
+    },
+    "publication_state": {"enum": ["ready", "conditional", "blocked"]}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "brief": {
+            "required": ["research_pack_ref"],
+            "properties": {"research_pack_ref": {"type": "string", "minLength": 1}}
+          }
+        }
+      },
+      "then": {
+        "properties": {"research_decision": {"enum": ["ready", "conditional", "blocked"]}}
+      }
+    }
+  ]
+}

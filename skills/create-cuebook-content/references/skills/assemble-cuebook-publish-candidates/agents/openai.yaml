@@ -1,4 +1,0 @@
-interface:
-  display_name: "Assemble Frame Candidates"
-  short_description: "Freeze one selected Frame or three requested alternatives"
-  default_prompt: "Freeze the selected Cuebook Frame without regenerating siblings. Preserve its exact title, body, paired image, evidence refs, and creator ownership; generate three alternatives only when explicitly requested."

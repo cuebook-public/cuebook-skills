@@ -1,4 +1,0 @@
-interface:
-  display_name: "Plan Market Content Program"
-  short_description: "Plan modular finance content programs"
-  default_prompt: "Plan a modular finance content program with explicit topology, channel roles, dependencies, and measurement, without drafting or publishing."

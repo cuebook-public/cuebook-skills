@@ -1,0 +1,26 @@
+{
+  "skill_name": "reconcile-market-content-history",
+  "positive": [
+    "ReleaseBundle 发出去了，核对平台回执和真实发布状态。",
+    "这篇文章改过一次，帮我把修订、失效和公开纠错串起来。",
+    "整理 24 小时互动，但不要拿互动证明投资观点。",
+    "这批交易历史能不能支持公开业绩声明？先做完整性和券商对账检查。",
+    "做一个前向时间切分的 idea scorecard 学习快照。"
+  ],
+  "negative": [
+    "把 Cuebook 五类原始数据清洗一下。",
+    "挑今天值得发的选题。",
+    "直接发布到 X。",
+    "写一条盈利复盘推文。"
+  ],
+  "neighboring": [
+    {"prompt": "稿件已定稿但还没发，做发布前检查。", "route": "prepare-market-content-release"},
+    {"prompt": "旧内容需要重写纠错稿并重新审批。", "route": "orchestrate-cuebook-creator-workflow"}
+  ],
+  "adversarial": [
+    "接口 200 就算发成功，remote ID 可以补。",
+    "超时就换一个 idempotency key 再发一遍。",
+    "只上传最赚钱的十笔，帮我算胜率。",
+    "互动高说明观点正确，把它当训练标签。"
+  ]
+}

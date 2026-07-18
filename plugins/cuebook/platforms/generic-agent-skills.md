@@ -16,10 +16,12 @@ node plugins/cuebook/scripts/build_release_skills.mjs plugins/cuebook <output-di
 
 The builder packages each public entrypoint (from
 `assets/plugin-index-v1.json`) as one spec-conformant skill directory:
-shared assets are copied inside, internal skills land under
-`references/skills/`, and every `$skill-name` or `../../assets` reference is
-rewritten to a bundle-relative path. Only these bundles belong in
-`.agents/skills/`.
+shared assets are copied inside, internal capabilities become ordinary
+`references/modules/<name>.md` documents with sibling resource directories,
+and every `$skill-name` or `../../assets` reference is rewritten to a
+bundle-root-relative path. Each bundle contains exactly one root `SKILL.md`.
+Only the two public bundles belong in `.agents/skills/`; never mirror the
+source module tree into a user-level Skill directory.
 
 ## Install and discovery
 

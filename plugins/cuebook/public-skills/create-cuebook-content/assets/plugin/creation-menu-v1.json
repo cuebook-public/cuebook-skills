@@ -1,0 +1,391 @@
+{
+  "schema_version": "creation-menu-v1",
+  "catalog_version": "1.27.0",
+  "module_id": "create",
+  "default_preset": "preset-publish-candidates",
+  "steps": [
+    {
+      "step_id": "ingredients",
+      "label": "选原料",
+      "selection": "multi",
+      "minimum": 1,
+      "maximum": 8,
+      "options": [
+        {
+          "option_id": "news",
+          "label": "新闻",
+          "mcp_tools": [
+            "list_asset_cues",
+            "get_cues",
+            "search_news"
+          ],
+          "availability": "available"
+        },
+        {
+          "option_id": "calendar",
+          "label": "日历事件",
+          "mcp_tools": [
+            "list_market_calendar"
+          ],
+          "availability": "backend_required"
+        },
+        {
+          "option_id": "narrative",
+          "label": "Cuebook 叙事",
+          "mcp_tools": [
+            "list_asset_cues"
+          ],
+          "availability": "backend_required"
+        },
+        {
+          "option_id": "creator_note",
+          "label": "自己的观点、新闻或线索",
+          "mcp_tools": [],
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "step_id": "reasoning",
+      "label": "选分析思路",
+      "selection": "multi",
+      "minimum": 1,
+      "maximum": 3,
+      "options": [
+        {
+          "option_id": "auto",
+          "label": "自动匹配",
+          "skill_refs": [
+            "route-cuebook-narrative",
+            "classify-cuebook-trading-logic"
+          ],
+          "default": true
+        },
+        {
+          "option_id": "event_driven",
+          "label": "事件驱动",
+          "skill_refs": [
+            "build-market-research-pack"
+          ],
+          "mcp_tools": [
+            "search_news"
+          ],
+          "availability": "backend_required"
+        },
+        {
+          "option_id": "transmission",
+          "label": "传导链",
+          "skill_refs": [
+            "compile-cuebook-market-view-semantics",
+            "compile-cuebook-visual-argument"
+          ]
+        },
+        {
+          "option_id": "expectation_gap",
+          "label": "预期差",
+          "skill_refs": [
+            "build-market-research-pack"
+          ]
+        },
+        {
+          "option_id": "positioning_flow",
+          "label": "资金与仓位",
+          "skill_refs": [
+            "build-market-research-pack",
+            "assemble-cuebook-viewpoint-data"
+          ]
+        },
+        {
+          "option_id": "technical_confirmation",
+          "label": "技术确认",
+          "skill_refs": [
+            "compute-cuebook-market-indicators"
+          ],
+          "mcp_tools": [
+            "get_candles"
+          ],
+          "availability": "backend_required"
+        },
+        {
+          "option_id": "relative_value",
+          "label": "相对价值",
+          "skill_refs": [
+            "build-market-research-pack",
+            "render-cuebook-thesis-chart"
+          ],
+          "mcp_tools": [
+            "list_filings",
+            "get_candles"
+          ],
+          "availability": "backend_required"
+        },
+        {
+          "option_id": "fundamental",
+          "label": "基本面与估值",
+          "skill_refs": [
+            "build-market-research-pack"
+          ],
+          "mcp_tools": [
+            "list_filings"
+          ],
+          "availability": "backend_required"
+        },
+        {
+          "option_id": "scenario_countercase",
+          "label": "情景与反例",
+          "skill_refs": [
+            "compose-cuebook-trading-thesis"
+          ]
+        }
+      ]
+    },
+    {
+      "step_id": "voice",
+      "label": "选表达口味",
+      "selection": "single",
+      "minimum": 1,
+      "maximum": 1,
+      "options": [
+        {
+          "option_id": "natural_market_talk",
+          "label": "自然市场口吻",
+          "skill_refs": [
+            "plan-cuebook-creator-expression"
+          ],
+          "default": true
+        },
+        {
+          "option_id": "conviction_short",
+          "label": "短句强观点",
+          "skill_refs": [
+            "plan-cuebook-creator-expression"
+          ]
+        },
+        {
+          "option_id": "desk_note",
+          "label": "交易台笔记",
+          "skill_refs": [
+            "plan-cuebook-creator-expression"
+          ]
+        },
+        {
+          "option_id": "explainer",
+          "label": "拆逻辑讲清楚",
+          "skill_refs": [
+            "plan-cuebook-creator-expression"
+          ]
+        },
+        {
+          "option_id": "distilled_profile",
+          "label": "已蒸馏创作者方法",
+          "skill_refs": [
+            "distill-market-commentator-profile",
+            "plan-cuebook-creator-expression"
+          ]
+        }
+      ]
+    },
+    {
+      "step_id": "visual",
+      "label": "选观点图",
+      "selection": "single",
+      "minimum": 1,
+      "maximum": 1,
+      "options": [
+        {
+          "option_id": "auto",
+          "label": "自动选图",
+          "skill_refs": [
+            "direct-cuebook-viewpoint-visual",
+            "render-cuebook-viewpoint-visual"
+          ],
+          "default": true
+        },
+        {
+          "option_id": "key_signal",
+          "label": "关键数字或新闻",
+          "skill_refs": [
+            "render-cuebook-market-signal"
+          ]
+        },
+        {
+          "option_id": "logic_chain",
+          "label": "逻辑传导图",
+          "skill_refs": [
+            "compile-cuebook-visual-argument",
+            "render-cuebook-logic-card"
+          ]
+        },
+        {
+          "option_id": "market_curve",
+          "label": "核心曲线",
+          "skill_refs": [
+            "render-cuebook-market-figure"
+          ]
+        },
+        {
+          "option_id": "kline_trigger",
+          "label": "K 线与触发条件",
+          "skill_refs": [
+            "render-cuebook-thesis-chart"
+          ],
+          "mcp_tools": [
+            "get_candles"
+          ],
+          "availability": "backend_required"
+        },
+        {
+          "option_id": "comparison",
+          "label": "标的对比",
+          "skill_refs": [
+            "render-cuebook-market-figure",
+            "render-cuebook-thesis-chart"
+          ]
+        }
+      ]
+    },
+    {
+      "step_id": "settlement",
+      "label": "选结算方式",
+      "selection": "single",
+      "minimum": 0,
+      "maximum": 1,
+      "options": [
+        {
+          "option_id": "none",
+          "label": "暂不结算",
+          "skill_refs": [],
+          "default": true
+        },
+        {
+          "option_id": "direction_at_deadline",
+          "label": "到期方向",
+          "skill_refs": [
+            "compile-cuebook-settlement-claim",
+            "compile-cuebook-settlement-formula"
+          ],
+          "mcp_tools": [
+            "get_market_state"
+          ],
+          "availability": "available"
+        },
+        {
+          "option_id": "price_threshold",
+          "label": "到期价格",
+          "skill_refs": [
+            "compile-cuebook-settlement-claim",
+            "compile-cuebook-settlement-formula"
+          ],
+          "mcp_tools": [
+            "get_market_state"
+          ],
+          "availability": "available"
+        },
+        {
+          "option_id": "relative_performance",
+          "label": "相对跑赢",
+          "skill_refs": [
+            "compile-cuebook-settlement-claim",
+            "compile-cuebook-settlement-formula"
+          ],
+          "mcp_tools": [
+            "get_candles"
+          ],
+          "availability": "backend_required"
+        },
+        {
+          "option_id": "range",
+          "label": "到期区间",
+          "skill_refs": [
+            "compile-cuebook-settlement-claim",
+            "compile-cuebook-settlement-formula"
+          ],
+          "mcp_tools": [
+            "get_market_state"
+          ],
+          "availability": "available"
+        },
+        {
+          "option_id": "trigger_occurrence",
+          "label": "周期内触发",
+          "skill_refs": [
+            "compile-cuebook-settlement-claim",
+            "compile-cuebook-settlement-formula"
+          ],
+          "mcp_tools": [
+            "get_candles"
+          ],
+          "availability": "backend_required"
+        },
+        {
+          "option_id": "triggered_horizon",
+          "label": "触发后周期观点",
+          "skill_refs": [
+            "compile-cuebook-settlement-claim",
+            "compile-cuebook-settlement-formula"
+          ],
+          "mcp_tools": [
+            "get_candles"
+          ],
+          "availability": "backend_required"
+        }
+      ]
+    },
+    {
+      "step_id": "output",
+      "label": "生成 Frame",
+      "selection": "single",
+      "minimum": 1,
+      "maximum": 1,
+      "options": [
+        {
+          "option_id": "frame",
+          "label": "Frame 快速预览（标题 + 正文 + 图）",
+          "skill_refs": [
+            "render-cuebook-market-post",
+            "direct-cuebook-viewpoint-visual",
+            "assemble-cuebook-publish-candidates"
+          ],
+          "default": true
+        }
+      ]
+    }
+  ],
+  "write_actions": [
+    {
+      "action_id": "create_frame_draft",
+      "label": "创建 Frame 草稿",
+      "mcp_tool": "create_frame_draft",
+      "availability": "backend_required",
+      "required_gates": [
+        "explicit_user_intent",
+        "registered_visual_binding",
+        "idempotency_key"
+      ]
+    },
+    {
+      "action_id": "publish_frame",
+      "label": "发布 Frame",
+      "mcp_tool": "publish_frame",
+      "availability": "backend_required",
+      "required_gates": [
+        "explicit_user_approval",
+        "prepared_hash",
+        "publish_token",
+        "idempotency_key"
+      ]
+    },
+    {
+      "action_id": "withdraw_frame",
+      "label": "撤回 Frame",
+      "mcp_tool": "withdraw_frame",
+      "availability": "backend_required",
+      "required_gates": [
+        "explicit_user_approval",
+        "first_party_consent",
+        "prepared_hash",
+        "idempotency_key"
+      ]
+    }
+  ]
+}
