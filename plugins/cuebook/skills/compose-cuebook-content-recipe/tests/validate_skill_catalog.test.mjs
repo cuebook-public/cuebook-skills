@@ -38,8 +38,11 @@ test("base catalog structure", () => {
   assert.equal(create.version, "2.0.0");
   assert.deepEqual(create.requires_all, ["orchestrate-cuebook-creator-workflow"]);
   assert.ok(create.input_contracts.includes("CuebookQueryBundleV1"));
-  assert.ok(create.maintenance.schema_refs.includes("create-cuebook-content/references/frame-preview-fast-job-v2.schema.json"));
-  assert.ok(create.maintenance.test_refs.includes("create-cuebook-content/tests/run_fast_preview_v2.test.mjs"));
+  assert.ok(create.maintenance.schema_refs.includes("create-cuebook-content/references/frame.schema.json"));
+  assert.ok(create.maintenance.schema_refs.includes("create-cuebook-content/references/frame-market-preview-job.schema.json"));
+  assert.ok(create.maintenance.schema_refs.includes("create-cuebook-content/references/frame-lens-preview-job.schema.json"));
+  assert.ok(create.maintenance.test_refs.includes("create-cuebook-content/tests/run_market_preview.test.mjs"));
+  assert.ok(create.maintenance.test_refs.includes("create-cuebook-content/tests/run_lens_preview.test.mjs"));
 });
 
 test("viewpoint bridge and deferred motion metadata", () => {

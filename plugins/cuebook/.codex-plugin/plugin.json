@@ -1,6 +1,6 @@
 {
   "name": "cuebook",
-  "version": "0.3.0+codex.20260719172220",
+  "version": "0.4.0+codex.20260719183208",
   "description": "Query Cuebook market intelligence or compile a creator-owned market viewpoint into a sourced editorial Frame.",
   "author": {
     "name": "Cuebook",
@@ -19,13 +19,15 @@
   "interface": {
     "displayName": "Cuebook",
     "shortDescription": "Query Cuebook or create a sourced editorial Frame",
-    "longDescription": "Cuebook has two explicit modules. Query searches, reads, compares, and explains Cuebook assets, stories, Frames, evidence, market data, metrics, and history without writing anything. Create preserves and sharpens the user's viewpoint, asks at most one optional high-leverage question, and runs one bounded Cuebook-first evidence pass before returning one recommended Frame. Every Frame has one title, one concise body, and one paired 2488 x 1056 editorial image. The V2 expression compiler chooses the analytical relationship before the layout, then deterministically renders price or indexed curves, relative spread, drawdown and recovery, rolling correlation, event windows, threshold regimes, causal spines, evidence balance, or conditional scenario lanes. Observed history and unresolved future time remain visibly separate; causal hypotheses stay creator-owned, and no future price path or uncalibrated probability fan is fabricated. Three alternatives are generated together only when requested and must differ structurally, not merely by color. Release packaging waits until selection. Initial and correction publication use the active publish grant plus the explicit first-party publish action; only withdrawal requires separate consent.",
+    "longDescription": "Cuebook has two public skills. Query searches, reads, compares, and explains source-linked market intelligence without writing. Create preserves and sharpens the user's viewpoint, asks at most one optional high-leverage question, and runs one bounded Cuebook-first evidence pass before returning one recommended Frame. The public Frame contains only a title, concise body, image reference, and alt text. Its mobile-first visual can express price or indexed curves, relative strength, drawdown and recovery, rolling correlation, event windows, thresholds, causal paths, evidence tension, conditional scenarios, transparent Creator Lenses, or long-short contributions. Observed history and unresolved future time remain visibly separate; causal hypotheses stay creator-owned, retrospective selection bias is disclosed, and no future price path is fabricated. Alternatives differ structurally, not merely by color. Workflow, evidence, hashes, upload, consent, and authorization state remain backstage. Publication happens only after explicit intent; withdrawal alone requires separate consent.",
     "developerName": "Cuebook",
     "category": "Finance",
     "capabilities": [
       "Market Query",
       "Frame Creation",
       "Editorial Curve Graphics",
+      "Transparent Creator Lenses",
+      "Long-Short Contribution Graphics",
       "Conditional Future Scenarios",
       "Settlement Protocols",
       "Release Preparation"

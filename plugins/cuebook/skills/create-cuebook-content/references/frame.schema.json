@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/frame.schema.json",
+  "title": "PublicFrame",
+  "description": "The complete user-facing Cuebook Frame projection. Workflow and backend fields are intentionally excluded.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["title", "body", "image_ref", "alt_text"],
+  "properties": {
+    "title": {"type": "string", "minLength": 2, "maxLength": 80},
+    "body": {"type": "string", "minLength": 2, "maxLength": 1200},
+    "image_ref": {"type": "string", "minLength": 1},
+    "alt_text": {"type": "string", "minLength": 8, "maxLength": 1200}
+  }
+}

@@ -2200,7 +2200,7 @@
       "skill_id": "create-cuebook-content",
       "version": "2.0.0",
       "display_name": "Create Cuebook Content",
-      "description": "Compile a creator-owned market judgment, bounded Cuebook evidence, analytical relationship, honest future-time grammar, and editorial composition into one title, body, and paired Frame image.",
+      "description": "Compile a creator-owned market judgment, bounded Cuebook evidence, analytical relationship, honest future-time grammar, transparent Creator Lens or long-short contribution stage, and editorial composition into one title, body, and paired Frame image.",
       "category_id": "category-modules",
       "status": "stable",
       "visibility": "selectable",
@@ -2241,23 +2241,27 @@
       "maintenance": {
         "owner": "cuebook-platform",
         "stability": "stable",
-        "last_verified_at": "2026-07-19T17:22:20+08:00",
+        "last_verified_at": "2026-07-19T18:32:08+08:00",
         "skill_path": "create-cuebook-content",
         "schema_refs": [
           "create-cuebook-content/references/creator-seed-v1.schema.json",
           "create-cuebook-content/references/cuebook-creation-bundle-v1.schema.json",
-          "create-cuebook-content/references/frame-preview-fast-job-v2.schema.json",
+          "create-cuebook-content/references/frame.schema.json",
+          "create-cuebook-content/references/frame-market-preview-job.schema.json",
+          "create-cuebook-content/references/frame-lens-preview-job.schema.json",
           "create-cuebook-content/references/frame-preview-v1.schema.json"
         ],
         "validator_refs": [
           "create-cuebook-content/scripts/validate_creator_seed.mjs",
           "create-cuebook-content/scripts/validate_creation_bundle.mjs",
-          "create-cuebook-content/scripts/run_fast_preview_v2.mjs",
+          "create-cuebook-content/scripts/run_market_preview.mjs",
+          "create-cuebook-content/scripts/run_lens_preview.mjs",
           "create-cuebook-content/scripts/validate_frame_preview.mjs"
         ],
         "test_refs": [
           "create-cuebook-content/tests/validate_creation_bundle.test.mjs",
-          "create-cuebook-content/tests/run_fast_preview_v2.test.mjs"
+          "create-cuebook-content/tests/run_market_preview.test.mjs",
+          "create-cuebook-content/tests/run_lens_preview.test.mjs"
         ]
       },
       "replaced_by": null

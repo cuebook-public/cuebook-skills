@@ -23,7 +23,7 @@ const REQUIRED_CHECKS = new Set(["creator_ownership", "source_binding", "copy_fi
 const LOGIC_TEMPLATES = new Set(["verdict", "proof", "system"]);
 const EDITORIAL_TEMPLATES = new Set([
   "curve_story", "relative_divergence", "drawdown_recovery", "correlation_shift", "event_window",
-  "threshold_regime", "scenario_lanes", "causal_spine", "evidence_balance",
+  "threshold_regime", "scenario_lanes", "causal_spine", "evidence_balance", "creator_lens", "long_short_lens",
 ]);
 const PUBLIC_PROCESS_TERMS = [
   "小红书", "Reddit", "reddit", "Telegram", "telegram", "Twitter", "twitter", "推文", "thread", "caption",

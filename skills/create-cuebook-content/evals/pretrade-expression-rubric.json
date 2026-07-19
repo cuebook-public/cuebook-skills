@@ -1,0 +1,85 @@
+{
+  "schema_version": "cuebook-pretrade-expression-rubric",
+  "purpose": "Judge whether one title, body, and Frame image turn a creator-owned pre-trade idea into a truthful, memorable, visually legible expression.",
+  "score_scale": {
+    "0": "missing or misleading",
+    "1": "present but materially broken",
+    "2": "understandable after effort",
+    "3": "clear and useful at first read",
+    "4": "distinctive, precise, and stronger than the creator expected"
+  },
+  "dimensions": [
+    {
+      "id": "creator_intent",
+      "question": "Does the result preserve and sharpen the creator's actual judgment without replacing it with generic neutrality?"
+    },
+    {
+      "id": "evidence_logic",
+      "question": "Does every observed statement follow from the displayed data, while hypotheses remain visibly creator-owned?"
+    },
+    {
+      "id": "visual_argument",
+      "question": "Does the geometry itself explain the idea rather than merely decorate prose?"
+    },
+    {
+      "id": "first_glance_hierarchy",
+      "question": "At a roughly 360-pixel phone feed width, can a reader identify the evidence relationship, creator interpretation, and next watch in three seconds?"
+    },
+    {
+      "id": "legibility",
+      "question": "Is every visible string complete, collision-free, and readable without ellipsis or unexplained abbreviation?"
+    },
+    {
+      "id": "future_time",
+      "question": "Does unresolved time have dates, checkable conditions, and a visible invalidation without looking like a fake forecast?"
+    },
+    {
+      "id": "creator_distinctiveness",
+      "question": "Could this visual plausibly belong to this creator and idea rather than any ticker with swapped colors?"
+    },
+    {
+      "id": "art_direction_fit",
+      "question": "Does the design family, narrative placement, type system, and material behavior fit this idea's reader question instead of acting as a reusable skin?"
+    },
+    {
+      "id": "feed_memorability",
+      "question": "Would the image deliver one fast cognitive reward in a pre-trade feed and leave one memorable relationship behind without engagement bait?"
+    },
+    {
+      "id": "copy_economy",
+      "question": "Does the image say only what the geometry cannot, with the tested observation attached to evidence instead of repeated in a summary block?"
+    },
+    {
+      "id": "creator_emotional_payoff",
+      "question": "Does one prominent, creator-specific line make the user's distinctive intuition feel recognized and better expressed without generic praise or hype?"
+    },
+    {
+      "id": "mobile_compact_fit",
+      "question": "Is the 622 x 264 rendition independently composed with one dominant geometry, at most two essential copy groups, and type that remains readable at phone width?"
+    },
+    {
+      "id": "controlled_variation",
+      "question": "If this is a reroll, does it provide a materially different truthful silhouette while preserving the exact meaning lock, evidence, direction, and horizon?"
+    }
+  ],
+  "hard_failures": [
+    "visible text is truncated or replaced by ellipsis",
+    "an observed sentence is not supported by the rendered data",
+    "a creator hypothesis is presented as measured fact",
+    "a future market price path or uncalibrated probability is fabricated",
+    "the image repeats the title or body without adding analytical information",
+    "a chart image falls back to three paragraph-like observation, mechanism, and implication summaries",
+    "the emotional language is generic praise, hype, certainty, or a call to trade",
+    "the visual claims an official index when it is only a creator-defined basket",
+    "multiple requested alternatives differ only by palette or typography while keeping the same reading silhouette",
+    "the publication or expanded Frame hides a derived basket's components, weights, basis, coverage, or limitations",
+    "the compact image is a uniform downscale, needs zoom, or contains more than two competing essential copy groups",
+    "a layout-only reroll changes facts, evidence, direction, horizon, or claim-state typing",
+    "the primary relationship cannot be identified within five seconds"
+  ],
+  "passing_rule": {
+    "hard_failures_allowed": 0,
+    "minimum_dimension_score": 3,
+    "minimum_average_score": 3.25
+  }
+}

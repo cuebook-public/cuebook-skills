@@ -35,8 +35,12 @@ const MIN_DISCOVERY_REDUCTION_PERCENT = 60;
 const FAST_PREVIEW_BYTE_LIMIT = 150_000;
 const FAST_PREVIEW_FILES = [
   "SKILL.md",
-  "references/frame-preview-fast-job-v2.schema.json",
-  "references/frame-expression-system-v2.md",
+  "references/frame.schema.json",
+  "references/frame-market-preview-job.schema.json",
+  "references/frame-lens-preview-job.schema.json",
+  "references/frame-expression-system.md",
+  "references/frame-art-direction.md",
+  "references/frame-feed-attention.md",
   "references/modules/query-cuebook.md",
   "references/modules/query-cuebook/references/cuebook-query-request-v1.schema.json",
   "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json",

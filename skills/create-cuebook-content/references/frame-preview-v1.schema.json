@@ -60,7 +60,7 @@
           "candidate_id": {"type": "string", "pattern": "^FPREV_CAND_[A-Za-z0-9_:-]{4,}$"},
           "angle": {"enum": ["conviction", "evidence", "mechanism"]},
           "visual_kind": {"enum": ["logic_card", "market_chart", "editorial_visual"]},
-          "template_id": {"enum": ["verdict", "proof", "system", "thesis_chart", "curve_story", "relative_divergence", "drawdown_recovery", "correlation_shift", "event_window", "threshold_regime", "scenario_lanes", "causal_spine", "evidence_balance"]},
+          "template_id": {"enum": ["verdict", "proof", "system", "thesis_chart", "curve_story", "relative_divergence", "drawdown_recovery", "correlation_shift", "event_window", "threshold_regime", "scenario_lanes", "causal_spine", "evidence_balance", "creator_lens", "long_short_lens"]},
           "frame": {
             "type": "object",
             "additionalProperties": false,
