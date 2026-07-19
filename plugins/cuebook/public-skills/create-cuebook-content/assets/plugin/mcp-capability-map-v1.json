@@ -617,6 +617,7 @@
       "list_settlements"
     ],
     "max_cuebook_batches": 1,
+    "max_dependency_followups": 1,
     "web_fallback": {
       "trigger": "material_gap_after_cuebook_batch",
       "max_batches": 1,

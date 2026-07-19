@@ -51,7 +51,7 @@ export function baseRun() {
   return {
     schema_version: "creator-workflow-run-v1", workflow_id: "WF_1234abcd",
     feed_ref: "CF_1234abcd", opportunity_set_ref: "OS_1234abcd", recipe_ref: "RECIPE_1234abcd",
-    catalog_version: "1.27.0", query_bundle_refs: [], selected_opportunity_refs: ["OPP_q2_revision"], mode: "single",
+    catalog_version: "1.28.0", query_bundle_refs: [], selected_opportunity_refs: ["OPP_q2_revision"], mode: "single",
     created_at: "2026-07-14T12:00:00+00:00", as_of: "2026-07-14T12:11:00+00:00", ruleset_version: "2026-07-14", state: "ready_for_handoff",
     nodes, artifact_registry: artifacts,
     approvals: [{ approval_id: "APR_release", gate: "release", artifact_versions: [{ artifact_ref: "ART_release", content_hash: artifacts.find((item) => item.artifact_id === "ART_release").content_hash }], decision: "approved", reviewer_ref: "editor-vito", decided_at: "2026-07-14T12:14:00+00:00", policy_version: "2026-07-14", reason: "frozen payload approved" }],
@@ -73,7 +73,7 @@ export function workflowRecipe() {
     "direct-cuebook-viewpoint-visual", "render-cuebook-viewpoint-visual",
   ];
   return {
-    schema_version: "content-recipe-v1", recipe_id: "RECIPE_1234abcd", catalog_version: "1.27.0",
+    schema_version: "content-recipe-v1", recipe_id: "RECIPE_1234abcd", catalog_version: "1.28.0",
     feed_ref: "CF_1234abcd", opportunity_set_ref: "OS_1234abcd", selection_mode: "opportunity_first",
     anchor: { opportunity_ref: "OPP_q2_revision" }, state: "valid",
     execution: { mode: "single", selected_skill_ids: ["prepare-market-content-release", "render-cuebook-viewpoint-visual"], resolved_skill_ids: resolved },

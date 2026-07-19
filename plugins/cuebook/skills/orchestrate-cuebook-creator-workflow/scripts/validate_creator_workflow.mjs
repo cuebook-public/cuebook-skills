@@ -27,7 +27,7 @@ const CAPABILITIES = new Map([
 ]);
 const MODES = new Set(["plan_only", "single", "batch", "event_lifecycle", "postmortem", "correction"]);
 const NODE_STATES = new Set(["pending", "ready", "running", "completed", "blocked", "skipped", "deferred"]);
-const CATALOG_VERSION = "1.27.0";
+const CATALOG_VERSION = "1.28.0";
 const GATE_SUMMARY_FIELDS = new Set(["quality_decision", "artifact_state", "unresolved_material_request_count"]);
 const GATE_ARTIFACT_RULES = new Map([
   ["CuebookQueryBundleV1", {

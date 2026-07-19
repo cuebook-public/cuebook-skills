@@ -1,6 +1,6 @@
 {
   "schema_version": "cuebook-modules-v1",
-  "catalog_version": "1.27.0",
+  "catalog_version": "1.28.0",
   "default_module": "query",
   "modules": [
     {

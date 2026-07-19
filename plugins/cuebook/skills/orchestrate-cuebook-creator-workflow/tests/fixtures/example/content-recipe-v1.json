@@ -3,7 +3,7 @@
   "recipe_id": "RECIPE_1234abcd",
   "revision": 1,
   "state": "valid",
-  "catalog_version": "1.27.0",
+  "catalog_version": "1.28.0",
   "created_at": "2026-07-14T12:11:00+00:00",
   "updated_at": "2026-07-14T12:12:00+00:00",
   "as_of": "2026-07-14T12:00:00+00:00",

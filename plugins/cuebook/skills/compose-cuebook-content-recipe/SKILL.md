@@ -71,7 +71,7 @@ Return `ContentRecipeV1` from `references/content-recipe-v1.schema.json`. A vali
   "recipe_id": "RECIPE_...",
   "revision": 1,
   "state": "valid",
-  "catalog_version": "1.27.0",
+  "catalog_version": "1.28.0",
   "selection_mode": "opportunity_first",
   "anchor": {},
   "ingredients": {},

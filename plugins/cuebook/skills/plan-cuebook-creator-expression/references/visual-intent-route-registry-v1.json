@@ -61,6 +61,26 @@
       "request_classes": ["comparison_metric", "market_series", "price_level"]
     },
     {
+      "capability_id": "calendar_events",
+      "tool_ids": ["search_assets", "list_market_calendar"],
+      "request_classes": ["official_event"]
+    },
+    {
+      "capability_id": "asset_events",
+      "tool_ids": ["search_assets", "list_asset_events"],
+      "request_classes": ["official_event", "qualitative_evidence"]
+    },
+    {
+      "capability_id": "positioning_state",
+      "tool_ids": ["search_assets", "get_positioning"],
+      "request_classes": ["qualitative_evidence", "comparison_metric"]
+    },
+    {
+      "capability_id": "news_cluster",
+      "tool_ids": ["search_assets", "search_news", "get_news_cluster"],
+      "request_classes": ["news_anchor", "qualitative_evidence"]
+    },
+    {
       "capability_id": "current_market_state",
       "tool_ids": ["search_assets", "get_market_state"],
       "request_classes": ["price_level"]

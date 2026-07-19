@@ -1,6 +1,6 @@
 # Cuebook Creator Workflow Map
 
-This map targets `SkillCatalogV1` version `1.27.0`.
+This map targets `SkillCatalogV1` version `1.28.0`.
 
 ## Creator Fast Preview
 

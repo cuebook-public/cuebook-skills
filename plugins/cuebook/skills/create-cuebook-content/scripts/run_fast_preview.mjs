@@ -16,6 +16,7 @@ import { load_canonical_series, render_svg as renderChartSvg } from "../../rende
 import { validate as validateChart } from "../../render-cuebook-thesis-chart/scripts/validate_thesis_chart.mjs";
 import { renderBatch } from "./render_frame_previews.mjs";
 import { validate as validateFramePreview } from "./validate_frame_preview.mjs";
+import { runFastPreviewV2Job } from "./run_fast_preview_v2.mjs";
 
 const require = createRequire(import.meta.url);
 const rasterizerScript = fileURLToPath(new URL("../../render-cuebook-thesis-chart/scripts/rasterize_thesis_chart.cjs", import.meta.url));
@@ -459,6 +460,9 @@ async function renderMarket(job, outputRoot, options) {
 }
 
 export async function runFastPreviewJob(job, outputDir, dependencies = {}) {
+  if (job?.schema_version === "frame-preview-fast-job-v2") {
+    return runFastPreviewV2Job(job, outputDir, dependencies);
+  }
   const startedAt = Date.now();
   validateJob(job);
   const outputRoot = path.resolve(outputDir);
@@ -512,7 +516,7 @@ export async function runFastPreviewJob(job, outputDir, dependencies = {}) {
 async function main() {
   const [input, outputDir] = process.argv.slice(2);
   if (!input || !outputDir || process.argv.length !== 4) {
-    process.stderr.write("usage: run_fast_preview.mjs frame-preview-fast-job-v1.json output-dir\n");
+    process.stderr.write("usage: run_fast_preview.mjs frame-preview-fast-job-v1-or-v2.json output-dir\n");
     process.exitCode = 2;
     return;
   }

@@ -10,9 +10,11 @@ Cuebook exposes two public entrypoints:
   adaptive heuristic question before any price question, then continues
   immediately when skipped. It generates three alternatives only when
   explicitly requested. Every Frame exposes one title, one concise body, and
-  one image. Price, trend, relative-strength, volume, and dated-horizon views
-  use a sourced Cuebook market chart; qualitative mechanisms use a logic card.
-  The observed history window stays separate from the creator's future horizon.
+  one image. V2 chooses the analytical relationship first, then renders a
+  sourced price/indexed curve, relative spread, drawdown, rolling correlation,
+  event window, threshold regime, causal spine, evidence balance, or
+  conditional scenario layout. The observed history window stays visibly
+  separate from unresolved future time; no future price path is fabricated.
   Current evidence is Cuebook-first, with one bounded authorized Web fallback
   only when Cuebook leaves a material gap.
 
@@ -41,7 +43,7 @@ Install the current release:
 
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \
-  --ref v0.2.5 \
+  --ref v0.3.0 \
   --sparse .agents/plugins \
   --sparse plugins/cuebook
 

@@ -91,6 +91,7 @@
         "focused_on_demand",
         "deep_only",
         "max_cuebook_batches",
+        "max_dependency_followups",
         "web_fallback"
       ],
       "properties": {
@@ -107,6 +108,9 @@
           "$ref": "#/$defs/toolNameSet"
         },
         "max_cuebook_batches": {
+          "const": 1
+        },
+        "max_dependency_followups": {
           "const": 1
         },
         "web_fallback": {

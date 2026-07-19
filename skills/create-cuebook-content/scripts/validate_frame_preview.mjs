@@ -3,16 +3,28 @@
 
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, realpathSync, statSync } from "node:fs";
+import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { validateInstance } from "./validate_json_schema.mjs";
+
+const require = createRequire(import.meta.url);
+const captureHelpers = require(fileURLToPath(new URL(
+  "../references/modules/direct-cuebook-viewpoint-visual/scripts/capture_html_viewpoint.cjs",
+  import.meta.url,
+)));
+const { paintStats, pngDimensions } = captureHelpers;
 
 const SCHEMA = JSON.parse(readFileSync(new URL("../references/frame-preview-v1.schema.json", import.meta.url), "utf8"));
 const SELECTABLE_STATES = new Set(["ready", "conditional", "selected"]);
 const COMPLETE_QUERY_STATES = new Set(["reused", "executed"]);
 const REQUIRED_CHECKS = new Set(["creator_ownership", "source_binding", "copy_fit", "image_render"]);
 const LOGIC_TEMPLATES = new Set(["verdict", "proof", "system"]);
+const EDITORIAL_TEMPLATES = new Set([
+  "curve_story", "relative_divergence", "drawdown_recovery", "correlation_shift", "event_window",
+  "threshold_regime", "scenario_lanes", "causal_spine", "evidence_balance",
+]);
 const PUBLIC_PROCESS_TERMS = [
   "小红书", "Reddit", "reddit", "Telegram", "telegram", "Twitter", "twitter", "推文", "thread", "caption",
   "工作流", "候选集", "质量评分", "证据账本", "query bundle", "research pack", "settlement object",
@@ -32,13 +44,6 @@ function safeRelativePng(ref) {
     && ref.endsWith(".png")
     && !path.isAbsolute(ref)
     && !ref.split(/[\\/]/u).includes("..");
-}
-
-function pngDimensions(file) {
-  const data = readFileSync(file);
-  const signature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
-  if (data.length < 24 || !data.subarray(0, 8).equals(signature) || data.toString("ascii", 12, 16) !== "IHDR") return null;
-  return [data.readUInt32BE(16), data.readUInt32BE(20)];
 }
 
 function sha256(file) {
@@ -106,6 +111,9 @@ export function validate(payload, assetRoot = null) {
     if (candidate.visual_kind === "market_chart" && candidate.template_id !== "thesis_chart") {
       errors.push(issue("VISUAL_ROUTE", `${candidatePath}.template_id`, "A market chart must use thesis_chart."));
     }
+    if (candidate.visual_kind === "editorial_visual" && !EDITORIAL_TEMPLATES.has(candidate.template_id)) {
+      errors.push(issue("VISUAL_ROUTE", `${candidatePath}.template_id`, "An editorial visual must use a registered fast-expression grammar."));
+    }
     const frame = isObject(candidate.frame) ? candidate.frame : {};
     const publicCopy = `${frame.title ?? ""}\n${frame.body ?? ""}`;
     for (const term of [...PUBLIC_PROCESS_TERMS, ...CORRECTION_FIRST_TERMS]) {
@@ -133,21 +141,32 @@ export function validate(payload, assetRoot = null) {
       if (!file.startsWith(`${root}${path.sep}`) || !existsSync(file) || !statSync(file).isFile()) {
         errors.push(issue("IMAGE_MISSING", `${candidatePath}.frame.image_ref`, "Preview PNG does not exist under the asset root."));
       } else {
-        const dimensions = pngDimensions(file);
-        if (!dimensions || dimensions[0] !== 2488 || dimensions[1] !== 1056) {
-          errors.push(issue("IMAGE_DIMENSIONS", `${candidatePath}.frame.image_ref`, "Fast preview must be exactly 2488 x 1056."));
+        try {
+          const dimensions = pngDimensions(file);
+          if (dimensions[0] !== 2488 || dimensions[1] !== 1056) {
+            errors.push(issue("IMAGE_DIMENSIONS", `${candidatePath}.frame.image_ref`, "Fast preview must be exactly 2488 x 1056."));
+          }
+          const paint = paintStats(file);
+          if (!Number.isFinite(paint.paintedRatio) || paint.paintedRatio < 0.006) {
+            errors.push(issue("IMAGE_BLANK", `${candidatePath}.frame.image_ref`, "Fast preview must contain at least 0.6% materially painted pixels."));
+          }
+          if (!Number.isFinite(paint.nearBlackRatio) || paint.nearBlackRatio > 0.96) {
+            errors.push(issue("IMAGE_BLACK", `${candidatePath}.frame.image_ref`, "Fast preview cannot be an incompletely painted black raster."));
+          }
+        } catch (error) {
+          errors.push(issue("IMAGE_DECODE", `${candidatePath}.frame.image_ref`, `Fast preview must be a fully decodable PNG: ${error.message}`));
         }
         if (candidate.image_sha256 !== sha256(file)) errors.push(issue("IMAGE_HASH", `${candidatePath}.image_sha256`, "Preview PNG hash does not match the paired image."));
       }
     }
   });
 
-  if (generation.mode === "requested_three" && (
-    angles.size !== 3
-    || templates.size !== 3
-    || candidates.some((candidate) => candidate?.visual_kind !== "logic_card" || !LOGIC_TEMPLATES.has(candidate?.template_id))
-  )) {
-    errors.push(issue("THREE_WAY_VARIATION", "$.candidates", "Three requested previews must use conviction/evidence/mechanism and verdict/proof/system once each."));
+  if (generation.mode === "requested_three") {
+    const legacyThree = candidates.every((candidate) => candidate?.visual_kind === "logic_card" && LOGIC_TEMPLATES.has(candidate?.template_id));
+    const expressionThree = candidates.every((candidate) => candidate?.visual_kind === "editorial_visual" && EDITORIAL_TEMPLATES.has(candidate?.template_id));
+    if (angles.size !== 3 || templates.size !== 3 || (!legacyThree && !expressionThree)) {
+      errors.push(issue("THREE_WAY_VARIATION", "$.candidates", "Three requested previews need conviction/evidence/mechanism plus three genuinely different logic templates or fast-expression grammars."));
+    }
   }
 
   const selection = isObject(payload.selection) ? payload.selection : {};

@@ -1,7 +1,7 @@
 {
   "name": "cuebook",
-  "version": "0.2.5+codex.20260718101144",
-  "description": "Query Cuebook market intelligence or turn a creator-owned trading viewpoint into a Frame with one title, one body, and one paired image.",
+  "version": "0.3.0+codex.20260719172220",
+  "description": "Query Cuebook market intelligence or compile a creator-owned market viewpoint into a sourced editorial Frame.",
   "author": {
     "name": "Cuebook",
     "url": "https://github.com/cuebook-public"
@@ -18,14 +18,15 @@
   "skills": "./public-skills/",
   "interface": {
     "displayName": "Cuebook",
-    "shortDescription": "Query Cuebook data or create a title-body-image Frame",
-    "longDescription": "Cuebook has two explicit modules. Query searches, reads, compares, and explains Cuebook assets, stories, Frames, evidence, market data, metrics, and history without writing anything. Create preserves and improves the user's trading viewpoint, asks one optional high-leverage heuristic question, then runs one small Cuebook-first evidence pass before returning one recommended Frame. A skip moves directly into creation; three alternatives are produced only when requested. Every Frame has one title, one concise body, and one paired 2488 x 1056 image. Price, trend, relative-strength, volume, and dated-horizon views use a sourced market chart; qualitative mechanisms use a logic card. The observed history window remains separate from the forward horizon, causal hypotheses stay creator-owned, and no future price path is fabricated. One deterministic runner adapts data, renders, hashes, and validates the preview. Release packaging waits until selection. Initial and correction publication use the active publish grant plus the explicit first-party publish action; only withdrawal requires separate consent.",
+    "shortDescription": "Query Cuebook or create a sourced editorial Frame",
+    "longDescription": "Cuebook has two explicit modules. Query searches, reads, compares, and explains Cuebook assets, stories, Frames, evidence, market data, metrics, and history without writing anything. Create preserves and sharpens the user's viewpoint, asks at most one optional high-leverage question, and runs one bounded Cuebook-first evidence pass before returning one recommended Frame. Every Frame has one title, one concise body, and one paired 2488 x 1056 editorial image. The V2 expression compiler chooses the analytical relationship before the layout, then deterministically renders price or indexed curves, relative spread, drawdown and recovery, rolling correlation, event windows, threshold regimes, causal spines, evidence balance, or conditional scenario lanes. Observed history and unresolved future time remain visibly separate; causal hypotheses stay creator-owned, and no future price path or uncalibrated probability fan is fabricated. Three alternatives are generated together only when requested and must differ structurally, not merely by color. Release packaging waits until selection. Initial and correction publication use the active publish grant plus the explicit first-party publish action; only withdrawal requires separate consent.",
     "developerName": "Cuebook",
     "category": "Finance",
     "capabilities": [
       "Market Query",
       "Frame Creation",
-      "Paired Viewpoint Images",
+      "Editorial Curve Graphics",
+      "Conditional Future Scenarios",
       "Settlement Protocols",
       "Release Preparation"
     ],

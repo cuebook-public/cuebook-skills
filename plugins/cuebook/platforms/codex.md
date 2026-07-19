@@ -3,7 +3,7 @@
 ## Install and discovery
 
 ```bash
-codex plugin marketplace add cuebookapp/cuebook \
+codex plugin marketplace add cuebook-public/cuebook-skills \
   --ref <release-tag> \
   --sparse .agents/plugins \
   --sparse plugins/cuebook
@@ -11,10 +11,10 @@ codex plugin marketplace add cuebookapp/cuebook \
 codex plugin add cuebook@cuebook
 ```
 
-Skills are discovered from the plugin's `skills/` directory. Codex reads each
-`SKILL.md` name and description at startup; internal skills are invoked through
-the two public entrypoints (`query-cuebook`, `create-cuebook-content`), which
-call sibling skills with the `$skill-name` convention supported by this plugin.
+Skills are discovered from the plugin's generated `public-skills/` directory.
+Codex reads exactly two `SKILL.md` files at startup. Internal capabilities are
+vendored as non-discoverable `references/modules/*.md` resources behind
+`query-cuebook` and `create-cuebook-content`.
 
 ## MCP configuration and auth
 
@@ -27,12 +27,13 @@ server are loaded.
 
 - Read or inspect anything: `query-cuebook` (read-only, no writes).
 - Turn an idea into a Frame: `create-cuebook-content` (may call Query; each
-  candidate visibly contains only one title, one body, and one paired image).
+  candidate visibly contains only one title, one body, and one paired editorial
+  image with sourced curves, event/threshold geometry, or future scenarios).
 
 ## Runtime dependencies
 
 - Node.js 18+ for every validator script, with Playwright and a local Chromium/Chrome executable for the
-  seven render/audit skills (declared in their `compatibility` frontmatter).
+  deterministic preview renderer and selected release audits (declared in their `compatibility` frontmatter).
   Codex runs supply these via the bundled runtime under
   `~/.cache/codex-runtimes/`; set `NODE_PATH` to a Playwright-bearing
   `node_modules` when invoking capture or audit scripts manually.

@@ -6,14 +6,10 @@ import path from "node:path";
 import test from "node:test";
 
 import { runFastPreviewJob } from "../scripts/run_fast_preview.mjs";
+import { validPaintedPng } from "./png_fixture.mjs";
 
 function fakePng() {
-  const png = Buffer.alloc(24);
-  Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]).copy(png, 0);
-  png.write("IHDR", 12, "ascii");
-  png.writeUInt32BE(2488, 16);
-  png.writeUInt32BE(1056, 20);
-  return png;
+  return validPaintedPng();
 }
 
 function hash(buffer) {

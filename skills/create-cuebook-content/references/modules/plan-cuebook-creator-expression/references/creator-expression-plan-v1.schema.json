@@ -566,13 +566,13 @@
       "required": ["requirement_ref", "capability_id", "tool_ids", "run_policy"],
       "properties": {
         "requirement_ref": {"type": "string", "pattern": "^D[1-9][0-9]*$"},
-        "capability_id": {"enum": ["market_evidence", "published_story", "asset_narrative", "fundamental_metrics", "market_series", "derived_metrics", "current_market_state", "settlement_reference"]},
+        "capability_id": {"enum": ["market_evidence", "published_story", "asset_narrative", "fundamental_metrics", "market_series", "derived_metrics", "calendar_events", "asset_events", "positioning_state", "news_cluster", "current_market_state", "settlement_reference"]},
         "tool_ids": {
           "type": "array",
           "minItems": 2,
           "maxItems": 3,
           "uniqueItems": true,
-          "items": {"enum": ["search_assets", "search_news", "get_cues", "list_asset_cues", "list_filings", "get_candles", "get_market_state"]}
+          "items": {"enum": ["search_assets", "search_news", "get_cues", "list_asset_cues", "list_filings", "get_candles", "list_market_calendar", "list_asset_events", "get_positioning", "get_news_cluster", "get_market_state"]}
         },
         "run_policy": {"const": "reuse_or_query_gap"}
       }

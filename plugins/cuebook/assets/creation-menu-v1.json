@@ -1,6 +1,6 @@
 {
   "schema_version": "creation-menu-v1",
-  "catalog_version": "1.27.0",
+  "catalog_version": "1.28.0",
   "module_id": "create",
   "default_preset": "preset-publish-candidates",
   "steps": [
@@ -38,6 +38,14 @@
           "availability": "backend_required"
         },
         {
+          "option_id": "positioning",
+          "label": "仓位与资金线索",
+          "mcp_tools": [
+            "get_positioning"
+          ],
+          "availability": "backend_required"
+        },
+        {
           "option_id": "creator_note",
           "label": "自己的观点、新闻或线索",
           "mcp_tools": [],
@@ -68,7 +76,9 @@
             "build-market-research-pack"
           ],
           "mcp_tools": [
-            "search_news"
+            "search_news",
+            "list_market_calendar",
+            "list_asset_events"
           ],
           "availability": "backend_required"
         },
@@ -93,7 +103,11 @@
           "skill_refs": [
             "build-market-research-pack",
             "assemble-cuebook-viewpoint-data"
-          ]
+          ],
+          "mcp_tools": [
+            "get_positioning"
+          ],
+          "availability": "backend_required"
         },
         {
           "option_id": "technical_confirmation",
@@ -194,38 +208,17 @@
       "options": [
         {
           "option_id": "auto",
-          "label": "自动选图",
+          "label": "按观点关系自动选图",
           "skill_refs": [
+            "plan-cuebook-creator-expression",
             "direct-cuebook-viewpoint-visual",
             "render-cuebook-viewpoint-visual"
           ],
           "default": true
         },
         {
-          "option_id": "key_signal",
-          "label": "关键数字或新闻",
-          "skill_refs": [
-            "render-cuebook-market-signal"
-          ]
-        },
-        {
-          "option_id": "logic_chain",
-          "label": "逻辑传导图",
-          "skill_refs": [
-            "compile-cuebook-visual-argument",
-            "render-cuebook-logic-card"
-          ]
-        },
-        {
-          "option_id": "market_curve",
-          "label": "核心曲线",
-          "skill_refs": [
-            "render-cuebook-market-figure"
-          ]
-        },
-        {
-          "option_id": "kline_trigger",
-          "label": "K 线与触发条件",
+          "option_id": "curve_story",
+          "label": "趋势与未来时钟",
           "skill_refs": [
             "render-cuebook-thesis-chart"
           ],
@@ -235,11 +228,61 @@
           "availability": "backend_required"
         },
         {
-          "option_id": "comparison",
-          "label": "标的对比",
+          "option_id": "relative_divergence",
+          "label": "相对强弱与分化",
+          "skill_refs": [
+            "render-cuebook-thesis-chart"
+          ],
+          "mcp_tools": [
+            "get_candles"
+          ],
+          "availability": "backend_required"
+        },
+        {
+          "option_id": "drawdown_recovery",
+          "label": "回撤与修复",
           "skill_refs": [
             "render-cuebook-market-figure",
             "render-cuebook-thesis-chart"
+          ],
+          "mcp_tools": [
+            "get_candles"
+          ],
+          "availability": "backend_required"
+        },
+        {
+          "option_id": "event_window",
+          "label": "事件前后",
+          "skill_refs": [
+            "build-market-research-pack",
+            "render-cuebook-thesis-chart"
+          ],
+          "mcp_tools": [
+            "search_news",
+            "list_market_calendar",
+            "list_asset_events",
+            "get_candles"
+          ],
+          "availability": "backend_required"
+        },
+        {
+          "option_id": "threshold_regime",
+          "label": "关键位与状态切换",
+          "skill_refs": [
+            "compute-cuebook-market-indicators",
+            "render-cuebook-thesis-chart"
+          ],
+          "mcp_tools": [
+            "get_candles"
+          ],
+          "availability": "backend_required"
+        },
+        {
+          "option_id": "causal_or_scenario",
+          "label": "传导链与未来情景",
+          "skill_refs": [
+            "compile-cuebook-visual-argument",
+            "render-cuebook-logic-card"
           ]
         }
       ]

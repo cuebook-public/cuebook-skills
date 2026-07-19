@@ -35,14 +35,18 @@ generated only when explicitly requested. Every Frame exposes one title, one
 concise body, and one paired 2488 x 1056 image; release contracts and extra
 derivatives wait until selection.
 
-Fast creation keeps the observed history window separate from any forward
-horizon and chooses one image route automatically. Price path, trend,
-relative-strength, volume, event-reaction, and dated-horizon views use a
-sourced Cuebook market chart. Qualitative mechanisms and creator intuition use
-a compact logic card. A market chart shows what happened and the thesis clock;
-it never turns a creator's causal hypothesis into a retrieved fact or draws an
-invented future price path. One deterministic runner handles data adaptation,
-rendering, hashing, and preview validation without expanding the full workflow.
+Fast creation keeps the observed history window separate from unresolved
+future time and chooses the analytical relationship before the chart or
+layout. The V2 expression compiler supports price and indexed curves, relative
+spread, drawdown and recovery, rolling correlation, event windows, threshold
+regimes, causal spines, evidence balance, and conditional scenario lanes.
+Title, body, and image do different jobs: the title holds the judgment, the
+body carries the creator's mechanism and horizon, and the image adds evidence,
+time structure, and the next observable. A chart shows only frozen history;
+future regions contain clocks, events, conditions, milestones, or invalidation,
+never an invented price path or uncalibrated fan. One deterministic runner
+compiles local transforms, renders, hashes, and validates every visible source
+binding without expanding the full release workflow.
 
 Fast creation uses one small Cuebook-first query phase. If Cuebook leaves a
 material evidence gap, the Skill may run one bounded authorized Web batch with

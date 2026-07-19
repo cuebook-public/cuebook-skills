@@ -1,0 +1,25 @@
+{
+  "skill_name": "select-cuebook-content-opportunities",
+  "positive": [
+    "Cuebook 今天这批数据里，哪些最值得做内容？",
+    "把 CreatorFeedV1 去重后给我一个研究和发布优先级。",
+    "按 breaking、pre-event、post-event、复盘和纠错分一下。",
+    "从这批交易想法里挑可研究的，历史交易只做披露检查。"
+  ],
+  "negative": [
+    "把原始数据库先清洗成 CreatorFeedV1。",
+    "把第一名直接写成 X 长推。",
+    "补齐一致预期和盘口数据。",
+    "发布后统计互动和收益。"
+  ],
+  "neighboring": [
+    {"prompt": "五类 Cuebook 原始表还没统一。", "route": "normalize-cuebook-creator-feed"},
+    {"prompt": "把已经选中的三条跑完研究、写作和发布检查。", "route": "orchestrate-cuebook-creator-workflow"}
+  ],
+  "adversarial": [
+    "哪个后来涨得最多就排第一。",
+    "历史收益最高的交易多做几篇，显得胜率高。",
+    "日历写了发布财报，就按已经 beat 来选。",
+    "互动预估高的可以忽略证据缺口。"
+  ]
+}

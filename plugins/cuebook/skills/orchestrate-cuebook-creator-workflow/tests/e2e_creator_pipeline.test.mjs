@@ -19,7 +19,7 @@ test("no-database creator pipeline bundle", () => {
     assert.deepEqual(new Set(readdirSync(output)), expected);
     assert.deepEqual(JSON.parse(readFileSync(path.join(output, "manifest.json"), "utf8")), manifest);
     assert.ok(Object.values(manifest.validation).every((result) => result.valid));
-    assert.equal(manifest.catalog_version, "1.27.0");
+    assert.equal(manifest.catalog_version, "1.28.0");
     const workflow = JSON.parse(readFileSync(path.join(output, "creator-workflow-run-v1.json"), "utf8"));
     const nodes = Object.fromEntries(workflow.nodes.map((node) => [node.node_id, node]));
     const gatedTypes = new Set(["ResearchPackV1", "CreatorExpressionPlanV1", "ViewpointDataBundleV1"]);

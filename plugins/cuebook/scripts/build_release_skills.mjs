@@ -35,13 +35,11 @@ const MIN_DISCOVERY_REDUCTION_PERCENT = 60;
 const FAST_PREVIEW_BYTE_LIMIT = 150_000;
 const FAST_PREVIEW_FILES = [
   "SKILL.md",
-  "references/frame-preview-fast-job-v1.schema.json",
+  "references/frame-preview-fast-job-v2.schema.json",
+  "references/frame-expression-system-v2.md",
   "references/modules/query-cuebook.md",
   "references/modules/query-cuebook/references/cuebook-query-request-v1.schema.json",
   "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json",
-  "references/modules/render-cuebook-thesis-chart.md",
-  "references/modules/render-cuebook-thesis-chart/references/thesis-chart-v1.schema.json",
-  "references/modules/render-cuebook-thesis-chart/references/market-series-batch-v1.schema.json",
   "assets/plugin/mcp-capability-map-v1.json",
 ];
 
@@ -131,6 +129,26 @@ export function findClosure(pluginRoot, entry, skillNames) {
     for (const md of rglob(path.join(pluginRoot, "skills", current), ".md")) {
       for (const match of fs.readFileSync(md, "utf-8").matchAll(pattern)) {
         if (!seen.includes(match[1])) queue.push(match[1]);
+      }
+    }
+    // A bundled script can import a sibling capability without spelling its
+    // public Skill token in Markdown. Keep that executable closure alongside
+    // the prose closure so a self-contained release cannot ship a latent
+    // ERR_MODULE_NOT_FOUND.
+    const currentRoot = path.join(pluginRoot, "skills", current);
+    const scriptFiles = [
+      ...rglob(currentRoot, ".mjs"),
+      ...rglob(currentRoot, ".cjs"),
+      ...rglob(currentRoot, ".js"),
+    ];
+    for (const script of scriptFiles) {
+      const text = fs.readFileSync(script, "utf-8");
+      const importPattern = /(?:\bfrom\s*|\bimport\s*\(\s*|\brequire\s*\(\s*)["'](\.\.?\/[^"']+)["']/gu;
+      for (const match of text.matchAll(importPattern)) {
+        const resolved = path.resolve(path.dirname(script), match[1]);
+        const relative = path.relative(path.join(pluginRoot, "skills"), resolved);
+        const importedSkill = relative.split(path.sep)[0];
+        if (skillNames.has(importedSkill) && !seen.includes(importedSkill)) queue.push(importedSkill);
       }
     }
   }
@@ -281,6 +299,37 @@ export function checkBundle(bundleRoot, skillNames) {
       const target = path.resolve(path.dirname(md), match[1]);
       if (!fs.existsSync(target)) {
         errors.push(issue("BROKEN_LINK", `${bundleName}/${rel}`, `Linked file does not exist: ${match[1]}`));
+      }
+    }
+  }
+  const scriptFiles = [
+    ...rglob(bundleRoot, ".mjs"),
+    ...rglob(bundleRoot, ".cjs"),
+    ...rglob(bundleRoot, ".js"),
+  ];
+  for (const script of scriptFiles) {
+    const rel = path.relative(bundleRoot, script);
+    const text = fs.readFileSync(script, "utf-8");
+    const importPattern = /(?:\bfrom\s*|\bimport\s*\(\s*|\brequire\s*\(\s*)["'](\.\.?\/[^"']+)["']/gu;
+    for (const match of text.matchAll(importPattern)) {
+      const requested = match[1];
+      const target = path.resolve(path.dirname(script), requested);
+      const candidates = [
+        target,
+        `${target}.mjs`,
+        `${target}.cjs`,
+        `${target}.js`,
+        `${target}.json`,
+        path.join(target, "index.mjs"),
+        path.join(target, "index.cjs"),
+        path.join(target, "index.js"),
+      ];
+      if (!candidates.some((candidate) => fs.existsSync(candidate))) {
+        errors.push(issue(
+          "BROKEN_SCRIPT_IMPORT",
+          `${bundleName}/${rel}`,
+          `Relative script import does not exist: ${requested}`,
+        ));
       }
     }
   }

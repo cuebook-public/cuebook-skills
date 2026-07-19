@@ -202,6 +202,31 @@ test("vendored validators import without plugin tree", () => {
   });
 });
 
+test("every bundled relative script import resolves, including the creator workflow example", () => {
+  withTmpPath((tmpPath) => {
+    const manifest = buildRelease(tmpPath);
+    assert.ok(!manifest.errors.some((error) => error.code === "BROKEN_SCRIPT_IMPORT"), JSON.stringify(manifest.errors));
+    const script = path.join(
+      tmpPath,
+      "release",
+      "create-cuebook-content",
+      "references",
+      "modules",
+      "orchestrate-cuebook-creator-workflow",
+      "scripts",
+      "build_example_bundle.mjs",
+    );
+    const completed = spawnSync(process.execPath, ["-e", `import(${JSON.stringify(new URL(`file://${script}`).href)})`], {
+      encoding: "utf-8",
+      env: {
+        ...process.env,
+        NODE_PATH: path.resolve(PLUGIN_ROOT, "..", "..", "node_modules"),
+      },
+    });
+    assert.equal(completed.status, 0, completed.stderr);
+  });
+});
+
 test("bundle frontmatter follows agent skills spec", () => {
   withTmpPath((tmpPath) => {
     buildRelease(tmpPath);

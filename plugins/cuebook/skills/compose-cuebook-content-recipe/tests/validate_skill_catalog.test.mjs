@@ -28,15 +28,18 @@ test("base catalog structure", () => {
   const catalog = baseCatalog();
   const result = validate(catalog, false);
   assert.equal(result.valid, true, JSON.stringify(result));
-  assert.equal(catalog.catalog_version, "1.27.0");
+  assert.equal(catalog.catalog_version, "1.28.0");
   const query = skill(catalog, "query-cuebook");
   const create = skill(catalog, "create-cuebook-content");
   assert.equal(query.output_contract, "CuebookQueryBundleV1");
   assert.deepEqual(query.requires_all, []);
   assert.equal(query.ui.surface, "query");
   assert.equal(create.output_contract, "CuebookCreationBundleV1");
+  assert.equal(create.version, "2.0.0");
   assert.deepEqual(create.requires_all, ["orchestrate-cuebook-creator-workflow"]);
   assert.ok(create.input_contracts.includes("CuebookQueryBundleV1"));
+  assert.ok(create.maintenance.schema_refs.includes("create-cuebook-content/references/frame-preview-fast-job-v2.schema.json"));
+  assert.ok(create.maintenance.test_refs.includes("create-cuebook-content/tests/run_fast_preview_v2.test.mjs"));
 });
 
 test("viewpoint bridge and deferred motion metadata", () => {

@@ -62,7 +62,7 @@ These are routing defaults, not geometry templates. The selected candidate recor
 
 Each `query_request` binds one `data_requirements` ref to:
 
-- a semantic capability such as `market_evidence`, `fundamental_metrics`, `market_series`, or `settlement_reference`;
+- a semantic capability such as `market_series`, `calendar_events`, `asset_events`, `positioning_state`, `news_cluster`, or `settlement_reference`;
 - the exact tool IDs from the Cuebook MCP capability map;
 - `reuse_or_query_gap`, which means reuse a compatible frozen result first and query only the unresolved requirement.
 
@@ -73,7 +73,7 @@ The route is a request plan, not proof that a tool ran. Actual result refs remai
 | Owner | May use | Must not do |
 | --- | --- | --- |
 | `plan-cuebook-creator-expression` | semantics, route registry, supplied artifact metadata | run MCP reads or choose final pixels |
-| `query-cuebook` | exact registered MCP tools such as `search_assets`, `search_news`, `list_filings`, `get_candles`, and `get_market_state`; derived metrics run locally from frozen Query inputs | author the creator's judgment or design a visual |
+| `query-cuebook` | exact registered MCP tools such as `search_assets`, `search_news`, `get_candles`, `list_market_calendar`, `list_asset_events`, `get_positioning`, and `get_market_state`; derived metrics run locally from frozen Query inputs | author the creator's judgment or design a visual |
 | `assemble-cuebook-viewpoint-data` | frozen Query result refs and deterministic transforms | browse, widen the thesis, or invent geometry |
 | `direct-cuebook-viewpoint-visual` | locked jobs, evidence shapes, data bundle, palette and expression registries | reclassify intent, fetch data, or render settlement internals |
 | `render-cuebook-viewpoint-visual` | approved HTML-native direction, deterministic capture and audit tools | alter the meaning fingerprint or evidence selection |

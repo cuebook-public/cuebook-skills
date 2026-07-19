@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.local/schemas/content-opportunity-set-v1.schema.json",
+  "title": "ContentOpportunitySetV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "opportunity_set_id", "feed_ref", "feed_hash", "as_of", "decision_cutoff_at", "ruleset_version", "mode", "candidates", "clusters", "selected_order", "quality_report"],
+  "properties": {
+    "schema_version": {"const": "content-opportunity-set-v1"},
+    "opportunity_set_id": {"type": "string", "pattern": "^OS_[a-z0-9]{8,64}$"},
+    "feed_ref": {"type": "string", "pattern": "^CF_[a-z0-9]{8,64}$"},
+    "feed_hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "as_of": {"type": "string", "format": "date-time"},
+    "decision_cutoff_at": {"type": "string", "format": "date-time"},
+    "ruleset_version": {"type": "string", "minLength": 1},
+    "mode": {"enum": ["daily_desk", "single_subject", "event_lifecycle", "postmortem", "correction", "evergreen"]},
+    "candidates": {"type": "array", "items": {"$ref": "#/$defs/candidate"}},
+    "clusters": {"type": "array", "items": {"$ref": "#/$defs/cluster"}},
+    "selected_order": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "quality_report": {"$ref": "#/$defs/quality"}
+  },
+  "$defs": {
+    "level": {"enum": ["high", "medium", "low"]},
+    "refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "candidate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["opportunity_id", "title", "anchor_refs", "entity_refs", "lifecycle", "editorial_job", "thesis_seed", "audience", "expires_at", "eligibility", "evidence_state", "missing_requirements", "permission_state", "disclosure_state", "conflict_state", "history_refs", "history_use", "factor_vector", "decision", "priority", "reason_codes", "dedupe_cluster_id", "merged_into", "research_requirements", "recommended_mode", "selection_rank", "tie_break_key"],
+      "properties": {
+        "opportunity_id": {"type": "string", "pattern": "^OPP_[a-z0-9_:-]+$"},
+        "title": {"type": "string", "minLength": 1},
+        "anchor_refs": {"$ref": "#/$defs/refs"},
+        "entity_refs": {"$ref": "#/$defs/refs"},
+        "lifecycle": {"enum": ["breaking", "pre_event", "live_event", "post_event", "evergreen", "trade_postmortem", "correction"]},
+        "editorial_job": {"enum": ["explain_event", "test_narrative", "pre_event_watch", "post_event_debrief", "trade_postmortem", "risk_alert", "correction", "evergreen_education"]},
+        "thesis_seed": {"type": "string", "minLength": 1},
+        "audience": {"type": "string", "minLength": 1},
+        "expires_at": {"type": ["string", "null"], "format": "date-time"},
+        "eligibility": {"enum": ["researchable", "conditional", "blocked"]},
+        "evidence_state": {"enum": ["ready", "conditional", "blocked"]},
+        "missing_requirements": {"type": "array", "items": {"type": "string"}},
+        "permission_state": {"enum": ["ready", "conditional", "blocked"]},
+        "disclosure_state": {"enum": ["ready", "unknown", "blocked"]},
+        "conflict_state": {"enum": ["clear", "unknown", "material"]},
+        "history_refs": {"$ref": "#/$defs/refs"},
+        "history_use": {"enum": [null, "conflict_check", "disclosure", "pre_registered_postmortem"]},
+        "factor_vector": {
+          "type": "object", "additionalProperties": false,
+          "required": ["timeliness", "evidence_maturity", "novelty", "audience_relevance", "explainability", "production_fit", "correction_risk", "conflict_risk"],
+          "properties": {
+            "timeliness": {"$ref": "#/$defs/level"}, "evidence_maturity": {"$ref": "#/$defs/level"},
+            "novelty": {"$ref": "#/$defs/level"}, "audience_relevance": {"$ref": "#/$defs/level"},
+            "explainability": {"$ref": "#/$defs/level"}, "production_fit": {"$ref": "#/$defs/level"},
+            "correction_risk": {"$ref": "#/$defs/level"}, "conflict_risk": {"$ref": "#/$defs/level"}
+          }
+        },
+        "decision": {"enum": ["selected", "defer", "merge", "reject", "no_action"]},
+        "priority": {"enum": ["p0", "p1", "p2", "none"]},
+        "reason_codes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "dedupe_cluster_id": {"type": "string", "minLength": 1},
+        "merged_into": {"type": ["string", "null"]},
+        "research_requirements": {"type": "array", "items": {"type": "string"}},
+        "recommended_mode": {"enum": ["quick_post", "research_pack", "content_program", "correction_workflow", "postmortem"]},
+        "selection_rank": {"type": ["integer", "null"], "minimum": 1},
+        "tie_break_key": {"type": "string", "minLength": 1}
+      }
+    },
+    "cluster": {
+      "type": "object", "additionalProperties": false,
+      "required": ["cluster_id", "member_refs", "canonical_ref", "reason"],
+      "properties": {
+        "cluster_id": {"type": "string", "pattern": "^OC_[a-z0-9_:-]+$"},
+        "member_refs": {"$ref": "#/$defs/refs"},
+        "canonical_ref": {"type": "string"},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "quality": {
+      "type": "object", "additionalProperties": false,
+      "required": ["decision", "hard_failures", "warnings", "checks", "counts"],
+      "properties": {
+        "decision": {"enum": ["ready", "conditional", "blocked"]},
+        "hard_failures": {"type": "array", "items": {"type": "string"}},
+        "warnings": {"type": "array", "items": {"type": "string"}},
+        "checks": {"type": "array", "items": {"type": "string"}},
+        "counts": {
+          "type": "object", "additionalProperties": false,
+          "required": ["candidates", "selected", "deferred", "merged", "rejected", "no_action", "blocked"],
+          "properties": {
+            "candidates": {"type": "integer", "minimum": 0}, "selected": {"type": "integer", "minimum": 0},
+            "deferred": {"type": "integer", "minimum": 0}, "merged": {"type": "integer", "minimum": 0},
+            "rejected": {"type": "integer", "minimum": 0}, "no_action": {"type": "integer", "minimum": 0},
+            "blocked": {"type": "integer", "minimum": 0}
+          }
+        }
+      }
+    }
+  }
+}
