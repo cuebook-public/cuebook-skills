@@ -29,7 +29,7 @@ The Cuebook plugin reads source-linked market intelligence and turns a creator's
 
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \
-  --ref v0.4.1 \
+  --ref v0.5.0 \
   --sparse .agents/plugins \
   --sparse plugins/cuebook
 

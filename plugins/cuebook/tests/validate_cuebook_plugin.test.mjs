@@ -64,7 +64,7 @@ test("Claude Code marketplace reuses the two public Skills and canonical MCP con
     fs.readFileSync(path.join(PLUGIN_ROOT, ".claude-plugin", "plugin.json"), "utf-8"),
   );
   assert.equal(manifest.name, "cuebook");
-  assert.equal(manifest.version, "0.4.1");
+  assert.equal(manifest.version.split("+")[0], "0.5.0");
   assert.equal(manifest.skills, "./public-skills/");
   assert.equal(manifest.mcpServers, "./.mcp.json");
 });
