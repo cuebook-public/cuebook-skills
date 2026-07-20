@@ -209,7 +209,7 @@ const FRAME_PUBLICATION_FLOW = {
   publish_input_omitted_fields: ["consent_request_id"],
   wire_golden: {
     tool_manifest_sha256: "bf4464c25623d9d44dd16f08dbb51a9cbb91e3062c813ed1c3941403d65289a2",
-    schema_catalog_sha256: "47f1cf236ad0cedf6afc266adb113c5d89aa534f9e0303ddc3745852db170acf",
+    schema_catalog_sha256: "0f654cce42c03e23eab005eb76e092db6a872f5da5377e9af0e05bf126bde299",
   },
   mutation_idempotency: "distinct_lowercase_uuidv7_per_command",
   replay_policy: "same_key_same_payload_returns_receipt_changed_payload_conflict",
