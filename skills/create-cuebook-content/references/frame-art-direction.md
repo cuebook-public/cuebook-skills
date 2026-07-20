@@ -55,15 +55,9 @@ Keep paragraph and data type highly legible even when the headline system change
 
 Also record `design_family/narrative_placement/grammar/mobile-622` as the phone-scale `attention_signature`. It helps the creator loop and later feed sequencing avoid adjacent identical silhouettes; it is expression metadata, not evidence or a security boundary.
 
-For one preview, return the single best fit. Do not generate variants only to demonstrate range.
+For every creator-facing generation, return the single best fit. Do not generate a gallery merely to demonstrate range. If the creator asks for another direction, preserve one Meaning Lock and evidence set, avoid the last two fingerprints, and return one materially different truthful grammar or composition. A non-chart family is valid only when it expresses the idea honestly.
 
-For three explicitly requested alternatives:
-
-- preserve one creator meaning lock and evidence set;
-- use three different grammars, compositions, design families, and narrative placements;
-- use at least two surface and display systems;
-- make the silhouettes distinguishable in grayscale before considering color;
-- include a non-chart family only when it expresses the idea honestly.
+Offline design evaluation may compare many fixtures across grammars, compositions, surfaces, and silhouettes. That evaluation is a coverage test for the system, not a set of sibling images to show or upload for one Frame.
 
 ## Anti-template gates
 

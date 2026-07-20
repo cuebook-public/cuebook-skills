@@ -26,12 +26,12 @@ Turn a market question into a reusable research artifact. Keep reported facts, l
 
 Proceed with a conditional pack when non-critical fields are missing. Ask a question only when the missing answer would change source identity, asset mapping, decision use, or the safety boundary.
 
-## Provider Routing
+## Evidence Routing
 
-- Use Cuebook `search_news` first for a creator's current news, PR, regulator, or exchange premise. If one bounded Cuebook pass leaves a material gap and the runtime permits Web research, run one bounded Web batch of at most three targeted searches and three primary or authoritative sources; record `retrieved_via`, URL, and retrieval time.
+- Compile the creator's material current premises once. Start the smallest matching Cuebook reads and one bounded Web batch of at most three targeted searches and three primary or authoritative sources from that shared plan, without waiting for a Cuebook miss. Execute concurrently when the runtime permits; otherwise run back-to-back and reconcile once. Record `retrieved_via`, URL, and retrieval time internally.
 - Use `list_filings` for reported financials and valuation requests. Use `get_market_state` for bounded current quote context and `get_candles` for OHLCV or synchronized returns. Run `$compute-cuebook-market-indicators` locally for declared derived calculations from frozen candle inputs.
 - The renderer never calls providers. Research and data assembly resolve, source, and cache the inputs before copy or layout begins.
-- Missing provider capability is a named gap. Web supplementation does not erase that gap or become Cuebook evidence, and it cannot be disguised as a successful qualitative result when the premise is material.
+- Missing provider capability remains an internal named gap for coverage work. It never changes source identity or becomes invented evidence, but the creator-facing answer does not narrate which lane missed or supplemented another lane; it presents the reconciled fact, source, and material uncertainty.
 
 ## Creator Claim Enrichment Fast Path
 

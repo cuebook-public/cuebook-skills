@@ -170,17 +170,19 @@ The complete public artifact is deliberately small:
 
 Workflow state, schema versions, candidate IDs, evidence bundles, hashes, scopes, upload progress, receipts, consent fields, and backend enums stay backstage.
 
-Eligible single-asset long and short Frames use one creator-facing settlement model across crypto, equities, ETFs, and indexes: the exact chosen deadline is fixed, then Cuebook compares the latest completed provider-official price observation at or before that deadline with the publication baseline. The creator never chooses regular hours, after hours, trading days, or next close. An explicit “publish this” confirms the selected Frame and this standard zero-threshold direction rule together; target-price and pair overrides are the only cases that need more terms.
+Eligible single-asset long and short Frames use one creator-facing settlement model across crypto, equities, ETFs, and indexes: the exact chosen deadline is fixed, then Cuebook compares the latest completed provider-official price observation at or before that deadline with the publication baseline. The creator never chooses regular hours, after hours, trading days, or next close. Before any image is rendered, one text-only Meaning Lock shows the exact copy, direction, deadline, and human settlement rule. A later “publish this” authorizes only the external write; target-price and pair overrides are the only cases that need more terms.
 
 ## From Intuition To Expression
 
-1. **Capture the edge.** Preserve the creator's claim, mechanism, horizon, and next observable. Ask at most one optional, high-leverage question; skipping it never blocks creation.
-2. **Find support.** Retrieve the smallest useful evidence set from Cuebook. A bounded Web lookup may fill a material gap and remains clearly labeled.
-3. **Lock the meaning.** Separate observed facts from the creator's interpretation. A request for another version changes expression, not the underlying claim or evidence.
-4. **Compose one Frame.** Write a sharp title, a reasoned body, and one visual with a clear reading path.
-5. **Preview, then publish.** Publication happens only after explicit intent. The ordinary one-preview path binds that frozen preview directly—no reconstructed release DAG, candidate family, or HTML page. A validated publish receipt ends the flow; the creator is sent to the Cuebook App without a web link or browser readback.
+1. **Capture the edge.** Preserve the creator's claim, mechanism, horizon, and next observable. Once the asset is known, at most one aligned and one contrasting or adjacent Cue may become optional thinking anchors for one high-leverage question; skipping them never blocks creation.
+2. **Find support.** Start the smallest Cuebook read batch and, when material current claims require it, one bounded authoritative Web batch from the same evidence plan. Cues remain published viewpoints rather than proof; factual sentences use evidence, while clearly framed creator inference may remain inference. Reconcile the result once; provider coverage and retry narration stay backstage.
+3. **Lock the meaning.** Show the exact title, body, asset, direction, deadline, human settlement rule, and visual intent as text. Do not render until the creator confirms them.
+4. **Compose one Frame.** Render one publication image from the frozen Meaning Lock. A request for another version changes only expression, not the claim, evidence, or settlement.
+5. **Preview, then publish.** Publication happens only after explicit intent and writes the already confirmed Frame. The ordinary one-preview path binds that frozen preview directly—no reconstructed release DAG, candidate family, or HTML page. A validated publish receipt ends the network flow; the creator gets a specific acknowledgment of the idea that was preserved, returns to the Cuebook App without a web link or browser readback, and may optionally share another signal or explicitly opt into a simulated Paper Trade for later review.
 
 The goal is not to lecture the creator or flatten the idea into generic research. Cuebook improves the expression while keeping authorship visible.
+
+Before the Meaning Lock, Cuebook may surface one or two genuinely new reasoning points from the already retrieved Cues—a missing actor, mechanism, comparator, next footprint, regime condition, or countercase. They are optional additions, never a test the creator must pass. Only what the creator adopts enters the final viewpoint.
 
 ## Designed For The Feed
 
@@ -196,7 +198,7 @@ The renderer chooses a visual relationship before it chooses a style.
 
 Every preview has one **2488 × 1056** publication PNG. Cuebook uploads and binds that image once; Feed and detail surfaces display the same master, with the Feed scaling it to the equivalent **622 × 264** aspect-ratio box. The Skill does not create separate compact, web, thumbnail, or OG assets.
 
-The master is authored against its 622 × 264 phone display box and rasterized at 4x: one dominant geometry, at most two essential prose groups, and at least 22 px display-size type for those groups. Historical data ends at a visible observation boundary; future space contains checkpoints or branches, never a fabricated price path. Delivery-layer resizing may be added later without changing the authoring or MCP contract.
+The master is authored against its 622 × 264 phone display box and rasterized at 4x: one dominant geometry and at most three reader-essential groups for orientation, evidence/mechanism, and future/settlement. Primary copy is at least 20 px and secondary essential labels at least 16 px at display size. When price matters, the image keeps one dated historical value, return, spread, drawdown, or threshold. Historical data ends at a visible observation boundary; future space contains checkpoints or branches, never a fabricated price path. Delivery-layer resizing may be added later without changing the authoring or MCP contract.
 
 ## Architecture
 

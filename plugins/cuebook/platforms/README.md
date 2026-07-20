@@ -11,7 +11,7 @@ The repository also publishes exactly two self-contained Agent Skills:
 - `query-cuebook`
 - `create-cuebook-content`
 
-Those layers are related but not interchangeable. MCP provides typed Cuebook data and authorized Frame operations. The Skills provide the creator interview, Cuebook-first evidence pass, meaning lock, mobile visual composition, and safe publication workflow.
+Those layers are related but not interchangeable. MCP provides typed Cuebook data and authorized Frame operations. The Skills provide the creator interview, reconciled evidence plan, pre-render Meaning Lock, mobile visual composition, and safe publication workflow.
 
 ## Support matrix
 
@@ -34,7 +34,7 @@ Those layers are related but not interchangeable. MCP provides typed Cuebook dat
 
 ### Skills plus MCP
 
-These hosts are the complete Cuebook creator targets. They can preserve the user's view, ask at most one optional high-leverage question, retrieve a bounded evidence set, render the compact and publication images locally, upload them over signed HTTPS, and publish only after explicit intent.
+These hosts are the complete Cuebook creator targets. They can preserve the user's view, ask at most one optional high-leverage question, retrieve a bounded evidence set, confirm exact copy and settlement before pixels, render one publication image locally, upload it over signed HTTPS, and publish only after explicit intent.
 
 ### MCP direct
 
@@ -48,8 +48,8 @@ Run this gate only after the target Cuebook server release is confirmed healthy:
 2. Start one OAuth flow. If token exchange fails, stop; do not retry in parallel or consume another connection slot.
 3. Require a normal `get_frame_capabilities` result. Browser approval or an “enabled” badge is not enough.
 4. Run one smallest useful read and retain source-linked output.
-5. On a Skill host, create one preview from a real user idea and inspect both mobile and publication compositions. Preview must not publish.
-6. With explicit user intent, publish one clearly identified test Frame and verify it with `get_frame`.
+5. On a Skill host, create one preview from a real user idea and inspect the sole publication master at its 622 × 264 mobile display size. Preview must not publish.
+6. With explicit user intent, publish one clearly identified test Frame. Treat the structurally valid publish receipt as terminal; do not add a web-page or `get_frame` readback to the creator path.
 7. Record the host version and which gates passed before changing “pending” to “verified.”
 
 The Frame publication contract remains the same on every host. Initial and correction publication use prepare then publish; withdrawal alone has separate action consent. Image bytes travel to signed upload URLs and are never downloaded back through an MCP media Tool.

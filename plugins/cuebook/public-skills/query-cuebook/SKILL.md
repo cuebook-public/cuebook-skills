@@ -1,8 +1,8 @@
 ---
 name: query-cuebook
-description: Query, inspect, compare, visualize, or explain Cuebook market intelligence without creating publishable creator content or causing writes. Use whenever the user asks to 看、查、搜、读取、列出、比较 or verify Cuebook assets, stories, published Frames, market state, news, evidence, fundamentals, valuation, OHLCV, indicators, data tables or factual curves, settlement outcomes, commentator profiles, or media patterns. Return a source-linked CuebookQueryBundleV1 and a concise human answer. Use Cuebook first and one bounded authorized Web fallback only for a material evidence gap. Do not draft market posts, design creator viewpoint graphics, compile settlement claims, publish, or call any write tool. An explicit request for a post, creator viewpoint graphic, settlement protocol, or publishing candidate belongs to create-cuebook-content.
+description: Query, inspect, compare, visualize, or explain Cuebook market intelligence without creating publishable creator content or causing writes. Use whenever the user asks to 看、查、搜、读取、列出、比较 or verify Cuebook assets, stories, published Frames, market state, news, evidence, fundamentals, valuation, OHLCV, indicators, data tables or factual curves, settlement outcomes, commentator profiles, or media patterns. Return a source-linked CuebookQueryBundleV1 and a concise human answer. Reconcile structured Cuebook reads with one bounded authorized Web lane for material current public claims, while keeping retrieval routing backstage. Do not draft market posts, design creator viewpoint graphics, compile settlement claims, publish, or call any write tool. An explicit request for a post, creator viewpoint graphic, settlement protocol, or publishing candidate belongs to create-cuebook-content.
 license: Proprietary. Cuebook internal; see the repository README for terms.
-compatibility: Uses a connected Cuebook MCP server first for asset resolution and market data, with one bounded authorized Web fallback for a material evidence gap. Degrades to partial results, never invented values. Node.js 18+ for validators.
+compatibility: Uses a connected Cuebook MCP server for asset resolution and market data plus one bounded authorized Web lane for material current public claims. Degrades to partial results, never invented values. Node.js 18+ for validators.
 ---
 
 # Query Cuebook
@@ -25,6 +25,7 @@ Assume the plugin's install-time host authentication is complete. Run the smalle
 4. Select the smallest query path that answers the request:
    - latest story: `list_asset_cues`, then `get_cues` only for selected details;
    - narrative library: `list_asset_cues`; use `list_themes`, `get_cues_detail`, or `get_reasoning_graph` only for an explicit focused/deep request, never for a fast creator preview;
+   - creator thought scaffolds: after asset resolution, use `list_asset_cues` and select at most two non-duplicative Cue refs relative to the creator's provisional direction—normally one aligned and one contrasting or adjacent; call `get_cues` for those selected details only, and return them through `creation_handoff` without drafting or adopting their stance;
    - current snapshot: `get_market_state`;
    - evidence or valuation: `search_news`, `list_filings`, and `references/modules/build-market-research-pack.md` when synthesis is requested;
    - curves or triggers: `get_candles`; preserve its raw frozen envelope for a creation handoff, and invoke `references/modules/compute-cuebook-market-indicators.md` only when a requested indicator is actually needed;
@@ -32,8 +33,8 @@ Assume the plugin's install-time host authentication is complete. Run the smalle
    - settlement outcomes: `list_settlements` and `references/modules/reconcile-market-content-history.md` when a history ledger is requested;
    - published Frames: `get_frame` for one release-pinned full Frame with its attached publication visual, settlement state, discussion entry, and canonical URL; never query, browse, or retrieve a rendition independently;
    - public account or media study: the authorized corpus and distillation skills.
-5. Preserve provider timestamps, sealed/forming state, source identity, metric basis, and capability gaps. A missing backend tool produces a partial result, never an invented value.
-6. Return `CuebookQueryBundleV1`, then answer the user from that bundle. Include sources and freshness near the claims they support.
+5. Preserve provider timestamps, sealed/forming state, source identity, metric basis, and capability gaps inside the bundle. A missing backend tool produces a partial result, never an invented value.
+6. Return `CuebookQueryBundleV1`, then answer the user from the reconciled results. Include sources and freshness near the claims they support, but do not narrate which retrieval lane succeeded, failed, retried, or supplemented another lane.
 
 ## Connection and Latency
 
@@ -44,21 +45,23 @@ Assume the plugin's install-time host authentication is complete. Run the smalle
 - When a creator names a broad market rather than a ticker, make any proxy choice explicit in the handoff. Use SPY only as a transparent broad-U.S.-equity comparator and QQQ only for Nasdaq/technology; never rewrite the creator's premise as if they supplied the proxy.
 - Reuse a compatible query bundle by canonical asset, request class, basis, cutoff, and freshness. Refresh only stale result primitives; do not rebuild an unchanged bundle because a downstream renderer retried.
 - A creation fast preview uses only `skill_tool_policy.creator_fast_allowlist`, one bounded Cuebook query phase, and no default graph/DAG read. Any optional enrichment that misses the latency budget is recorded as unavailable and must not delay already sufficient material evidence.
+- Cue thought scaffolds are viewpoint context, not factual support. Preserve their published time, source ownership, summary, and result refs; never treat count, recency rank, agreement, or a directional label as proof or consensus. The Create consumer decides whether a Cue is aligned, contrasting, or adjacent to the current creator's provisional hypothesis and may use at most two.
 
-## Evidence Fallback
+## Evidence Reconciliation
 
-- Query Cuebook first. Use authorized Web research only when the user explicitly requests it or the first Cuebook batch leaves a material evidence gap.
-- Run at most one Web batch with no more than three targeted searches and three primary or authoritative sources. Do not broaden the topic, repeat a failed search loop, or let Web replace usable Cuebook evidence.
+- Compile one evidence plan. For material current news, filings, official events, company claims, or dated public facts, start the smallest Cuebook batch and one authorized Web batch without waiting for a visible gap. Execute concurrently when the host permits; otherwise run them back-to-back from the same plan.
+- Run at most one Web batch with no more than three targeted searches and three primary or authoritative sources. Do not broaden the topic or repeat a failed search loop. Reconcile and deduplicate both lanes once.
 - Register every source with `retrieved_via: cuebook_mcp | authorized_web | user_supplied | local_derivation`, its locator, publication time when known, retrieval time, and usage rights. Keep issuer, regulator, exchange, filing, independent reporting, Cuebook interpretation, and local calculation distinct.
-- A Web-supplemented bundle remains `partial` when a requested Cuebook capability is unavailable. Unsupported material remains a creator hypothesis or an explicit gap; it never becomes a retrieved fact.
+- Keep route coverage and unavailable capability classes internal for data-source improvement. Do not tell the user “Cuebook did not have it” or “Web had to supply it.” An unresolved factual claim remains an internal gap; a creator-owned causal bridge, analogy, scenario, or expectation may pass to Create as a typed hypothesis rather than being rejected for lacking direct proof. The human answer says reliable support is not yet sufficient only when the requested sentence is factual.
 
 ## Query Boundary
 
 - Query may summarize and compare retrieved material and may show a factual table, curve, or report for inspection. It does not turn that material into a publish-ready voice, market post, creator viewpoint graphic, settlement claim, or release bundle.
+- A Cue-assisted `creation_handoff` may provide optional thought anchors, but it never assigns them to the creator. Adoption or rejection belongs to Create and must be explicit before any Cue-derived connection, countercase, or rule enters the creator's Meaning Lock.
 - Query never calls any write, Paper trade, Frame mutation, correction, withdrawal, or publication tool.
 - An ambiguous request defaults to query. Choose creation only when the requested deliverable is explicitly a market post, creator viewpoint graphic, settlement protocol, release bundle, or publishing candidate. A request to generate a data table or factual chart remains Query.
 - A `creation_handoff` is data lineage, not an implicit creation request. It names reusable result refs and warnings without drafting anything.
-- A blocked query always returns `creation_handoff.eligible: false` with no result refs. A partial query can hand off only usable results and must describe every missing capability.
+- A blocked query always returns `creation_handoff.eligible: false` with no result refs. A partial query can hand off only usable results and must preserve every missing capability internally; the creator-facing answer presents supported logic and material uncertainty without exposing connector coverage.
 
 ## Output
 

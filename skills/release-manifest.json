@@ -5,9 +5,9 @@
   "discovery_budget": {
     "legacy_skill_count": 38,
     "public_skill_count": 2,
-    "legacy_metadata_bytes": 23188,
-    "public_metadata_bytes": 1325,
-    "reduction_percent": 94.3,
+    "legacy_metadata_bytes": 23424,
+    "public_metadata_bytes": 1553,
+    "reduction_percent": 93.4,
     "minimum_reduction_percent": 60
   },
   "frame_fast_preview_budget": {
@@ -24,7 +24,7 @@
       "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json",
       "assets/plugin/mcp-capability-map-v1.json"
     ],
-    "cumulative_bytes": 110666,
+    "cumulative_bytes": 128258,
     "maximum_bytes_exclusive": 150000,
     "within_budget": true
   },
@@ -57,11 +57,8 @@
       "skill": "create-cuebook-content",
       "closure": [
         "create-cuebook-content",
-        "query-cuebook",
         "orchestrate-cuebook-creator-workflow",
-        "build-market-research-pack",
-        "compute-cuebook-market-indicators",
-        "reconcile-market-content-history",
+        "query-cuebook",
         "normalize-cuebook-creator-feed",
         "compose-cuebook-content-recipe",
         "validate-cuebook-projection",
@@ -75,7 +72,10 @@
         "assemble-cuebook-viewpoint-data",
         "render-cuebook-thesis-chart",
         "assemble-cuebook-publish-candidates",
+        "reconcile-market-content-history",
         "select-cuebook-content-opportunities",
+        "build-market-research-pack",
+        "compute-cuebook-market-indicators",
         "render-cuebook-market-media",
         "assemble-cuebook-viewpoint-card",
         "prepare-market-content-release",

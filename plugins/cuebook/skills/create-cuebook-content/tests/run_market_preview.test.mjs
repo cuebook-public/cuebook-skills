@@ -76,6 +76,8 @@ function queryBinding() {
 }
 
 export function baseMarketJob() {
+  const title = "BTC 正在争夺下一段风险偏好";
+  const body = "同期 BTC 相对 SPY 更强。我的判断不是资金已经完成迁移，而是全天候流动性正在成为边际选择；未来 30 天，先看这种韧性能否延续，再看它会不会转成上冲。";
   return {
     schema_version: "frame-market-preview-job",
     preview: {
@@ -92,13 +94,40 @@ export function baseMarketJob() {
         mechanism: "美股承压时，边际资金可能寻找全天候流动性资产",
         next_watch: "先看相对韧性是否延续，再看它能否转成价格上冲",
       },
+      meaning_lock: {
+        lock_id: "MLOCK_BTC_FAST_MARKET_001",
+        status: "creator_confirmed",
+        confirmed_at: "2026-07-17T08:59:00Z",
+        title,
+        body,
+        subject: "BTC",
+        direction: "long",
+        horizon: "未来 30 天",
+        claim: "BTC 的抗跌可能演化为下一轮上冲",
+        mechanism: "美股承压时，边际资金可能寻找全天候流动性资产",
+        next_watch: "先看相对韧性是否延续，再看它能否转成价格上冲",
+        settlement: {
+          mode: "standard_direction",
+          family: "single_asset_direction",
+          asset_ref: "asset:btc",
+          direction: "long",
+          requested_settle_at: "2026-08-16T09:00:00Z",
+          session_policy: "at_instant",
+          threshold_bps: "0",
+          success_condition: "above_publication_baseline",
+        },
+        visual_intent: {
+          summary: "Show dated price context, the tested relative-strength observation, the creator's mechanism, and the 30-day check.",
+          required_beats: ["price_context", "tested_observation", "mechanism", "future_check", "settlement_clock"],
+        },
+      },
       query_binding: queryBinding(),
       candidates: [{
         candidate_id: "FPREV_CAND_BTC_FAST_MARKET_001",
         angle: "conviction",
         frame: {
-          title: "BTC 正在争夺下一段风险偏好",
-          body: "同期 BTC 相对 SPY 更强。我的判断不是资金已经完成迁移，而是全天候流动性正在成为边际选择；未来 30 天，先看这种韧性能否延续，再看它会不会转成上冲。",
+          title,
+          body,
         },
         evidence_refs: ["RES_BTC_CANDLES", "RES_SPY_CANDLES"],
       }],
@@ -187,6 +216,7 @@ function setObservationTest(job, {
   expression.argument.observation.source_refs = [...sources];
   const bodyTail = candidate.frame.body.split("。").slice(1).join("。").trim();
   candidate.frame.body = `${statement}。${bodyTail}`;
+  job.preview.meaning_lock.body = candidate.frame.body;
   expression.observation_test = {
     kind,
     statement,
@@ -214,6 +244,7 @@ function makeCreatorOnly(job, observation) {
   };
   expression.market = null;
   expression.annotations = [];
+  job.preview.meaning_lock.visual_intent.required_beats = ["argument_structure", "mechanism", "future_check", "settlement_clock"];
 }
 
 test("MARKET compiles one sourced curve, a derived support panel, and an honest future lane", async () => {
@@ -232,7 +263,7 @@ test("MARKET compiles one sourced curve, a derived support panel, and an honest 
     assert.match(svg, /data-future-region="unresolved"/u);
     assert.match(svg, /data-chart-transform="relative_spread"/u);
     assert.doesNotMatch(svg, /data-chart-transform="raw_price"/u);
-    assert.match(svg, /data-binding-ref="BIND_MARKET_CHECKPOINT"/u);
+    assert.match(svg, /data-binding-ref="BIND_MARKET_CONFIRM"/u);
     assert.match(svg, /data-data-status="synthetic_fixture"/u);
     assert.match(svg, /data-design-family="signal_poster"/u);
     assert.match(svg, /data-display-system="signal_sans"/u);
@@ -243,7 +274,9 @@ test("MARKET compiles one sourced curve, a derived support panel, and an honest 
     assert.doesNotMatch(svg, /data-series-state="future"/u);
     assert.equal(report.renders[0].audit.single_master, true);
     assert.equal(report.renders[0].audit.mobile_display, "622x264");
-    assert.ok(report.renders[0].audit.essential_copy_groups <= 2);
+    assert.ok(report.renders[0].audit.essential_copy_groups <= 3);
+    assert.equal(report.renders[0].audit.essential_font_floor, 20);
+    assert.equal(report.renders[0].audit.secondary_font_floor, 16);
     assert.equal(preview.state, "conditional");
     assert.equal(report.release_eligible, false);
     assert.match(preview.candidates[0].frame.alt_text, /历史曲线与未来观察/u);
@@ -502,7 +535,7 @@ test("MARKET renders a creator-owned causal spine without manufacturing a curve"
   }
 });
 
-test("MARKET enforces real structural diversity for three requested candidates", () => {
+test("MARKET renders one confirmed expression at a time", () => {
   const job = baseMarketJob();
   const firstCandidate = job.preview.candidates[0];
   const firstExpression = job.expressions[0];
@@ -571,7 +604,18 @@ test("MARKET enforces real structural diversity for three requested candidates",
   job.preview.candidates.push(secondCandidate, thirdCandidate);
   job.expressions.push(secondExpression, thirdExpression);
   const result = validateMarketPreviewJob(job);
-  assert.equal(result.valid, true, JSON.stringify(result.errors, null, 2));
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.code === "SCHEMA_MAX_ITEMS" || error.code === "CANDIDATE_COUNT"));
+});
+
+test("MARKET rejects copy or settlement changed after creator confirmation", () => {
+  const copyChanged = baseMarketJob();
+  copyChanged.preview.candidates[0].frame.body += " 新增一句。";
+  assert.ok(validateMarketPreviewJob(copyChanged).errors.some((error) => error.code === "MEANING_LOCK_BODY"));
+
+  const deadlineChanged = baseMarketJob();
+  deadlineChanged.expressions[0].time.horizon_end = "2026-08-17T09:00:00Z";
+  assert.ok(validateMarketPreviewJob(deadlineChanged).errors.some((error) => error.code === "MEANING_LOCK_DEADLINE"));
 });
 
 test("MARKET rejects future chart annotations, empty-clock beats, and reused preview bindings", () => {

@@ -4,12 +4,13 @@
   "title": "FramePreviewV1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "preview_id", "state", "created_at", "creator_view", "query_binding", "generation", "candidates", "selection", "blockers"],
+  "required": ["schema_version", "preview_id", "state", "created_at", "creator_view", "meaning_lock_ref", "query_binding", "generation", "candidates", "selection", "blockers"],
   "properties": {
     "schema_version": {"const": "frame-preview-v1"},
     "preview_id": {"type": "string", "pattern": "^FPREV_[A-Za-z0-9_:-]{6,}$"},
     "state": {"enum": ["ready", "conditional", "selected", "blocked"]},
     "created_at": {"type": "string", "format": "date-time"},
+    "meaning_lock_ref": {"type": "string", "pattern": "^MLOCK_[A-Za-z0-9_:-]{6,}$"},
     "creator_view": {
       "type": "object",
       "additionalProperties": false,
@@ -44,14 +45,14 @@
       "additionalProperties": false,
       "required": ["mode", "candidate_count"],
       "properties": {
-        "mode": {"enum": ["recommended_one", "requested_three"]},
-        "candidate_count": {"enum": [1, 3]}
+        "mode": {"const": "recommended_one"},
+        "candidate_count": {"const": 1}
       }
     },
     "candidates": {
       "type": "array",
       "minItems": 0,
-      "maxItems": 3,
+      "maxItems": 1,
       "items": {
         "type": "object",
         "additionalProperties": false,

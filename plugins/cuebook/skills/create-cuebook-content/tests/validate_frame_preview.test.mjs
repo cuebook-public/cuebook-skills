@@ -30,6 +30,7 @@ function preview() {
     preview_id: "FPREV_BTC_30D_001",
     state: "ready",
     created_at: "2026-07-17T17:00:00+08:00",
+    meaning_lock_ref: "MLOCK_BTC_30D_001",
     creator_view: {
       original_text: "最近 BTC 跌不下去，我觉得还会冲一波。",
       subject: "BTC",
@@ -64,7 +65,7 @@ test("one recommended Frame is the valid default", () => {
   assert.deepEqual(validate(preview()), { valid: true, errors: [] });
 });
 
-test("three previews are allowed only when requested", () => {
+test("a confirmed preview stays one image at a time", () => {
   const item = preview();
   item.generation = { mode: "requested_three", candidate_count: 3 };
   item.candidates = [
@@ -72,9 +73,8 @@ test("three previews are allowed only when requested", () => {
     candidate(2, "evidence", "proof"),
     candidate(3, "mechanism", "system"),
   ];
-  assert.equal(validate(item).valid, true);
-  item.candidates.pop();
-  assert.ok(codes(item).has("CANDIDATE_COUNT"));
+  assert.equal(validate(item).valid, false);
+  assert.ok(codes(item).has("SCHEMA_CONST") || codes(item).has("SCHEMA_MAX_ITEMS"));
 });
 
 test("default preview cannot silently expand to three", () => {

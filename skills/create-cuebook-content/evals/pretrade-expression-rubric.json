@@ -14,6 +14,14 @@
       "question": "Does the result preserve and sharpen the creator's actual judgment without replacing it with generic neutrality?"
     },
     {
+      "id": "cue_assisted_reasoning",
+      "question": "When relevant Cues exist, were at most one aligned and one contrasting or adjacent viewpoint used as optional thought anchors, with only creator-adopted additions entering the final meaning?"
+    },
+    {
+      "id": "meaning_lock_integrity",
+      "question": "Were the exact public copy, asset, direction, deadline, human settlement rule, and visual job confirmed before rendering, and do the pixels still match that frozen decision?"
+    },
+    {
       "id": "evidence_logic",
       "question": "Does every observed statement follow from the displayed data, while hypotheses remain visibly creator-owned?"
     },
@@ -55,7 +63,7 @@
     },
     {
       "id": "mobile_master_fit",
-      "question": "Is the sole 2488 x 1056 publication master authored against a 622 x 264 mobile box with one dominant geometry, at most two essential copy groups, and readable phone-scale type?"
+      "question": "Is the sole 2488 x 1056 publication master authored against a 622 x 264 mobile box with one dominant geometry, at most three reader-essential groups, primary type at least 20 px, and secondary essential labels at least 16 px?"
     },
     {
       "id": "controlled_variation",
@@ -66,14 +74,17 @@
     "visible text is truncated or replaced by ellipsis",
     "an observed sentence is not supported by the rendered data",
     "a creator hypothesis is presented as measured fact",
+    "another creator's Cue is treated as proof, consensus, or current-creator ownership without explicit adoption",
+    "a clearly framed creator inference is rejected merely because the causal bridge is not itself an established fact",
     "a future market price path or uncalibrated probability is fabricated",
     "the image repeats the title or body without adding analytical information",
     "a chart image falls back to three paragraph-like observation, mechanism, and implication summaries",
     "the emotional language is generic praise, hype, certainty, or a call to trade",
     "the visual claims an official index when it is only a creator-defined basket",
-    "multiple requested alternatives differ only by palette or typography while keeping the same reading silhouette",
+    "a visual-only reroll differs only by palette or typography while keeping the same reading silhouette",
     "the publication or expanded Frame hides a derived basket's components, weights, basis, coverage, or limitations",
-    "the publication master is a dense desktop downscale, needs zoom at 622 x 264, or contains more than two competing essential copy groups",
+    "the publication master is a dense desktop downscale, needs zoom at 622 x 264, contains more than three competing reader-essential groups, or falls below the 20 px primary / 16 px secondary essential type floors",
+    "pixels are rendered before the exact copy and settlement Meaning Lock is confirmed, or a post-confirmation semantic or deadline change reuses stale pixels",
     "a layout-only reroll changes facts, evidence, direction, horizon, or claim-state typing",
     "the primary relationship cannot be identified within five seconds"
   ],

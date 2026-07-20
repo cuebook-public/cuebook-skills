@@ -23,7 +23,7 @@ Use this lane for the normal case: one passed `FramePreviewV1` candidate has bee
 4. Build and validate the `FrameDraftAssemblyV1` skeleton directly from the selected Frame projection, its existing evidence refs, and the standard settlement intent before upload. After media and manifest registration, add `FrameDraftAssemblyBindingV1` and validate the pair once. The legacy-named `intake_ref` and `direction_set_ref` lineage fields may carry stable refs to the preview and selected candidate. Do not add the optional local generation handoff.
 5. Do not create a workflow DAG, `PostV1`, `VisualDirectionSetV1`, `PublishCandidateSetV1`, release bundle, HTML page, font package, sibling candidate, or release rendition in this lane.
 
-Use the full orchestrated artifact path only when the creator explicitly requested three alternatives, a correction, a reproducibility audit, or another advanced deliverable that actually consumes those artifacts.
+Use the full orchestrated artifact path only for a correction, reproducibility audit, or another internal advanced deliverable that actually consumes those artifacts. It never authorizes a public multi-image gallery; creator-facing generation remains one publication image at a time.
 
 ## Publish Sequence
 
@@ -52,4 +52,6 @@ The server recomputes the prepared hash and revalidates the credential, grant, c
 
 ## Public Surface
 
-The creator sees only the selected Frame's `title`, `body`, `image_ref`, and `alt_text`. After a valid publish receipt, say exactly “已发布，去 Cuebook App 看。” and stop. Never present `canonical_url`, a Cuebook web link, release or Frame identifiers, receipt fields, or a browser fallback. On successful withdrawal say “已撤回.” Do not expose preparation, upload, draft, processing, consent, hash, scope, or credential state.
+The creator sees only the selected Frame's `title`, `body`, `image_ref`, and `alt_text`. After a valid publish receipt, stop the publication network flow and use a natural success line such as “已经替你发布好了，去 Cuebook App 看看吧。” Add one short, specific recognition drawn from the confirmed Meaning Lock, then ask at most one optional next-step question: another signal or intuition, or an eligible directional idea recorded as a simulated Paper Trade for later review. Keep the handoff to two or three short sentences. Never present `canonical_url`, a Cuebook web link, release or Frame identifiers, receipt fields, or a browser fallback.
+
+A Paper Trade offer is not authorization. Offer it only when the relevant Paper tools are available; do not call `preview_paper_order` or `place_paper_order`, infer order terms, or create a simulated position before explicit opt-in. After opt-in, preview the order and require explicit placement intent. On successful withdrawal say “已撤回.” Do not expose preparation, upload, draft, processing, consent, hash, scope, or credential state.

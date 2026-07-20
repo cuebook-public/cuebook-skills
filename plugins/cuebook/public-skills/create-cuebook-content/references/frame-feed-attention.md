@@ -19,10 +19,10 @@ Judge the same publication master at its `622 x 264` phone display size.
 
 - The native Frame title is the hook. Do not repeat it as a large image headline.
 - The image contains one dominant geometry, one concise creator-owned interpretation, and at most one future check.
-- Use no more than two essential copy groups inside the bitmap. Supporting metadata and the wordmark do not count.
-- Essential type is at least `22 px` in the 622-pixel authoring box. Metadata is at least `14 px` and is never required to understand the argument.
-- Prefer 24–48 visible Chinese characters across essential groups; allow up to 70 only when the composition has no chart labels or component rows.
-- Keep one observation label at most. Remove minor axes, repeated dates, grids, legends, formulas, long source strings, component reasons, and limitations before reducing essential type.
+- Use no more than three reader-essential groups: orientation, evidence/mechanism, and future/settlement. Supporting provenance and the wordmark do not count.
+- Primary essential copy is at least `20 px`; secondary essential labels are at least `16 px`; metadata is at least `14 px` in the 622-pixel authoring box.
+- Prefer 32–72 visible Chinese characters across essential groups; allow more only for a sparse non-chart composition that still passes the phone-scale audit.
+- Keep one observation label at most. Preserve one or two decision-useful numbers—such as a dated historical close, return, spread, drawdown, or threshold—when they are material to the argument. Remove minor axes, repeated dates, grids, legends, formulas, long source strings, component reasons, and limitations before reducing essential type.
 - Keep only a minimal provenance cue such as source family plus as-of date. Detailed sources, transforms, formula, limitations, and disclosures remain in the Frame body, structured references, or alt text.
 - The past/future boundary must remain visible. Future space carries a condition or clock, never a forecast price path.
 
@@ -59,7 +59,7 @@ The first response shows one recommended mobile preview. If the creator says “
 2. Reuse the frozen query bundle. Do not query again for a layout-only reroll.
 3. Change one truthful expressive route: grammar when the same evidence supports it, composition, narrative placement, surface, or emphasis.
 4. Avoid the last two design fingerprints when another equally truthful silhouette exists.
-5. Return one new recommended variant, not a gallery. Return three only when explicitly requested.
+5. Return exactly one new recommended variant, never a gallery. If the creator wants several directions, explore them sequentially while keeping the Meaning Lock frozen.
 6. Explain the changed emphasis in one short phrase, then offer a clear stop: “锁定这版”.
 
 A reroll may not silently change the thesis, observed sentence, direction, horizon, source set, or settlement meaning. If the creator changes any of those, start a new meaning lock instead of pretending it is only a visual variation.
@@ -70,10 +70,10 @@ Fail the publication master when:
 
 - it is authored as a dense desktop research card and only scaled down afterward;
 - a second compact, detail, thumbnail, web, or OG bitmap is produced;
-- any essential copy is smaller than 22 px;
-- more than two essential copy groups compete with the geometry;
+- primary essential copy is smaller than 20 px or secondary essential copy is smaller than 16 px;
+- more than three reader-essential copy groups compete with the geometry;
 - formula, limitations, long source detail, or more than three Lens component rows appear;
 - the native title is repeated as the image's largest sentence;
 - the creator interpretation or the next condition is clipped or ellipsized;
-- adjacent requested alternatives share the same grayscale silhouette;
+- a visual-only reroll repeats the same grayscale silhouette when an equally truthful alternative exists;
 - the image cannot be understood at `622 x 264` without zooming.

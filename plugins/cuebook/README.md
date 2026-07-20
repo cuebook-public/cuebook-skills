@@ -88,16 +88,16 @@ A creator-facing Frame contains exactly four fields:
 
 There is no public workflow state on the Frame. Preview blockers use plain language. After an action succeeds, Cuebook confirms only the meaningful result, such as “Published” or “Withdrawn.” Schema versions, selection IDs, source bundles, hashes, scores, scopes, upload state, receipts, consent, and credentials stay backstage.
 
-Eligible single-asset long and short Frames share one deadline rule across crypto, equities, ETFs, and indexes: Cuebook fixes the exact creator-owned deadline and compares the latest completed provider-official price observation at or before it with the publication baseline. Creators never choose sessions, trading days, or next close. “Publish this” confirms the selected Frame and this standard zero-threshold rule in one action; only a creator-requested price target or pair needs additional terms.
+Eligible single-asset long and short Frames share one deadline rule across crypto, equities, ETFs, and indexes: Cuebook fixes the exact creator-owned deadline and compares the latest completed provider-official price observation at or before it with the publication baseline. Creators never choose sessions, trading days, or next close. Before rendering, one text-only Meaning Lock confirms the exact copy, direction, deadline, and human zero-threshold rule. “Publish this” later authorizes only the external write; only a creator-requested price target or pair needs additional terms.
 
 ## Creation Model
 
 The Skill keeps four layers separate:
 
-1. **Creator meaning** — the claim, mechanism, time horizon, and next observable remain creator-owned.
-2. **Frozen evidence** — Cuebook supports observations with typed, time-bound results. One bounded, authorized Web batch may fill a material gap and is labeled separately.
+1. **Creator meaning** — the claim, mechanism, time horizon, and next observable remain creator-owned. After asset resolution, at most one aligned and one contrasting or adjacent Cue may be offered as optional thought anchors; only adopted additions enter the viewpoint.
+2. **Frozen evidence** — one shared plan starts the smallest typed Cuebook batch and, when material current claims require it, one bounded authoritative Web batch. Cues remain published viewpoints rather than proof; factual sentences use evidence, while clearly framed creator inference may remain inference. The Skill reconciles the plan once and keeps source routing and coverage gaps backstage.
 3. **Expression** — a deterministic renderer chooses a curve, comparison, drawdown, event, threshold, scenario, causal path, evidence tension, transparent Creator Lens, or long/short contribution structure.
-4. **Publication** — upload, manifest registration, draft, prepare, and publish happen only after explicit intent. A validated publish receipt is terminal; the creator sees a success confirmation and returns to the Cuebook App, never a generated web page or canonical link.
+4. **Publication** — upload, manifest registration, draft, prepare, and publish happen only after explicit intent. A validated publish receipt ends the network flow; the creator receives a specific acknowledgment of the idea that was preserved, returns to the Cuebook App without a generated web page or canonical link, and may optionally share another signal or explicitly opt into a simulated Paper Trade for later review.
 
 Facts and interpretation never blur. A source reference is not enough: the factual sentence must pass a numerical or typed observation test. Causal language remains the creator's hypothesis unless a source establishes it.
 
@@ -107,7 +107,7 @@ If an upstream system supplies a frozen commitment and evidence set, Create chan
 
 Each preview renders one **2488 × 1056** publication PNG from the meaning lock. Cuebook uploads and binds it once. Phone and Feed surfaces show that same master in the equivalent **622 × 264** aspect-ratio box; the Skill does not create separate compact, web, thumbnail, or OG assets.
 
-The master is authored against its 622 × 264 phone display box and rasterized at 4x: one dominant geometry, at most two essential prose groups, at least 22 px display-size type, minimal provenance, and one visible future check. Delivery-layer resizing may be introduced later without changing the authoring or MCP contract.
+The master is authored against its 622 × 264 phone display box and rasterized at 4x: one dominant geometry, at most three reader-essential groups, a 20 px primary and 16 px secondary essential type floor, minimal provenance, one material dated value when price matters, and one visible future check. Delivery-layer resizing may be introduced later without changing the authoring or MCP contract.
 
 Design diversity comes from the reading path, not palette roulette. Curve stages, editorial splits, tension fields, temporal rails, trigger posters, branch maps, mechanism paths, evidence balance, Lens anatomy, and spread arenas remain distinguishable in grayscale. Surface, typography, material, and density follow the idea topology.
 

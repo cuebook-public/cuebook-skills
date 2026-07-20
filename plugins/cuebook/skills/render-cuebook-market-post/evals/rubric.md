@@ -12,7 +12,7 @@ Score each dimension from 1 to 5. Any hard failure blocks publication regardless
 | Human language | Concrete, conversational, varied, and free of template residue |
 | Frame fit | The title, reasoned three-to-five-paragraph body, and paired image divide labor without platform wrappers, padding, or duplicated sections |
 | Decision utility | A reader can follow the asset expression, horizon, market consequence, and next observable |
-| Assisted authorship | Internal provenance keeps the creator seed, evidence-linked additions, creator judgment, and idea change distinct while body copy contains no workflow narration |
+| Assisted authorship | Internal provenance keeps the creator seed, Cue/evidence-linked proposals, acceptance or rejection, creator judgment, and idea change distinct while only adopted additions enter meaning and body copy contains no workflow narration |
 | Creator lift | The creator's idea is recognizably theirs and feels clearer, sharper, and better expressed rather than graded or corrected by default |
 | Lineage integrity | The output resolves to selected opportunities, its program item, and every input artifact |
 
@@ -41,3 +41,5 @@ Hard failures:
 - social-platform variants, labels, or wrappers in the public result
 - a public result with visible fields beyond title, body, and one paired image
 - correction-first rewriting of a creator-owned viewpoint without a material evidence contradiction
+- a Cue treated as proof, consensus, or current-creator ownership without explicit adoption
+- a clearly framed creator hypothesis blocked solely because the inference itself lacks direct proof

@@ -472,7 +472,8 @@ function renderBottomArgument(expression, palette, locale) {
 }
 
 const MOBILE_LENS_MASTER_PROFILE = "single-master-mobile";
-const MOBILE_LENS_FONT_FLOOR = 22;
+const MOBILE_LENS_PRIMARY_FONT_FLOOR = 20;
+const MOBILE_LENS_SECONDARY_FONT_FLOOR = 16;
 
 function compactLensWordmark(palette) {
   const inner = WORDMARK
@@ -482,19 +483,20 @@ function compactLensWordmark(palette) {
   return `<g id="cuebook-wordmark" transform="translate(538 35) scale(0.88)" opacity="0.66">${inner}</g>`;
 }
 
-function compactLensEssentialText({ x, y, text, color, widthUnits, lines = 2, anchor = "start", binding = "", group }) {
+function compactLensEssentialText({ x, y, text, color, widthUnits, lines = 2, anchor = "start", binding = "", group, tier = "primary" }) {
+  const primary = tier === "primary";
   return textBlock({
     x,
     y,
     text,
-    size: 24,
+    size: primary ? 22 : 18,
     color,
     weight: 790,
     maxUnits: widthUnits,
     maxLines: lines,
-    minSize: MOBILE_LENS_FONT_FLOOR,
+    minSize: primary ? MOBILE_LENS_PRIMARY_FONT_FLOOR : MOBILE_LENS_SECONDARY_FONT_FLOOR,
     anchor,
-    attrs: `${binding} data-essential-copy="true" data-essential-copy-group="${group}"`,
+    attrs: `${binding} data-essential-copy="true" data-essential-tier="${tier}" data-essential-copy-group="${group}"`,
   });
 }
 
@@ -533,19 +535,20 @@ function compactLensCurve(expression, compiled, palette, box, { arena = false, s
     `<line x1="${f(box.x)}" y1="${f(yScale(expression.lens.base_value))}" x2="${f(box.x + historyWidth)}" y2="${f(yScale(expression.lens.base_value))}" stroke="${palette.grid}" stroke-width="1.5"/>`,
     `<path d="${path}" fill="none" stroke="${palette.primary}" stroke-width="${arena ? 4 : 5}" stroke-linecap="round" stroke-linejoin="round" ${bindingAttr(expression.lens.curve_binding_id, "derived", "curve")} data-series-state="observed"/>`,
     `<circle cx="${f(latestX)}" cy="${f(latestY)}" r="5" fill="${palette.canvas}" stroke="${palette.signal}" stroke-width="3"/>`,
-    showDelta ? `<text x="${f(latestX - 8)}" y="${f(Math.max(box.y + 24, latestY - 10))}" text-anchor="end" fill="${palette.signal}" font-size="22" font-weight="840" data-essential-copy="true" data-essential-copy-group="${arena ? "spread" : "lens-signal"}">${esc(signed(compiled.change_from_base, 1, " pts"))}</text>` : "",
+    showDelta ? `<text x="${f(latestX - 8)}" y="${f(Math.max(box.y + 24, latestY - 10))}" text-anchor="end" fill="${palette.signal}" font-size="20" font-weight="840" data-role="lens-value-context" data-essential-copy="true" data-essential-tier="primary" data-essential-copy-group="evidence">${esc(`${expression.lens.base_value} → ${compiled.latest_value.toFixed(1)} · ${signed(compiled.change_from_base, 1, " pts")}`)}</text>` : "",
     `</g>`,
   ].join("");
 }
 
 function compactLensFuture(expression, palette, locale) {
-  const beat = expression.future_beats[0];
+  const beat = expression.future_beats.findLast((item) => item.at && Date.parse(item.at) === Date.parse(expression.time.horizon_end))
+    ?? expression.future_beats.at(-1);
   if (!beat) return "";
   const days = Math.max(1, Math.round((Date.parse(beat.at) - Date.parse(expression.time.declared_at)) / 86_400_000));
   return [
-    `<line x1="20" y1="220" x2="514" y2="220" stroke="${palette.grid}" stroke-width="1.5"/>`,
-    `<text x="20" y="241" fill="${palette.conditional}" font-size="14" font-weight="820">${esc(locale === "zh-CN" ? "下一步只看" : "WATCH NEXT")}</text>`,
-    compactLensEssentialText({ x: 126, y: 244, text: `D+${days} · ${beat.label}`, color: palette.ink, widthUnits: 15.5, lines: 1, binding: bindingAttr(beat.binding_id, beat.state), group: "future" }),
+    `<line x1="20" y1="222" x2="514" y2="222" stroke="${palette.grid}" stroke-width="1.5"/>`,
+    `<text x="20" y="244" fill="${palette.conditional}" font-size="12" font-weight="820">${esc(locale === "zh-CN" ? "到期观察" : "HORIZON CHECK")}</text>`,
+    compactLensEssentialText({ x: 112, y: 247, text: `D+${days} · ${dateLabel(beat.at, locale)} · ${beat.label}`, color: palette.ink, widthUnits: 23, lines: 1, binding: bindingAttr(beat.binding_id, beat.state), group: "future", tier: "secondary" }),
   ].join("");
 }
 
@@ -554,7 +557,7 @@ function renderCompactLensAnatomy(expression, compiled, palette, locale) {
     .sort((left, right) => Math.abs(right.latest_contribution_pp) - Math.abs(left.latest_contribution_pp))
     .slice(0, 3);
   const parts = [
-    compactLensCurve(expression, compiled, palette, { x: 20, y: 58, w: 346, h: 144 }),
+    compactLensCurve(expression, compiled, palette, { x: 20, y: 58, w: 346, h: 108 }),
     `<g ${bindingAttr(expression.argument.observation.binding_id, expression.argument.observation.state, "annotation")} data-annotation-role="observation"/>`,
     `<line x1="386" y1="52" x2="386" y2="204" stroke="${palette.grid}" stroke-width="1.5"/>`,
     `<text x="406" y="62" fill="${palette.signal}" font-size="14" font-weight="820">${esc(locale === "zh-CN" ? "创作者 LENS · 非官方指数" : "CREATOR LENS · NOT AN OFFICIAL INDEX")}</text>`,
@@ -568,7 +571,12 @@ function renderCompactLensAnatomy(expression, compiled, palette, locale) {
       `<g data-role="compact-component-row" data-lens-component="${esc(component.leg.ticker)}" ${bindingAttr(component.binding_id, "derived", "component-row")}><text x="406" y="${y}" fill="${palette.ink}" font-size="18" font-weight="820">${esc(component.leg.ticker)}</text><text x="602" y="${y}" text-anchor="end" fill="${color}" font-size="18" font-weight="820">${esc(signed(component.latest_contribution_pp, 1, "pp"))}</text></g>`,
     );
   });
-  parts.push("</g>", compactLensFuture(expression, palette, locale));
+  parts.push(
+    "</g>",
+    `<text x="20" y="186" fill="${palette.signal}" font-size="12" font-weight="820">${esc(locale === "zh-CN" ? "我的推演" : "MY LOGIC")}</text>`,
+    compactLensEssentialText({ x: 20, y: 208, text: expression.argument.mechanism.text, color: palette.ink, widthUnits: 20, lines: 1, binding: `${bindingAttr(expression.argument.mechanism.binding_id, expression.argument.mechanism.state)} data-role="creator-mechanism"`, group: "logic", tier: "secondary" }),
+    compactLensFuture(expression, palette, locale),
+  );
   return parts.join("");
 }
 
@@ -581,18 +589,20 @@ function renderCompactSpreadArena(expression, compiled, palette, locale) {
   const shortTotal = compiled.components.filter((component) => component.side === "short").reduce((sum, component) => sum + component.latest_contribution_pp, 0);
   const parts = [
     `<text x="311" y="47" text-anchor="middle" fill="${palette.signal}" font-size="12" font-weight="820">${esc(locale === "zh-CN" ? "创作者 LENS · 非官方指数" : "CREATOR LENS · NOT AN OFFICIAL INDEX")}</text>`,
-    `<rect x="20" y="52" width="276" height="154" fill="${palette.primary}" opacity="0.07"/><rect x="326" y="52" width="276" height="154" fill="${palette.danger}" opacity="0.06"/>`,
-    `<line x1="311" y1="52" x2="311" y2="206" stroke="${palette.signal}" stroke-width="3"/>`,
+    `<rect x="20" y="52" width="276" height="144" fill="${palette.primary}" opacity="0.07"/><rect x="326" y="52" width="276" height="144" fill="${palette.danger}" opacity="0.06"/>`,
+    `<line x1="311" y1="52" x2="311" y2="196" stroke="${palette.signal}" stroke-width="3"/>`,
     compactLensCurve(expression, compiled, palette, { x: 210, y: 56, w: 202, h: 54 }, { arena: true, showDelta: false }),
     `<g ${bindingAttr(expression.argument.observation.binding_id, expression.argument.observation.state, "annotation")} data-annotation-role="observation"/>`,
     `<g data-role="compact-contributions" ${bindingAttr(expression.lens.contribution_binding_id, "derived", "two-sided-contribution")}>`,
     `<text x="40" y="82" fill="${palette.primary}" font-size="16" font-weight="840">LONG</text><text x="582" y="82" text-anchor="end" fill="${palette.danger}" font-size="16" font-weight="840">SHORT</text>`,
-    `<text x="311" y="126" text-anchor="middle" fill="${palette.signal}" font-size="26" font-weight="860" data-essential-copy="true" data-essential-copy-group="spread">${esc(signed(compiled.change_from_base, 1, " pts"))}</text>`,
-    compactLensEssentialText({ x: 40, y: 148, text: long ? long.leg.ticker : "—", color: palette.ink, widthUnits: 8, lines: 1, binding: long ? bindingAttr(long.binding_id, "derived", "component-row") : "", group: "spread" }),
-    compactLensEssentialText({ x: 582, y: 148, text: short ? short.leg.ticker : "—", color: palette.ink, widthUnits: 8, lines: 1, anchor: "end", binding: short ? bindingAttr(short.binding_id, "derived", "component-row") : "", group: "spread" }),
+    `<text x="311" y="126" text-anchor="middle" fill="${palette.signal}" font-size="22" font-weight="860" data-role="lens-value-context" data-essential-copy="true" data-essential-tier="primary" data-essential-copy-group="evidence">${esc(`${expression.lens.base_value} → ${compiled.latest_value.toFixed(1)} · ${signed(compiled.change_from_base, 1, " pts")}`)}</text>`,
+    compactLensEssentialText({ x: 40, y: 148, text: long ? long.leg.ticker : "—", color: palette.ink, widthUnits: 8, lines: 1, binding: long ? bindingAttr(long.binding_id, "derived", "component-row") : "", group: "evidence" }),
+    compactLensEssentialText({ x: 582, y: 148, text: short ? short.leg.ticker : "—", color: palette.ink, widthUnits: 8, lines: 1, anchor: "end", binding: short ? bindingAttr(short.binding_id, "derived", "component-row") : "", group: "evidence" }),
     `<text x="40" y="181" fill="${palette.primary}" font-size="20" font-weight="820">${esc(signed(longTotal, 1, "pp"))}</text><text x="582" y="181" text-anchor="end" fill="${palette.danger}" font-size="20" font-weight="820">${esc(signed(shortTotal, 1, "pp"))}</text>`,
     `<text x="311" y="183" text-anchor="middle" fill="${palette.muted}" font-size="14" font-weight="820">${esc(locale === "zh-CN" ? "净观察差" : "NET SPREAD")}</text>`,
     `</g>`,
+    `<text x="20" y="212" fill="${palette.signal}" font-size="12" font-weight="820">${esc(locale === "zh-CN" ? "我的推演" : "MY LOGIC")}</text>`,
+    compactLensEssentialText({ x: 110, y: 215, text: expression.argument.mechanism.text, color: palette.ink, widthUnits: 27, lines: 1, binding: `${bindingAttr(expression.argument.mechanism.binding_id, expression.argument.mechanism.state)} data-role="creator-mechanism"`, group: "logic", tier: "secondary" }),
     compactLensFuture(expression, palette, locale),
   ];
   return parts.join("");
@@ -615,7 +625,7 @@ export function renderLensSvg(expression, candidate, compiled = compileLensExpre
   const design = lensDesignProfile(expression);
   const attentionSignature = `${design.design_family}/${design.narrative_placement}/${expression.grammar}/${MOBILE_LENS_MASTER_PROFILE}`;
   return [
-    `<svg xmlns="http://www.w3.org/2000/svg" width="2488" height="1056" viewBox="0 0 622 264" role="img" aria-labelledby="frame-title frame-desc" data-expression-system="lens" data-grammar="${esc(expression.grammar)}" data-composition="${esc(expression.composition)}" data-surface="${esc(expression.surface)}" data-master-profile="${MOBILE_LENS_MASTER_PROFILE}" data-mobile-display="622x264" data-single-master="true" data-attention-signature="${esc(attentionSignature)}" data-design-family="${design.design_family}" data-narrative-placement="${design.narrative_placement}" data-display-system="${design.display_system}" data-essential-font-floor="${MOBILE_LENS_FONT_FLOOR}" font-family="-apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-variant-numeric="tabular-nums">`,
+    `<svg xmlns="http://www.w3.org/2000/svg" width="2488" height="1056" viewBox="0 0 622 264" role="img" aria-labelledby="frame-title frame-desc" data-expression-system="lens" data-grammar="${esc(expression.grammar)}" data-composition="${esc(expression.composition)}" data-surface="${esc(expression.surface)}" data-master-profile="${MOBILE_LENS_MASTER_PROFILE}" data-mobile-display="622x264" data-single-master="true" data-attention-signature="${esc(attentionSignature)}" data-design-family="${design.design_family}" data-narrative-placement="${design.narrative_placement}" data-display-system="${design.display_system}" data-primary-font-floor="${MOBILE_LENS_PRIMARY_FONT_FLOOR}" data-secondary-font-floor="${MOBILE_LENS_SECONDARY_FONT_FLOOR}" font-family="-apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-variant-numeric="tabular-nums">`,
     `<title id="frame-title">${esc(candidate.frame.title)}</title>`,
     `<desc id="frame-desc">${esc(generateLensAltText(expression, candidate, compiled))}</desc>`,
     `<rect width="622" height="264" fill="${palette.canvas}"/>`,
@@ -646,12 +656,21 @@ export function auditLensSvg(svg, expression, candidate) {
   if ((svg.match(/data-annotation-role="observation"/gu) ?? []).length !== 1) errors.push("The tested observation must appear once as chart-attached evidence.");
   if (!svg.includes(`data-binding-ref="${expression.lens.curve_binding_id}"`)) errors.push("The observed Lens curve binding is missing from the visual.");
   if (!svg.includes(`data-binding-ref="${expression.lens.contribution_binding_id}"`)) errors.push("The visible Lens contribution binding is missing from the visual.");
+  if (!/data-role="lens-value-context"/u.test(svg)) errors.push("The Lens master needs its base-to-observation value context.");
+  if (!/data-role="creator-mechanism"/u.test(svg)) errors.push("The creator's Lens mechanism must remain visible in the mobile master.");
   if (candidate.frame.title.trim() === expression.argument.claim.text.trim()) errors.push("The image claim must add to the Frame title instead of repeating it exactly.");
   const alt = generateLensAltText(expression, candidate);
   if (!svg.includes(`<desc id="frame-desc">${esc(alt)}</desc>`)) errors.push("SVG description must match the deterministic Creator Lens description.");
-  if (/<text\b[^>]*font-size="(?:[0-9]|1[0-9]|2[01](?:\.[0-9]+)?)"[^>]*data-essential-copy="true"|<text\b[^>]*data-essential-copy="true"[^>]*font-size="(?:[0-9]|1[0-9]|2[01](?:\.[0-9]+)?)"/u.test(svg)) errors.push("Every essential Lens copy group must use at least 22 display pixels.");
+  for (const match of svg.matchAll(/<text\b[^>]*data-essential-copy="true"[^>]*>/gu)) {
+    const tag = match[0];
+    const size = Number(tag.match(/font-size="([0-9.]+)"/u)?.[1]);
+    const tier = tag.match(/data-essential-tier="(primary|secondary)"/u)?.[1];
+    if (!tier) errors.push("Every essential Lens copy item needs a primary or secondary tier.");
+    else if (tier === "primary" && size < MOBILE_LENS_PRIMARY_FONT_FLOOR) errors.push("Primary essential Lens copy must use at least 20 display pixels.");
+    else if (tier === "secondary" && size < MOBILE_LENS_SECONDARY_FONT_FLOOR) errors.push("Secondary essential Lens copy must use at least 16 display pixels.");
+  }
   const groups = new Set([...svg.matchAll(/data-essential-copy-group="([^"]+)"/gu)].map((match) => match[1]));
-  if (groups.size > 2) errors.push("The Lens master may contain at most two essential copy groups.");
+  if (groups.size > 3) errors.push("The Lens master may contain at most three essential copy groups.");
   const visibleComponents = (svg.match(/data-role="compact-component-row"/gu) ?? []).length;
   if (visibleComponents > 3) errors.push("The Lens master may show at most three component rows.");
   if (/data-role="(?:formula|limitations|component-reason|source-detail)"/u.test(svg) || svg.includes(expression.lens.formula)) errors.push("The Lens master contains method detail that belongs in body, alt text, or references.");
@@ -661,7 +680,8 @@ export function auditLensSvg(svg, expression, candidate) {
     single_master: true,
     mobile_display: "622x264",
     essential_copy_groups: groups.size,
-    essential_font_floor: MOBILE_LENS_FONT_FLOOR,
+    essential_font_floor: MOBILE_LENS_PRIMARY_FONT_FLOOR,
+    secondary_font_floor: MOBILE_LENS_SECONDARY_FONT_FLOOR,
     visible_component_rows: visibleComponents,
     attention_signature: `${design.design_family}/${design.narrative_placement}/${expression.grammar}/${MOBILE_LENS_MASTER_PROFILE}`,
   };

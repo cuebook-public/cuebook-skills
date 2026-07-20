@@ -59,9 +59,6 @@ export function validate(payload, assetRoot = null) {
   if (generation.mode === "recommended_one" && expectedCount !== 1) {
     errors.push(issue("GENERATION_MODE", "$.generation", "recommended_one requires candidate_count 1."));
   }
-  if (generation.mode === "requested_three" && expectedCount !== 3) {
-    errors.push(issue("GENERATION_MODE", "$.generation", "requested_three requires candidate_count 3."));
-  }
 
   const candidates = Array.isArray(payload.candidates) ? payload.candidates : [];
   if (SELECTABLE_STATES.has(state) && candidates.length !== expectedCount) {
@@ -75,7 +72,7 @@ export function validate(payload, assetRoot = null) {
   const bundleRefs = Array.isArray(binding.bundle_refs) ? binding.bundle_refs : [];
   const resultRefs = Array.isArray(binding.result_refs) ? binding.result_refs : [];
   if (binding.required === true && SELECTABLE_STATES.has(state) && !COMPLETE_QUERY_STATES.has(binding.status) && binding.status !== "partial") {
-    errors.push(issue("QUERY_REQUIRED", "$.query_binding.status", "A current market preview needs a usable Cuebook-first query binding."));
+    errors.push(issue("QUERY_REQUIRED", "$.query_binding.status", "A current market preview needs a usable reconciled evidence binding."));
   }
   if (COMPLETE_QUERY_STATES.has(binding.status) || binding.status === "partial") {
     if (!bundleRefs.length || !resultRefs.length || typeof binding.as_of !== "string") {
@@ -95,16 +92,12 @@ export function validate(payload, assetRoot = null) {
   const ids = new Set();
   const imageRefs = new Set();
   const frames = new Set();
-  const angles = new Set();
-  const templates = new Set();
   const knownResults = new Set(resultRefs);
   candidates.forEach((candidate, index) => {
     const candidatePath = `$.candidates[${index}]`;
     if (!isObject(candidate)) return;
     if (ids.has(candidate.candidate_id)) errors.push(issue("DUPLICATE_CANDIDATE", `${candidatePath}.candidate_id`, "Candidate IDs must be unique."));
     ids.add(candidate.candidate_id);
-    angles.add(candidate.angle);
-    templates.add(candidate.template_id);
     if (candidate.visual_kind === "logic_card" && !LOGIC_TEMPLATES.has(candidate.template_id)) {
       errors.push(issue("VISUAL_ROUTE", `${candidatePath}.template_id`, "A logic card must use verdict, proof, or system."));
     }
@@ -160,14 +153,6 @@ export function validate(payload, assetRoot = null) {
       }
     }
   });
-
-  if (generation.mode === "requested_three") {
-    const legacyThree = candidates.every((candidate) => candidate?.visual_kind === "logic_card" && LOGIC_TEMPLATES.has(candidate?.template_id));
-    const expressionThree = candidates.every((candidate) => candidate?.visual_kind === "editorial_visual" && EDITORIAL_TEMPLATES.has(candidate?.template_id));
-    if (angles.size !== 3 || templates.size !== 3 || (!legacyThree && !expressionThree)) {
-      errors.push(issue("THREE_WAY_VARIATION", "$.candidates", "Three requested previews need conviction/evidence/mechanism plus three genuinely different logic templates or fast-expression grammars."));
-    }
-  }
 
   const selection = isObject(payload.selection) ? payload.selection : {};
   if (state === "selected") {

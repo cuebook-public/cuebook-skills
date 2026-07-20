@@ -10,12 +10,13 @@
     "preview": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["preview_id", "state", "created_at", "creator_view", "query_binding", "candidate"],
+      "required": ["preview_id", "state", "created_at", "creator_view", "meaning_lock", "query_binding", "candidate"],
       "properties": {
         "preview_id": {"type": "string", "pattern": "^FPREV_[A-Za-z0-9_:-]{6,}$"},
         "state": {"enum": ["ready", "conditional"]},
         "created_at": {"type": "string", "format": "date-time"},
         "creator_view": {"$ref": "#/$defs/creatorView"},
+        "meaning_lock": {"$ref": "#/$defs/meaningLock"},
         "query_binding": {"$ref": "#/$defs/queryBinding"},
         "candidate": {"$ref": "#/$defs/candidate"}
       }
@@ -35,6 +36,69 @@
         {"type": "number"},
         {"type": "string", "minLength": 1}
       ]
+    },
+    "meaningLock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lock_id", "status", "confirmed_at", "title", "body", "subject", "direction", "horizon", "claim", "mechanism", "next_watch", "settlement", "visual_intent"],
+      "properties": {
+        "lock_id": {"type": "string", "pattern": "^MLOCK_[A-Za-z0-9_:-]{6,}$"},
+        "status": {"const": "creator_confirmed"},
+        "confirmed_at": {"type": "string", "format": "date-time"},
+        "title": {"type": "string", "minLength": 2, "maxLength": 32},
+        "body": {"type": "string", "minLength": 20, "maxLength": 1200},
+        "subject": {"type": "string", "minLength": 1, "maxLength": 80},
+        "direction": {"enum": ["long", "short", "outperform", "underperform", "range", "avoid", "watch", "neutral", "explain"]},
+        "horizon": {"type": "string", "minLength": 1, "maxLength": 80},
+        "claim": {"type": "string", "minLength": 2, "maxLength": 200},
+        "mechanism": {"type": "string", "minLength": 2, "maxLength": 240},
+        "next_watch": {"type": "string", "minLength": 2, "maxLength": 160},
+        "settlement": {"$ref": "#/$defs/meaningSettlement"},
+        "visual_intent": {"$ref": "#/$defs/meaningVisualIntent"}
+      }
+    },
+    "meaningSettlement": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "family", "asset_ref", "direction", "requested_settle_at", "session_policy", "threshold_bps", "success_condition"],
+          "properties": {
+            "mode": {"const": "standard_direction"},
+            "family": {"const": "single_asset_direction"},
+            "asset_ref": {"type": "string", "minLength": 1, "maxLength": 120},
+            "direction": {"enum": ["long", "short"]},
+            "requested_settle_at": {"type": "string", "format": "date-time"},
+            "session_policy": {"const": "at_instant"},
+            "threshold_bps": {"const": "0"},
+            "success_condition": {"enum": ["above_publication_baseline", "below_publication_baseline"]}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "reason"],
+          "properties": {
+            "mode": {"enum": ["not_applicable", "non_settleable"]},
+            "reason": {"type": "string", "minLength": 2, "maxLength": 160}
+          }
+        }
+      ]
+    },
+    "meaningVisualIntent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "required_beats"],
+      "properties": {
+        "summary": {"type": "string", "minLength": 2, "maxLength": 240},
+        "required_beats": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": {"enum": ["price_context", "tested_observation", "argument_structure", "mechanism", "future_check", "settlement_clock", "component_anatomy"]}
+        }
+      }
     },
     "creatorView": {
       "type": "object",

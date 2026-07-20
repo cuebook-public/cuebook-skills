@@ -257,6 +257,8 @@ test("creator fast policy keeps graph deep and Web fallback bounded", () => {
   const policy = payload.skill_tool_policy;
   assert.ok(!policy.creator_fast_allowlist.includes("get_reasoning_graph"));
   assert.ok(policy.deep_only.includes("get_reasoning_graph"));
+  assert.ok(policy.creator_fast_allowlist.includes("list_asset_cues"));
+  assert.ok(policy.creator_fast_allowlist.includes("get_cues"));
   assert.deepEqual(policy.web_fallback, {
     trigger: "material_gap_after_cuebook_batch",
     max_batches: 1,
@@ -266,6 +268,30 @@ test("creator fast policy keeps graph deep and Web fallback bounded", () => {
     required_lineage_fields: ["retrieved_via", "retrieved_at", "locator"],
     unsupported_claim_policy: "creator_hypothesis_or_omit",
   });
+});
+
+test("creator guidance uses Cues as optional thought anchors rather than proof", () => {
+  const create = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const query = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "query-cuebook", "SKILL.md"),
+    "utf-8",
+  );
+  const intake = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "intake-cuebook-viewpoint", "SKILL.md"),
+    "utf-8",
+  );
+  const combined = `${create}\n${query}\n${intake}`;
+  assert.match(create, /## Cue-Assisted One-Round Interview/u);
+  assert.match(create, /## Optional Idea Completion Check/u);
+  assert.match(combined, /one `aligned` Cue/iu);
+  assert.match(combined, /contrasting.*adjacent/iu);
+  assert.match(combined, /not proof/iu);
+  assert.match(combined, /creator-owned hypothesis/iu);
+  assert.match(combined, /Only adopted additions enter the Meaning Lock/iu);
+  assert.match(combined, /never treats another published view as proof, consensus, or creator adoption/iu);
 });
 
 test("query cannot invoke create", () => {
@@ -424,8 +450,15 @@ test("Frame creator flow never reads back or presents a canonical web link after
   assert.equal(combined.includes("verify through `get_frame`"), false);
   assert.equal(combined.includes("On successful readback"), false);
   assert.equal(combined.includes("unless the creator explicitly requests technical diagnostics"), false);
-  assert.match(combined, /已发布，去 Cuebook App 看。/u);
+  assert.match(combined, /已经替你发布好了，去 Cuebook App 看看吧。/u);
   assert.match(combined, /Never present .*canonical_url/iu);
+  assert.equal(combined.includes("say exactly “已发布，去 Cuebook App 看。” and stop"), false);
+  assert.equal(combined.includes("Return only “已发布，去 Cuebook App 看。”"), false);
+  assert.match(combined, /creator-specific/iu);
+  assert.match(combined, /simulated Paper Trade/iu);
+  assert.match(combined, /explicit opt-in/iu);
+  assert.match(combined, /preview_paper_order/iu);
+  assert.match(combined, /explicit placement intent/iu);
 });
 
 test("ordinary one-preview publish does not reconstruct the advanced release graph", () => {
