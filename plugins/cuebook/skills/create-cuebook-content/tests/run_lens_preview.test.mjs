@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -12,8 +12,8 @@ import { validPaintedPng } from "./png_fixture.mjs";
 const AS_OF = "2026-07-17T08:58:00Z";
 
 async function fakeRasterize(svg, output) {
-  const compact = readFileSync(svg, "utf8").includes('width="622" height="264"');
-  writeFileSync(output, compact ? validPaintedPng(622, 264, 2) : validPaintedPng());
+  assert.match(readFileSync(svg, "utf8"), /width="1244" height="528"/u);
+  writeFileSync(output, validPaintedPng());
   return output;
 }
 
@@ -172,7 +172,6 @@ test("LENS computes and renders a transparent four-component Creator Lens", asyn
     assert.equal(preview.candidates[0].template_id, "creator_lens");
     assert.equal(report.release_eligible, false);
     const svg = readFileSync(path.join(output, preview.candidates[0].candidate_id, "frame-preview.svg"), "utf8");
-    const compactSvg = readFileSync(path.join(output, preview.candidates[0].candidate_id, "frame-feed-622.svg"), "utf8");
     assert.match(svg, /data-expression-system="lens"/u);
     assert.match(svg, /data-design-family="lens_ledger"/u);
     assert.match(svg, /data-display-system="signal_sans"/u);
@@ -186,15 +185,12 @@ test("LENS computes and renders a transparent four-component Creator Lens", asyn
     assert.doesNotMatch(svg, /data-series-state="future"/u);
     assert.doesNotMatch(svg, /data-text-truncated="true"/u);
     for (const item of job.expression.lens.components) assert.match(svg, new RegExp(`data-binding-ref="${item.binding_id}"`, "u"));
-    assert.equal(report.renders[0].compact_image_ref, `${preview.candidates[0].candidate_id}/viewpoint-622.png`);
-    assert.equal(report.renders[0].compact_audit.valid, true);
-    assert.match(compactSvg, /width="622" height="264" viewBox="0 0 622 264"/u);
-    assert.match(compactSvg, /data-feed-profile="mobile-622"/u);
-    assert.match(compactSvg, /data-attention-signature="lens_ledger\/ledger_plus_footer\/creator_lens\/mobile-622"/u);
-    assert.equal((compactSvg.match(/data-role="compact-component-row"/gu) ?? []).length, 3);
-    assert.doesNotMatch(compactSvg, /100 \+ Σ|data-role="(?:formula|limitations|component-reason|source-detail)"/u);
+    assert.equal(Object.hasOwn(report.renders[0], "compact_image_ref"), false);
+    assert.equal(Object.hasOwn(report.renders[0], "compact_audit"), false);
+    assert.equal(existsSync(path.join(output, preview.candidates[0].candidate_id, "frame-feed-622.svg")), false);
+    assert.equal(existsSync(path.join(output, preview.candidates[0].candidate_id, "viewpoint-622.png")), false);
     assert.deepEqual(Object.keys(frame), ["title", "body", "image_ref", "alt_text"]);
-    assert.equal(frame.image_ref, `${preview.candidates[0].candidate_id}/viewpoint-622.png`);
+    assert.equal(frame.image_ref, `${preview.candidates[0].candidate_id}/viewpoint-2488.png`);
     assert.deepEqual(JSON.parse(readFileSync(path.join(output, "frame.json"), "utf8")), frame);
     for (const privateField of ["state", "schema_version", "candidate_id", "query_binding", "image_sha256", "receipt", "scope"]) {
       assert.equal(Object.hasOwn(frame, privateField), false);

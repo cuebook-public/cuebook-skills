@@ -54,15 +54,6 @@ function capture(source) {
   return { temp, output, completed };
 }
 
-function captureFullOnly(source) {
-  const temp = mkdtempSync(path.join(os.tmpdir(), "cuebook-capture-test-"));
-  const sourcePath = path.join(temp, "direction.html");
-  const output = path.join(temp, "capture");
-  writeFileSync(sourcePath, source);
-  const completed = spawnSync(process.execPath, [script, sourcePath, output, "--full-only"], { encoding: "utf8" });
-  return { temp, output, completed };
-}
-
 test("rejects uniform blank canvas", { skip: !canCapture }, () => {
   const { temp, completed } = capture(html(""));
   try {
@@ -71,31 +62,20 @@ test("rejects uniform blank canvas", { skip: !canCapture }, () => {
   } finally { rmSync(temp, { recursive: true, force: true }); }
 });
 
-test("captures real wide and compact content", { skip: !canCapture }, () => {
+test("captures one publication master", { skip: !canCapture }, () => {
   const source = html('<h1 class="claim">HOOD 进入重估窗口</h1><div class="proof">交易、分发与结算开始合流</div><div class="field"></div>');
   const { temp, output, completed } = capture(source);
   try {
     assert.equal(completed.status, 0, completed.stderr);
     assert.deepEqual(dimensions(path.join(output, "viewpoint-2488.png")), [2488, 1056]);
-    assert.deepEqual(dimensions(path.join(output, "viewpoint-622.png")), [622, 264]);
+    assert.equal(existsSync(path.join(output, "viewpoint-622.png")), false);
+    assert.equal(existsSync(path.join(output, "og-1200x630.png")), false);
     const report = JSON.parse(readFileSync(path.join(output, "capture-report.json"), "utf8"));
     for (const derivative of report.derivatives) {
       assert.match(derivative.pixel_sha256, /^sha256:[0-9a-f]{64}$/);
       assert.notEqual(derivative.pixel_sha256, derivative.sha256);
     }
-    assert.equal(new Set(report.derivatives.map((item) => item.pixel_sha256)).size, report.derivatives.length);
-  } finally { rmSync(temp, { recursive: true, force: true }); }
-});
-
-test("fast preview captures only the publication image", { skip: !canCapture }, () => {
-  const source = html('<h1 class="claim">BTC 抗跌正在变成相对强势</h1><div class="proof">观察未来 30 天相对纳指强弱</div><div class="field"></div>');
-  const { temp, output, completed } = captureFullOnly(source);
-  try {
-    assert.equal(completed.status, 0, completed.stderr);
-    assert.deepEqual(dimensions(path.join(output, "viewpoint-2488.png")), [2488, 1056]);
-    assert.equal(existsSync(path.join(output, "viewpoint-622.png")), false);
-    const report = JSON.parse(readFileSync(path.join(output, "capture-report.json"), "utf8"));
-    assert.equal(report.capture_mode, "full_only");
+    assert.equal(report.capture_mode, "publication_master");
     assert.deepEqual(report.derivatives.map((item) => item.kind), ["full"]);
   } finally { rmSync(temp, { recursive: true, force: true }); }
 });

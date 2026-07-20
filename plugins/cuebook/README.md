@@ -29,7 +29,7 @@ The Cuebook plugin reads source-linked market intelligence and turns a creator's
 
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \
-  --ref v0.4.1 \
+  --ref v0.5.0 \
   --sparse .agents/plugins \
   --sparse plugins/cuebook
 
@@ -91,12 +91,9 @@ If an upstream system supplies a frozen commitment and evidence set, Create chan
 
 ## Mobile-First Visuals
 
-Each preview renders two compositions from one meaning lock:
+Each preview renders one **2488 × 1056** publication PNG from the meaning lock. Cuebook uploads and binds it once. Phone and Feed surfaces show that same master in the equivalent **622 × 264** aspect-ratio box; the Skill does not create separate compact, web, thumbnail, or OG assets.
 
-- **2488 × 1056** for the detailed publication view;
-- **622 × 264** for the phone and feed view.
-
-The compact view is independently composed, with one dominant geometry, no more than two essential copy groups, a 22 px essential-type floor, minimal provenance, and one visible future check. It appears first.
+The master still obeys phone-first constraints: one dominant geometry, 2–3 essential prose groups, at least 18 px effective type for those groups at the 622 × 264 display scale, minimal provenance, and one visible future check. Delivery-layer resizing may be introduced later without changing the authoring or MCP contract.
 
 Design diversity comes from the reading path, not palette roulette. Curve stages, editorial splits, tension fields, temporal rails, trigger posters, branch maps, mechanism paths, evidence balance, Lens anatomy, and spread arenas remain distinguishable in grayscale. Surface, typography, material, and density follow the idea topology.
 

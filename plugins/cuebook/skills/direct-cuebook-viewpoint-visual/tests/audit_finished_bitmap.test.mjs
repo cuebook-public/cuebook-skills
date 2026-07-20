@@ -62,8 +62,6 @@ function request() {
     audited_at: "2026-07-18T10:00:00.000Z",
     renditions: {
       publication: { ref: "publication.png" },
-      compact: { ref: "compact.png" },
-      og: { ref: "og.png" },
     },
     image_review: {
       reviewer: "model",
@@ -82,23 +80,27 @@ function withBitmaps(run) {
   const root = mkdtempSync(path.join(os.tmpdir(), "cuebook-finished-bitmap-"));
   try {
     writePng(path.join(root, "publication.png"), 2488, 1056, 1);
-    writePng(path.join(root, "compact.png"), 622, 264, 2);
-    writePng(path.join(root, "og.png"), 1200, 630, 3);
     return run(root);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
 }
 
-test("audits publication, compact, and OG finished pixels without HTML or font files", () => withBitmaps((root) => {
+test("audits one publication master without HTML or font files", () => withBitmaps((root) => {
   const report = auditFinishedBitmap(request(), root);
   assert.equal(report.valid, true, JSON.stringify(report.errors));
   assert.equal(report.schema_version, "frame-raster-audit-v1");
   assert.deepEqual(report.font_profile, { profile: "embedded-pixels-v1", verification: "not_asserted" });
-  assert.deepEqual(report.derivatives.map((item) => item.kind), ["compact_622", "og", "full"]);
-  assert.equal(new Set(report.derivatives.map((item) => item.sha256)).size, 3);
-  assert.equal(new Set(report.derivatives.map((item) => item.pixel_sha256)).size, 3);
+  assert.deepEqual(report.derivatives.map((item) => item.kind), ["full"]);
   assert.ok(report.derivatives.every((item) => /^sha256:[a-f0-9]{64}$/.test(item.pixel_sha256)));
+}));
+
+test("rejects legacy authoring rendition roles", () => withBitmaps((root) => {
+  const input = request();
+  input.renditions.compact = { ref: "publication.png" };
+  const report = auditFinishedBitmap(input, root);
+  assert.equal(report.valid, false);
+  assert.ok(report.errors.some((error) => error.code === "ROLE_UNKNOWN"));
 }));
 
 test("blocks a mutable price claim that has no backend lock", () => withBitmaps((root) => {

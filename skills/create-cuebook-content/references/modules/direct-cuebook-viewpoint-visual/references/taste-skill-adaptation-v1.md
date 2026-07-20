@@ -12,7 +12,7 @@ The upstream v2 skill targets landing pages, portfolios, and redesigns. Cuebook 
 2. **Make taste explicit**: set `design_variance` and `visual_density` from 1 to 10. Do not silently fall back to one house layout.
 3. **Fight model defaults**: reject equal-card grids, generic dashboard chrome, decorative labels, fake sparklines, default centered posters, and surface-only variations.
 4. **Audit before redesigning**: when an existing Cuebook or creator visual is supplied, declare preserve or overhaul mode and list what stays and what retires.
-5. **Render before approval**: inspect real full and compact images. A prose design plan is not a visual result.
+5. **Render before approval**: inspect the real publication master at full and phone display scales. A prose design plan is not a visual result.
 6. **Run a mechanical pre-flight**: verify visible copy, compact readability, source bindings, shape consistency, layout uniqueness, and anti-default discipline.
 7. **Make hierarchy declarative**: one entry role, explicit visual levels, and a grayscale pass stop color or decoration from carrying the argument.
 8. **Use perceptual semantic color**: OKLCH lightness and chroma produce controlled multicolor palettes whose hues communicate observed, directional, catalyst, conditional, comparison, or risk states.
@@ -58,7 +58,7 @@ Every direction records these checks:
 - `compact_readable`: the claim is legible and understandable at 622 x 264;
 - `anti_default_checked`: the composition has no unmotivated Cuebook anti-default;
 - `layout_signature_unique`: hierarchy, grid, alignment, or density materially differs from the other directions;
-- `source_bindings_complete`: every displayed market fact and geometry resolves to declared upstream lineage, and every selected material binding remains visibly present in full and compact output;
+- `source_bindings_complete`: every displayed market fact and geometry resolves to declared upstream lineage, and every selected material binding remains visibly present in the master at phone display scale;
 - `shape_system_consistent`: radius, stroke, marker, and solid/dashed rules remain coherent.
 - `hierarchy_survives_grayscale`: the entry point and reading order remain clear without hue;
 - `semantic_color_checked`: every chromatic element has a declared market meaning, readable local contrast, and a redundant non-color cue.

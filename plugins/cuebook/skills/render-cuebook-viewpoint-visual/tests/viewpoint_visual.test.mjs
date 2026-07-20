@@ -223,7 +223,6 @@ test("wide manifest contract uses launch dimensions and HTML source", () => {
       font_manifest: { ref: "fonts/font-assets-v1.json", sha256: placeholderHash },
       png_derivatives: [
         { kind: "full", ref: "viewpoint-2488.png", width: 2488, height: 1056, sha256: placeholderHash },
-        { kind: "compact_622", ref: "viewpoint-622.png", width: 622, height: 264, sha256: placeholderHash },
       ],
       derivative_bundle_hash: placeholderHash,
     };
@@ -233,7 +232,7 @@ test("wide manifest contract uses launch dimensions and HTML source", () => {
   });
 });
 
-test("wide finalizer binds selected HTML, production fonts, and both PNGs", () => {
+test("wide finalizer binds selected HTML, production fonts, and one publication master", () => {
   withTempDirectory((directory) => {
     const { directionSet } = createWideFinalizerFixture(directory);
     const manifest = buildManifest(directionSet, directory, { observedAt: "2026-07-15T07:00:00Z", decisionCutoffAt: "2026-07-15T07:00:00Z", generatedAt: "2026-07-15T07:01:00Z" });
@@ -241,7 +240,7 @@ test("wide finalizer binds selected HTML, production fonts, and both PNGs", () =
     assert.equal(manifest.render_profile, "wide_2488");
     assert.equal(manifest.theme, "quiet-cobalt");
     assert.equal(manifest.asset.font_manifest.ref, "fonts/font-assets-v1.json");
-    assert.deepEqual(new Set(manifest.asset.png_derivatives.map((item) => item.kind)), new Set(["full", "compact_622"]));
+    assert.deepEqual(manifest.asset.png_derivatives.map((item) => item.kind), ["full"]);
   });
 });
 

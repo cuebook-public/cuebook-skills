@@ -7,7 +7,7 @@ compatibility: Requires Node.js 18+ with Playwright plus a local Chromium/Chrome
 
 # Render Cuebook Viewpoint Visual
 
-Turn an approved visual direction into the exact 2488 x 1056 publication image and a 622 x 264 preview. Author the HTML at 1244 x 528 and use a 2x capture for the publication raster. Visual form is flexible; market meaning and source fidelity are not.
+Turn an approved visual direction into one exact 2488 x 1056 publication master. Author the HTML at 1244 x 528, use a 2x capture, and inspect that same composition at a 622 x 264 display size. Visual form is flexible; market meaning and source fidelity are not.
 
 ## Route Selection
 
@@ -19,9 +19,9 @@ Use this route when the visual will appear in the creator Feed, the user asks fo
 2. Open the selected HTML and confirm its `data-binding-ref` values match the selected direction. When the expression recipe uses a news cluster, distribution, fan, composition, bridge, measured flow, ordered categories, or payoff curve, resolve its proof binding to a validated `EOBJ_*` in `ViewpointDataBundleV1.render_payload.evidence_object_refs` before rendering.
 3. Freeze the selected direction's `expression_recipe`, `layout_system`, concept, reading order, spatial skeleton, `form_from_content`, `cuebook-noi-v1` font profile, and approved font weights. A legacy V1 direction may omit `expression_recipe`; never add one during finalization. Final polish may fix craft defects but cannot choose a new communication job, evidence shape, primary grammar, grid, hierarchy, type scale, density, reading axis, or font profile.
 4. Require production `data-font-license-mode`, an artifact-local `fonts/font-assets-v1.json` from the director Skill's staging script, and the canonical `data-cuebook-wordmark="v1"` SVG in the bottom-right safe zone. Trial files may be used for local evaluation but are never release-eligible. If polish changed the HTML, rerun `$direct-cuebook-viewpoint-visual/scripts/stamp_cuebook_wordmark.mjs` as the last mutation, followed by its launch linter.
-5. Capture both output sizes with `$direct-cuebook-viewpoint-visual/scripts/capture_html_viewpoint.cjs`; `viewpoint-2488.png` must be exactly 2488 x 1056 and `viewpoint-622.png` exactly 622 x 264, matching the direction's `preview_ref` and `compact_preview_ref`.
-6. Inspect both PNGs and run the director Skill's rendered audit. Confirm at least one `Cuebook Noi` face loaded, all visible non-brand copy leads with the approved stack, and CJK fallback did not change hierarchy or wrapping. Re-run the Cuebook visual critique after any typography, spacing, or composition change. Return to the layout Skill when the approved structure itself needs revision.
-7. Run `scripts/finalize_wide_viewpoint.mjs` to emit `ViewpointVisualV1` with `render_profile: wide_2488`, the selected `VDIR_` ref, HTML hash, production font-manifest hash, full PNG hash, compact PNG hash, palette preset, argument pattern, and source bindings. Freeze that manifest in the release artifact.
+5. Capture one output with `$direct-cuebook-viewpoint-visual/scripts/capture_html_viewpoint.cjs`; `viewpoint-2488.png` must be exactly 2488 x 1056 and match the direction's `preview_ref`. Do not create compact, web, thumbnail, or OG files.
+6. Inspect the publication PNG at full and 622 x 264 display sizes and run the director Skill's rendered audit. Confirm at least one `Cuebook Noi` face loaded, all visible non-brand copy leads with the approved stack, and CJK fallback did not change hierarchy or wrapping. Re-run the Cuebook visual critique after any typography, spacing, or composition change. Return to the layout Skill when the approved structure itself needs revision.
+7. Run `scripts/finalize_wide_viewpoint.mjs` to emit `ViewpointVisualV1` with `render_profile: wide_2488`, the selected `VDIR_` ref, HTML hash, production font-manifest hash, publication PNG hash, palette preset, argument pattern, and source bindings. Freeze that manifest in the release artifact.
 
 ```bash
 node scripts/finalize_wide_viewpoint.mjs visual-direction-set-v1.json \
@@ -53,6 +53,7 @@ node scripts/validate_viewpoint_visual.mjs ./viewpoint-visual/viewpoint-visual-v
 ## Public Image Contract
 
 - A reader at 622px must identify the claim before the taxonomy, source, or brand.
+- Keep 2–3 essential prose groups, mark each with `data-essential-copy-group`, and keep their effective type at 18px or larger in the 622 x 264 audit.
 - Show claim, strongest reason, and implication in that order. One of those may be conveyed entirely by the visual.
 - Use one dominant visual idea and at most two supports.
 - Bind every displayed market fact, number, date, level, event, and ordered series.
@@ -74,7 +75,7 @@ Route to `$render-cuebook-thesis-chart` when OHLC, volume, multiple indicators, 
 - Reject any selected expression recipe that fails its grammar's data gate, including unsourced quantiles, distributions, composition denominators, additive bridges, synchronized comparisons, or quantified flows.
 - Reject advanced geometry built from loose labels or prose when no matching validated `EOBJ_*` is present in the selected data payload.
 - Reject a selected direction whose three-second, concept, or data-integrity gate failed.
-- Reject clipped text, unresolved placeholders, external network assets, and layouts that fail either the 1244 x 528 audit or the 622 x 264 preview.
+- Reject clipped text, unresolved placeholders, external network assets, and masters that fail either full-size or 622 x 264 display-scale inspection.
 - Reject missing or silently substituted Cuebook Noi, production HTML that references Trial assets, or any remote font dependency.
 - Reject benchmark leakage: Robinhood logos, Capsule Sans, Nib, proprietary neon, product chrome, source illustrations, or copied module proportions.
 - Reject a final render whose grid, hierarchy, type scale, density, or reading order differs from the selected layout.

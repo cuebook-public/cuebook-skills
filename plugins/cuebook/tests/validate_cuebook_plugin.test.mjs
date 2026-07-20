@@ -64,7 +64,7 @@ test("Claude Code marketplace reuses the two public Skills and canonical MCP con
     fs.readFileSync(path.join(PLUGIN_ROOT, ".claude-plugin", "plugin.json"), "utf-8"),
   );
   assert.equal(manifest.name, "cuebook");
-  assert.equal(manifest.version, "0.4.1");
+  assert.equal(manifest.version.split("+")[0], "0.5.0");
   assert.equal(manifest.skills, "./public-skills/");
   assert.equal(manifest.mcpServers, "./.mcp.json");
 });
@@ -435,7 +435,7 @@ test("Frame capability map pins the current backend wire goldens", () => {
   );
   assert.deepEqual(payload.frame_publication_flow.wire_golden, {
     tool_manifest_sha256: "bf4464c25623d9d44dd16f08dbb51a9cbb91e3062c813ed1c3941403d65289a2",
-    schema_catalog_sha256: "ba0729ca77e4b44864850a1fed1346f2fa758c646e4e6c63993cae26c326e4fa",
+    schema_catalog_sha256: "0f654cce42c03e23eab005eb76e092db6a872f5da5377e9af0e05bf126bde299",
   });
 });
 

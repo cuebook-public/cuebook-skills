@@ -15,16 +15,6 @@
           "rendition_role": "publication",
           "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "alt_text": "USO 偏多观点图"
-        },
-        {
-          "rendition_role": "compact",
-          "sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-          "alt_text": "USO 观点紧凑图"
-        },
-        {
-          "rendition_role": "og",
-          "sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-          "alt_text": "USO 分享卡"
         }
       ]
     },
@@ -65,16 +55,6 @@
         "media_asset_id": "0198a5b0-2222-7000-8000-000000000002",
         "rendition_role": "publication",
         "alt_text": "USO 偏多观点图"
-      },
-      {
-        "media_asset_id": "0198a5b0-2222-7000-8000-000000000002",
-        "rendition_role": "compact",
-        "alt_text": "USO 观点紧凑图"
-      },
-      {
-        "media_asset_id": "0198a5b0-2222-7000-8000-000000000002",
-        "rendition_role": "og",
-        "alt_text": "USO 分享卡"
       }
     ],
     "visual_manifest_id": "0198a5b0-3333-7000-8000-000000000003",

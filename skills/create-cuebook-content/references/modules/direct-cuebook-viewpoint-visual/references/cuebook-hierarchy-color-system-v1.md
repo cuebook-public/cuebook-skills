@@ -46,7 +46,7 @@ Use the system UI stack so Chinese and Latin text remain native and quiet. Use n
 - Apply `font-variant-numeric: tabular-nums` to prices, percentages, dates, and changing market values.
 - Use `text-wrap: balance` for claims and `text-wrap: pretty` for short explanations.
 - Keep claims to two lines at 1244 px. Rewrite before reducing the claim below 64 px.
-- Hide expendable level-4 copy in the compact state when it would render below a comfortable reading size.
+- Remove expendable level-4 copy from the master when it would fall below a comfortable phone display size.
 - Do not use thin weights for colored text. Small colored copy needs more weight or a darker lightness value.
 
 ## Semantic Color Contract
@@ -117,7 +117,7 @@ Use the registered systems in `creator-palette-presets-v1.json`. Add a tested re
 
 ## Rendered Checks
 
-Before brand lock, inspect both sizes and answer yes to all:
+Before brand lock, inspect the same master at full and phone display scales and answer yes to all:
 
 1. **Three-second:** Can the reader state the market judgment immediately?
 2. **Grayscale:** Does claim, proof, and condition remain ordered without hue?

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -14,28 +14,19 @@ function fakePng() {
 }
 
 async function fakeRasterize(svg, output) {
-  const compact = readFileSync(svg, "utf8").includes('width="622" height="264"');
-  writeFileSync(output, compact ? validPaintedPng(622, 264, 2) : fakePng());
+  assert.match(readFileSync(svg, "utf8"), /width="1244" height="528"/u);
+  writeFileSync(output, fakePng());
   return output;
 }
 
 async function fakeHeaderRasterize(svg, output) {
-  if (readFileSync(svg, "utf8").includes('width="622" height="264"')) {
-    writeFileSync(output, validPaintedPng(622, 264, 4));
-    return output;
-  }
+  assert.match(readFileSync(svg, "utf8"), /width="1244" height="528"/u);
   const png = Buffer.alloc(24);
   Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]).copy(png, 0);
   png.write("IHDR", 12, "ascii");
   png.writeUInt32BE(2488, 16);
   png.writeUInt32BE(1056, 20);
   writeFileSync(output, png);
-  return output;
-}
-
-async function fakeWrongCompactRasterize(svg, output) {
-  const compact = readFileSync(svg, "utf8").includes('width="622" height="264"');
-  writeFileSync(output, compact ? validPaintedPng(2488, 1056, 3) : fakePng());
   return output;
 }
 
@@ -238,7 +229,6 @@ test("MARKET compiles one sourced curve, a derived support panel, and an honest 
     assert.equal(report.renders[0].narrative_placement, "side_right");
     assert.match(report.renders[0].design_fingerprint, /^curve_story\/curve_stage\/paper_signal\//u);
     const svg = readFileSync(path.join(output, preview.candidates[0].candidate_id, "frame-preview.svg"), "utf8");
-    const compactSvg = readFileSync(path.join(output, preview.candidates[0].candidate_id, "frame-feed-622.svg"), "utf8");
     assert.match(svg, /data-future-region="unresolved"/u);
     assert.match(svg, /data-chart-transform="raw_price"/u);
     assert.match(svg, /data-chart-transform="relative_spread"/u);
@@ -256,16 +246,12 @@ test("MARKET compiles one sourced curve, a derived support panel, and an honest 
     assert.equal(report.release_eligible, false);
     assert.match(preview.candidates[0].frame.alt_text, /历史曲线与未来观察/u);
     assert.equal(preview.candidates[0].image_sha256, `sha256:${createHash("sha256").update(fakePng()).digest("hex")}`);
-    assert.equal(report.renders[0].compact_image_ref, `${preview.candidates[0].candidate_id}/viewpoint-622.png`);
-    assert.equal(report.renders[0].compact_audit.valid, true);
-    assert.match(compactSvg, /width="622" height="264" viewBox="0 0 622 264"/u);
-    assert.match(compactSvg, /data-feed-profile="mobile-622"/u);
-    assert.match(compactSvg, /data-attention-signature="signal_poster\/side_right\/curve_story\/mobile-622"/u);
-    assert.match(compactSvg, />BTC<\/text>/u);
-    assert.doesNotMatch(compactSvg, />BTC\s+[\d,.]+<\/text>/u);
-    assert.doesNotMatch(compactSvg, /data-role="(?:formula|limitations|source-detail)"/u);
+    assert.equal(Object.hasOwn(report.renders[0], "compact_image_ref"), false);
+    assert.equal(Object.hasOwn(report.renders[0], "compact_audit"), false);
+    assert.equal(existsSync(path.join(output, preview.candidates[0].candidate_id, "frame-feed-622.svg")), false);
+    assert.equal(existsSync(path.join(output, preview.candidates[0].candidate_id, "viewpoint-622.png")), false);
     assert.deepEqual(Object.keys(frame), ["title", "body", "image_ref", "alt_text"]);
-    assert.equal(frame.image_ref, `${preview.candidates[0].candidate_id}/viewpoint-622.png`);
+    assert.equal(frame.image_ref, `${preview.candidates[0].candidate_id}/viewpoint-2488.png`);
     assert.deepEqual(JSON.parse(readFileSync(path.join(output, "frame.json"), "utf8")), frame);
     for (const privateField of ["state", "schema_version", "candidate_id", "query_binding", "image_sha256", "receipt", "scope"]) {
       assert.equal(Object.hasOwn(frame, privateField), false);
@@ -369,18 +355,6 @@ test("MARKET image_render requires a fully decodable, materially painted PNG", a
     await assert.rejects(
       () => runFastPreviewJob(baseMarketJob(), output, { rasterize: fakeHeaderRasterize }),
       /fully decodable PNG/u,
-    );
-  } finally {
-    rmSync(output, { recursive: true, force: true });
-  }
-});
-
-test("MARKET rejects a compact feed raster with publication dimensions", async () => {
-  const output = mkdtempSync(path.join(os.tmpdir(), "cuebook-market-"));
-  try {
-    await assert.rejects(
-      () => runFastPreviewJob(baseMarketJob(), output, { rasterize: fakeWrongCompactRasterize }),
-      /Compact feed PNG must be exactly 622 x 264/u,
     );
   } finally {
     rmSync(output, { recursive: true, force: true });

@@ -119,7 +119,7 @@ Temporarily remove every visible group. Restore it only when its absence changes
 
 ### 10. Render, inspect, repair
 
-Capture 2488 x 1056 and 622 x 264; audit DOM geometry at 1244 x 528 and 622 x 264. Inspect actual pixels for:
+Capture one 2488 x 1056 master; audit its 1244 x 528 authored geometry and the same fixed composition at a 622 x 264 display scale. Inspect actual pixels for:
 
 - three-second comprehension;
 - complete logic route;
@@ -163,4 +163,4 @@ This leaves high freedom in typography, whitespace, asymmetry, motif, and compos
 - Color carries hierarchy that disappears in grayscale.
 - Tiny metadata, decorative labels, or fake market marks fill unused space.
 - A creator's visual voice is inferred only from bullish or bearish direction.
-- A direction passes from prose intent without full and compact rendered inspection.
+- A direction passes from prose intent without full-size and phone-scale inspection of the same rendered master.

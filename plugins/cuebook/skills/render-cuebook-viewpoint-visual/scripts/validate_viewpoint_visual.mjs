@@ -915,7 +915,7 @@ export function validateManifest(payload, assetRoot = null) {
       sourceKind: "html",
       specPattern: /^VDIR_[A-Za-z0-9_:-]{8,}$/,
       dimensions: { width: 2488, height: 1056 },
-      derivatives: { full: [2488, 1056], compact_622: [622, 264] },
+      derivatives: { full: [2488, 1056] },
     },
     legacy_720: {
       sourceKind: "svg",
@@ -980,12 +980,13 @@ export function validateManifest(payload, assetRoot = null) {
     if (!HASH_PATTERN.test(pyString(g(fontManifestAsset, "sha256") || ""))) errors.push(issue("ASSET_HASH_FORMAT", "$.asset.font_manifest.sha256", "Expected sha256:<64 lowercase hex characters>."));
   }
   let derivatives = g(asset, "png_derivatives");
-  if (!Array.isArray(derivatives) || !new Set([0, 2]).has(derivatives.length)) {
-    errors.push(issue("DERIVATIVE_PAIR", "$.asset.png_derivatives", "PNG derivatives must be absent or contain the full atomic pair."));
+  const expectedSizes = profileContract !== null ? profileContract.derivatives : {};
+  const expectedDerivativeCount = Object.keys(expectedSizes).length;
+  if (!Array.isArray(derivatives) || !new Set([0, expectedDerivativeCount]).has(derivatives.length)) {
+    errors.push(issue("DERIVATIVE_SET", "$.asset.png_derivatives", `PNG outputs must be absent or contain the complete ${renderProfile} set.`));
     derivatives = [];
   }
-  if (renderProfile === "wide_2488" && derivatives.length === 0) errors.push(issue("DERIVATIVE_REQUIRED", "$.asset.png_derivatives", "The launch wide profile requires both final PNG derivatives."));
-  const expectedSizes = profileContract !== null ? profileContract.derivatives : {};
+  if (renderProfile === "wide_2488" && derivatives.length === 0) errors.push(issue("DERIVATIVE_REQUIRED", "$.asset.png_derivatives", "The launch wide profile requires its publication master."));
   const seenKinds = new Set(), parsedDerivatives = [];
   derivatives.forEach((item, index) => {
     const path = `$.asset.png_derivatives[${index}]`;
@@ -993,8 +994,7 @@ export function validateManifest(payload, assetRoot = null) {
     const derivative = checkObject(item, path, fields, fields, errors);
     const kind = g(derivative, "kind");
     if (!Object.hasOwn(expectedSizes, kind) || seenKinds.has(kind)) {
-      const compactKind = Object.keys(expectedSizes).find((key) => key !== "full") ?? "profile-specific compact";
-      errors.push(issue("DERIVATIVE_KIND", `${path}.kind`, `Expected one full and one ${compactKind} derivative.`));
+      errors.push(issue("DERIVATIVE_KIND", `${path}.kind`, `Expected exactly the ${Object.keys(expectedSizes).join(", ")} output set.`));
     } else {
       seenKinds.add(kind);
       if (g(derivative, "width") !== expectedSizes[kind][0] || g(derivative, "height") !== expectedSizes[kind][1]) errors.push(issue("DERIVATIVE_DIMENSIONS", path, `${kind} must use ${expectedSizes[kind][0]} x ${expectedSizes[kind][1]}.`));
@@ -1036,8 +1036,7 @@ export function validateManifest(payload, assetRoot = null) {
     });
     const expectedKinds = new Set(Object.keys(expectedSizes));
     if (sameSet(new Set(bytesByKind.keys()), expectedKinds) && HASH_PATTERN.test(pyString(bundleHash || ""))) {
-      const compactKind = Object.keys(expectedSizes).find((key) => key !== "full");
-      const observedBundle = `sha256:${createHash("sha256").update(Buffer.concat([bytesByKind.get("full"), bytesByKind.get(compactKind)])).digest("hex")}`;
+      const observedBundle = `sha256:${createHash("sha256").update(Buffer.concat(Object.keys(expectedSizes).map((kind) => bytesByKind.get(kind)))).digest("hex")}`;
       if (observedBundle !== bundleHash) errors.push(issue("DERIVATIVE_BUNDLE_HASH", "$.asset.derivative_bundle_hash", "Derivative bytes do not match the bundle hash."));
     }
   }

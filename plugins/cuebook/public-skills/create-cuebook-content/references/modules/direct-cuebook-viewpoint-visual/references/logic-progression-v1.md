@@ -68,7 +68,7 @@ Each visual direction records a `logic_route`:
 
 Both routes must include the spine's first and final step plus an interior bridge. Reordering is allowed for evidence-first or reasoning-first art direction, but no route may hide the connection that makes the conclusion understandable.
 
-Any binding marked both `material_to_claim: true` and `selected_for_display: true` is mandatory in every direction's full and compact route. This includes selected material news anchors, valuation or comparison metrics, market series, price levels, official events, and settlement references. Omit it only by returning upstream and changing the selection; do not silently replace it with generic qualitative copy.
+Any binding marked both `material_to_claim: true` and `selected_for_display: true` is mandatory in every direction and must survive phone-scale display of the publication master. This includes selected material news anchors, valuation or comparison metrics, market series, price levels, official events, and settlement references. Omit it only by returning upstream and changing the selection; do not silently replace it with generic qualitative copy.
 
 Attach `data-logic-step-id="LSTEP_..."` to the visible text, SVG group, curve, number, or qualitative geometry that expresses each routed step. Put each `data-binding-ref` on that element or a visible relevant descendant. Hidden nodes, empty markers, and unrelated metadata do not satisfy a route. One element may express one step; repeated decorations do not create extra steps and do not need binding markup.
 

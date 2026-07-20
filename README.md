@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.4.1"><img alt="Release v0.4.1" src="https://img.shields.io/badge/release-v0.4.1-F6C500?style=flat-square&labelColor=111111"></a>
+  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.5.0"><img alt="Release v0.5.0" src="https://img.shields.io/badge/release-v0.5.0-F6C500?style=flat-square&labelColor=111111"></a>
   <a href="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml"><img alt="Quality" src="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml/badge.svg?branch=main"></a>
   <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/Node.js-%E2%89%A522-3C873A?style=flat-square&labelColor=111111">
   <img alt="Two public skills" src="https://img.shields.io/badge/public_skills-2-4C6FFF?style=flat-square&labelColor=111111">
@@ -84,7 +84,7 @@ Install the current release:
 
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \
-  --ref v0.4.1 \
+  --ref v0.5.0 \
   --sparse .agents/plugins \
   --sparse plugins/cuebook
 
@@ -178,12 +178,9 @@ The renderer chooses a visual relationship before it chooses a style.
 | Conditional future | Checkpoints, catalyst map, confirmation and invalidation, scenario branches |
 | Competing evidence | Tension field, evidence balance, transparent Creator Lens |
 
-Every preview includes two independently composed PNGs:
+Every preview has one **2488 × 1056** publication PNG. Cuebook uploads and binds that image once; Feed and detail surfaces display the same master, with the Feed scaling it to the equivalent **622 × 264** aspect-ratio box. The Skill does not create separate compact, web, thumbnail, or OG assets.
 
-- **2488 × 1056** — a detailed publication composition;
-- **622 × 264** — a feed composition with one dominant geometry, no more than two essential copy groups, and a visible future check.
-
-The compact image is not a downscaled desktop chart. It is designed to survive a fast phone scroll. Historical data ends at a visible observation boundary; future space contains checkpoints or branches, never a fabricated price path.
+The master is composed to survive a fast phone scroll: one dominant geometry, 2–3 essential prose groups, and at least 18 px effective type for those groups at the 622 × 264 display scale. Historical data ends at a visible observation boundary; future space contains checkpoints or branches, never a fabricated price path. Delivery-layer resizing may be added later without changing the authoring or MCP contract.
 
 ## Architecture
 

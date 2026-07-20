@@ -6,7 +6,7 @@ Use this reference after the idea topology and evidence relationship are known. 
 
 Keep these anchors stable across every Frame:
 
-- 2488 x 1056 publication canvas, independently composed 622 x 264 compact canvas, and canonical Cuebook wordmark;
+- one 2488 x 1056 publication master, verified at a 622 x 264 phone display size, and the canonical Cuebook wordmark;
 - one creator-owned judgment, honest source/as-of/transform language, and a visible observed/future boundary;
 - readable type, one dominant accent, stable bindings, and no fabricated future path.
 
@@ -53,7 +53,7 @@ Keep paragraph and data type highly legible even when the headline system change
 4. Select a surface that matches the creator's voice and evidence density.
 5. Record the fingerprint as `grammar/composition/surface/display_system/narrative_placement`.
 
-Also record `design_family/narrative_placement/grammar/mobile-622` as the compact `attention_signature`. It helps the creator loop and later feed sequencing avoid adjacent identical silhouettes; it is expression metadata, not evidence or a security boundary.
+Also record `design_family/narrative_placement/grammar/mobile-622` as the phone-scale `attention_signature`. It helps the creator loop and later feed sequencing avoid adjacent identical silhouettes; it is expression metadata, not evidence or a security boundary.
 
 For one preview, return the single best fit. Do not generate variants only to demonstrate range.
 
@@ -75,5 +75,5 @@ Fail the visual when:
 - the creator pulse always occupies the same edge regardless of composition;
 - typography changes but hierarchy and reading order do not;
 - novelty makes the evidence harder to identify within five seconds.
-- the compact image is a uniform publication downscale, repeats the native title, or needs zoom to understand;
+- the publication master needs zoom to understand when displayed at 622 x 264;
 - a layout-only reroll changes the meaning lock, evidence set, direction, or horizon.

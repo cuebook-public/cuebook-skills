@@ -892,7 +892,6 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
   const directionIds = new Set();
   const htmlRefs = new Set();
   const previewRefs = new Set();
-  const compactPreviewRefs = new Set();
   const captureReportRefs = new Set();
   const renderAuditRefs = new Set();
   const renderedLayoutFingerprints = new Set();
@@ -1080,17 +1079,17 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
         if (typeof optical !== "string" || !(trimLen(optical) >= 8 && trimLen(optical) <= 180)) {
           errors.push(issue("CRAFT_OPTICAL", `${path_}.layout_system.craft_system.optical_priority`, "Name the detail receiving optical priority."));
         }
-        if (!["reflow", "recompose"].includes(craft.compact_mode)) {
-          errors.push(issue("CRAFT_COMPACT_MODE", `${path_}.layout_system.craft_system.compact_mode`, "Compact output must reflow or recompose; scale-only is not supported."));
+        if (craft.phone_scale_mode !== "fixed_master") {
+          errors.push(issue("CRAFT_PHONE_SCALE_MODE", `${path_}.layout_system.craft_system.phone_scale_mode`, "Phone display must scale the fixed publication master."));
         }
-        const compactType = craft.compact_type_scale;
-        if (!isObject(compactType)) {
-          errors.push(issue("CRAFT_COMPACT_TYPE", `${path_}.layout_system.craft_system.compact_type_scale`, "Compact type scale is required."));
+        const phoneType = craft.phone_type_scale;
+        if (!isObject(phoneType)) {
+          errors.push(issue("CRAFT_PHONE_TYPE", `${path_}.layout_system.craft_system.phone_type_scale`, "Effective phone-display type scale is required."));
         } else {
           for (const [key, minimum, maximum] of [["hero_px_622", 32, 60], ["body_px_622", 14, 26], ["meta_px_622", 11, 18]]) {
-            const value = compactType[key];
+            const value = phoneType[key];
             if (!finite_number(value) || !(value >= minimum && value <= maximum)) {
-              errors.push(issue("CRAFT_COMPACT_TYPE", `${path_}.layout_system.craft_system.compact_type_scale.${key}`, `${key} must be ${minimum}-${maximum}px.`));
+              errors.push(issue("CRAFT_PHONE_TYPE", `${path_}.layout_system.craft_system.phone_type_scale.${key}`, `${key} must be ${minimum}-${maximum}px.`));
             }
           }
         }
@@ -1512,7 +1511,6 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
 
     const htmlRef = direction.html_ref === undefined ? null : direction.html_ref;
     const previewRef = direction.preview_ref === undefined ? null : direction.preview_ref;
-    const compactPreviewRef = direction.compact_preview_ref === undefined ? null : direction.compact_preview_ref;
     const captureReportRef = direction.capture_report_ref === undefined ? null : direction.capture_report_ref;
     const renderAuditRef = direction.render_audit_ref === undefined ? null : direction.render_audit_ref;
     if (rendererMode === "cuebook_template") {
@@ -1528,7 +1526,6 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
     }
     for (const [key, ref, seen] of [
       ["preview_ref", previewRef, previewRefs],
-      ["compact_preview_ref", compactPreviewRef, compactPreviewRefs],
     ]) {
       if (!valid_ref(ref)) {
         errors.push(issue("ASSET_REF", `${path_}.${key}`, "Asset refs must be safe relative paths."));
@@ -1649,14 +1646,14 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
     }
     if (assetRoot !== null && (state === "previewed" || state === "selected")) {
       const previewPaths = new Map();
-      for (const [key, ref] of [["preview_ref", previewRef], ["compact_preview_ref", compactPreviewRef]]) {
+      for (const [key, ref] of [["preview_ref", previewRef]]) {
         if (valid_ref(ref)) {
           const previewPath = pyResolve(path.join(assetRoot, pyStr(ref)));
           if (!isFile(previewPath)) {
             errors.push(issue("PREVIEW_MISSING", `${path_}.${key}`, `Missing preview: ${ref}`));
           } else {
             previewPaths.set(key, previewPath);
-            const expectedDimensions = key === "preview_ref" ? [2488, 1056] : [622, 264];
+            const expectedDimensions = [2488, 1056];
             const dimensions = png_dimensions(previewPath);
             if (dimensions === null || dimensions[0] !== expectedDimensions[0] || dimensions[1] !== expectedDimensions[1]) {
               errors.push(issue("PREVIEW_FORMAT", `${path_}.${key}`, `Expected a valid ${expectedDimensions[0]} x ${expectedDimensions[1]} PNG.`));
@@ -1683,7 +1680,10 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
               if (isObject(item)) byKind.set(item.kind === undefined ? null : item.kind, item);
             }
           }
-          for (const [key, kind, dimensions] of [["preview_ref", "full", [2488, 1056]], ["compact_preview_ref", "compact_622", [622, 264]]]) {
+          for (const kind of byKind.keys()) {
+            if (kind !== "full") errors.push(issue("CAPTURE_REPORT_ROLE", `${path_}.capture_report_ref`, "Capture report must contain only the publication master."));
+          }
+          for (const [key, kind, dimensions] of [["preview_ref", "full", [2488, 1056]]]) {
             const derivative = byKind.get(kind);
             const previewPath = previewPaths.get(key);
             if (!isObject(derivative) || derivative.width !== dimensions[0] || derivative.height !== dimensions[1]) {
@@ -1775,7 +1775,10 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
         for (const item of Array.isArray(captureReport.derivatives) ? captureReport.derivatives : []) {
           if (isObject(item)) byKind.set(item.kind, item);
         }
-        for (const [key, kind, role, dimensions] of [["preview_ref", "full", "publication", [2488, 1056]], ["compact_preview_ref", "compact_622", "compact", [622, 264]]]) {
+        for (const kind of byKind.keys()) {
+          if (kind !== "full") errors.push(issue("RASTER_AUDIT_ROLE", `${path_}.capture_report_ref`, "Raster audit must contain only the publication master."));
+        }
+        for (const [key, kind, role, dimensions] of [["preview_ref", "full", "publication", [2488, 1056]]]) {
           const derivative = byKind.get(kind);
           const previewPath = previewPaths.get(key);
           if (!isObject(derivative) || derivative.width !== dimensions[0] || derivative.height !== dimensions[1]) {

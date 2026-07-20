@@ -8,7 +8,7 @@ For an ordinary raw idea, execute `asset resolve -> one bounded parallel Query p
 
 ## Selected Freeze Path
 
-After confirmation, execute `reuse selected preview/query refs -> minimal semantics/expression lineage -> selected PostV1 + selected visual direction -> full/compact/visibility-required OG -> deep audit + manifest -> one-candidate selected set -> Frame assembly`. Continue to upload and publication only when requested.
+After confirmation, execute `reuse selected preview/query refs -> minimal semantics/expression lineage -> selected PostV1 + selected visual direction -> one 2488 x 1056 publication master -> deep audit + manifest -> one-candidate selected set -> Frame assembly`. Continue to upload and publication only when requested.
 
 ## Capability Ownership
 
@@ -30,7 +30,7 @@ After confirmation, execute `reuse selected preview/query refs -> minimal semant
 | Text branch | compact text from expression plan | `render-cuebook-market-post` | PostV1 |
 | Data branch | resolve requested visual primitives | `assemble-cuebook-viewpoint-data` | ViewpointDataBundleV1 |
 | Viewpoint layout | freeze one selected layout or generate three explicit alternatives | `direct-cuebook-viewpoint-visual` | VisualDirectionSetV1 |
-| Visual | render the selected adaptive compact visual | `render-cuebook-viewpoint-visual` | ViewpointVisualV1 |
+| Visual | render the selected adaptive publication master | `render-cuebook-viewpoint-visual` | ViewpointVisualV1 |
 | Visual detail, optional | render real OHLC/K-line and settlement clock | `render-cuebook-thesis-chart` | ThesisChartV1 |
 | Settle, optional | compile post commitment | `compile-cuebook-settlement-claim` | SettlementClaimV1 |
 | Settlement math, automatic | compile executable variables, formulas, and lifecycle | `compile-cuebook-settlement-formula` | SettlementFormulaV1 |
@@ -42,7 +42,7 @@ After confirmation, execute `reuse selected preview/query refs -> minimal semant
 | Activate | platform publisher | external connector | PublicationReceiptV1 |
 | Reconcile | history and corrections | `reconcile-market-content-history` | ContentHistoryLedgerV1 |
 
-ProfileV1 and MediaFormatV1 are versioned library inputs. Corpus collectors and distillers run when those libraries need refreshing, not on every content run. `render-cuebook-logic-card`, `render-cuebook-market-figure`, and `render-cuebook-market-signal` remain internal compatibility modules and are not preset choices. `render-cuebook-thesis-chart` is not replaced: it remains the automatic optional full-chart route beside the primary compact viewpoint visual.
+ProfileV1 and MediaFormatV1 are versioned library inputs. Corpus collectors and distillers run when those libraries need refreshing, not on every content run. `render-cuebook-logic-card`, `render-cuebook-market-figure`, and `render-cuebook-market-signal` remain internal compatibility modules and are not preset choices. `render-cuebook-thesis-chart` is not replaced: it remains the automatic optional full-chart route inside the primary publication visual.
 
 The default Create branch is:
 
@@ -85,7 +85,7 @@ For each render, candidate, card, media, and release node, walk current gate-bea
 | Scenario | Required path |
 | --- | --- |
 | Source-only commentary | intake -> recipe/triage -> gate/route -> research -> semantics -> expression -> post -> release |
-| Viewpoint visual | raw idea -> one fast preview -> selection -> one release-grade layout at required sizes -> release |
+| Viewpoint visual | raw idea -> one fast preview -> selection -> one release-grade publication master -> release |
 | Viewpoint card | research/creator input -> semantics -> optional trade protocol -> expression -> post + data -> static layouts -> selected visual -> optional settlement -> card/release |
 | Direct candidate selection | explicit three-request -> shared evidence/meaning -> three batched copies + template previews -> user selection -> selected release freeze |
 | Daily desk | intake -> recipe/triage -> gate/route -> research -> semantics -> expression -> program -> post/media -> release |

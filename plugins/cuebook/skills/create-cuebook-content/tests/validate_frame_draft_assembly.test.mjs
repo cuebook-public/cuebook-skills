@@ -22,8 +22,6 @@ function assembly() {
       disclosures: { ai_assistance: "assisted" },
       media: [
         { rendition_role: "publication", sha256: "sha256:" + "a".repeat(64), alt_text: "USO 偏多观点图" },
-        { rendition_role: "compact", sha256: "sha256:" + "b".repeat(64), alt_text: "USO 观点紧凑图" },
-        { rendition_role: "og", sha256: "sha256:" + "c".repeat(64), alt_text: "USO 分享卡" },
       ],
     },
     settlement_intent: {
@@ -66,7 +64,6 @@ function handoffFor(payload) {
       direction_id: selectedDirectionId,
       html_ref: "selected/viewpoint.html",
       preview_ref: "selected/viewpoint-2488.png",
-      compact_preview_ref: "selected/viewpoint-622.png",
       binding_refs: ["BIND_USO_VIEW"],
       preflight: { copy_audited: true, compact_readable: true, source_bindings_complete: true },
       critique: { verdict: "pass" },
@@ -100,7 +97,6 @@ function handoffFor(payload) {
         direction_ref: selectedDirectionId,
         html_ref: "selected/viewpoint.html",
         preview_ref: "selected/viewpoint-2488.png",
-        compact_preview_ref: "selected/viewpoint-622.png",
         alt_text: payload.frame_draft.media[0].alt_text,
       },
       frame: {
@@ -119,8 +115,6 @@ function handoffFor(payload) {
     source_sha256: `sha256:${"8".repeat(64)}`,
     derivatives: [
       { kind: "full", ref: "viewpoint-2488.png", width: 2488, height: 1056, sha256: payload.frame_draft.media[0].sha256, pixel_sha256: `sha256:${"1".repeat(64)}` },
-      { kind: "compact_622", ref: "viewpoint-622.png", width: 622, height: 264, sha256: payload.frame_draft.media[1].sha256, pixel_sha256: `sha256:${"2".repeat(64)}` },
-      { kind: "og", ref: "og-1200x630.png", width: 1200, height: 630, sha256: payload.frame_draft.media[2].sha256, pixel_sha256: `sha256:${"3".repeat(64)}` },
     ],
   };
   return { candidateSet, directionSet, captureReport };
@@ -160,13 +154,19 @@ test("valid assembly", () => {
   assert.ok(result.valid, JSON.stringify(result.errors));
 });
 
-test("public requires og and intent", () => {
+test("public requires one publication master and intent", () => {
   let payload = assembly();
-  payload.frame_draft.media = payload.frame_draft.media.slice(0, 2);
-  assert.ok(codes(payload).has("OG_REQUIRED"));
+  payload.frame_draft.media = [];
+  assert.ok(codes(payload).has("MEDIA_ROLE_MISSING"));
   payload = assembly();
   payload.settlement_intent = null;
   assert.ok(codes(payload).has("INTENT_REQUIRED"));
+});
+
+test("legacy rendition roles are rejected", () => {
+  const payload = assembly();
+  payload.frame_draft.media.push({ rendition_role: "compact", sha256: `sha256:${"b".repeat(64)}`, alt_text: "legacy" });
+  assert.ok(codes(payload).has("MEDIA_ROLE"));
 });
 
 test("horizon bounds enforced", () => {
