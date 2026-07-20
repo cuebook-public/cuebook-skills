@@ -37,6 +37,10 @@
       "route": "continue the existing create-cuebook-content run immediately without repeating the interview, lowering quality, or opening a price question"
     },
     {
+      "prompt": "已经发好了，我想让另一个 AI 看看。",
+      "route": "send the creator to the Cuebook App share UI; its copy names Cuebook Agent, asks the receiving AI for a judgment, and uses an App-owned share entry pinned to the validated publication receipt's exact frame_id plus release_id without exposing either raw identifier or canonical_url"
+    },
+    {
       "prompt": "用标普 500 指数做一张 Frame。",
       "route": "resolve the recognized official benchmark rather than inventing a Creator Lens"
     },

@@ -455,6 +455,13 @@ test("Frame creator flow never reads back or presents a canonical web link after
   assert.equal(combined.includes("say exactly “已发布，去 Cuebook App 看。” and stop"), false);
   assert.equal(combined.includes("Return only “已发布，去 Cuebook App 看。”"), false);
   assert.match(combined, /creator-specific/iu);
+  assert.match(
+    combined,
+    /这是 Cuebook Agent 帮我完善并记录的交易想法，想听听你怎么判断；请用 Cuebook 打开，尚未连接时按提示安装并连接：<Cuebook 分享入口>/u,
+  );
+  assert.match(combined, /exact `frame_id \+ release_id`/u);
+  assert.match(combined, /App, not the Skill or publication flow, owns sharing/iu);
+  assert.match(combined, /another AI/iu);
   assert.match(combined, /simulated Paper Trade/iu);
   assert.match(combined, /explicit opt-in/iu);
   assert.match(combined, /preview_paper_order/iu);
