@@ -11,12 +11,11 @@ Provide one read-only entrance for everything the user wants to see in Cuebook. 
 
 ## Connection Gate
 
-Run the smallest required Cuebook read as the connection check: `search_assets` for a named asset, `get_frame` for a release-pinned Frame, or the first read that directly answers a request without an asset. Preserve the request while the host connects.
+Assume the plugin's install-time host authentication is complete. Run the smallest required Cuebook read as the connection check: `search_assets` for a named asset, `get_frame` for a release-pinned Frame, or the first read that directly answers a request without an asset. A normal MCP result is the only runtime readiness proof.
 
-- Use only the host-installed `cuebook` MCP connector. Do not enumerate generic MCP resources, inspect repository or connector internals, run a CLI login, implement OAuth discovery or DCR, exchange tokens, create a custom client, or store credentials in task files.
-- If the host pauses for OAuth, remain in the same task and let the normal connector continuation resume the frozen request after the browser callback. Do not create a background test task, open a second connection, or initiate a second login flow.
-- Browser approval is not connection success. Proceed only when the connector returns a normal MCP result. If token exchange, reconnect, or transport fails, stop after that attempt, report the non-secret stage and host error when available, and preserve the frozen request for a later user retry. Allow at most one host OAuth initiation per user action; never try an alternate authentication path automatically.
-- If the connector or this Skill is unavailable because the plugin was just installed, ask the user to open one new task and stop. Do not reinstall the plugin from inside Query.
+- If the Tool is absent, cannot be called, interrupts for authentication, or returns a token, reconnect, or transport failure, preserve the request and stop. Say that the Cuebook install-time connection is not ready and ask the user to complete the plugin README setup, then retry the preserved request in one later task.
+- Use only the host-installed `cuebook` MCP connector. Do not enumerate generic MCP resources, inspect connector internals, run a CLI login, implement OAuth discovery or DCR, exchange tokens, create a custom client, store credentials in task files, open another task, or retry automatically. Do not diagnose a local marketplace plugin through ChatGPT or public plugin management.
+- If the plugin was installed in the current task, finish its install-time authentication and open one new task before querying. Do not reinstall from inside Query.
 
 ## Routing
 

@@ -1,13 +1,19 @@
 <p align="center">
-  <img src="plugins/cuebook/assets/icon.png" width="144" height="144" alt="Cuebook logo">
+  <a href="https://cuebook.xyz">
+    <img
+      src="https://raw.githubusercontent.com/cuebook-public/cuebook-cli/main/assets/cuebook-cli-logo.png"
+      width="200"
+      alt="Cuebook"
+    />
+  </a>
 </p>
 
-<h1 align="center">Cuebook Skills</h1>
+<h1 align="center">Cuebook Skills — market expression for AI agents</h1>
 
-<p align="center"><strong>Turn a market idea into an evidence-aware, mobile-first Frame.</strong></p>
+<p align="center"><strong>Turn a market intuition into a sourced, mobile-first Frame.</strong></p>
 
 <p align="center">
-  Research what matters. Preserve the creator's point of view. Express it as one title, one body, and one editorial image.
+  Two public entrypoints. On-demand research. One title, one body, and one editorial image.
 </p>
 
 <p align="center">
@@ -18,18 +24,29 @@
 </p>
 
 <p align="center">
+  <a href="#cuebook-surfaces">Surfaces</a> ·
   <a href="#quick-start">Quick Start</a> ·
-  <a href="#first-connection">First Connection</a> ·
+  <a href="#install-time-connection">Connection</a> ·
   <a href="#two-skills-one-boundary">Skills</a> ·
   <a href="#one-frame-four-fields">Frame</a> ·
   <a href="#designed-for-the-feed">Visuals</a> ·
   <a href="#architecture">Architecture</a> ·
-  <a href="#development">Development</a>
+  <a href="#development">Development</a> ·
+  <a href="https://github.com/cuebook-public/cuebook-cli">CLI</a>
 </p>
 
 ---
 
 Cuebook is an expression layer for pre-trade thinking. It helps a creator sharpen an intuition, find the smallest useful body of evidence, and publish the idea in a form that is easy to understand, remember, and revisit.
+
+## Cuebook Surfaces
+
+| Surface | Best for | Current contract |
+| --- | --- | --- |
+| **[Cuebook Skills](https://github.com/cuebook-public/cuebook-skills)** | Natural-language research and guided Frame creation in Codex | Two public entrypoints; internal research, rendering, and publication modules load on demand |
+| **[Cuebook CLI](https://github.com/cuebook-public/cuebook-cli)** | Terminal use, scripts, automation, and direct Tool inspection | Live Tool discovery, structured JSON, OAuth connection management, and fail-closed write confirmation |
+
+Both surfaces connect to Cuebook MCP. The server remains authoritative for available Tools, source-linked data, authorization, idempotency, and publication policy; neither client maintains a second catalog of product truth.
 
 ## Quick Start
 
@@ -42,11 +59,15 @@ codex plugin marketplace add cuebook-public/cuebook-skills \
   --sparse plugins/cuebook
 
 codex plugin add cuebook@cuebook
+
+codex mcp list --json
 ```
 
-Installation is complete at this point. The installing task should stop here: it should not create a background test task, initiate OAuth, or publish a placeholder idea.
+Cuebook uses install-time authentication. Find the `cuebook` entry in the JSON output. If it reports `auth_status: "not_logged_in"` and no Cuebook authentication is already in progress, run `codex mcp login cuebook` once and complete the browser flow. Then run `codex mcp list --json` again. Do not start a second login after the first command succeeds.
 
-Open exactly one new Codex task yourself so the plugin Skills and Cuebook connector are loaded. Use that same task for connection, preview, and publication.
+The installing task may complete that one host-owned login, but it must not create a background test task, invent a placeholder idea, or publish anything. Installation is ready for use only after Cuebook is enabled and no longer reports `not_logged_in`.
+
+Open one new Codex task only after installation and authentication are complete. That task loads the two Skills and the authenticated Cuebook connector; it should receive your real request immediately instead of repeating setup.
 
 Then try either path:
 
@@ -62,16 +83,17 @@ Turn that idea into a Frame.
 > [!NOTE]
 > Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly two public entrypoints; internal modules load only when needed.
 
-## First Connection
+## Install-Time Connection
 
-The first Cuebook request may open a browser once for OAuth:
+Keep authentication in the installation flow:
 
-1. Enter your real query or market idea in the new task. The request is preserved while the connector starts.
-2. Approve Cuebook in the browser, then return to the same task. Do not open another task or repeat the installation command.
-3. Resume the original request through the normal connector continuation. The connection is ready only when an MCP result returns successfully; a browser approval screen alone is not proof that token exchange completed.
-4. If Codex reports a token-exchange or reconnect error, stop there. Do not keep retrying or create another connection for the same request. Retrying later should reuse the preserved request.
+1. Install the plugin. Its marketplace policy is `ON_INSTALL`.
+2. Check `codex mcp list --json`. If Cuebook is already authenticated or the host has an active authentication flow, do not start another one.
+3. Only when Cuebook reports `not_logged_in` and no flow is active, run `codex mcp login cuebook` once. Complete the browser approval and wait for the command to finish.
+4. Check the JSON status again. A browser approval page, an enabled connector, or a public plugin-manager result is not connection proof.
+5. Open one new task and make a real Cuebook request. A normal MCP result is the final end-to-end proof that Tool discovery and token exchange succeeded.
 
-This flow uses one plugin installation, one new task, and at most one host OAuth initiation per user action. Preview never publishes; publication still requires explicit intent.
+If authentication or token exchange fails, stop and report that one failure without retrying, reinstalling, or opening more tasks. This flow uses one installation, at most one install-time host login, and one real task. Preview never publishes; publication still requires explicit intent.
 
 ## Two Skills, One Boundary
 

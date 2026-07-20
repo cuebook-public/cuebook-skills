@@ -33,11 +33,13 @@ codex plugin marketplace add cuebook-public/cuebook-skills \
   --sparse plugins/cuebook
 
 codex plugin add cuebook@cuebook
+
+codex mcp list --json
 ```
 
-Installation stops after these commands. The installing task should not create a background test task, initiate OAuth, or publish a placeholder idea.
+Cuebook's marketplace policy is `ON_INSTALL`. If the `cuebook` entry reports `auth_status: "not_logged_in"` and no authentication is already in progress, run `codex mcp login cuebook` once, complete the browser flow, and check `codex mcp list --json` again. Do not start another login after the first succeeds.
 
-Open exactly one new Codex task yourself after installation, then enter your real query or market idea there. The first Cuebook call may open a browser once for OAuth. Return to the same task after browser approval and resume the request through the normal connector continuation. The connector is ready only when an MCP result returns successfully, not merely when the approval page appears. If token exchange or reconnect fails, stop after that attempt instead of opening another task or connection. OAuth credentials stay in the connector, never in a Skill or generated artifact.
+The installing task owns installation and that one necessary host login. It must not create a background test task, publish a placeholder, or diagnose this local marketplace through a public ChatGPT plugin manager. Open one new Codex task only after Cuebook is enabled and no longer reports `not_logged_in`, then enter the real query or market idea. The final readiness proof is a normal MCP result in that task, not a browser approval screen or connector status alone. If authentication fails, stop instead of retrying, reinstalling, or opening more tasks. OAuth credentials stay in the connector, never in a Skill or generated artifact.
 
 ## Public Skills
 

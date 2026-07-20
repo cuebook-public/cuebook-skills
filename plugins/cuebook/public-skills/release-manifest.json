@@ -24,7 +24,7 @@
       "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json",
       "assets/plugin/mcp-capability-map-v1.json"
     ],
-    "cumulative_bytes": 106467,
+    "cumulative_bytes": 106145,
     "maximum_bytes_exclusive": 150000,
     "within_budget": true
   },

@@ -66,7 +66,7 @@ test("frontmatter descriptions with YAML mapping punctuation are quoted", () => 
   }
 });
 
-test("public entrypoints enforce a single host-owned OAuth connection gate", () => {
+test("public entrypoints require an install-time authenticated host connector", () => {
   const create = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
     "utf-8",
@@ -77,10 +77,13 @@ test("public entrypoints enforce a single host-owned OAuth connection gate", () 
   );
   for (const [name, text] of [["create", create], ["query", query]]) {
     assert.ok(text.indexOf("## Connection Gate") >= 0, name);
-    assert.match(text, /Browser approval is not connection success/u, name);
-    assert.match(text, /at most one host OAuth initiation per user action/u, name);
-    assert.match(text, /Do not create a background test task/u, name);
-    assert.match(text, /never try an alternate authentication path automatically/u, name);
+    assert.match(text, /install-time host authentication/u, name);
+    assert.match(text, /normal MCP result is the only runtime readiness proof/u, name);
+    assert.match(text, /run a CLI login/u, name);
+    assert.match(text, /public plugin management/u, name);
+    assert.doesNotMatch(text, /host pauses for OAuth/u, name);
+    assert.doesNotMatch(text, /normal connector continuation/u, name);
+    assert.doesNotMatch(text, /host OAuth initiation per user action/u, name);
   }
   assert.ok(create.indexOf("## Connection Gate") < create.indexOf("## Fast Preview"));
   assert.match(create, /call `get_frame_capabilities` once/u);
@@ -88,7 +91,7 @@ test("public entrypoints enforce a single host-owned OAuth connection gate", () 
   assert.match(query, /Run the smallest required Cuebook read as the connection check/u);
 });
 
-test("Codex install docs separate installation from one same-task OAuth flow", () => {
+test("Codex install docs authenticate once before the first Cuebook task", () => {
   const repositoryRoot = path.resolve(PLUGIN_ROOT, "..", "..");
   const marketplace = JSON.parse(
     fs.readFileSync(path.join(repositoryRoot, ".agents", "plugins", "marketplace.json"), "utf-8"),
@@ -100,12 +103,17 @@ test("Codex install docs separate installation from one same-task OAuth flow", (
   ];
   for (const text of docs) {
     assert.match(text, /background test task/u);
-    assert.match(text, /same task/u);
+    assert.match(text, /codex mcp list --json/u);
+    assert.match(text, /codex mcp login cuebook/u);
+    assert.match(text, /not_logged_in/u);
     assert.match(text, /browser approval/iu);
+    assert.match(text, /normal MCP result/u);
+    assert.doesNotMatch(text, /first Cuebook (?:request|call) may open a browser/iu);
+    assert.doesNotMatch(text, /normal connector continuation/u);
   }
-  assert.match(docs[0], /Open exactly one new Codex task yourself/u);
-  assert.match(docs[2], /stops after one host OAuth initiation/u);
-  assert.equal(marketplace.plugins[0].policy.authentication, "ON_USE");
+  assert.match(docs[0], /Open one new Codex task only after installation and authentication are complete/u);
+  assert.match(docs[2], /Authentication belongs to installation/u);
+  assert.equal(marketplace.plugins[0].policy.authentication, "ON_INSTALL");
 });
 
 test("plugin discovery points only at the two generated public Skills", () => {

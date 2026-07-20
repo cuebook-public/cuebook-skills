@@ -11,13 +11,13 @@ Make the creator feel that their idea was understood, sharpened, and expressed b
 
 ## Connection Gate
 
-Run this gate before the interview, research, or rendering. Preserve the creator's request while the host connects; authentication must not make them repeat or replace their idea.
+Run this gate before the interview, research, or rendering. Assume the plugin's install-time host authentication is complete; this Skill does not own OAuth or connection repair.
 
-1. Use the host-installed `cuebook` MCP connector and call `get_frame_capabilities` once as the normal Create preflight. Do not enumerate generic MCP resources, inspect repository or connector internals, run a CLI login, implement OAuth discovery or DCR, exchange tokens, create a custom client, or store credentials in task files.
-2. If the host pauses for OAuth, stay in the same task and let the normal connector continuation resume the frozen request after the browser callback. Do not create a background test task, open a second connection, or initiate a second login flow.
-3. Browser approval is not connection success. Proceed only when the connector returns a normal MCP result. If token exchange, reconnect, or transport fails, stop after that attempt, report the non-secret stage and host error when available, and keep the frozen request ready for a later user retry. Allow at most one host OAuth initiation per user action; never try an alternate authentication path automatically.
-4. If the connector or this Skill is unavailable because the plugin was just installed, ask the creator to open one new task and stop. Do not reinstall the plugin from inside the creation flow.
-5. Use the preflight only to establish the connection and read deployed capabilities. Missing write or publish actions do not block a local preview; check the required actions again when the creator actually asks to publish.
+1. Use the host-installed `cuebook` MCP connector and call `get_frame_capabilities` once as the normal Create preflight. A normal MCP result is the only runtime readiness proof. Use the result to read deployed capabilities.
+2. If the Tool is absent, cannot be called, interrupts for authentication, or returns a token, reconnect, or transport failure, preserve the creator's request and stop before interviewing or rendering. Say that the Cuebook install-time connection is not ready and ask the creator to complete the plugin README setup, then retry the preserved request in one later task.
+3. Do not enumerate generic MCP resources, inspect connector internals, run a CLI login, implement OAuth discovery or DCR, exchange tokens, create a custom client, store credentials in task files, open another task, or retry automatically. Do not diagnose a local marketplace plugin through ChatGPT or public plugin management.
+4. If the plugin was installed in the current task, finish its install-time authentication and open one new task before creation. Do not reinstall from inside Create.
+5. Missing write or publish actions do not block a local preview after the preflight succeeds; check the required actions again only when the creator asks to publish.
 
 ## Route
 

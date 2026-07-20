@@ -9,6 +9,8 @@ codex plugin marketplace add cuebook-public/cuebook-skills \
   --sparse plugins/cuebook
 
 codex plugin add cuebook@cuebook
+
+codex mcp list --json
 ```
 
 Skills are discovered from the plugin's generated `public-skills/` directory.
@@ -16,29 +18,34 @@ Codex reads exactly two `SKILL.md` files at startup. Internal capabilities are
 vendored as non-discoverable `references/modules/*.md` resources behind
 `query-cuebook` and `create-cuebook-content`.
 
-The installing task stops after `codex plugin add` succeeds. It must not create
-a background test task, initiate OAuth, or publish a placeholder idea. The user
-opens exactly one new task so plugin discovery happens once.
+The marketplace policy is `ON_INSTALL`. After `codex plugin add`, inspect the
+`cuebook` entry from `codex mcp list --json`. If it reports
+`auth_status: "not_logged_in"` and no authentication is already active, run
+`codex mcp login cuebook` once and complete that browser flow. Check the JSON
+status again; do not start a second login after the first succeeds.
+
+The installing task owns installation and that one necessary host login. It
+must not create a background test task, publish a placeholder idea, or use a
+public ChatGPT plugin manager to diagnose this local marketplace. The user
+opens one new task only after authentication completes so plugin discovery
+happens once with an authenticated connector.
 
 ## MCP configuration and auth
 
 The plugin ships `.mcp.json` pointing at the Cuebook MCP server. OAuth
-credentials live in the Codex connector, never in a skill file or generated
-artifact. Start a new Codex task after installation so both skills and the MCP
-server are loaded.
+credentials live in the Codex connector, never in a Skill file or generated
+artifact. Authentication belongs to installation, not to Query or Create.
 
-On the first real Cuebook request, the Skill makes one normal connector call.
-Codex may pause and open the browser for OAuth. After approval, the user returns
-to the same task and resumes the frozen request through the normal connector
-continuation. Browser approval alone is not a successful connection; an MCP
-result must return normally. On a token
-exchange, reconnect, or transport error, the Skill preserves the request and
-stops after one host OAuth initiation for that user action. It does not start a
-second task, repeat DCR, run `codex mcp login`, or implement its own OAuth client.
+An enabled connector or completed browser approval is useful diagnostic state,
+not end-to-end proof. In the first new task, make a real Cuebook request and
+require a normal MCP result. If the Tool is absent, the connector still reports
+`not_logged_in`, or token exchange fails, preserve the request and stop. Repair
+the install-time connection before opening one later task; do not make the
+Skill repeat DCR, run a CLI login, create a custom client, or open another task.
 
-If the plugin was installed during the current task and the connector or Skills
-are absent, open one new task instead of reinstalling or debugging discovery in
-the creation flow.
+If the plugin was installed during the current task, finish install-time
+authentication first and then open one new task. Do not reinstall or debug
+plugin discovery inside the creation flow.
 
 ## Invocation
 
