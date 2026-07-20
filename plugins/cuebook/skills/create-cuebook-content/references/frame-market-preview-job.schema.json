@@ -94,7 +94,7 @@
           "required": ["title", "body"],
           "properties": {
             "title": {"type": "string", "minLength": 2, "maxLength": 32},
-            "body": {"type": "string", "minLength": 20, "maxLength": 280}
+            "body": {"type": "string", "minLength": 20, "maxLength": 1200}
           }
         },
         "evidence_refs": {"$ref": "#/$defs/stringSet"}

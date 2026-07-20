@@ -122,11 +122,42 @@ test("fingerprint cannot drift", () => {
 
 test("copy budget is hard", () => {
   const item = baseSet();
-  item.candidates[0].copy.body = "长".repeat(280);
+  item.candidates[0].copy.body = "长".repeat(961);
   item.candidates[0].copy.visible_char_count = visibleCharCount(item.candidates[0].copy);
   const result = validate(item);
   assertCode(result, "COPY_BUDGET_EXCEEDED");
   assertCode(result, "TOTAL_COPY_BUDGET");
+});
+
+test("reasoned Frame body may exceed the old 280-character ceiling", () => {
+  const item = baseSet();
+  item.generation_policy.candidate_count = 1;
+  item.candidates = [item.candidates[0]];
+  item.candidates[0].copy.body = [
+    "第一段保留创作者观察。".repeat(8),
+    "第二段展开资金、行为与价格之间的传导。".repeat(8),
+    "第三段说明期限内要继续观察的信号。".repeat(8),
+  ].join("\n");
+  item.candidates[0].copy.visible_char_count = visibleCharCount(item.candidates[0].copy);
+  item.candidates[0].frame.body = `${item.candidates[0].copy.body}\n\n${item.candidates[0].copy.close}`;
+  confirmSelection(item);
+  const result = validate(item);
+  assert.equal(result.valid, true, JSON.stringify(result.errors));
+  assert.ok(item.candidates[0].frame.body.length > 280);
+});
+
+test("legacy compact copy-budget declarations remain readable", () => {
+  const item = baseSet();
+  item.generation_policy.copy_budget = {
+    headline_max: 32,
+    body_max: 220,
+    close_max: 56,
+    total_max: 300,
+    paragraph_max: 4,
+    hard_number_max: 3,
+  };
+  const result = validate(item);
+  assert.equal(result.valid, true, JSON.stringify(result.errors));
 });
 
 test("character count is verified", () => {
@@ -207,7 +238,7 @@ test("ready set cannot preselect", () => {
   assertCode(validate(item), "PRESELECTED");
 });
 
-test("settlement confirmation needs all visible fields", () => {
+test("publish confirmation records all locked settlement fields", () => {
   const item = baseSet();
   item.selection.settlement_confirmed = true;
   item.selection.settlement_confirmation_fields = ["subject", "direction"];

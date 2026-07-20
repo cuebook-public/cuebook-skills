@@ -163,7 +163,10 @@
         "skill_may_pull_media",
         "status_tool",
         "status_returns",
-        "published_read_tool",
+        "explicit_frame_query_tool",
+        "automatic_post_publish_readback",
+        "publish_success_source",
+        "creator_link_policy",
         "published_visual_semantics",
         "client_upload_roles",
         "capture_profiles",
@@ -195,8 +198,17 @@
         "status_returns": {
           "const": "processing_and_hash_receipts_only"
         },
-        "published_read_tool": {
+        "explicit_frame_query_tool": {
           "const": "get_frame"
+        },
+        "automatic_post_publish_readback": {
+          "const": false
+        },
+        "publish_success_source": {
+          "const": "validated_publish_receipt"
+        },
+        "creator_link_policy": {
+          "const": "never_present_canonical_url"
         },
         "published_visual_semantics": {
           "const": "one_visual_attached_to_frame_release"
@@ -228,15 +240,13 @@
             "register_frame_visual_manifest",
             "create_or_update_frame_draft",
             "prepare_frame_publish",
-            "publish_frame",
-            "get_frame"
+            "publish_frame"
           ]
         },
         "correction_publish_sequence": {
           "const": [
             "prepare_frame_correction_publish",
-            "publish_frame_correction",
-            "get_frame"
+            "publish_frame_correction"
           ]
         },
         "withdraw_sequence": {

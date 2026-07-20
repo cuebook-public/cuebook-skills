@@ -1,6 +1,6 @@
 # Cuebook Frame Expression System
 
-Frame is a creator-owned pre-trade publishing medium: one memorable title, one concise body, and one image whose geometry carries the market argument. It supports intuitive single-asset views, relative and event ideas, conditional macro thinking, transparent creator-defined baskets, and long/short observation lenses. It is not a trading terminal, a research report, or a dashboard screenshot.
+Frame is a creator-owned pre-trade publishing medium: one memorable title, one reasoned body, and one image whose geometry carries the market argument. It supports intuitive single-asset views, relative and event ideas, conditional macro thinking, transparent creator-defined baskets, and long/short observation lenses. It is not a trading terminal, a research report, or a dashboard screenshot.
 
 ## 1. Preserve The Creator's Edge
 
@@ -131,7 +131,7 @@ The detailed 2488 publication composition must show:
 - a blank future region with dated confirmation and invalidation conditions;
 - the creator's countercase as visible language, not hidden metadata.
 
-The independently composed 622 compact rendition keeps the Lens identity, observed curve or opposing sleeves, no more than the three strongest visible contributions, one unresolved future check, and minimal provenance. Formula, component reasons, synchronized-bar count, selection-mode detail, and limitations remain available in the publication view, structured references, and alt text; they must not become an unreadable miniature ledger.
+The sole 2488 publication master is authored in a 622 x 264 mobile display box. It keeps the Lens identity, observed curve or opposing sleeves, no more than the three strongest visible contributions, one unresolved future check, and minimal provenance. Formula, component reasons, synchronized-bar count, selection-mode detail, and limitations remain in the body, structured references, and alt text; they must not become an unreadable miniature ledger. No second bitmap is created.
 
 ## 8. Keep Future Time Rich But Unresolved
 
@@ -159,7 +159,7 @@ Frame is social-editorial. The native title and body already carry prose; the im
 
 Use open editorial columns, tension fields, branches, rails, and contribution stages. Avoid turning every beat into the same rounded card. Do not copy navigation bars, tabs, KPI tiles, or app chrome from a dashboard reference. Borrow the useful idea—dense chart plus explanatory layers—without importing dashboard furniture.
 
-Render one 2488 x 1056 publication master from the meaning lock. Inspect that exact composition at a 622 x 264 display size: use one dominant geometry, at most two essential copy groups, an effective 11 px type floor, and one future check. Repair the master when it fails; never create a separate compact composition. Preserve diversity through grayscale silhouette and reading direction, not by adding more small labels.
+Render one 2488 x 1056 publication master from the meaning lock, authored against a 622 x 264 display box and rasterized at 4x. Use one dominant geometry, at most two essential copy groups, a 22 px display-size type floor, and one future check. Repair the master when it fails; never create a separate compact composition. Preserve diversity through grayscale silhouette and reading direction, not by adding more small labels.
 
 Surface comes after structure. `paper_signal`, `midnight`, `warm_editorial`, and `cool_mono` should change tone, not substitute for a different reading path. Three requested alternatives need different grammars or compositions, not merely different colors.
 

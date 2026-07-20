@@ -13,6 +13,7 @@
 
 <p align="center">
   <a href="#install">Install</a> ·
+  <a href="#update">Update</a> ·
   <a href="#platforms">Platforms</a> ·
   <a href="#public-skills">Public Skills</a> ·
   <a href="#creation-model">Creation Model</a> ·
@@ -23,13 +24,12 @@
 
 ---
 
-The Cuebook plugin reads source-linked market intelligence and turns a creator's trading idea into one title, one concise body, and one editorial image.
+The Cuebook plugin reads source-linked market intelligence and turns a creator's trading idea into one title, one reasoned body, and one editorial image.
 
 ## Install
 
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \
-  --ref v0.5.0 \
   --sparse .agents/plugins \
   --sparse plugins/cuebook
 
@@ -41,6 +41,18 @@ codex mcp list --json
 Cuebook's marketplace policy is `ON_INSTALL`. If the `cuebook` entry reports `auth_status: "not_logged_in"` and no authentication is already in progress, run `codex mcp login cuebook` once, complete the browser flow, and check `codex mcp list --json` again. Do not start another login after the first succeeds.
 
 The installing task owns installation and that one necessary host login. It must not create a background test task, publish a placeholder, or diagnose this local marketplace through a public ChatGPT plugin manager. Open one new Codex task only after Cuebook is enabled and no longer reports `not_logged_in`, then enter the real query or market idea. The final readiness proof is a normal MCP result in that task, not a browser approval screen or connector status alone. If authentication fails, stop instead of retrying, reinstalling, or opening more tasks. OAuth credentials stay in the connector, never in a Skill or generated artifact.
+
+Use `--ref v0.6.0` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
+
+## Update
+
+```bash
+codex plugin marketplace upgrade cuebook
+codex plugin add cuebook@cuebook
+codex mcp list --json
+```
+
+A normal update needs no uninstall, duplicate MCP configuration, or repeated OAuth. Open one new Codex task after the refresh so it loads the updated Skills. Authenticate again only when the connector explicitly reports `not_logged_in`, requires scope step-up, or its grant has been revoked.
 
 ## Platforms
 
@@ -76,6 +88,8 @@ A creator-facing Frame contains exactly four fields:
 
 There is no public workflow state on the Frame. Preview blockers use plain language. After an action succeeds, Cuebook confirms only the meaningful result, such as “Published” or “Withdrawn.” Schema versions, selection IDs, source bundles, hashes, scores, scopes, upload state, receipts, consent, and credentials stay backstage.
 
+Eligible single-asset long and short Frames share one deadline rule across crypto, equities, ETFs, and indexes: Cuebook fixes the exact creator-owned deadline and compares the latest completed provider-official price observation at or before it with the publication baseline. Creators never choose sessions, trading days, or next close. “Publish this” confirms the selected Frame and this standard zero-threshold rule in one action; only a creator-requested price target or pair needs additional terms.
+
 ## Creation Model
 
 The Skill keeps four layers separate:
@@ -83,7 +97,7 @@ The Skill keeps four layers separate:
 1. **Creator meaning** — the claim, mechanism, time horizon, and next observable remain creator-owned.
 2. **Frozen evidence** — Cuebook supports observations with typed, time-bound results. One bounded, authorized Web batch may fill a material gap and is labeled separately.
 3. **Expression** — a deterministic renderer chooses a curve, comparison, drawdown, event, threshold, scenario, causal path, evidence tension, transparent Creator Lens, or long/short contribution structure.
-4. **Publication** — upload, manifest registration, draft, prepare, publish, and readback happen only after explicit intent.
+4. **Publication** — upload, manifest registration, draft, prepare, and publish happen only after explicit intent. A validated publish receipt is terminal; the creator sees a success confirmation and returns to the Cuebook App, never a generated web page or canonical link.
 
 Facts and interpretation never blur. A source reference is not enough: the factual sentence must pass a numerical or typed observation test. Causal language remains the creator's hypothesis unless a source establishes it.
 
@@ -93,7 +107,7 @@ If an upstream system supplies a frozen commitment and evidence set, Create chan
 
 Each preview renders one **2488 × 1056** publication PNG from the meaning lock. Cuebook uploads and binds it once. Phone and Feed surfaces show that same master in the equivalent **622 × 264** aspect-ratio box; the Skill does not create separate compact, web, thumbnail, or OG assets.
 
-The master still obeys phone-first constraints: one dominant geometry, 2–3 essential prose groups, at least 18 px effective type for those groups at the 622 × 264 display scale, minimal provenance, and one visible future check. Delivery-layer resizing may be introduced later without changing the authoring or MCP contract.
+The master is authored against its 622 × 264 phone display box and rasterized at 4x: one dominant geometry, at most two essential prose groups, at least 22 px display-size type, minimal provenance, and one visible future check. Delivery-layer resizing may be introduced later without changing the authoring or MCP contract.
 
 Design diversity comes from the reading path, not palette roulette. Curve stages, editorial splits, tension fields, temporal rails, trigger posters, branch maps, mechanism paths, evidence balance, Lens anatomy, and spread arenas remain distinguishable in grayscale. Surface, typography, material, and density follow the idea topology.
 
@@ -104,6 +118,8 @@ Observed history ends at a visible declaration boundary. Future space may contai
 The Skill is a thin orchestrator. Cuebook MCP provides authenticated typed reads and authorized Frame mutations; local deterministic code adapts frozen results and renders pixels. Broad internal graphs and algorithm stages are not public creator Tools.
 
 Client allowlists optimize tool choice but do not authorize requests. The server enforces grants, users, clients, scopes, policy, idempotency, prepared hashes, and publish tokens. Initial and correction publication go directly from prepare to publish under the active grant and first-party action. Withdrawal alone requires separate consent.
+
+These authorization checks stay inside MCP and are not additional creator steps. The ordinary one-preview publish lane also reuses the frozen preview directly instead of reconstructing a release DAG, candidate family, or HTML page. Removing those redundant artifacts, a second settlement prompt, or post-publish browser readback does not weaken OAuth, prepared-hash, publish-token, idempotency, or transaction validation.
 
 MCP never returns image bytes to the Skill after upload. The first-party app may transport renditions for display, while the Skill sees only semantic Frame data and owner-only media status.
 

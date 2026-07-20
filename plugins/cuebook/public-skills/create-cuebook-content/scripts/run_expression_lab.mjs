@@ -852,11 +852,10 @@ async function main() {
       narrative_placement: rendered.narrative_placement,
       display_system: rendered.display_system,
       design_fingerprint: rendered.design_fingerprint,
-      image: path.relative(root, path.join(caseRoot, "output", candidate.candidate_id, "viewpoint-2488.png")),
-      compact_image: path.relative(root, path.join(caseRoot, "output", rendered.compact_image_ref)),
-      compact_svg: path.relative(root, path.join(caseRoot, "output", rendered.compact_svg_ref)),
-      attention_signature: rendered.compact_audit.attention_signature,
-      compact_audit: rendered.compact_audit,
+      image: path.relative(root, path.join(caseRoot, "output", rendered.image_ref)),
+      mobile_display: rendered.audit.mobile_display,
+      attention_signature: rendered.audit.attention_signature,
+      master_audit: rendered.audit,
       alt_text: candidate.frame.alt_text,
       observation_evaluation: rendered.observation_evaluation,
     });
@@ -876,14 +875,16 @@ async function main() {
   if (!designDiversity.passed) throw new Error(`Art-direction diversity gate failed: ${JSON.stringify(designDiversity)}`);
   const mobileAttention = {
     attention_signature_count: new Set(results.map((item) => item.attention_signature)).size,
-    compact_audits_passed: results.every((item) => item.compact_audit.valid),
-    maximum_essential_copy_groups: Math.max(...results.map((item) => item.compact_audit.essential_copy_groups)),
-    minimum_essential_font_floor: Math.min(...results.map((item) => item.compact_audit.essential_font_floor)),
+    master_audits_passed: results.every((item) => item.master_audit.valid && item.master_audit.single_master),
+    maximum_essential_copy_groups: Math.max(...results.map((item) => item.master_audit.essential_copy_groups)),
+    minimum_essential_font_floor: Math.min(...results.map((item) => item.master_audit.essential_font_floor)),
+    publication_master_count: results.filter((item) => item.master_audit.single_master).length,
   };
-  mobileAttention.passed = mobileAttention.compact_audits_passed
+  mobileAttention.passed = mobileAttention.master_audits_passed
     && mobileAttention.attention_signature_count >= 9
     && mobileAttention.maximum_essential_copy_groups <= 2
-    && mobileAttention.minimum_essential_font_floor >= 22;
+    && mobileAttention.minimum_essential_font_floor >= 22
+    && mobileAttention.publication_master_count === results.length;
   if (!mobileAttention.passed) throw new Error(`Mobile attention gate failed: ${JSON.stringify(mobileAttention)}`);
   const manifest = {
     schema_version: "cuebook-pretrade-expression-lab",

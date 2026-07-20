@@ -64,7 +64,7 @@ test("Claude Code marketplace reuses the two public Skills and canonical MCP con
     fs.readFileSync(path.join(PLUGIN_ROOT, ".claude-plugin", "plugin.json"), "utf-8"),
   );
   assert.equal(manifest.name, "cuebook");
-  assert.equal(manifest.version.split("+")[0], "0.5.0");
+  assert.equal(manifest.version.split("+")[0], "0.6.0");
   assert.equal(manifest.skills, "./public-skills/");
   assert.equal(manifest.mcpServers, "./.mcp.json");
 });
@@ -383,15 +383,13 @@ test("initial and correction publish skip separate consent while withdrawal reta
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
   );
   const flow = payload.frame_publication_flow;
-  assert.deepEqual(flow.initial_publish_sequence.slice(-3), [
+  assert.deepEqual(flow.initial_publish_sequence.slice(-2), [
     "prepare_frame_publish",
     "publish_frame",
-    "get_frame",
   ]);
   assert.deepEqual(flow.correction_publish_sequence, [
     "prepare_frame_correction_publish",
     "publish_frame_correction",
-    "get_frame",
   ]);
   assert.deepEqual(flow.withdraw_sequence, [
     "prepare_frame_withdraw",
@@ -400,6 +398,51 @@ test("initial and correction publish skip separate consent while withdrawal reta
     "withdraw_frame",
   ]);
   assert.equal(flow.action_consent_usage, "withdrawal_only");
+  assert.equal(flow.publish_success_source, "validated_publish_receipt");
+  assert.equal(flow.creator_link_policy, "never_present_canonical_url");
+  assert.equal(flow.explicit_frame_query_tool, "get_frame");
+  assert.equal(flow.automatic_post_publish_readback, false);
+  assert.ok(!flow.initial_publish_sequence.includes("get_frame"));
+  assert.ok(!flow.correction_publish_sequence.includes("get_frame"));
+});
+
+test("Frame creator flow never reads back or presents a canonical web link after publish", () => {
+  const create = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const publish = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "references", "frame-publish-workflow.md"),
+    "utf-8",
+  );
+  const orchestrator = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "orchestrate-cuebook-creator-workflow", "SKILL.md"),
+    "utf-8",
+  );
+  const combined = `${create}\n${publish}\n${orchestrator}`;
+  assert.equal(combined.includes("→ `get_frame` readback"), false);
+  assert.equal(combined.includes("verify through `get_frame`"), false);
+  assert.equal(combined.includes("On successful readback"), false);
+  assert.equal(combined.includes("unless the creator explicitly requests technical diagnostics"), false);
+  assert.match(combined, /已发布，去 Cuebook App 看。/u);
+  assert.match(combined, /Never present .*canonical_url/iu);
+});
+
+test("ordinary one-preview publish does not reconstruct the advanced release graph", () => {
+  const create = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const publish = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "references", "frame-publish-workflow.md"),
+    "utf-8",
+  );
+  assert.match(create, /Do not reconstruct `PostV1`, `VisualDirectionSetV1`, `PublishCandidateSetV1`/u);
+  assert.match(publish, /Direct Fast Publish/u);
+  assert.match(publish, /do not synthesize a `VisualDirectionSetV1`/u);
+  assert.match(publish, /Do not add the optional local generation handoff/u);
+  assert.match(publish, /replay at most once with the exact same idempotency key/u);
+  assert.match(publish, /never send the same invalid shape repeatedly/u);
 });
 
 test("Frame publish contract pins consentless prepared and input fields", () => {

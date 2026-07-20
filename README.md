@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.5.0"><img alt="Release v0.5.0" src="https://img.shields.io/badge/release-v0.5.0-F6C500?style=flat-square&labelColor=111111"></a>
+  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.6.0"><img alt="Release v0.6.0" src="https://img.shields.io/badge/release-v0.6.0-F6C500?style=flat-square&labelColor=111111"></a>
   <a href="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml"><img alt="Quality" src="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml/badge.svg?branch=main"></a>
   <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/Node.js-%E2%89%A522-3C873A?style=flat-square&labelColor=111111">
   <img alt="Two public skills" src="https://img.shields.io/badge/public_skills-2-4C6FFF?style=flat-square&labelColor=111111">
@@ -39,6 +39,7 @@
   <a href="#cuebook-surfaces">Surfaces</a> ·
   <a href="#platform-support">Platforms</a> ·
   <a href="#quick-start">Quick Start</a> ·
+  <a href="#updating">Updating</a> ·
   <a href="#install-time-connection">Connection</a> ·
   <a href="#two-skills-one-boundary">Skills</a> ·
   <a href="#one-frame-four-fields">Frame</a> ·
@@ -67,7 +68,7 @@ Cuebook has one remote MCP endpoint and two optional Agent Skills. Hosts that lo
 
 | Host | Distribution | Intended surface | Live status |
 | --- | --- | --- | --- |
-| **Codex app and Codex CLI** | Cuebook Plugin | Skills + MCP | Package validated; OAuth recheck pending |
+| **Codex app and Codex CLI** | Cuebook Plugin | Skills + MCP | OAuth, preview, and publication live-verified on 2026-07-20 |
 | **Claude Code** | Native Claude Code marketplace | Skills + MCP | Static package validation ready; live check pending |
 | **Cursor editor and CLI** | Two Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
 | **Hermes Agent** | Two Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
@@ -80,11 +81,10 @@ See the [platform matrix and installation guides](plugins/cuebook/platforms/READ
 
 ## Quick Start
 
-Install the current release:
+Install the current stable release from `main`:
 
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \
-  --ref v0.5.0 \
   --sparse .agents/plugins \
   --sparse plugins/cuebook
 
@@ -112,6 +112,20 @@ Turn that idea into a Frame.
 
 > [!NOTE]
 > Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly two public entrypoints; internal modules load only when needed.
+
+For a reproducible, intentionally frozen install, add `--ref v0.6.0` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
+
+## Updating
+
+Update the configured marketplace snapshot and refresh the installed Plugin in place:
+
+```bash
+codex plugin marketplace upgrade cuebook
+codex plugin add cuebook@cuebook
+codex mcp list --json
+```
+
+Do not uninstall the Plugin, duplicate its MCP entry, or repeat OAuth during a normal update. Existing connector credentials remain host-owned. Log in again only when the connector explicitly reports `not_logged_in`, returns an authorization challenge that requires step-up, or the stored grant has been revoked. Open one new Codex task after the refresh so it loads the new Skill bundle; the current task keeps the version it started with.
 
 ## Install-Time Connection
 
@@ -156,13 +170,15 @@ The complete public artifact is deliberately small:
 
 Workflow state, schema versions, candidate IDs, evidence bundles, hashes, scopes, upload progress, receipts, consent fields, and backend enums stay backstage.
 
+Eligible single-asset long and short Frames use one creator-facing settlement model across crypto, equities, ETFs, and indexes: the exact chosen deadline is fixed, then Cuebook compares the latest completed provider-official price observation at or before that deadline with the publication baseline. The creator never chooses regular hours, after hours, trading days, or next close. An explicit “publish this” confirms the selected Frame and this standard zero-threshold direction rule together; target-price and pair overrides are the only cases that need more terms.
+
 ## From Intuition To Expression
 
 1. **Capture the edge.** Preserve the creator's claim, mechanism, horizon, and next observable. Ask at most one optional, high-leverage question; skipping it never blocks creation.
 2. **Find support.** Retrieve the smallest useful evidence set from Cuebook. A bounded Web lookup may fill a material gap and remains clearly labeled.
 3. **Lock the meaning.** Separate observed facts from the creator's interpretation. A request for another version changes expression, not the underlying claim or evidence.
-4. **Compose one Frame.** Write a sharp title, a concise body, and one visual with a clear reading path.
-5. **Preview, then publish.** Publication happens only after explicit intent and is verified by reading the resulting Frame back.
+4. **Compose one Frame.** Write a sharp title, a reasoned body, and one visual with a clear reading path.
+5. **Preview, then publish.** Publication happens only after explicit intent. The ordinary one-preview path binds that frozen preview directly—no reconstructed release DAG, candidate family, or HTML page. A validated publish receipt ends the flow; the creator is sent to the Cuebook App without a web link or browser readback.
 
 The goal is not to lecture the creator or flatten the idea into generic research. Cuebook improves the expression while keeping authorship visible.
 
@@ -180,7 +196,7 @@ The renderer chooses a visual relationship before it chooses a style.
 
 Every preview has one **2488 × 1056** publication PNG. Cuebook uploads and binds that image once; Feed and detail surfaces display the same master, with the Feed scaling it to the equivalent **622 × 264** aspect-ratio box. The Skill does not create separate compact, web, thumbnail, or OG assets.
 
-The master is composed to survive a fast phone scroll: one dominant geometry, 2–3 essential prose groups, and at least 18 px effective type for those groups at the 622 × 264 display scale. Historical data ends at a visible observation boundary; future space contains checkpoints or branches, never a fabricated price path. Delivery-layer resizing may be added later without changing the authoring or MCP contract.
+The master is authored against its 622 × 264 phone display box and rasterized at 4x: one dominant geometry, at most two essential prose groups, and at least 22 px display-size type for those groups. Historical data ends at a visible observation boundary; future space contains checkpoints or branches, never a fabricated price path. Delivery-layer resizing may be added later without changing the authoring or MCP contract.
 
 ## Architecture
 

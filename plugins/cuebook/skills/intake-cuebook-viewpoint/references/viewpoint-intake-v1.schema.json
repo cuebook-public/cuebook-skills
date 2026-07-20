@@ -121,11 +121,11 @@
           "type": "object",
           "additionalProperties": false,
           "required": ["family", "provenance"],
-          "description": "Launch settlement family choice. Null family means settlement is deferred for a creation preview or the expression is non-settleable (watch/explain/avoid/neutral); publication freezes an eligible family later.",
+          "description": "Launch settlement family. Null defers settlement for preview or marks a non-settleable view. Eligible single-asset long/short publication derives the standard zero-threshold direction family from policy without a second prompt.",
           "properties": {
             "family": {"enum": ["single_asset_direction", "single_asset_price_target", "pair_asset_direction", "pair_asset_price_targets", null]},
-            "threshold_bps": {"type": ["string", "null"], "pattern": "^-?\\d+(\\.\\d+)?$", "description": "Explicit decimal string; a default of 0 must still be stated as \"0\"."},
-            "provenance": {"enum": ["stated", "elicited", "inferred_confirmed", "missing"]}
+            "threshold_bps": {"type": ["string", "null"], "pattern": "^-?\\d+(\\.\\d+)?$", "description": "Explicit decimal string; the standard direction default is recorded as \"0\"."},
+            "provenance": {"enum": ["stated", "elicited", "inferred_confirmed", "policy_default", "missing"]}
           }
         }
       }

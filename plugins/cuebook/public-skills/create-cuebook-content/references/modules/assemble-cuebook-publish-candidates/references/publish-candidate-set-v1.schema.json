@@ -36,11 +36,11 @@
           "required": ["headline_max", "body_max", "close_max", "total_max", "paragraph_max", "hard_number_max"],
           "properties": {
             "headline_max": {"type": "integer", "minimum": 12, "maximum": 32},
-            "body_max": {"type": "integer", "minimum": 80, "maximum": 220},
-            "close_max": {"type": "integer", "minimum": 20, "maximum": 56},
-            "total_max": {"type": "integer", "minimum": 160, "maximum": 300},
-            "paragraph_max": {"type": "integer", "minimum": 2, "maximum": 4},
-            "hard_number_max": {"type": "integer", "minimum": 1, "maximum": 3}
+            "body_max": {"type": "integer", "minimum": 80, "maximum": 800},
+            "close_max": {"type": "integer", "minimum": 20, "maximum": 80},
+            "total_max": {"type": "integer", "minimum": 160, "maximum": 960},
+            "paragraph_max": {"type": "integer", "minimum": 2, "maximum": 5},
+            "hard_number_max": {"type": "integer", "minimum": 1, "maximum": 6}
           }
         },
         "visual_visible_char_max": {"type": "integer", "minimum": 60, "maximum": 120}
@@ -298,10 +298,10 @@
           "required": ["headline", "body", "close", "tags", "visible_char_count"],
           "properties": {
             "headline": {"type": "string", "minLength": 2, "maxLength": 32},
-            "body": {"type": "string", "minLength": 20, "maxLength": 220},
-            "close": {"type": "string", "minLength": 2, "maxLength": 56},
+            "body": {"type": "string", "minLength": 20, "maxLength": 800},
+            "close": {"type": "string", "minLength": 2, "maxLength": 80},
             "tags": {"type": "array", "minItems": 2, "maxItems": 4, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 12}},
-            "visible_char_count": {"type": "integer", "minimum": 1, "maximum": 300}
+            "visible_char_count": {"type": "integer", "minimum": 1, "maximum": 960}
           }
         },
         "visual": {
@@ -321,7 +321,7 @@
           "required": ["title", "body", "image_ref", "alt_text"],
           "properties": {
             "title": {"type": "string", "minLength": 2, "maxLength": 32},
-            "body": {"type": "string", "minLength": 20, "maxLength": 280},
+            "body": {"type": "string", "minLength": 20, "maxLength": 1200},
             "image_ref": {"type": "string", "pattern": "^[^/].*\\.png$"},
             "alt_text": {"type": "string", "minLength": 2, "maxLength": 120}
           }

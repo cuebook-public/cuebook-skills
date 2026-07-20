@@ -4,13 +4,12 @@
 
 **Package status:** Validated locally.
 
-**Live status:** OAuth and end-to-end Tool verification are pending the next Cuebook server rollout.
+**Live status:** OAuth, Tool discovery, preview, and publication were live-verified on 2026-07-20.
 
 ## Install and discovery
 
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \
-  --ref <release-tag> \
   --sparse .agents/plugins \
   --sparse plugins/cuebook
 
@@ -23,6 +22,23 @@ Skills are discovered from the plugin's generated `public-skills/` directory.
 Codex reads exactly two `SKILL.md` files at startup. Internal capabilities are
 vendored as non-discoverable `references/modules/*.md` resources behind
 `query-cuebook` and `create-cuebook-content`.
+
+The default marketplace follows stable releases from `main`. Add `--ref
+v0.6.0` only for an intentionally frozen install.
+
+## Update
+
+```bash
+codex plugin marketplace upgrade cuebook
+codex plugin add cuebook@cuebook
+codex mcp list --json
+```
+
+Do not uninstall, duplicate `.mcp.json`, or repeat OAuth for a normal update.
+The connector owns its existing credential. Open one new task after refresh so
+Codex loads the new Skill bundle; reauthenticate only when the connector
+explicitly reports `not_logged_in`, requires scope step-up, or the grant was
+revoked.
 
 The marketplace policy is `ON_INSTALL`. After `codex plugin add`, inspect the
 `cuebook` entry from `codex mcp list --json`. If it reports
@@ -62,7 +78,7 @@ plugin discovery inside the creation flow.
 
 ## Runtime dependencies
 
-- Node.js 18+ for every validator script, with Playwright and a local Chromium/Chrome executable for the
+- Node.js 22+ for every validator script, with Playwright and a local Chromium/Chrome executable for the
   deterministic preview renderer and selected release audits (declared in their `compatibility` frontmatter).
   Codex runs supply these via the bundled runtime under
   `~/.cache/codex-runtimes/`; set `NODE_PATH` to a Playwright-bearing
@@ -71,7 +87,9 @@ plugin discovery inside the creation flow.
 ## Write operations
 
 Frame publication follows the capability-advertised upload → manifest → draft
-→ prepare → publish → `get_frame` readback sequence. Initial and correction
+→ prepare → publish sequence. A validated publish receipt ends the creator
+flow; Codex does not call `get_frame`, browse a canonical page, or display a
+web link after publication. Initial and correction
 publishing use the active grant and first-party publish action without a
 separate consent request; only withdrawal uses `get_frame_action_consent`.
 Every mutation uses a separate lowercase UUIDv7. Query never calls writes;
@@ -90,4 +108,4 @@ exposed.
 node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook
 ```
 
-After the server rollout, run the shared [live verification gate](README.md#live-verification-gate). In a fresh Codex task, ask `What changed around USO recently?` and confirm the answer routes through `query-cuebook` and returns a normal source-linked MCP result with no write-tool calls. Then use a real creator idea for preview; never publish a placeholder idea.
+For a new release, run the shared [live verification gate](README.md#live-verification-gate). In a fresh Codex task, ask `What changed around USO recently?` and confirm the answer routes through `query-cuebook` and returns a normal source-linked MCP result with no write-tool calls. Then use a real creator idea for preview; never publish a placeholder idea.

@@ -54,8 +54,8 @@
       "question": "Does one prominent, creator-specific line make the user's distinctive intuition feel recognized and better expressed without generic praise or hype?"
     },
     {
-      "id": "mobile_compact_fit",
-      "question": "Is the 622 x 264 rendition independently composed with one dominant geometry, at most two essential copy groups, and type that remains readable at phone width?"
+      "id": "mobile_master_fit",
+      "question": "Is the sole 2488 x 1056 publication master authored against a 622 x 264 mobile box with one dominant geometry, at most two essential copy groups, and readable phone-scale type?"
     },
     {
       "id": "controlled_variation",
@@ -73,7 +73,7 @@
     "the visual claims an official index when it is only a creator-defined basket",
     "multiple requested alternatives differ only by palette or typography while keeping the same reading silhouette",
     "the publication or expanded Frame hides a derived basket's components, weights, basis, coverage, or limitations",
-    "the compact image is a uniform downscale, needs zoom, or contains more than two competing essential copy groups",
+    "the publication master is a dense desktop downscale, needs zoom at 622 x 264, or contains more than two competing essential copy groups",
     "a layout-only reroll changes facts, evidence, direction, horizon, or claim-state typing",
     "the primary relationship cannot be identified within five seconds"
   ],

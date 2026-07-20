@@ -28,8 +28,9 @@ Read `references/modules/render-cuebook-market-post/references/rendering-method.
 ## Frame Copy Contract
 
 - The final visible Frame has exactly three components: one title, one body, and one paired image. This renderer owns the body; the candidate assembler derives the title and binds the image.
-- In Chinese, normally use 160-280 visible characters across two to four short paragraphs. Finish sooner when the judgment, mechanism, and next observable are clear. Do not turn the body into a miniature research report.
-- The body carries the hook, creator-owned viewpoint, and concise causal read. It does not need to carry all seven reasoning jobs when the image can show the observed evidence, two to four reasoning beats, and the horizon or deadline more clearly.
+- In Chinese, normally use 260–700 visible characters across three to five short paragraphs (roughly 120–300 English words). Finish sooner when the view is genuinely simple; do not pad, but do not collapse a real causal chain into a caption.
+- The body carries the strongest observation, creator-owned viewpoint, causal sequence, horizon, and one confirming or weakening next observable. It does not need to carry all seven reasoning jobs when the image can show the relationship, two to four reasoning beats, and the deadline more clearly.
+- The first paragraph is a self-contained Feed lead. Later paragraphs carry the deeper mechanism and future check for the detail surface; do not move that extra density into the image.
 - The body and image divide labor. Do not repeat the title, reproduce every image label in prose, or paste a settlement form beneath the argument.
 - Keep viewpoint, inference, and observation honest: the viewpoint belongs to the creator; a mechanism may remain a hypothesis; hard market facts require Cuebook-linked evidence.
 - Never pad with generic context, repeated warnings, engagement bait, platform language, or workflow narration.
