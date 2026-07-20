@@ -16,12 +16,29 @@ Codex reads exactly two `SKILL.md` files at startup. Internal capabilities are
 vendored as non-discoverable `references/modules/*.md` resources behind
 `query-cuebook` and `create-cuebook-content`.
 
+The installing task stops after `codex plugin add` succeeds. It must not create
+a background test task, initiate OAuth, or publish a placeholder idea. The user
+opens exactly one new task so plugin discovery happens once.
+
 ## MCP configuration and auth
 
 The plugin ships `.mcp.json` pointing at the Cuebook MCP server. OAuth
 credentials live in the Codex connector, never in a skill file or generated
 artifact. Start a new Codex task after installation so both skills and the MCP
 server are loaded.
+
+On the first real Cuebook request, the Skill makes one normal connector call.
+Codex may pause and open the browser for OAuth. After approval, the user returns
+to the same task and resumes the frozen request through the normal connector
+continuation. Browser approval alone is not a successful connection; an MCP
+result must return normally. On a token
+exchange, reconnect, or transport error, the Skill preserves the request and
+stops after one host OAuth initiation for that user action. It does not start a
+second task, repeat DCR, run `codex mcp login`, or implement its own OAuth client.
+
+If the plugin was installed during the current task and the connector or Skills
+are absent, open one new task instead of reinstalling or debugging discovery in
+the creation flow.
 
 ## Invocation
 
@@ -60,6 +77,6 @@ exposed.
 node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook
 ```
 
-Then, in a fresh Codex task: ask `看看 USO 最近有什么叙事` and confirm the
+Then, in a fresh Codex task: ask `What changed around USO recently?` and confirm the
 answer routes through `query-cuebook` and returns a source-linked
 `CuebookQueryBundleV1` with no write-tool calls.

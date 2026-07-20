@@ -28,14 +28,16 @@ The Cuebook plugin reads source-linked market intelligence and turns a creator's
 
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \
-  --ref v0.4.0 \
+  --ref v0.4.1 \
   --sparse .agents/plugins \
   --sparse plugins/cuebook
 
 codex plugin add cuebook@cuebook
 ```
 
-Start a new Codex task after installation. OAuth credentials stay in the connector, never in a Skill or generated artifact.
+Installation stops after these commands. The installing task should not create a background test task, initiate OAuth, or publish a placeholder idea.
+
+Open exactly one new Codex task yourself after installation, then enter your real query or market idea there. The first Cuebook call may open a browser once for OAuth. Return to the same task after browser approval and resume the request through the normal connector continuation. The connector is ready only when an MCP result returns successfully, not merely when the approval page appears. If token exchange or reconnect fails, stop after that attempt instead of opening another task or connection. OAuth credentials stay in the connector, never in a Skill or generated artifact.
 
 ## Public Skills
 

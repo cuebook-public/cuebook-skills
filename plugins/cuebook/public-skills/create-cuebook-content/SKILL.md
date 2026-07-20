@@ -1,6 +1,6 @@
 ---
 name: create-cuebook-content
-description: Turn a user's market idea or selected Cuebook material into one creator-owned Frame: a sharp title, concise body, and one mobile-first editorial image. Use for drafting, redesigning, or publishing a viewpoint. Ask at most one optional heuristic question, use Cuebook evidence first, keep observation separate from interpretation, and never fabricate a future path, fake an official index, trade, or publish before confirmation.
+description: "Turn a user's market idea or selected Cuebook material into one creator-owned Frame: a sharp title, concise body, and one mobile-first editorial image. Use for drafting, redesigning, or publishing a viewpoint. Ask at most one optional heuristic question, use Cuebook evidence first, keep observation separate from interpretation, and never fabricate a future path, fake an official index, trade, or publish before confirmation."
 license: Proprietary. Cuebook internal; see the repository README for terms.
 compatibility: Uses the connected Cuebook MCP server for current claims and may use one bounded authorized Web fallback when Cuebook leaves a material gap. Node.js 18+ and local Chromium/Chrome are required for deterministic rendering.
 ---
@@ -8,6 +8,16 @@ compatibility: Uses the connected Cuebook MCP server for current claims and may 
 # Create Cuebook Content
 
 Make the creator feel that their idea was understood, sharpened, and expressed beyond what they could have assembled alone. A visible Frame is always one title, one body, and one paired image. Evidence lineage, hashes, scopes, upload progress, receipts, consent, and workflow state stay backstage.
+
+## Connection Gate
+
+Run this gate before the interview, research, or rendering. Preserve the creator's request while the host connects; authentication must not make them repeat or replace their idea.
+
+1. Use the host-installed `cuebook` MCP connector and call `get_frame_capabilities` once as the normal Create preflight. Do not enumerate generic MCP resources, inspect repository or connector internals, run a CLI login, implement OAuth discovery or DCR, exchange tokens, create a custom client, or store credentials in task files.
+2. If the host pauses for OAuth, stay in the same task and let the normal connector continuation resume the frozen request after the browser callback. Do not create a background test task, open a second connection, or initiate a second login flow.
+3. Browser approval is not connection success. Proceed only when the connector returns a normal MCP result. If token exchange, reconnect, or transport fails, stop after that attempt, report the non-secret stage and host error when available, and keep the frozen request ready for a later user retry. Allow at most one host OAuth initiation per user action; never try an alternate authentication path automatically.
+4. If the connector or this Skill is unavailable because the plugin was just installed, ask the creator to open one new task and stop. Do not reinstall the plugin from inside the creation flow.
+5. Use the preflight only to establish the connection and read deployed capabilities. Missing write or publish actions do not block a local preview; check the required actions again when the creator actually asks to publish.
 
 ## Route
 

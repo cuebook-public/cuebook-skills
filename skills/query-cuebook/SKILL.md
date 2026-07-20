@@ -9,6 +9,15 @@ compatibility: Uses a connected Cuebook MCP server first for asset resolution an
 
 Provide one read-only entrance for everything the user wants to see in Cuebook. Keep retrieval and interpretation separate from creation so the same frozen query result can be inspected directly or handed to create-cuebook-content later without Query invoking it.
 
+## Connection Gate
+
+Run the smallest required Cuebook read as the connection check: `search_assets` for a named asset, `get_frame` for a release-pinned Frame, or the first read that directly answers a request without an asset. Preserve the request while the host connects.
+
+- Use only the host-installed `cuebook` MCP connector. Do not enumerate generic MCP resources, inspect repository or connector internals, run a CLI login, implement OAuth discovery or DCR, exchange tokens, create a custom client, or store credentials in task files.
+- If the host pauses for OAuth, remain in the same task and let the normal connector continuation resume the frozen request after the browser callback. Do not create a background test task, open a second connection, or initiate a second login flow.
+- Browser approval is not connection success. Proceed only when the connector returns a normal MCP result. If token exchange, reconnect, or transport fails, stop after that attempt, report the non-secret stage and host error when available, and preserve the frozen request for a later user retry. Allow at most one host OAuth initiation per user action; never try an alternate authentication path automatically.
+- If the connector or this Skill is unavailable because the plugin was just installed, ask the user to open one new task and stop. Do not reinstall the plugin from inside Query.
+
 ## Routing
 
 1. Classify the request as `latest_stories`, `story_detail`, `asset_narratives`, `market_state`, `market_evidence`, `fundamentals`, `market_series`, `derived_metrics`, `settlement_history`, `published_frame`, `commentator_profile`, `media_format`, or `mixed`.
@@ -29,8 +38,7 @@ Provide one read-only entrance for everything the user wants to see in Cuebook. 
 
 ## Connection and Latency
 
-- Use the host-installed `cuebook` MCP connector and its persisted OAuth session. Do not enumerate generic MCP resources repeatedly, implement OAuth discovery/DCR, exchange tokens, create a custom HTTP client, or store credentials in task files.
-- If the connector reports unauthorized, emit one normal host reconnect handoff and preserve the frozen request for resume. Do not spend the task retrying alternative authentication paths.
+- Reuse the connector's persisted OAuth session after the Connection Gate. Never repeat a login merely to refresh unchanged data or expose more Tools.
 - Resolve a named asset once. After resolution, run independent reads such as market state, candles, positioning, and cue detail concurrently when the runtime supports parallel calls.
 - Keep an observed-series window separate from any future thesis horizon. `get_candles` covers what happened; a creator's horizon remains a distinct declared field and never changes the historical baseline silently.
 - For a creator handoff involving trend, price path, volume, or relative strength, preserve the exact `get_candles` and selected `get_market_state` result envelopes plus their result refs. Do not make the model transcribe OHLCV into a second ad hoc shape.

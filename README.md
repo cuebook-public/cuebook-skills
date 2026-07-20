@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.4.0"><img alt="Release v0.4.0" src="https://img.shields.io/badge/release-v0.4.0-F6C500?style=flat-square&labelColor=111111"></a>
+  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.4.1"><img alt="Release v0.4.1" src="https://img.shields.io/badge/release-v0.4.1-F6C500?style=flat-square&labelColor=111111"></a>
   <a href="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml"><img alt="Quality" src="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml/badge.svg?branch=main"></a>
   <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/Node.js-%E2%89%A522-3C873A?style=flat-square&labelColor=111111">
   <img alt="Two public skills" src="https://img.shields.io/badge/public_skills-2-4C6FFF?style=flat-square&labelColor=111111">
@@ -19,6 +19,7 @@
 
 <p align="center">
   <a href="#quick-start">Quick Start</a> ·
+  <a href="#first-connection">First Connection</a> ·
   <a href="#two-skills-one-boundary">Skills</a> ·
   <a href="#one-frame-four-fields">Frame</a> ·
   <a href="#designed-for-the-feed">Visuals</a> ·
@@ -36,14 +37,16 @@ Install the current release:
 
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \
-  --ref v0.4.0 \
+  --ref v0.4.1 \
   --sparse .agents/plugins \
   --sparse plugins/cuebook
 
 codex plugin add cuebook@cuebook
 ```
 
-Start a new Codex task so the plugin Skills and Cuebook connector are loaded.
+Installation is complete at this point. The installing task should stop here: it should not create a background test task, initiate OAuth, or publish a placeholder idea.
+
+Open exactly one new Codex task yourself so the plugin Skills and Cuebook connector are loaded. Use that same task for connection, preview, and publication.
 
 Then try either path:
 
@@ -58,6 +61,17 @@ Turn that idea into a Frame.
 
 > [!NOTE]
 > Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly two public entrypoints; internal modules load only when needed.
+
+## First Connection
+
+The first Cuebook request may open a browser once for OAuth:
+
+1. Enter your real query or market idea in the new task. The request is preserved while the connector starts.
+2. Approve Cuebook in the browser, then return to the same task. Do not open another task or repeat the installation command.
+3. Resume the original request through the normal connector continuation. The connection is ready only when an MCP result returns successfully; a browser approval screen alone is not proof that token exchange completed.
+4. If Codex reports a token-exchange or reconnect error, stop there. Do not keep retrying or create another connection for the same request. Retrying later should reuse the preserved request.
+
+This flow uses one plugin installation, one new task, and at most one host OAuth initiation per user action. Preview never publishes; publication still requires explicit intent.
 
 ## Two Skills, One Boundary
 

@@ -48,6 +48,66 @@ test("valid plugin package", () => {
   assert.ok(modules.routing_rules.create_deliverables.includes("creator_viewpoint_graphic"));
 });
 
+test("frontmatter descriptions with YAML mapping punctuation are quoted", () => {
+  const skillsRoot = path.join(PLUGIN_ROOT, "skills");
+  for (const entry of fs.readdirSync(skillsRoot, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+    const skillPath = path.join(skillsRoot, entry.name, "SKILL.md");
+    const text = fs.readFileSync(skillPath, "utf-8");
+    const line = text.split("\n").find((candidate) => candidate.startsWith("description: "));
+    assert.ok(line, skillPath);
+    const value = line.slice("description: ".length);
+    if (!value.includes(": ")) continue;
+    assert.ok(
+      (value.startsWith('"') && value.endsWith('"'))
+        || (value.startsWith("'") && value.endsWith("'")),
+      skillPath,
+    );
+  }
+});
+
+test("public entrypoints enforce a single host-owned OAuth connection gate", () => {
+  const create = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const query = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "query-cuebook", "SKILL.md"),
+    "utf-8",
+  );
+  for (const [name, text] of [["create", create], ["query", query]]) {
+    assert.ok(text.indexOf("## Connection Gate") >= 0, name);
+    assert.match(text, /Browser approval is not connection success/u, name);
+    assert.match(text, /at most one host OAuth initiation per user action/u, name);
+    assert.match(text, /Do not create a background test task/u, name);
+    assert.match(text, /never try an alternate authentication path automatically/u, name);
+  }
+  assert.ok(create.indexOf("## Connection Gate") < create.indexOf("## Fast Preview"));
+  assert.match(create, /call `get_frame_capabilities` once/u);
+  assert.ok(query.indexOf("## Connection Gate") < query.indexOf("## Routing"));
+  assert.match(query, /Run the smallest required Cuebook read as the connection check/u);
+});
+
+test("Codex install docs separate installation from one same-task OAuth flow", () => {
+  const repositoryRoot = path.resolve(PLUGIN_ROOT, "..", "..");
+  const marketplace = JSON.parse(
+    fs.readFileSync(path.join(repositoryRoot, ".agents", "plugins", "marketplace.json"), "utf-8"),
+  );
+  const docs = [
+    fs.readFileSync(path.join(repositoryRoot, "README.md"), "utf-8"),
+    fs.readFileSync(path.join(PLUGIN_ROOT, "README.md"), "utf-8"),
+    fs.readFileSync(path.join(PLUGIN_ROOT, "platforms", "codex.md"), "utf-8"),
+  ];
+  for (const text of docs) {
+    assert.match(text, /background test task/u);
+    assert.match(text, /same task/u);
+    assert.match(text, /browser approval/iu);
+  }
+  assert.match(docs[0], /Open exactly one new Codex task yourself/u);
+  assert.match(docs[2], /stops after one host OAuth initiation/u);
+  assert.equal(marketplace.plugins[0].policy.authentication, "ON_USE");
+});
+
 test("plugin discovery points only at the two generated public Skills", () => {
   const manifest = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, ".codex-plugin", "plugin.json"), "utf-8"),
