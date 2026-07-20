@@ -1,0 +1,21 @@
+{
+  "name": "cuebook",
+  "displayName": "Cuebook",
+  "version": "0.4.1",
+  "description": "Query source-linked market intelligence or turn a creator-owned market idea into a sourced editorial Frame.",
+  "author": {
+    "name": "Cuebook",
+    "url": "https://github.com/cuebook-public"
+  },
+  "homepage": "https://cuebook.xyz",
+  "repository": "https://github.com/cuebook-public/cuebook-skills",
+  "keywords": [
+    "finance",
+    "market-research",
+    "trading-thesis",
+    "agent-skills",
+    "mcp"
+  ],
+  "skills": "./public-skills/",
+  "mcpServers": "./.mcp.json"
+}

@@ -1,23 +1,24 @@
 # Cuebook Skills
 
-> Official Cuebook Agent Skills and Codex plugin distribution for source-linked market intelligence and creator-authored market content.
+> Official Cuebook Agent Skills, Codex plugin, Claude Code plugin, and remote MCP distribution for source-linked market intelligence and creator-authored market content.
 
 ## Public entrypoints
 
 - [Query Cuebook](plugins/cuebook/skills/query-cuebook/SKILL.md): read-only search, inspection, comparison, evidence, market data, and history. It never writes or invokes Create.
 - [Create Cuebook Content](plugins/cuebook/skills/create-cuebook-content/SKILL.md): turns a creator's seed into sourced text, static visuals, and optional settlement artifacts. It may invoke Query for evidence.
 
-Only these two skills are public entrypoints. The other 36 skills are internal capability nodes reached through them.
+Only these two skills are public entrypoints. Supporting capability modules are loaded through them on demand.
 
 ## Architecture and distribution
 
 - [Plugin overview](plugins/cuebook/README.md): module boundary, authorization model, installation, and platform support.
+- [Platform matrix](plugins/cuebook/platforms/README.md): host-specific Skill, MCP, OAuth, and verification boundaries.
 - [Canonical plugin index](plugins/cuebook/assets/plugin-index-v1.json): public entrypoints, catalog version, and package inventory.
 - [Module map](plugins/cuebook/assets/cuebook-modules-v1.json): the one-way `Create -> Query` dependency and skill ownership.
 - [MCP capability map](plugins/cuebook/assets/mcp-capability-map-v1.json): Cuebook MCP URL, read/write ownership, OAuth scopes, and release gates.
 - [Built generic bundles](skills/): self-contained `query-cuebook` and `create-cuebook-content` packages. These are generated artifacts; do not edit them directly.
 
-The source plugin is under `plugins/cuebook/`. Generic Agent Skills clients should install the two self-contained bundles under `skills/`. The Cuebook MCP connector is remote and authenticated; credentials never belong in this repository or generated artifacts.
+The source plugin is under `plugins/cuebook/`. Codex and Claude Code use native plugin marketplaces. Cursor, Hermes, OpenClaw, and generic Agent Skills clients install the two self-contained bundles under `skills/`. Claude, Claude Desktop, ChatGPT, Grok, and generic MCP clients connect directly to the remote endpoint without loading the Skill layer. Credentials never belong in this repository or generated artifacts.
 
 ## Deterministic checks
 

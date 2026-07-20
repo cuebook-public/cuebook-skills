@@ -1,4 +1,10 @@
-# Cuebook on Codex — Tested
+# Cuebook on Codex and Codex CLI
+
+**Surface:** Cuebook Plugin with two Agent Skills and remote MCP.
+
+**Package status:** Validated locally.
+
+**Live status:** OAuth and end-to-end Tool verification are pending the next Cuebook server rollout.
 
 ## Install and discovery
 
@@ -32,7 +38,7 @@ happens once with an authenticated connector.
 
 ## MCP configuration and auth
 
-The plugin ships `.mcp.json` pointing at the Cuebook MCP server. OAuth
+The plugin ships `.mcp.json` pointing at `https://cuebook.xyz/mcp`. OAuth
 credentials live in the Codex connector, never in a Skill file or generated
 artifact. Authentication belongs to installation, not to Query or Create.
 
@@ -84,6 +90,4 @@ exposed.
 node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook
 ```
 
-Then, in a fresh Codex task: ask `What changed around USO recently?` and confirm the
-answer routes through `query-cuebook` and returns a source-linked
-`CuebookQueryBundleV1` with no write-tool calls.
+After the server rollout, run the shared [live verification gate](README.md#live-verification-gate). In a fresh Codex task, ask `What changed around USO recently?` and confirm the answer routes through `query-cuebook` and returns a normal source-linked MCP result with no write-tool calls. Then use a real creator idea for preview; never publish a placeholder idea.

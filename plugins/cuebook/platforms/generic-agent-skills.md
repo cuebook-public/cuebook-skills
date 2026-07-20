@@ -1,4 +1,10 @@
-# Cuebook on generic Agent Skills clients — Planned
+# Cuebook on generic Agent Skills clients
+
+**Surface:** Two self-contained Agent Skills plus the host's native remote MCP connection.
+
+**Package status:** Bundle structure and reference closure are validated.
+
+**Live status:** Behavior is host-dependent until the host passes the shared verification gate.
 
 ## Use the built bundles, not this source tree
 
@@ -32,7 +38,7 @@ at startup, body on activation, resources on demand.
 
 ## MCP configuration and auth
 
-The bundles assume a connected Cuebook MCP server; configure it through the
+The bundles assume a connected Cuebook MCP server at `https://cuebook.xyz/mcp`; configure it through the
 client's native MCP mechanism. Without it, query and verification steps
 report unavailable capabilities instead of inventing values.
 
@@ -55,6 +61,10 @@ behavior.
   behavior is not.
 - Skill-to-skill orchestration depth inside one bundle depends on the
   client's ability to follow bundled reference files.
+
+For known host recipes, use the [platform matrix](README.md). Do not install the source modules as separate public Skills.
+
+After the target server rollout, each client must pass the shared [live verification gate](README.md#live-verification-gate) before its behavior is described as verified.
 
 ## Smoke test
 

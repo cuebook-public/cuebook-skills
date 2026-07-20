@@ -41,11 +41,105 @@ test("valid plugin package", () => {
   assert.equal(result.stats.public_skill_count, 2);
   assert.ok(result.stats.discovery_reduction_percent >= 60);
   assert.ok(result.stats.frame_fast_preview_bytes < 150_000);
+  assert.equal(result.stats.platform_guide_count, 10);
   const modules = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "cuebook-modules-v1.json"), "utf-8"),
   );
   assert.ok(modules.routing_rules.query_deliverables.includes("factual_chart"));
   assert.ok(modules.routing_rules.create_deliverables.includes("creator_viewpoint_graphic"));
+});
+
+test("Claude Code marketplace reuses the two public Skills and canonical MCP config", () => {
+  const repositoryRoot = path.resolve(PLUGIN_ROOT, "..", "..");
+  const marketplace = JSON.parse(
+    fs.readFileSync(path.join(repositoryRoot, ".claude-plugin", "marketplace.json"), "utf-8"),
+  );
+  assert.equal(marketplace.name, "cuebook");
+  assert.equal(marketplace.plugins.length, 1);
+  assert.equal(marketplace.plugins[0].name, "cuebook");
+  assert.equal(marketplace.plugins[0].source, "./plugins/cuebook");
+  assert.equal(Object.hasOwn(marketplace.plugins[0], "version"), false);
+
+  const manifest = JSON.parse(
+    fs.readFileSync(path.join(PLUGIN_ROOT, ".claude-plugin", "plugin.json"), "utf-8"),
+  );
+  assert.equal(manifest.name, "cuebook");
+  assert.equal(manifest.version, "0.4.1");
+  assert.equal(manifest.skills, "./public-skills/");
+  assert.equal(manifest.mcpServers, "./.mcp.json");
+});
+
+test("platform guides are English, endpoint-pinned, and explicit about live evidence", () => {
+  const platformsRoot = path.join(PLUGIN_ROOT, "platforms");
+  const guideNames = fs.readdirSync(platformsRoot)
+    .filter((name) => name.endsWith(".md") && name !== "README.md")
+    .sort();
+  assert.equal(guideNames.length, 10);
+  const index = fs.readFileSync(path.join(platformsRoot, "README.md"), "utf-8");
+  assert.match(index, /https:\/\/cuebook\.xyz\/mcp/u);
+  assert.doesNotMatch(index, /[\u3400-\u9fff]/u);
+  for (const guideName of guideNames) {
+    const guide = fs.readFileSync(path.join(platformsRoot, guideName), "utf-8");
+    assert.match(guide, /https:\/\/cuebook\.xyz\/mcp/u, guideName);
+    assert.match(guide, /\*\*Live status:\*\*/u, guideName);
+    assert.match(guide, /live verification gate/u, guideName);
+    assert.doesNotMatch(guide, /[\u3400-\u9fff]/u, guideName);
+    assert.ok(index.includes(`(${guideName})`), guideName);
+  }
+});
+
+test("repository header links every named host badge to its platform guide", () => {
+  const repositoryRoot = path.resolve(PLUGIN_ROOT, "..", "..");
+  const readme = fs.readFileSync(path.join(repositoryRoot, "README.md"), "utf-8");
+  const badges = new Map([
+    ["Codex", "codex.md"],
+    ["Claude Code", "claude-code.md"],
+    ["Cursor", "cursor.md"],
+    ["Hermes", "hermes.md"],
+    ["OpenClaw", "openclaw.md"],
+    ["Claude", "claude-desktop.md"],
+    ["ChatGPT", "chatgpt.md"],
+    ["Grok", "grok.md"],
+  ]);
+  for (const [label, guide] of badges) {
+    assert.ok(
+      readme.includes(
+        `<a href="plugins/cuebook/platforms/${guide}"><img alt="${label}"`,
+      ),
+      label,
+    );
+  }
+});
+
+test("platform validation rejects a missing host guide", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    fs.rmSync(path.join(root, "platforms", "grok.md"));
+    assert.ok(codes(validate(root)).has("PLATFORM_DOC_SET"));
+  });
+});
+
+test("platform validation rejects endpoint drift", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, "platforms", "cursor.md");
+    fs.writeFileSync(
+      filePath,
+      fs.readFileSync(filePath, "utf-8").replaceAll("https://cuebook.xyz/mcp", "https://example.com/mcp"),
+    );
+    assert.ok(codes(validate(root)).has("PLATFORM_MCP_ENDPOINT"));
+  });
+});
+
+test("Claude Code plugin cannot expose the internal Skill tree", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, ".claude-plugin", "plugin.json");
+    rewrite(filePath, (payload) => {
+      payload.skills = "./skills/";
+    });
+    assert.ok(codes(validate(root)).has("CLAUDE_PLUGIN_PUBLIC_SKILL_ROOT"));
+  });
 });
 
 test("frontmatter descriptions with YAML mapping punctuation are quoted", () => {
