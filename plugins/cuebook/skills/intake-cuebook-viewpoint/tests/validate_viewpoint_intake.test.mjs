@@ -81,7 +81,7 @@ test("creator may skip the one-round interview without blocking handback", () =>
   assert.ok(result.valid, JSON.stringify(result.errors));
 });
 
-test("creation preview can hand back without settlement or a target price", () => {
+test("creation handback may delegate standard settlement to the downstream meaning lock", () => {
   const payload = intake();
   payload.fields.settlement = { family: null, threshold_bps: null, provenance: "missing" };
   payload.elicitation_log = payload.elicitation_log.filter((entry) => !entry.asked.includes("settlement"));

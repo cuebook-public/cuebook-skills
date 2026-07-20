@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 
 import { validateInstance } from "../../../scripts/validate_json_schema.mjs";
 import { validate as validateFramePreview } from "./validate_frame_preview.mjs";
+import { validateMeaningLock } from "./validate_meaning_lock.mjs";
 import {
   assertNoMutablePriceText,
   auditExpressionSvg,
@@ -483,8 +484,9 @@ export function validateMarketPreviewJob(job) {
   const errors = validateInstance(job, JOB_SCHEMA);
   if (errors.length) return { valid: false, errors };
   const { preview, expressions } = job;
-  if (![1, 3].includes(preview.candidates.length) || expressions.length !== preview.candidates.length) {
-    errors.push(issue("CANDIDATE_COUNT", "$.expressions", "Use one recommended expression or three explicitly requested expressions."));
+  errors.push(...validateMeaningLock({ preview, candidates: preview.candidates, expressions, route: "market" }));
+  if (preview.candidates.length !== 1 || expressions.length !== 1) {
+    errors.push(issue("CANDIDATE_COUNT", "$.expressions", "A confirmed Meaning Lock renders exactly one expression at a time."));
   }
   const candidateIds = preview.candidates.map((candidate) => candidate.candidate_id);
   const expressionIds = expressions.map((expression) => expression.candidate_id);
@@ -496,7 +498,7 @@ export function validateMarketPreviewJob(job) {
   }
   const binding = preview.query_binding;
   const usable = ["reused", "executed", "partial"].includes(binding.status);
-  if (binding.required && !usable) errors.push(issue("QUERY_REQUIRED", "$.preview.query_binding.status", "A material current-market preview needs one usable Cuebook-first batch."));
+  if (binding.required && !usable) errors.push(issue("QUERY_REQUIRED", "$.preview.query_binding.status", "A material current-market preview needs one usable reconciled evidence batch."));
   if (!binding.required && binding.status !== "not_required") errors.push(issue("QUERY_NOT_REQUIRED", "$.preview.query_binding.status", "A non-required preview must use not_required."));
   if (usable && (!binding.bundle_refs.length || !binding.result_refs.length || !binding.as_of)) {
     errors.push(issue("QUERY_LINEAGE", "$.preview.query_binding", "Usable query results require bundle_refs, result_refs, and as_of."));
@@ -529,17 +531,6 @@ export function validateMarketPreviewJob(job) {
   const allBindings = expressions.flatMap((expression) => expressionBindingIds(expression));
   if (new Set(allBindings).size !== allBindings.length) {
     errors.push(issue("PREVIEW_BINDING_UNIQUENESS", "$.expressions", "Every visible binding_id must be unique across the complete preview job."));
-  }
-  if (preview.candidates.length === 3) {
-    const designProfiles = expressions.map(expressionDesignProfile);
-    if (new Set(preview.candidates.map((candidate) => candidate.angle)).size !== 3) errors.push(issue("ANGLE_DIVERSITY", "$.preview.candidates", "Three requested candidates need conviction, evidence, and mechanism once each."));
-    if (new Set(preview.candidates.map((candidate) => candidate.frame.title.trim())).size !== 3) errors.push(issue("TITLE_DIVERSITY", "$.preview.candidates", "Three requested candidates need three distinct Frame titles."));
-    if (new Set(expressions.map((expression) => expression.argument.claim.text.trim())).size !== 3) errors.push(issue("VISUAL_CLAIM_DIVERSITY", "$.expressions", "Three requested candidates need three distinct visual judgments, not one card in three skins."));
-    if (new Set(expressions.map((expression) => expression.grammar)).size !== 3) errors.push(issue("GRAMMAR_DIVERSITY", "$.expressions", "Three candidates need three different primary grammars."));
-    if (new Set(expressions.map((expression) => expression.composition)).size !== 3) errors.push(issue("COMPOSITION_DIVERSITY", "$.expressions", "Three candidates need three different composition archetypes."));
-    if (new Set(expressions.map((expression) => expression.surface)).size < 2) errors.push(issue("SURFACE_DIVERSITY", "$.expressions", "Three candidates need at least two surface families after structural diversity is secured."));
-    if (new Set(designProfiles.map((profile) => profile.design_family)).size !== 3) errors.push(issue("DESIGN_FAMILY_DIVERSITY", "$.expressions", "Three candidates need three different reading silhouettes, not composition aliases with the same design family."));
-    if (new Set(designProfiles.map((profile) => profile.narrative_placement)).size < 3) errors.push(issue("NARRATIVE_PLACEMENT_DIVERSITY", "$.expressions", "Three candidates need three materially different narrative placements."));
   }
   return { valid: errors.length === 0, errors };
 }
@@ -612,10 +603,11 @@ export async function runMarketPreviewJob(job, outputDir, dependencies = {}) {
     state,
     created_at: job.preview.created_at,
     creator_view: job.preview.creator_view,
+    meaning_lock_ref: job.preview.meaning_lock.lock_id,
     query_binding: job.preview.query_binding,
     generation: {
-      mode: job.preview.candidates.length === 1 ? "recommended_one" : "requested_three",
-      candidate_count: job.preview.candidates.length,
+      mode: "recommended_one",
+      candidate_count: 1,
     },
     candidates: job.preview.candidates.map((candidate) => {
       const rendered = renderedById.get(candidate.candidate_id);

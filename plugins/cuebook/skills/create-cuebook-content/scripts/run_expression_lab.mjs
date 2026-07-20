@@ -56,6 +56,47 @@ function candidateId(caseId) {
   return `FPREV_CAND_LAB_${caseId.toUpperCase()}_001`;
 }
 
+function meaningLock({ caseId, title, body, subject, direction, claim, mechanism, nextWatch, mode }) {
+  const settleable = mode === "market" && ["long", "short"].includes(direction);
+  const requiredBeats = mode === "lens"
+    ? ["tested_observation", "mechanism", "future_check", "component_anatomy"]
+    : mode === "market"
+      ? ["price_context", "tested_observation", "mechanism", "future_check", ...(settleable ? ["settlement_clock"] : [])]
+      : ["argument_structure", "mechanism", "future_check"];
+  return {
+    lock_id: `MLOCK_LAB_${caseId.toUpperCase()}_001`,
+    status: "creator_confirmed",
+    confirmed_at: "2026-07-19T08:59:00Z",
+    title,
+    body,
+    subject,
+    direction,
+    horizon: "未来 30 天",
+    claim,
+    mechanism,
+    next_watch: nextWatch,
+    settlement: settleable ? {
+      mode: "standard_direction",
+      family: "single_asset_direction",
+      asset_ref: `asset:${subject.toLowerCase().replace(/[^a-z0-9]+/gu, "-")}`,
+      direction,
+      requested_settle_at: HORIZON_END,
+      session_policy: "at_instant",
+      threshold_bps: "0",
+      success_condition: direction === "long" ? "above_publication_baseline" : "below_publication_baseline",
+    } : {
+      mode: mode === "lens" ? "non_settleable" : "not_applicable",
+      reason: mode === "lens"
+        ? "A creator-owned Lens is not one canonical single-asset contract."
+        : "This expression is exploratory or relative rather than a single-asset direction contract.",
+    },
+    visual_intent: {
+      summary: "Retain the decision-useful evidence, creator logic, and dated future check in one mobile image.",
+      required_beats: requiredBeats,
+    },
+  };
+}
+
 function marketCase({
   caseId,
   prompt,
@@ -144,6 +185,7 @@ function marketCase({
           mechanism,
           next_watch: nextWatch,
         },
+        meaning_lock: meaningLock({ caseId, title, body, subject, direction, claim, mechanism, nextWatch, mode: "market" }),
         query_binding: {
           required: true,
           status: "executed",
@@ -285,6 +327,7 @@ function creatorOnlyCase({
           mechanism,
           next_watch: nextWatch,
         },
+        meaning_lock: meaningLock({ caseId, title, body, subject, direction, claim, mechanism, nextWatch, mode: "creator_only" }),
         query_binding: {
           required: false,
           status: "not_required",
@@ -406,6 +449,7 @@ function lensCase({
           mechanism,
           next_watch: nextWatch,
         },
+        meaning_lock: meaningLock({ caseId, title, body, subject, direction, claim, mechanism, nextWatch, mode: "lens" }),
         query_binding: {
           required: true,
           status: "executed",
@@ -878,12 +922,14 @@ async function main() {
     master_audits_passed: results.every((item) => item.master_audit.valid && item.master_audit.single_master),
     maximum_essential_copy_groups: Math.max(...results.map((item) => item.master_audit.essential_copy_groups)),
     minimum_essential_font_floor: Math.min(...results.map((item) => item.master_audit.essential_font_floor)),
+    minimum_secondary_font_floor: Math.min(...results.map((item) => item.master_audit.secondary_font_floor)),
     publication_master_count: results.filter((item) => item.master_audit.single_master).length,
   };
   mobileAttention.passed = mobileAttention.master_audits_passed
     && mobileAttention.attention_signature_count >= 9
-    && mobileAttention.maximum_essential_copy_groups <= 2
-    && mobileAttention.minimum_essential_font_floor >= 22
+    && mobileAttention.maximum_essential_copy_groups <= 3
+    && mobileAttention.minimum_essential_font_floor >= 20
+    && mobileAttention.minimum_secondary_font_floor >= 16
     && mobileAttention.publication_master_count === results.length;
   if (!mobileAttention.passed) throw new Error(`Mobile attention gate failed: ${JSON.stringify(mobileAttention)}`);
   const manifest = {

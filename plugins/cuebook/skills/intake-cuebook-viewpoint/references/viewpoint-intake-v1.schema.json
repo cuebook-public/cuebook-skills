@@ -121,7 +121,7 @@
           "type": "object",
           "additionalProperties": false,
           "required": ["family", "provenance"],
-          "description": "Launch settlement family. Null defers settlement for preview or marks a non-settleable view. Eligible single-asset long/short publication derives the standard zero-threshold direction family from policy without a second prompt.",
+          "description": "Launch settlement family. Null asks Create to derive and validate the standard rule before its text-only Meaning Lock, or marks a non-settleable view; it never permits rendering before settlement is locked. Eligible single-asset long/short creation derives the standard zero-threshold direction family from policy without a separate settlement prompt.",
           "properties": {
             "family": {"enum": ["single_asset_direction", "single_asset_price_target", "pair_asset_direction", "pair_asset_price_targets", null]},
             "threshold_bps": {"type": ["string", "null"], "pattern": "^-?\\d+(\\.\\d+)?$", "description": "Explicit decimal string; the standard direction default is recorded as \"0\"."},

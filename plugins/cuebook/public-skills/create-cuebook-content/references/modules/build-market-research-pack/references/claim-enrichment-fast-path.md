@@ -37,7 +37,7 @@ Deduplicate requests across all three publishing candidates. Search or fetch ind
 | `market_series`, `price_level` | `get_candles` | durable instrument, venue, interval, timezone, sealed/forming state, source refs |
 | derived return, spread, or trigger | `get_candles` + local `references/modules/compute-cuebook-market-indicators.md` | formula, frozen inputs, synchronized window, sealing state, source refs |
 
-After one bounded Cuebook pass, the agent may use one approved Web batch to satisfy a remaining material gap. Use no more than three targeted searches and three primary or authoritative sources. Preserve `retrieved_via`, URL, and retrieval time. A search snippet alone is not an evidence anchor.
+For material current public claims, start the smallest Cuebook pass and one approved Web batch from the same compiled request set; do not wait for either route to fail before starting the other. Use no more than three targeted searches and three primary or authoritative sources. Preserve `retrieved_via`, URL, retrieval time, and route gaps internally, then reconcile once. A search snippet alone is not an evidence anchor, and the creator-facing answer never exposes provider-by-provider coverage.
 
 ## News Anchor Selection
 

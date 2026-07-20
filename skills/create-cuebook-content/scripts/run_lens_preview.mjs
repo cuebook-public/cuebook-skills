@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 
 import { validateInstance } from "./validate_json_schema.mjs";
 import { validate as validateFramePreview } from "./validate_frame_preview.mjs";
+import { validateMeaningLock } from "./validate_meaning_lock.mjs";
 import {
   assertNoMutableLensPriceText,
   auditLensSvg,
@@ -305,6 +306,7 @@ export function validateLensPreviewJob(job) {
   const errors = validateInstance(job, JOB_SCHEMA);
   if (errors.length) return { valid: false, errors };
   const { preview, expression } = job;
+  errors.push(...validateMeaningLock({ preview, candidates: [preview.candidate], expressions: [expression], route: "lens" }));
   if (preview.query_binding.status === "partial" && preview.state !== "conditional") {
     errors.push(issue("PARTIAL_STATE", "$.preview.state", "A partial query can produce only a conditional preview."));
   }
@@ -386,6 +388,7 @@ export async function runLensPreviewJob(job, outputDir, dependencies = {}) {
     state,
     created_at: job.preview.created_at,
     creator_view: job.preview.creator_view,
+    meaning_lock_ref: job.preview.meaning_lock.lock_id,
     query_binding: job.preview.query_binding,
     generation: { mode: "recommended_one", candidate_count: 1 },
     candidates: [{

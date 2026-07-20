@@ -26,11 +26,11 @@
     },
     {
       "prompt": "我觉得油价要涨。",
-      "route": "create-cuebook-content completes subject, horizon, and direction, reflects the distinctive idea, then chooses one highest-leverage heuristic question instead of a generic context checklist"
+      "route": "create-cuebook-content completes and resolves the rigid asset, horizon, and direction, then uses at most one aligned and one contrasting or adjacent Cue as optional footholds for one highest-leverage question"
     },
     {
       "prompt": "BTC 未来 30 天偏多，直接做，不要再问了。",
-      "route": "create-cuebook-content treats the creator interview as skipped and starts the Cuebook query plus one-preview path immediately; it does not ask for a price"
+      "route": "create-cuebook-content skips both Cue interviewing and the optional completion check, starts the shared read plus one-preview path immediately, and does not ask for a price"
     },
     {
       "prompt": "我没有更多线索，就按这个做。",

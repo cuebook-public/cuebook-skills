@@ -514,6 +514,13 @@ function valueLabel(value, unit) {
   return value.toFixed(2);
 }
 
+function compactPriceLabel(value) {
+  const magnitude = Math.abs(value);
+  if (magnitude >= 1_000_000) return `${(value / 1_000_000).toFixed(magnitude >= 10_000_000 ? 0 : 1)}M`;
+  if (magnitude >= 10_000) return `${(value / 1_000).toFixed(magnitude >= 100_000 ? 0 : 1)}K`;
+  return valueLabel(value, "price");
+}
+
 function seriesColor(role, palette) {
   return role === "comparison" ? palette.comparison : palette.primary;
 }
@@ -973,7 +980,8 @@ function renderEvidenceBalance(expression, palette, locale) {
 }
 
 const MOBILE_MASTER_PROFILE = "single-master-mobile";
-const MOBILE_ESSENTIAL_FONT_FLOOR = 22;
+const MOBILE_PRIMARY_FONT_FLOOR = 20;
+const MOBILE_SECONDARY_FONT_FLOOR = 16;
 
 function compactWordmark(palette) {
   const inner = WORDMARK
@@ -995,7 +1003,7 @@ function compactProvenance(expression, palette, locale) {
   ].join("");
 }
 
-function compactSeriesPath(panel, box, expression, palette) {
+function compactSeriesPath(panel, box, expression, palette, locale) {
   const allPoints = panel.series.flatMap((series) => series.points);
   const start = Math.min(...allPoints.map((point) => Date.parse(point.observed_at)));
   const end = Math.max(...allPoints.map((point) => Date.parse(point.observed_at)));
@@ -1016,7 +1024,11 @@ function compactSeriesPath(panel, box, expression, palette) {
   }
   const threshold = expression.annotations.find((annotation) => annotation.kind === "threshold" && Number.isFinite(annotation.value));
   if (threshold && threshold.value >= low && threshold.value <= high) {
-    parts.push(`<line x1="${f(box.x)}" y1="${f(yScale(threshold.value))}" x2="${f(box.x + historyWidth)}" y2="${f(yScale(threshold.value))}" stroke="${palette.signal}" stroke-width="3" stroke-dasharray="9 5" ${bindingAttr(threshold.binding_id, threshold.state, "threshold")}/>`);
+    const thresholdY = yScale(threshold.value);
+    parts.push(
+      `<line x1="${f(box.x)}" y1="${f(thresholdY)}" x2="${f(box.x + historyWidth)}" y2="${f(thresholdY)}" stroke="${palette.signal}" stroke-width="3" stroke-dasharray="9 5" ${bindingAttr(threshold.binding_id, threshold.state, "threshold")}/>` ,
+      `<text x="${f(box.x + 7)}" y="${f(Math.max(box.y + 14, thresholdY - 7))}" fill="${palette.signal}" font-size="13" font-weight="820">${esc(`${threshold.label} · ${valueLabel(threshold.value, "price")}`)}</text>`,
+    );
   }
   const event = expression.annotations.find((annotation) => annotation.kind === "event" && annotation.occurred_at);
   if (event) {
@@ -1024,7 +1036,7 @@ function compactSeriesPath(panel, box, expression, palette) {
     if (occurredAt >= start && occurredAt <= end) {
       const eventX = xScale(occurredAt);
       parts.push(
-        `<g ${bindingAttr(event.binding_id, event.state, "event")} data-role="event-marker"><line x1="${f(eventX)}" y1="${f(box.y)}" x2="${f(eventX)}" y2="${f(box.y + box.h)}" stroke="${palette.signal}" stroke-width="2.5" stroke-dasharray="5 4"/><circle cx="${f(eventX)}" cy="${f(box.y + 8)}" r="5" fill="${palette.canvas}" stroke="${palette.signal}" stroke-width="3"/></g>`,
+        `<g ${bindingAttr(event.binding_id, event.state, "event")} data-role="event-marker"><line x1="${f(eventX)}" y1="${f(box.y)}" x2="${f(eventX)}" y2="${f(box.y + box.h)}" stroke="${palette.signal}" stroke-width="2.5" stroke-dasharray="5 4"/><circle cx="${f(eventX)}" cy="${f(box.y + 8)}" r="5" fill="${palette.canvas}" stroke="${palette.signal}" stroke-width="3"/><text x="${f(Math.min(eventX + 8, box.x + historyWidth - 92))}" y="${f(box.y + 18)}" fill="${palette.signal}" font-size="13" font-weight="820">${esc(clipped(`${event.label} · ${dateLabel(event.occurred_at, locale)}`, 18))}</text></g>`,
       );
     }
   }
@@ -1047,7 +1059,7 @@ function compactSeriesPath(panel, box, expression, palette) {
     const color = seriesColor(series.role, palette);
     const path = linePath(series.points, xScale, yScale);
     const endpointLabel = panel.transform === "raw_price"
-      ? series.label
+      ? `${series.label} ${valueLabel(point.value, "price")} · ${dateLabel(point.observed_at, locale)}`
       : `${series.label} ${valueLabel(point.value, panel.unit)}`;
     parts.push(
       `<path d="${path}" fill="none" stroke="${color}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" ${bindingAttr(series.binding_id, "derived", "curve")} data-series-state="observed"/>`,
@@ -1061,30 +1073,73 @@ function compactSeriesPath(panel, box, expression, palette) {
   return parts.join("");
 }
 
-function compactEssentialText({ x, y, text, color, widthUnits, lines = 2, anchor = "start", binding = "", group }) {
+function compactEssentialText({ x, y, text, color, widthUnits, lines = 2, anchor = "start", binding = "", group, tier = "primary" }) {
+  const primary = tier === "primary";
   return textBlock({
     x,
     y,
     text,
-    size: 24,
+    size: primary ? 22 : 18,
     color,
     weight: 780,
     maxUnits: widthUnits,
     maxLines: lines,
-    minSize: MOBILE_ESSENTIAL_FONT_FLOOR,
+    minSize: primary ? MOBILE_PRIMARY_FONT_FLOOR : MOBILE_SECONDARY_FONT_FLOOR,
     anchor,
-    attrs: `${binding} data-essential-copy="true" data-essential-copy-group="${group}"`,
+    attrs: `${binding} data-essential-copy="true" data-essential-tier="${tier}" data-essential-copy-group="${group}"`,
   });
 }
 
-function compactFuture(expression, { x, y, widthUnits, palette, locale, group = "future", lines = 2 }) {
-  const beat = expression.future_beats[0];
+function compactHistoricalContext(expression, compiled, palette, locale, { x, y, anchor = "start" }) {
+  const points = compiled.raw?.primary;
+  if (!points?.length) return "";
+  const first = points[0];
+  const last = points.at(-1);
+  const change = (last.close / first.close - 1) * 100;
+  const label = locale === "zh-CN"
+    ? `${expression.market.primary.ticker} · ${dateLabel(first.observed_at, locale).replace("月", "/").replace("日", "")} ${compactPriceLabel(first.close)} → ${dateLabel(last.observed_at, locale).replace("月", "/").replace("日", "")} ${compactPriceLabel(last.close)} · ${valueLabel(change, "%")}`
+    : `${expression.market.primary.ticker} · ${dateLabel(first.observed_at, locale)} ${compactPriceLabel(first.close)} → ${dateLabel(last.observed_at, locale)} ${compactPriceLabel(last.close)} · ${valueLabel(change, "%")}`;
+  return `<text x="${f(x)}" y="${f(y)}" text-anchor="${anchor}" fill="${palette.muted}" font-size="16" font-weight="760" data-role="historical-price-context" data-essential-copy="true" data-essential-tier="secondary" data-essential-copy-group="evidence">${esc(label)}</text>`;
+}
+
+function compactMechanism(expression, { x, y, widthUnits, palette, locale, anchor = "start", lines = 2 }) {
+  const mechanism = expression.argument.mechanism;
+  return [
+    `<text x="${f(x)}" y="${f(y - 20)}" text-anchor="${anchor}" fill="${palette.signal}" font-size="12" font-weight="820" letter-spacing="0.05em">${esc(locale === "zh-CN" ? "我的推演" : "MY LOGIC")}</text>`,
+    compactEssentialText({ x, y, text: mechanism.text, color: palette.ink, widthUnits, lines, anchor, binding: `${bindingAttr(mechanism.binding_id, mechanism.state)} data-role="creator-mechanism"`, group: "logic", tier: "secondary" }),
+  ].join("");
+}
+
+function compactFuture(expression, { x, y, widthUnits, palette, locale, group = "future", lines = 2, anchor = "start", splitTime = false }) {
+  const beat = expression.future_beats.find((item) => item.role === "settlement")
+    ?? expression.future_beats.findLast((item) => item.at && Date.parse(item.at) === Date.parse(expression.time.horizon_end))
+    ?? expression.future_beats.at(-1);
   if (!beat) return "";
-  const time = beat.at ? relativeDayLabel(beat.at, expression.time.declared_at, locale).split(" · ")[0] : expression.horizon_label;
+  const time = beat.at ? relativeDayLabel(beat.at, expression.time.declared_at, locale) : expression.horizon_label;
   const label = `${time} · ${beat.label}`;
+  if (splitTime) {
+    return [
+      `<g data-role="next-watch">`,
+      `<text x="${f(x)}" y="${f(y - 21)}" text-anchor="${anchor}" fill="${stateColor(beat.state, palette)}" font-size="12" font-weight="820" letter-spacing="0.05em">${esc(locale === "zh-CN" ? "到期观察" : "HORIZON CHECK")}</text>`,
+      `<text x="${f(x)}" y="${f(y)}" text-anchor="${anchor}" fill="${palette.ink}" font-size="16" font-weight="780" data-essential-copy="true" data-essential-tier="secondary" data-essential-copy-group="${group}">${esc(time)}</text>`,
+      compactEssentialText({
+        x,
+        y: y + 23,
+        text: beat.label,
+        color: palette.ink,
+        widthUnits,
+        lines: Math.max(1, lines - 1),
+        anchor,
+        binding: bindingAttr(beat.binding_id, beat.state),
+        group,
+        tier: "secondary",
+      }),
+      `</g>`,
+    ].join("");
+  }
   return [
     `<g data-role="next-watch">`,
-    `<text x="${f(x)}" y="${f(y - 25)}" fill="${stateColor(beat.state, palette)}" font-size="14" font-weight="820" letter-spacing="0.06em">${esc(locale === "zh-CN" ? "下一步只看" : "WATCH NEXT")}</text>`,
+    `<text x="${f(x)}" y="${f(y - 21)}" text-anchor="${anchor}" fill="${stateColor(beat.state, palette)}" font-size="12" font-weight="820" letter-spacing="0.05em">${esc(locale === "zh-CN" ? "到期观察" : "HORIZON CHECK")}</text>`,
     compactEssentialText({
       x,
       y,
@@ -1092,8 +1147,10 @@ function compactFuture(expression, { x, y, widthUnits, palette, locale, group = 
       color: palette.ink,
       widthUnits,
       lines,
+      anchor,
       binding: bindingAttr(beat.binding_id, beat.state),
       group,
+      tier: "secondary",
     }),
     `</g>`,
   ].join("");
@@ -1115,31 +1172,37 @@ function renderCompactChart(expression, compiled, palette, locale) {
     return [
       `<g ${bindingAttr(observation.binding_id, observation.state, "annotation")} data-role="compact-observation-marker" data-annotation-role="observation"/>`,
       `<line x1="222" y1="48" x2="222" y2="224" stroke="${palette.grid}" stroke-width="1.5"/>`,
-      compactEssentialText({ x: 20, y: 82, text: claim.text, color: palette.ink, widthUnits: 8.5, lines: 3, binding: `${bindingAttr(claim.binding_id, claim.state)} data-role="creator-interpretation"`, group: "interpretation" }),
-      compactFuture(expression, { x: 20, y: 206, widthUnits: 8.5, palette, locale, lines: 2 }),
-      compactSeriesPath(panel, { x: 246, y: 54, w: 356, h: 166 }, expression, palette),
+      compactEssentialText({ x: 20, y: 76, text: claim.text, color: palette.ink, widthUnits: 8.5, lines: 2, binding: `${bindingAttr(claim.binding_id, claim.state)} data-role="creator-interpretation"`, group: "logic" }),
+      compactMechanism(expression, { x: 20, y: 148, widthUnits: 9.2, palette, locale, lines: 2 }),
+      compactFuture(expression, { x: 20, y: 205, widthUnits: 11, palette, locale, lines: 3, splitTime: true }),
+      compactHistoricalContext(expression, compiled, palette, locale, { x: 246, y: 62 }),
+      compactSeriesPath(panel, { x: 246, y: 78, w: 356, h: 142 }, expression, palette, locale),
     ].join("");
   }
   if (expression.composition === "divergence_field" || expression.composition === "timeline_rail") {
-    const plotY = expression.composition === "timeline_rail" ? 78 : 50;
-    const plotH = expression.composition === "timeline_rail" ? 112 : 132;
+    const plotY = expression.composition === "timeline_rail" ? 82 : 68;
+    const plotH = expression.composition === "timeline_rail" ? 98 : 112;
     const future = expression.future_beats[0];
     return [
       expression.composition === "timeline_rail" && future
         ? `<g ${bindingAttr(future.binding_id, future.state)} data-role="compact-time-rail" data-future-region="unresolved"><line x1="20" y1="55" x2="602" y2="55" stroke="${palette.conditional}" stroke-width="2" stroke-dasharray="7 5"/><circle cx="20" cy="55" r="5" fill="${palette.canvas}" stroke="${palette.signal}" stroke-width="3"/><circle cx="602" cy="55" r="5" fill="${palette.canvas}" stroke="${palette.conditional}" stroke-width="3"/></g>`
         : "",
-      compactSeriesPath(panel, { x: 20, y: plotY, w: 582, h: plotH }, expression, palette),
+      compactHistoricalContext(expression, compiled, palette, locale, { x: 20, y: expression.composition === "timeline_rail" ? 76 : 55 }),
+      compactSeriesPath(panel, { x: 20, y: plotY, w: 582, h: plotH }, expression, palette, locale),
       `<g ${bindingAttr(observation.binding_id, observation.state, "annotation")} data-role="compact-observation-marker" data-annotation-role="observation"/>`,
-      compactEssentialText({ x: 20, y: 224, text: claim.text, color: palette.ink, widthUnits: 15.2, lines: 2, binding: `${bindingAttr(claim.binding_id, claim.state)} data-role="creator-interpretation"`, group: "interpretation" }),
-      compactFuture(expression, { x: 416, y: 224, widthUnits: 7.2, palette, locale, lines: 2 }),
+      compactEssentialText({ x: 20, y: 190, text: claim.text, color: palette.ink, widthUnits: 26, lines: 1, binding: `${bindingAttr(claim.binding_id, claim.state)} data-role="creator-interpretation"`, group: "logic" }),
+      compactMechanism(expression, { x: 20, y: 226, widthUnits: 18, palette, locale, lines: 1 }),
+      compactFuture(expression, { x: 602, y: 226, widthUnits: 15, palette, locale, anchor: "end", lines: 2 }),
     ].join("");
   }
   return [
-    compactSeriesPath(panel, { x: 20, y: 52, w: 376, h: 172 }, expression, palette),
+    compactHistoricalContext(expression, compiled, palette, locale, { x: 20, y: 53 }),
+    compactSeriesPath(panel, { x: 20, y: 68, w: 356, h: 152 }, expression, palette, locale),
     `<g ${bindingAttr(observation.binding_id, observation.state, "annotation")} data-role="compact-observation-marker" data-annotation-role="observation"/>`,
-    `<line x1="416" y1="52" x2="416" y2="224" stroke="${palette.grid}" stroke-width="1.5"/>`,
-    compactEssentialText({ x: 438, y: 84, text: claim.text, color: palette.ink, widthUnits: 7.2, lines: 3, binding: `${bindingAttr(claim.binding_id, claim.state)} data-role="creator-interpretation"`, group: "interpretation" }),
-    compactFuture(expression, { x: 438, y: 205, widthUnits: 7.2, palette, locale, lines: 2 }),
+    `<line x1="396" y1="52" x2="396" y2="224" stroke="${palette.grid}" stroke-width="1.5"/>`,
+    compactEssentialText({ x: 418, y: 76, text: claim.text, color: palette.ink, widthUnits: 8.7, lines: 2, binding: `${bindingAttr(claim.binding_id, claim.state)} data-role="creator-interpretation"`, group: "logic" }),
+    compactMechanism(expression, { x: 418, y: 148, widthUnits: 9.3, palette, locale, lines: 2 }),
+    compactFuture(expression, { x: 418, y: 205, widthUnits: 10, palette, locale, lines: 3, splitTime: true }),
   ].join("");
 }
 
@@ -1148,9 +1211,10 @@ function renderCompactScenario(expression, palette, locale) {
   const branches = expression.future_beats.slice(0, 3);
   const branchHeight = Math.min(58, 174 / Math.max(1, branches.length));
   const parts = [
-    compactEssentialText({ x: 20, y: 82, text: claim.text, color: palette.ink, widthUnits: 8.8, lines: 3, binding: `${bindingAttr(claim.binding_id, claim.state)} data-role="creator-interpretation"`, group: "interpretation" }),
+    compactEssentialText({ x: 20, y: 76, text: claim.text, color: palette.ink, widthUnits: 8.8, lines: 2, binding: `${bindingAttr(claim.binding_id, claim.state)} data-role="creator-interpretation"`, group: "logic" }),
+    compactMechanism(expression, { x: 20, y: 204, widthUnits: 10.8, palette, locale, lines: 3 }),
     `<circle cx="222" cy="142" r="9" fill="${palette.canvas}" stroke="${palette.signal}" stroke-width="4"/>`,
-    `<g data-future-region="unresolved" data-role="compact-branch-group" data-essential-copy-group="branches">`,
+    `<g data-future-region="unresolved" data-role="compact-branch-group">`,
   ];
   branches.forEach((beat, index) => {
     const y = 56 + index * branchHeight;
@@ -1162,7 +1226,7 @@ function renderCompactScenario(expression, palette, locale) {
     const time = beat.at ? relativeDayLabel(beat.at, expression.time.declared_at, locale).split(" · ")[0] : expression.horizon_label;
     parts.push(
       `<g ${bindingAttr(beat.binding_id, beat.state)} data-geometry-type="conditional-lane" data-future-role="${beat.role}"><path d="M 231 142 C 270 142, 278 ${f(centerY)}, 310 ${f(centerY)}" fill="none" stroke="${color}" stroke-width="3" stroke-dasharray="7 5"/><circle cx="314" cy="${f(centerY)}" r="5" fill="${palette.canvas}" stroke="${color}" stroke-width="3"/><text x="330" y="${f(y + 11)}" fill="${color}" font-size="12" font-weight="820">${esc(`${time} · ${branch}`)}</text>`,
-      compactEssentialText({ x: 330, y: y + 39, text: beat.label, color: palette.ink, widthUnits: 11.2, lines: 1, binding: "", group: "branches" }),
+      compactEssentialText({ x: 330, y: y + 39, text: beat.label, color: palette.ink, widthUnits: 11.2, lines: 1, binding: "", group: "future", tier: "secondary" }),
       `</g>`,
     );
   });
@@ -1171,15 +1235,18 @@ function renderCompactScenario(expression, palette, locale) {
 }
 
 function renderCompactCausal(expression, palette, locale) {
+  const observation = expression.argument.observation;
   const mechanism = expression.argument.mechanism;
-  const future = expression.future_beats[0];
+  const future = expression.future_beats.findLast((item) => item.at && Date.parse(item.at) === Date.parse(expression.time.horizon_end))
+    ?? expression.future_beats.at(-1);
   return [
-    `<g data-role="compact-causal-path"><line x1="68" y1="156" x2="554" y2="156" stroke="${palette.grid}" stroke-width="6" stroke-linecap="round"/><circle cx="68" cy="156" r="12" fill="${palette.primary}"/><circle cx="311" cy="156" r="14" fill="${palette.signal}"/><circle cx="554" cy="156" r="12" fill="${palette.conditional}"/></g>`,
-    `<text x="20" y="68" fill="${palette.muted}" font-size="16" font-weight="760">${esc(locale === "zh-CN" ? "观察" : "OBSERVE")}</text>`,
-    `<text x="602" y="68" text-anchor="end" fill="${palette.muted}" font-size="16" font-weight="760">${esc(locale === "zh-CN" ? "下一足迹" : "NEXT FOOTPRINT")}</text>`,
-    compactEssentialText({ x: 311, y: 104, text: mechanism.text, color: palette.ink, widthUnits: 19, lines: 2, anchor: "middle", binding: bindingAttr(mechanism.binding_id, mechanism.state), group: "mechanism" }),
-    future ? compactEssentialText({ x: 311, y: 217, text: future.label, color: palette.conditional, widthUnits: 18, lines: 1, anchor: "middle", binding: bindingAttr(future.binding_id, future.state), group: "future" }) : "",
-    `<g ${bindingAttr(expression.argument.observation.binding_id, expression.argument.observation.state, "geometry")}/>` ,
+    `<g data-role="compact-causal-path"><line x1="80" y1="160" x2="542" y2="160" stroke="${palette.grid}" stroke-width="5" stroke-linecap="round"/><path d="M 205 160 L 219 153 L 219 167 Z M 394 160 L 408 153 L 408 167 Z" fill="${palette.signal}"/><circle cx="80" cy="160" r="10" fill="${palette.primary}"/><circle cx="311" cy="160" r="12" fill="${palette.signal}"/><circle cx="542" cy="160" r="10" fill="${palette.conditional}"/></g>`,
+    `<text x="20" y="58" fill="${palette.primary}" font-size="12" font-weight="820">${esc(locale === "zh-CN" ? "观察起点" : "OBSERVED START")}</text>`,
+    compactEssentialText({ x: 20, y: 86, text: observation.text, color: palette.ink, widthUnits: 9.2, lines: 3, binding: bindingAttr(observation.binding_id, observation.state, "geometry"), group: "observation", tier: "secondary" }),
+    `<text x="311" y="58" text-anchor="middle" fill="${palette.signal}" font-size="12" font-weight="820">${esc(locale === "zh-CN" ? "我的推演" : "MY LOGIC")}</text>`,
+    compactEssentialText({ x: 311, y: 86, text: mechanism.text, color: palette.ink, widthUnits: 9.2, lines: 3, anchor: "middle", binding: `${bindingAttr(mechanism.binding_id, mechanism.state)} data-role="creator-mechanism"`, group: "logic" }),
+    `<text x="602" y="58" text-anchor="end" fill="${palette.conditional}" font-size="12" font-weight="820">${esc(locale === "zh-CN" ? "到期观察" : "HORIZON CHECK")}</text>`,
+    future ? compactEssentialText({ x: 602, y: 86, text: `${relativeDayLabel(future.at, expression.time.declared_at, locale)} · ${future.label}`, color: palette.ink, widthUnits: 9.2, lines: 3, anchor: "end", binding: bindingAttr(future.binding_id, future.state), group: "future", tier: "secondary" }) : "",
   ].join("");
 }
 
@@ -1187,11 +1254,13 @@ function renderCompactEvidence(expression, palette, locale) {
   const support = expression.argument.observation;
   const counter = expression.argument.countercase ?? expression.argument.implication;
   return [
-    `<rect x="20" y="52" width="278" height="172" fill="${palette.primary}" opacity="0.07"/><rect x="324" y="52" width="278" height="172" fill="${palette.danger}" opacity="0.06" data-future-region="unresolved"/>`,
+    `<rect x="20" y="52" width="278" height="146" fill="${palette.primary}" opacity="0.07"/><rect x="324" y="52" width="278" height="146" fill="${palette.danger}" opacity="0.06" data-future-region="unresolved"/>`,
     `<text x="38" y="82" fill="${palette.primary}" font-size="16" font-weight="820">${esc(locale === "zh-CN" ? "支撑" : "SUPPORT")}</text>`,
     `<text x="342" y="82" fill="${palette.danger}" font-size="16" font-weight="820">${esc(locale === "zh-CN" ? "失效" : "BREAKS IF")}</text>`,
-    compactEssentialText({ x: 38, y: 120, text: support.text, color: palette.ink, widthUnits: 10.4, lines: 3, binding: bindingAttr(support.binding_id, support.state), group: "support" }),
-    compactEssentialText({ x: 342, y: 120, text: counter.text, color: palette.ink, widthUnits: 10.4, lines: 3, binding: bindingAttr(counter.binding_id, counter.state), group: "countercase" }),
+    compactEssentialText({ x: 38, y: 120, text: support.text, color: palette.ink, widthUnits: 10.4, lines: 3, binding: bindingAttr(support.binding_id, support.state), group: "evidence" }),
+    compactEssentialText({ x: 342, y: 120, text: counter.text, color: palette.ink, widthUnits: 10.4, lines: 3, binding: bindingAttr(counter.binding_id, counter.state), group: "evidence" }),
+    compactMechanism(expression, { x: 20, y: 232, widthUnits: 18, palette, locale, lines: 1 }),
+    compactFuture(expression, { x: 602, y: 232, widthUnits: 15, palette, locale, anchor: "end", lines: 2 }),
   ].join("");
 }
 
@@ -1218,7 +1287,7 @@ export function renderExpressionSvg(expression, candidate, compiled = compileExp
   const design = expressionDesignProfile(expression);
   const attentionSignature = `${design.design_family}/${design.narrative_placement}/${expression.grammar}/${MOBILE_MASTER_PROFILE}`;
   const body = [
-    `<svg xmlns="http://www.w3.org/2000/svg" width="2488" height="1056" viewBox="0 0 622 264" role="img" aria-labelledby="frame-title frame-desc" data-expression-system="market" data-grammar="${esc(expression.grammar)}" data-composition="${esc(expression.composition)}" data-surface="${esc(expression.surface)}" data-data-status="${esc(expression.data_status)}" data-master-profile="${MOBILE_MASTER_PROFILE}" data-mobile-display="622x264" data-single-master="true" data-attention-signature="${esc(attentionSignature)}" data-design-family="${design.design_family}" data-narrative-placement="${design.narrative_placement}" data-display-system="${design.display_system}" data-essential-font-floor="${MOBILE_ESSENTIAL_FONT_FLOOR}" font-family="-apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-variant-numeric="tabular-nums">`,
+    `<svg xmlns="http://www.w3.org/2000/svg" width="2488" height="1056" viewBox="0 0 622 264" role="img" aria-labelledby="frame-title frame-desc" data-expression-system="market" data-grammar="${esc(expression.grammar)}" data-composition="${esc(expression.composition)}" data-surface="${esc(expression.surface)}" data-data-status="${esc(expression.data_status)}" data-master-profile="${MOBILE_MASTER_PROFILE}" data-mobile-display="622x264" data-single-master="true" data-attention-signature="${esc(attentionSignature)}" data-design-family="${design.design_family}" data-narrative-placement="${design.narrative_placement}" data-display-system="${design.display_system}" data-primary-font-floor="${MOBILE_PRIMARY_FONT_FLOOR}" data-secondary-font-floor="${MOBILE_SECONDARY_FONT_FLOOR}" font-family="-apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-variant-numeric="tabular-nums">`,
     `<title id="frame-title">${esc(candidate.frame.title)}</title>`,
     `<desc id="frame-desc">${esc(generateExpressionAltText(expression, candidate, compiled))}</desc>`,
     `<rect width="622" height="264" fill="${palette.canvas}"/>`,
@@ -1248,12 +1317,21 @@ export function auditExpressionSvg(svg, expression, candidate) {
   if (/forecast[_ -]?path|projected candle|预测价格路径/iu.test(svg)) errors.push("SVG leaks a forbidden future-price instruction.");
   if (expression.market && (svg.match(/data-role="compact-observation-marker"/gu) ?? []).length !== 1) errors.push("A chart expression must attach the tested observation to its evidence geometry exactly once.");
   if (expression.market && !/data-series-state="observed"/u.test(svg)) errors.push("A market master needs one observed evidence curve.");
+  if (expression.market && !/data-role="historical-price-context"/u.test(svg)) errors.push("A market master needs one frozen dated price context.");
+  if (!/data-role="creator-mechanism"/u.test(svg)) errors.push("The creator's mechanism must remain visible in the mobile master.");
   if (candidate.frame.title.trim() === expression.argument.claim.text.trim()) errors.push("The image claim must add to the Frame title instead of repeating it exactly.");
   const alt = generateExpressionAltText(expression, candidate);
   if (!svg.includes(`<desc id="frame-desc">${esc(alt)}</desc>`)) errors.push("SVG description must be generated from the selected expression grammar.");
-  if (/<text\b[^>]*font-size="(?:[0-9]|1[0-9]|2[01](?:\.[0-9]+)?)"[^>]*data-essential-copy="true"|<text\b[^>]*data-essential-copy="true"[^>]*font-size="(?:[0-9]|1[0-9]|2[01](?:\.[0-9]+)?)"/u.test(svg)) errors.push("Every essential copy group must use at least 22 display pixels.");
+  for (const match of svg.matchAll(/<text\b[^>]*data-essential-copy="true"[^>]*>/gu)) {
+    const tag = match[0];
+    const size = Number(tag.match(/font-size="([0-9.]+)"/u)?.[1]);
+    const tier = tag.match(/data-essential-tier="(primary|secondary)"/u)?.[1];
+    if (!tier) errors.push("Every essential copy item needs a primary or secondary tier.");
+    else if (tier === "primary" && size < MOBILE_PRIMARY_FONT_FLOOR) errors.push("Primary essential copy must use at least 20 display pixels.");
+    else if (tier === "secondary" && size < MOBILE_SECONDARY_FONT_FLOOR) errors.push("Secondary essential copy must use at least 16 display pixels.");
+  }
   const groups = new Set([...svg.matchAll(/data-essential-copy-group="([^"]+)"/gu)].map((match) => match[1]));
-  if (groups.size > 2) errors.push("The publication master may contain at most two essential copy groups.");
+  if (groups.size > 3) errors.push("The publication master may contain at most three essential copy groups.");
   if (/data-role="(?:source-detail|formula|limitations|component-reason)"/u.test(svg)) errors.push("The mobile master contains publication-only source or method detail.");
   if (compiledFutureRequired(expression) && !/data-future-region="unresolved"|data-essential-copy-group="future"|data-essential-copy-group="branches"/u.test(svg)) errors.push("The publication master must preserve one visible unresolved future cue.");
   return {
@@ -1262,7 +1340,8 @@ export function auditExpressionSvg(svg, expression, candidate) {
     single_master: true,
     mobile_display: "622x264",
     essential_copy_groups: groups.size,
-    essential_font_floor: MOBILE_ESSENTIAL_FONT_FLOOR,
+    essential_font_floor: MOBILE_PRIMARY_FONT_FLOOR,
+    secondary_font_floor: MOBILE_SECONDARY_FONT_FLOOR,
     attention_signature: `${design.design_family}/${design.narrative_placement}/${expression.grammar}/${MOBILE_MASTER_PROFILE}`,
   };
 }

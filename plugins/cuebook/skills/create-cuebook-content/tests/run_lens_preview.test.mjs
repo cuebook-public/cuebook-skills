@@ -64,6 +64,8 @@ export function baseLensJob() {
   ];
   const refs = components.map((item) => item.leg.result_ref);
   const observation = "这组 AI 基建代理在冻结窗口内合成 Lens 为正";
+  const title = "AI 投资不能只盯一家公司";
+  const body = `${observation}。我的判断是需求正在从算力向网络与电力扩散；未来 30 天，看广度能否保持，任一关键环节转弱则重新评估。`;
   return {
     schema_version: "frame-lens-preview-job",
     preview: {
@@ -80,6 +82,27 @@ export function baseLensJob() {
         mechanism: "算力、网络和电力链若同步增强，需求比单一龙头更有广度",
         next_watch: "观察广度是否继续扩散，并在任一关键环节转弱时重新评估",
       },
+      meaning_lock: {
+        lock_id: "MLOCK_AI_LENS_LENS_001",
+        status: "creator_confirmed",
+        confirmed_at: "2026-07-17T08:59:00Z",
+        title,
+        body,
+        subject: "AI infrastructure demand",
+        direction: "long",
+        horizon: "未来 30 天",
+        claim: "AI 投资的强度应该从一篮子基础设施代理来观察",
+        mechanism: "算力、网络和电力链若同步增强，需求比单一龙头更有广度",
+        next_watch: "观察广度是否继续扩散，并在任一关键环节转弱时重新评估",
+        settlement: {
+          mode: "non_settleable",
+          reason: "This creator-owned observation basket is not one canonical asset contract.",
+        },
+        visual_intent: {
+          summary: "Show the tested Lens move, the creator's mechanism, component anatomy, and the dated future check.",
+          required_beats: ["tested_observation", "mechanism", "future_check", "component_anatomy"],
+        },
+      },
       query_binding: {
         required: true,
         status: "executed",
@@ -93,8 +116,8 @@ export function baseLensJob() {
         candidate_id: "FPREV_CAND_AI_LENS_LENS_001",
         angle: "evidence",
         frame: {
-          title: "AI 投资不能只盯一家公司",
-          body: `${observation}。我的判断是需求正在从算力向网络与电力扩散；未来 30 天，看广度能否保持，任一关键环节转弱则重新评估。`,
+          title,
+          body,
         },
         evidence_refs: refs,
       },
@@ -190,7 +213,9 @@ test("LENS computes and renders a transparent four-component Creator Lens", asyn
     assert.equal((svg.match(/data-role="compact-component-row"/gu) ?? []).length, 3);
     assert.equal(report.renders[0].audit.single_master, true);
     assert.equal(report.renders[0].audit.mobile_display, "622x264");
-    assert.ok(report.renders[0].audit.essential_copy_groups <= 2);
+    assert.ok(report.renders[0].audit.essential_copy_groups <= 3);
+    assert.equal(report.renders[0].audit.essential_font_floor, 20);
+    assert.equal(report.renders[0].audit.secondary_font_floor, 16);
     assert.equal(Object.hasOwn(report.renders[0], "compact_image_ref"), false);
     assert.equal(Object.hasOwn(report.renders[0], "compact_audit"), false);
     assert.equal(existsSync(path.join(output, preview.candidates[0].candidate_id, "frame-feed-622.svg")), false);
@@ -238,6 +263,14 @@ test("LENS rejects an observed sentence contradicted by the computed lens", () =
   const result = validateLensPreviewJob(job);
   assert.equal(result.valid, false);
   assert.ok(result.errors.some((error) => error.code === "OBSERVATION_UNSUPPORTED"));
+});
+
+test("LENS rejects copy changed after creator confirmation", () => {
+  const job = baseLensJob();
+  job.preview.candidate.frame.title = "AI 基建广度需要一篮子验证";
+  const result = validateLensPreviewJob(job);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.code === "MEANING_LOCK_TITLE"));
 });
 
 test("LENS supports a transparent positive long-short observation lens", async () => {

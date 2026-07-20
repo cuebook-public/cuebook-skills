@@ -16,11 +16,11 @@ Compile one meaning lock before selecting data or layout:
 
 The system should enlarge the creator's original perception, not replace it with generic market commentary. Facts may be observed, reported, or derived. Claims and mechanisms remain creator-owned unless a source literally establishes them. Future implications and countercases remain conditional.
 
-## 2. Ask Once, Then Build
+## 2. Use Cues To Think With The Creator
 
-Use the one-round heuristic interview from `SKILL.md`. The best question uncovers one missing edge: the anomaly, causal bridge, why-now trigger, next footprint, blind spot, or voice emphasis. Preserve the exact answer in `creator_signal` and use only what the creator adopts.
+After the asset is resolved, use the Cue-assisted one-round interview from `SKILL.md`. Select at most one aligned and one contrasting or adjacent Cue when they are genuinely relevant. Their job is to give the creator handles for mechanism, why-now, next footprint, comparator, regime change, or countercase. A Cue is another published viewpoint—not proof, consensus, or the current creator's stance. Preserve the exact creator answer in `creator_signal` and use only what the creator adopts.
 
-When the creator says to proceed, do not ask for more proof, price, target, invalidation, or settlement. A Fast Preview needs direction, observation window, and horizon—not a complete trade ticket.
+Before the Meaning Lock, an optional completion check may surface at most two unused Cue-derived inference points once. Omit it when nothing material is new or the creator said to proceed. Do not ask the creator to prove a causal bridge, analogy, scenario, or intuition; type it as creator-owned hypothesis while requiring evidence only for its factual premises. A Fast Preview needs direction, observation window, and horizon—not a complete trade ticket.
 
 ## 3. Select An Idea Topology Before A Template
 
@@ -159,9 +159,9 @@ Frame is social-editorial. The native title and body already carry prose; the im
 
 Use open editorial columns, tension fields, branches, rails, and contribution stages. Avoid turning every beat into the same rounded card. Do not copy navigation bars, tabs, KPI tiles, or app chrome from a dashboard reference. Borrow the useful idea—dense chart plus explanatory layers—without importing dashboard furniture.
 
-Render one 2488 x 1056 publication master from the meaning lock, authored against a 622 x 264 display box and rasterized at 4x. Use one dominant geometry, at most two essential copy groups, a 22 px display-size type floor, and one future check. Repair the master when it fails; never create a separate compact composition. Preserve diversity through grayscale silhouette and reading direction, not by adding more small labels.
+Render one 2488 x 1056 publication master from the confirmed Meaning Lock, authored against a 622 x 264 display box and rasterized at 4x. Use one dominant geometry and at most three reader-essential groups: orientation, evidence/mechanism, and future/settlement. Primary essential copy has a 20 px display-size floor and secondary essential labels have a 16 px floor. Preserve one or two material dated values and one future check. Repair the master when it fails; never create a separate compact composition. Preserve diversity through grayscale silhouette and reading direction, not by adding more small labels.
 
-Surface comes after structure. `paper_signal`, `midnight`, `warm_editorial`, and `cool_mono` should change tone, not substitute for a different reading path. Three requested alternatives need different grammars or compositions, not merely different colors.
+Surface comes after structure. `paper_signal`, `midnight`, `warm_editorial`, and `cool_mono` should change tone, not substitute for a different reading path. Creator-facing generation returns one image at a time. A visual-only reroll needs a different truthful grammar or composition, not merely a different color.
 
 ## 10. Validate Meaning And Pixels Together
 

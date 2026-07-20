@@ -37,7 +37,7 @@ Build a ResearchPackV1 first when the requested post depends on several missing 
 
 ### Cuebook-assisted discovery
 
-Use this mode only when there is a real creator seed. Preserve five parts in internal `assisted_discovery`: creator seed, evidence-linked additions, creator judgment, idea delta, and final trade idea. Set `public_attribution: false`; public copy starts from the completed market judgment and never describes the assistance process.
+Use this mode only when there is a real creator seed. Preserve five parts in internal `assisted_discovery`: creator seed, Cue/evidence-linked additions with acceptance or rejection, creator judgment, idea delta, and final trade idea. Set `public_attribution: false`; only adopted additions enter the completed market judgment, and public copy never describes the assistance process.
 
 External facts and source views still receive normal source attribution. Cuebook workflow, accepted/rejected additions, and idea delta stay outside body copy and selector copy.
 
@@ -60,7 +60,7 @@ Pick the angle with the strongest ledger support and clearest next condition. Pr
 
 Before drafting, build a private logic map with seven fields: creator judgment, observed change, market disagreement, pressured actor, transmission, asset/horizon expression, and next observable. Label every field `explicit`, `implied`, `evidence_supplied`, or `unavailable`.
 
-Use research only to supply missing fields that materially change comprehension. Every supplied link needs a fact reference. Keep unavailable links out of the prose; do not cover them with generic market language. The public draft should read as one coherent view, with no mention of prompts, research passes, Cuebook help, idea delta, or authoring workflow.
+Use research only to supply missing factual fields that materially change comprehension. Relevant Cues may propose a connection, countercase, comparator, or next footprint for the creator to adopt or reject; they do not establish it as fact. Every supplied factual link needs a fact reference, while an adopted causal bridge, analogy, scenario, or expectation may remain explicitly typed as `hypothesis`. Keep unavailable factual links out of the prose; do not cover them with generic market language. The public draft should read as one coherent view, with no mention of prompts, research passes, Cuebook help, idea delta, or authoring workflow.
 
 Counterevidence and invalidation remain available for internal confidence, settlement, and risk artifacts. Body copy includes them only when the user or destination explicitly asks. Never use self-correction headings such as `我认错`, `哪里认错`, or `什么情况算看错`.
 

@@ -87,19 +87,22 @@ test("create bundle closure keeps the fast front door and query without mandator
   });
 });
 
-test("create bundle keeps the one-round creator interview before price", () => {
+test("create bundle keeps the Cue-assisted interview and optional completion check before price", () => {
   withTmpPath((tmpPath) => {
     buildRelease(tmpPath);
     const skillPath = path.join(tmpPath, "release", "create-cuebook-content", "SKILL.md");
     const text = fs.readFileSync(skillPath, "utf-8");
-    const interview = text.indexOf("## One-Round Heuristic Interview");
-    const skip = text.indexOf("closes it immediately", interview);
+    const interview = text.indexOf("## Cue-Assisted One-Round Interview");
+    const skip = text.indexOf("closes Cue interviewing immediately", interview);
     const price = text.indexOf("This interview always precedes any price-target", interview);
+    const completion = text.indexOf("## Optional Idea Completion Check", interview);
     assert.ok(interview >= 0, skillPath);
     assert.ok(skip > interview, skillPath);
     assert.ok(price > skip, skillPath);
+    assert.ok(completion > price, skillPath);
     assert.match(text, /Ask for a price only when the creator explicitly requests a price-target override/u);
     assert.match(text, /requires no separate settlement interview/u);
+    assert.match(text, /Omit this check when no Cue adds material value/u);
   });
 });
 
@@ -117,11 +120,23 @@ test("heuristic interview covers each missing-link route without a generic check
     const routes = [...new Set(payload.cases.map((item) => item.expected_heuristic))].sort();
     assert.deepEqual(routes, ["anomaly", "blind_spot", "causal_bridge", "next_footprint", "voice_lock", "why_now"]);
     assert.ok(payload.cases.every((item) => item.example_interview.includes("没有更多就按这个做")));
+    const cueCases = payload.cases.filter((item) => Array.isArray(item.cue_scaffolds));
+    assert.ok(cueCases.length >= 2);
+    for (const item of cueCases) {
+      assert.ok(item.cue_scaffolds.length > 0 && item.cue_scaffolds.length <= 2);
+      assert.ok(item.cue_scaffolds.some((cue) => cue.relation === "aligned"));
+      assert.ok(item.cue_scaffolds.some((cue) => ["contrasting", "adjacent"].includes(cue.relation)));
+      assert.match(item.example_completion_check, /不加/u);
+    }
 
     const skillPath = path.join(tmpPath, "release", "create-cuebook-content", "SKILL.md");
     const text = fs.readFileSync(skillPath, "utf-8");
     for (const route of routes) assert.match(text, new RegExp(`\\b${route}\\b`, "u"));
     assert.match(text, /Do not dump categories/u);
+    assert.match(text, /list_asset_cues/u);
+    assert.match(text, /at most two non-duplicative thought anchors/u);
+    assert.match(text, /A source ref or popular Cue is not proof/u);
+    assert.match(text, /Only adopted additions enter the Meaning Lock/u);
   });
 });
 
