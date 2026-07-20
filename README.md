@@ -1,48 +1,36 @@
-# Cuebook Skills
+<p align="center">
+  <img src="plugins/cuebook/assets/icon.png" width="144" height="144" alt="Cuebook logo">
+</p>
 
-Cuebook turns market information and trading intuition into something people can understand, remember, and revisit.
+<h1 align="center">Cuebook Skills</h1>
 
-This repository distributes two public skills for Codex:
+<p align="center"><strong>Turn a market idea into an evidence-aware, mobile-first Frame.</strong></p>
 
-- `query-cuebook` searches and explains source-linked Cuebook intelligence without writing anything.
-- `create-cuebook-content` turns a creator's market idea into one Frame: a sharp title, concise body, and one mobile-first editorial image.
+<p align="center">
+  Research what matters. Preserve the creator's point of view. Express it as one title, one body, and one editorial image.
+</p>
 
-Create may use Query for evidence. Query never calls Create and never writes.
+<p align="center">
+  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.4.0"><img alt="Release v0.4.0" src="https://img.shields.io/badge/release-v0.4.0-F6C500?style=flat-square&labelColor=111111"></a>
+  <a href="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml"><img alt="Quality" src="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml/badge.svg?branch=main"></a>
+  <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/Node.js-%E2%89%A522-3C873A?style=flat-square&labelColor=111111">
+  <img alt="Two public skills" src="https://img.shields.io/badge/public_skills-2-4C6FFF?style=flat-square&labelColor=111111">
+</p>
 
-## What A Frame Looks Like
+<p align="center">
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#two-skills-one-boundary">Skills</a> ·
+  <a href="#one-frame-four-fields">Frame</a> ·
+  <a href="#designed-for-the-feed">Visuals</a> ·
+  <a href="#architecture">Architecture</a> ·
+  <a href="#development">Development</a>
+</p>
 
-The complete public artifact is deliberately small:
+---
 
-```json
-{
-  "title": "BTC 的抗跌，正在变成下一次上冲的起点",
-  "body": "同期 BTC 相对美股代理更强……未来 30 天先看韧性是否延续。",
-  "image_ref": ".../viewpoint-622.png",
-  "alt_text": "一张展示历史相对强弱、观点日边界和未来检查点的图。"
-}
-```
+Cuebook is an expression layer for pre-trade thinking. It helps a creator sharpen an intuition, find the smallest useful body of evidence, and publish the idea in a form that is easy to understand, remember, and revisit.
 
-Users do not receive workflow state, schema versions, candidate ids, evidence bundles, hashes, scopes, upload progress, receipts, consent fields, or backend enums. Those remain available internally for verification and publication safety.
-
-## Creation Experience
-
-The Skill preserves the creator's viewpoint and may ask one optional, high-leverage interview question before it retrieves data. Skipping the question moves directly into creation.
-
-Cuebook evidence supports the observed part of the argument. The creator still owns the interpretation and mechanism. Future time is expressed through checkpoints, catalysts, branches, confirmation, and invalidation—never a fabricated future price path.
-
-The image system selects the idea relationship before the layout. It can express:
-
-- price and indexed curves;
-- relative strength and spread;
-- drawdown and recovery;
-- rolling correlation;
-- event windows and thresholds;
-- causal paths, evidence tension, and conditional scenarios;
-- transparent Creator Lenses and long/short contribution views.
-
-Every preview includes a detailed 2488 × 1056 publication image and an independently composed 622 × 264 mobile image. The mobile image is not a downscale: it uses one dominant geometry, at most two essential copy groups, and a phone-readable hierarchy. Re-renders keep the facts fixed while changing a truthful reading path, silhouette, typography, material, or emphasis.
-
-## Install
+## Quick Start
 
 Install the current release:
 
@@ -55,27 +43,120 @@ codex plugin marketplace add cuebook-public/cuebook-skills \
 codex plugin add cuebook@cuebook
 ```
 
-Start a new Codex task after installation so the plugin skills and Cuebook MCP connector are loaded.
+Start a new Codex task so the plugin Skills and Cuebook connector are loaded.
 
-Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly the two public entrypoints; internal modules are bundled as on-demand references.
+Then try either path:
 
-## Repository Layout
+```text
+What changed in BTC relative to US equities this week?
+```
+
+```text
+I think BTC's resilience could lead to another move higher over the next 30 days.
+Turn that idea into a Frame.
+```
+
+> [!NOTE]
+> Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly two public entrypoints; internal modules load only when needed.
+
+## Two Skills, One Boundary
+
+| Skill | Purpose | Write access |
+| --- | --- | --- |
+| `query-cuebook` | Search and explain source-linked Cuebook intelligence | Never writes |
+| `create-cuebook-content` | Turn a creator's market idea into one publishable Frame | Drafts or publishes only with explicit intent |
+
+Create may call Query for evidence. Query never calls Create.
+
+```text
+market question  ──▶  query-cuebook  ──▶  sourced answer
+creator idea     ──▶  create-cuebook-content  ──▶  Frame
+                              ▲
+                              └── minimal evidence from Query
+```
+
+## One Frame, Four Fields
+
+The complete public artifact is deliberately small:
+
+```json
+{
+  "title": "BTC is holding while risk assets fade",
+  "body": "Relative resilience is the signal. Over the next 30 days, I am watching whether it survives the next equity sell-off and expands into a broader crypto bid.",
+  "image_ref": "<opaque Cuebook media reference>",
+  "alt_text": "An indexed BTC-versus-equities chart with an observation boundary and two future checkpoints."
+}
+```
+
+Workflow state, schema versions, candidate IDs, evidence bundles, hashes, scopes, upload progress, receipts, consent fields, and backend enums stay backstage.
+
+## From Intuition To Expression
+
+1. **Capture the edge.** Preserve the creator's claim, mechanism, horizon, and next observable. Ask at most one optional, high-leverage question; skipping it never blocks creation.
+2. **Find support.** Retrieve the smallest useful evidence set from Cuebook. A bounded Web lookup may fill a material gap and remains clearly labeled.
+3. **Lock the meaning.** Separate observed facts from the creator's interpretation. A request for another version changes expression, not the underlying claim or evidence.
+4. **Compose one Frame.** Write a sharp title, a concise body, and one visual with a clear reading path.
+5. **Preview, then publish.** Publication happens only after explicit intent and is verified by reading the resulting Frame back.
+
+The goal is not to lecture the creator or flatten the idea into generic research. Cuebook improves the expression while keeping authorship visible.
+
+## Designed For The Feed
+
+The renderer chooses a visual relationship before it chooses a style.
+
+| Idea topology | Useful visual forms |
+| --- | --- |
+| Change through time | Price curve, indexed curve, drawdown, event window, threshold |
+| Relationship between assets | Relative strength, spread, rolling correlation, contribution view |
+| Mechanism or sequence | Causal path, temporal rail, trigger poster |
+| Conditional future | Checkpoints, catalyst map, confirmation and invalidation, scenario branches |
+| Competing evidence | Tension field, evidence balance, transparent Creator Lens |
+
+Every preview includes two independently composed PNGs:
+
+- **2488 × 1056** — a detailed publication composition;
+- **622 × 264** — a feed composition with one dominant geometry, no more than two essential copy groups, and a visible future check.
+
+The compact image is not a downscaled desktop chart. It is designed to survive a fast phone scroll. Historical data ends at a visible observation boundary; future space contains checkpoints or branches, never a fabricated price path.
+
+## Architecture
+
+```text
+Codex
+├── query-cuebook                 public, read-only
+└── create-cuebook-content        public, creator workflow
+    ├── on-demand reference modules
+    ├── deterministic JavaScript renderers
+    └── Cuebook MCP
+        ├── typed, source-linked reads
+        └── authorized Frame mutations
+```
+
+The Skill remains a thin orchestrator. Cuebook MCP supplies authenticated data and enforces authorization; local deterministic code adapts frozen results and renders pixels. Internal graphs, algorithm stages, credentials, and publication mechanics are not part of the creator-facing object.
+
+Client tool filters improve selection but are not a security boundary. The server enforces grants, users, clients, scopes, policy, idempotency, prepared hashes, and publish tokens. Image bytes are never pulled back through MCP after upload.
+
+## Development
+
+<details>
+<summary><strong>Repository layout</strong></summary>
 
 ```text
 .agents/plugins/marketplace.json  Marketplace entry
 plugins/cuebook/                  Plugin package and canonical Skill sources
 plugins/cuebook/skills/           Development modules
 plugins/cuebook/public-skills/    Generated Codex public bundles
-plugins/cuebook/assets/           Internal catalog and capability contracts
+plugins/cuebook/assets/           Catalog and capability contracts
 plugins/cuebook/scripts/          Validators and release builder
 skills/                           Generated self-contained Agent Skills bundles
 ```
 
-Public skill, runner, and reference names describe their purpose rather than a generation number. Frozen backend wire schemas may retain explicit versions internally for compatibility; those names are not part of the creator-facing product.
+</details>
 
-## Develop And Validate
+<details>
+<summary><strong>Build and validate</strong></summary>
 
-Generated bundles must come from the canonical plugin sources. Do not edit `skills/` or `plugins/cuebook/public-skills/` by hand.
+Generated bundles come from the canonical plugin sources. Do not edit `skills/` or `plugins/cuebook/public-skills/` by hand.
 
 ```bash
 npm ci
@@ -86,5 +167,9 @@ git diff --exit-code -- skills plugins/cuebook/public-skills
 ```
 
 Validation checks the two-entrypoint boundary, referenced-resource closure, mobile preview context budget, schema correctness, rendering gates, and generated bundle parity. CI also rejects tracked Python runtime files.
+
+</details>
+
+Public Skill, runner, and reference names describe their purpose rather than a generation number. Frozen wire schemas may retain internal versions for compatibility, but those versions are not part of the creator-facing product.
 
 Never commit API keys, OAuth tokens, credentials, mutable user output, or font files. Authentication stays in the Cuebook connector.
