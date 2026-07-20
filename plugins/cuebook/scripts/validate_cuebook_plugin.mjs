@@ -9,6 +9,21 @@ import { validateInstance, pyrepr } from "./validate_json_schema.mjs";
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 
+const CUEBOOK_MCP_URL = "https://cuebook.xyz/mcp";
+
+const PLATFORM_GUIDES = new Set([
+  "chatgpt.md",
+  "claude-code.md",
+  "claude-desktop.md",
+  "codex.md",
+  "cursor.md",
+  "generic-agent-skills.md",
+  "generic-mcp.md",
+  "grok.md",
+  "hermes.md",
+  "openclaw.md",
+]);
+
 export function load(filePath) {
   return JSON.parse(readFileSync(filePath, "utf-8"));
 }
@@ -214,6 +229,102 @@ export function validate(pluginRoot) {
   const capabilityMap = load(path.resolve(assetsRoot, index.mcp_capability_map_ref));
   const catalogPath = path.resolve(assetsRoot, index.canonical_catalog_ref);
   const catalog = load(catalogPath);
+
+  const platformsRoot = path.join(pluginRoot, "platforms");
+  const platformIndexPath = path.join(platformsRoot, "README.md");
+  const platformIndex = existsSync(platformIndexPath)
+    ? readFileSync(platformIndexPath, "utf-8")
+    : "";
+  const platformGuideFiles = new Set(
+    existsSync(platformsRoot)
+      ? readdirSync(platformsRoot, { withFileTypes: true })
+        .filter((entry) => entry.isFile() && entry.name.endsWith(".md") && entry.name !== "README.md")
+        .map((entry) => entry.name)
+      : [],
+  );
+  check(
+    setEq(platformGuideFiles, PLATFORM_GUIDES),
+    "PLATFORM_DOC_SET",
+    "platforms",
+    "Platform documentation must contain exactly the ten supported host guides plus its README index.",
+  );
+  check(
+    platformIndex.includes(CUEBOOK_MCP_URL),
+    "PLATFORM_MCP_ENDPOINT",
+    "platforms/README.md",
+    "The platform matrix must name the canonical Cuebook MCP endpoint.",
+  );
+  check(
+    !/[\u3400-\u9fff]/u.test(platformIndex),
+    "PLATFORM_DOC_LANGUAGE",
+    "platforms/README.md",
+    "Public platform documentation must remain English-only.",
+  );
+  for (const guideName of PLATFORM_GUIDES) {
+    const guidePath = path.join(platformsRoot, guideName);
+    if (!existsSync(guidePath)) continue;
+    const guide = readFileSync(guidePath, "utf-8");
+    check(
+      guide.includes(CUEBOOK_MCP_URL),
+      "PLATFORM_MCP_ENDPOINT",
+      `platforms/${guideName}`,
+      "Every host guide must name the same canonical Cuebook MCP endpoint.",
+    );
+    check(
+      /\*\*Live status:\*\*/u.test(guide),
+      "PLATFORM_LIVE_STATUS",
+      `platforms/${guideName}`,
+      "Every host guide must distinguish live verification status from package or protocol compatibility.",
+    );
+    check(
+      guide.includes("live verification gate"),
+      "PLATFORM_VERIFICATION_GATE",
+      `platforms/${guideName}`,
+      "Every host guide must route to the shared evidence-based live verification gate.",
+    );
+    check(
+      !/[\u3400-\u9fff]/u.test(guide),
+      "PLATFORM_DOC_LANGUAGE",
+      `platforms/${guideName}`,
+      "Public platform documentation must remain English-only.",
+    );
+    check(
+      platformIndex.includes(`(${guideName})`),
+      "PLATFORM_INDEX_LINK",
+      "platforms/README.md",
+      `The platform matrix must link ${guideName}.`,
+    );
+  }
+
+  const claudeManifestPath = path.join(pluginRoot, ".claude-plugin", "plugin.json");
+  check(
+    existsSync(claudeManifestPath),
+    "CLAUDE_PLUGIN_MANIFEST",
+    ".claude-plugin/plugin.json",
+    "Claude Code distribution requires a native plugin manifest.",
+  );
+  if (existsSync(claudeManifestPath)) {
+    const claudeManifest = load(claudeManifestPath);
+    check(claudeManifest.name === "cuebook", "CLAUDE_PLUGIN_NAME", ".claude-plugin/plugin.json.name", "Unexpected Claude Code plugin name.");
+    check(
+      claudeManifest.skills === "./public-skills/",
+      "CLAUDE_PLUGIN_PUBLIC_SKILL_ROOT",
+      ".claude-plugin/plugin.json.skills",
+      "Claude Code must discover only the two generated public Skills.",
+    );
+    check(
+      claudeManifest.mcpServers === "./.mcp.json",
+      "CLAUDE_PLUGIN_MCP_CONFIG",
+      ".claude-plugin/plugin.json.mcpServers",
+      "Claude Code must reuse the canonical plugin MCP configuration.",
+    );
+    check(
+      claudeManifest.version === String(manifest.version ?? "").split("+")[0],
+      "CLAUDE_PLUGIN_VERSION_DRIFT",
+      ".claude-plugin/plugin.json.version",
+      "Claude Code and Codex manifests must share the same release version.",
+    );
+  }
 
   for (const [artifactName, payload, schemaName] of [
     ["cuebook-modules-v1.json", moduleMap, "cuebook-modules-v1.schema.json"],
@@ -698,6 +809,7 @@ export function validate(pluginRoot) {
       available_mcp_tools: [...availableTools].filter(Boolean).sort(),
       required_mcp_tools: [...requiredTools].filter(Boolean).sort(),
       planned_mcp_tools: [...plannedTools].filter(Boolean).sort(),
+      platform_guide_count: platformGuideFiles.size,
     },
   };
 }

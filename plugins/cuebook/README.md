@@ -13,6 +13,7 @@
 
 <p align="center">
   <a href="#install">Install</a> ·
+  <a href="#platforms">Platforms</a> ·
   <a href="#public-skills">Public Skills</a> ·
   <a href="#creation-model">Creation Model</a> ·
   <a href="#mobile-first-visuals">Visuals</a> ·
@@ -40,6 +41,17 @@ codex mcp list --json
 Cuebook's marketplace policy is `ON_INSTALL`. If the `cuebook` entry reports `auth_status: "not_logged_in"` and no authentication is already in progress, run `codex mcp login cuebook` once, complete the browser flow, and check `codex mcp list --json` again. Do not start another login after the first succeeds.
 
 The installing task owns installation and that one necessary host login. It must not create a background test task, publish a placeholder, or diagnose this local marketplace through a public ChatGPT plugin manager. Open one new Codex task only after Cuebook is enabled and no longer reports `not_logged_in`, then enter the real query or market idea. The final readiness proof is a normal MCP result in that task, not a browser approval screen or connector status alone. If authentication fails, stop instead of retrying, reinstalling, or opening more tasks. OAuth credentials stay in the connector, never in a Skill or generated artifact.
+
+## Platforms
+
+Cuebook ships two layers:
+
+- the self-contained `query-cuebook` and `create-cuebook-content` Agent Skills;
+- the authenticated remote MCP endpoint at `https://cuebook.xyz/mcp`.
+
+Codex, Claude Code, Cursor, Hermes, and OpenClaw can use both layers and are the full creator targets. Claude, Claude Desktop, ChatGPT, and Grok connect directly to MCP; they are useful connector targets, but do not receive the local Cuebook interview and visual-rendering workflow merely by adding the endpoint.
+
+The [platform support matrix](platforms/README.md) links to host-specific installation and verification guides. Status is evidence-based: static package validation, successful OAuth, Tool discovery, read, preview, and publication are recorded separately rather than collapsed into one ambiguous “supported” label.
 
 ## Public Skills
 

@@ -1,0 +1,24 @@
+{
+  "name": "cuebook",
+  "owner": {
+    "name": "Cuebook",
+    "url": "https://github.com/cuebook-public"
+  },
+  "metadata": {
+    "description": "Official Cuebook plugins for Claude Code"
+  },
+  "plugins": [
+    {
+      "name": "cuebook",
+      "source": "./plugins/cuebook",
+      "description": "Query Cuebook market intelligence or turn a creator-owned market idea into a sourced editorial Frame",
+      "category": "Finance",
+      "tags": [
+        "finance",
+        "market-research",
+        "agent-skills",
+        "mcp"
+      ]
+    }
+  ]
+}

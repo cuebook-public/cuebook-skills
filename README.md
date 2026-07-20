@@ -24,7 +24,20 @@
 </p>
 
 <p align="center">
+  <strong>Works with</strong><br>
+  <a href="plugins/cuebook/platforms/codex.md"><img alt="Codex" src="https://img.shields.io/badge/Codex-111111?style=flat-square"></a>
+  <a href="plugins/cuebook/platforms/claude-code.md"><img alt="Claude Code" src="https://img.shields.io/badge/Claude_Code-D97757?style=flat-square"></a>
+  <a href="plugins/cuebook/platforms/cursor.md"><img alt="Cursor" src="https://img.shields.io/badge/Cursor-111111?style=flat-square"></a>
+  <a href="plugins/cuebook/platforms/hermes.md"><img alt="Hermes" src="https://img.shields.io/badge/Hermes-6D5CE7?style=flat-square"></a>
+  <a href="plugins/cuebook/platforms/openclaw.md"><img alt="OpenClaw" src="https://img.shields.io/badge/OpenClaw-E85D3F?style=flat-square"></a>
+  <a href="plugins/cuebook/platforms/claude-desktop.md"><img alt="Claude" src="https://img.shields.io/badge/Claude-D97757?style=flat-square"></a>
+  <a href="plugins/cuebook/platforms/chatgpt.md"><img alt="ChatGPT" src="https://img.shields.io/badge/ChatGPT-10A37F?style=flat-square"></a>
+  <a href="plugins/cuebook/platforms/grok.md"><img alt="Grok" src="https://img.shields.io/badge/Grok-111111?style=flat-square"></a>
+</p>
+
+<p align="center">
   <a href="#cuebook-surfaces">Surfaces</a> ·
+  <a href="#platform-support">Platforms</a> ·
   <a href="#quick-start">Quick Start</a> ·
   <a href="#install-time-connection">Connection</a> ·
   <a href="#two-skills-one-boundary">Skills</a> ·
@@ -43,10 +56,27 @@ Cuebook is an expression layer for pre-trade thinking. It helps a creator sharpe
 
 | Surface | Best for | Current contract |
 | --- | --- | --- |
-| **[Cuebook Skills](https://github.com/cuebook-public/cuebook-skills)** | Natural-language research and guided Frame creation in Codex | Two public entrypoints; internal research, rendering, and publication modules load on demand |
+| **[Cuebook Skills](https://github.com/cuebook-public/cuebook-skills)** | Natural-language research and guided Frame creation in Agent Skills hosts | Two public entrypoints; internal research, rendering, and publication modules load on demand |
 | **[Cuebook CLI](https://github.com/cuebook-public/cuebook-cli)** | Terminal use, scripts, automation, and direct Tool inspection | Live Tool discovery, structured JSON, OAuth connection management, and fail-closed write confirmation |
 
 Both surfaces connect to Cuebook MCP. The server remains authoritative for available Tools, source-linked data, authorization, idempotency, and publication policy; neither client maintains a second catalog of product truth.
+
+## Platform Support
+
+Cuebook has one remote MCP endpoint and two optional Agent Skills. Hosts that load both layers can run the complete creator workflow; MCP-only hosts can connect to Cuebook Tools, but do not automatically inherit the interview, evidence-selection, rendering, and publication orchestration encoded in the Skills.
+
+| Host | Distribution | Intended surface | Live status |
+| --- | --- | --- | --- |
+| **Codex app and Codex CLI** | Cuebook Plugin | Skills + MCP | Package validated; OAuth recheck pending |
+| **Claude Code** | Native Claude Code marketplace | Skills + MCP | Static package validation ready; live check pending |
+| **Cursor editor and CLI** | Two Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
+| **Hermes Agent** | Two Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
+| **OpenClaw** | Two Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
+| **Claude and Claude Desktop** | Custom remote connector | MCP direct | Connector check pending; no Skill parity claim |
+| **ChatGPT** | Custom MCP app | MCP direct | Eligible plans only; connector check pending |
+| **Grok** | Custom MCP connector | MCP direct | Team-admin setup; connector check pending |
+
+See the [platform matrix and installation guides](plugins/cuebook/platforms/README.md). Every guide points to the same endpoint: `https://cuebook.xyz/mcp`. A completed browser approval is not proof of readiness; each host must return a normal MCP result before it is marked live-verified.
 
 ## Quick Start
 
@@ -158,7 +188,7 @@ The compact image is not a downscaled desktop chart. It is designed to survive a
 ## Architecture
 
 ```text
-Codex
+Agent Skills host
 ├── query-cuebook                 public, read-only
 └── create-cuebook-content        public, creator workflow
     ├── on-demand reference modules
@@ -179,6 +209,7 @@ Client tool filters improve selection but are not a security boundary. The serve
 
 ```text
 .agents/plugins/marketplace.json  Marketplace entry
+.claude-plugin/marketplace.json   Claude Code marketplace entry
 plugins/cuebook/                  Plugin package and canonical Skill sources
 plugins/cuebook/skills/           Development modules
 plugins/cuebook/public-skills/    Generated Codex public bundles

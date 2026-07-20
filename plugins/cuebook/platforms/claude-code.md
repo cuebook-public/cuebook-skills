@@ -1,18 +1,29 @@
-# Cuebook on Claude Code — Planned
+# Cuebook on Claude Code
+
+**Surface:** Native Claude Code plugin with two Agent Skills and remote MCP.
+
+**Package status:** Native marketplace and plugin manifests are present and statically validated.
+
+**Live status:** OAuth, Tool discovery, preview, and publication are pending host verification.
 
 ## Install and discovery
 
-Claude Code loads the same plugin layout (`plugins/cuebook` with `skills/`,
-`.mcp.json`, and assets) through its plugin system, or individual skills from
-`.claude/skills/`. Skill names and descriptions load at startup; bodies load
-on activation.
+Install from the repository's native Claude Code marketplace:
+
+```bash
+claude plugin marketplace add cuebook-public/cuebook-skills@<release-tag> \
+  --sparse .claude-plugin plugins/cuebook
+
+claude plugin install cuebook@cuebook
+```
+
+Start a new Claude Code session, or run `/reload-plugins`. The plugin manifest points Claude Code at `public-skills/`, so it discovers exactly `query-cuebook` and `create-cuebook-content`; supporting implementation modules remain on-demand references.
 
 ## MCP configuration and auth
 
-Register the Cuebook MCP server from the plugin `.mcp.json` (or
-`claude mcp add`). OAuth stays in the MCP connector. Verify the connected
-tool set matches `assets/mcp-capability-map-v1.json`; skills degrade to
-partial, honest results when a tool is missing.
+The plugin ships `.mcp.json` with an HTTP endpoint at `https://cuebook.xyz/mcp`. Do not register the same endpoint a second time. In Claude Code, open `/mcp`, select Cuebook, and complete one browser authentication flow. OAuth credentials stay in the host connector.
+
+If authentication or token exchange fails, stop after that one result. Do not add another server name, reinstall the plugin, or launch parallel logins.
 
 ## Invocation
 
@@ -33,9 +44,10 @@ authorization; initial and correction publication go from prepare directly to
 publish, withdrawal retains separate first-party consent, and query is
 structurally read-only.
 
-## Known limitations (why Planned, not Tested)
+## Current verification boundary
 
-- End-to-end MCP OAuth flow unverified on Claude Code.
+- Native marketplace loading is not yet verified with a released tag.
+- End-to-end MCP OAuth flow is not yet verified on Claude Code.
 - Render/audit scripts unverified against a locally installed Playwright
   (only the bundled Codex runtime is exercised today).
 - Trigger behavior of the two entrypoints has not been evaluated on Claude
@@ -48,5 +60,6 @@ node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook
 node --test 'plugins/cuebook/**/*.test.mjs'
 ```
 
-Then ask `看看 USO 最近有什么叙事` in a session with the plugin loaded and
-confirm routing to `query-cuebook` with no write-tool calls.
+Also run `claude plugin validate .` from a checkout of this repository.
+
+After the server rollout, run the shared [live verification gate](README.md#live-verification-gate). Ask `What changed around USO recently?` and confirm routing to `query-cuebook` with a normal source-linked MCP result and no write-tool calls.
