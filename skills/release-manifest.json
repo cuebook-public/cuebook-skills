@@ -5,7 +5,7 @@
   "discovery_budget": {
     "legacy_skill_count": 38,
     "public_skill_count": 2,
-    "legacy_metadata_bytes": 23319,
+    "legacy_metadata_bytes": 23342,
     "public_metadata_bytes": 1324,
     "reduction_percent": 94.3,
     "minimum_reduction_percent": 60
@@ -24,7 +24,7 @@
       "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json",
       "assets/plugin/mcp-capability-map-v1.json"
     ],
-    "cumulative_bytes": 106145,
+    "cumulative_bytes": 106630,
     "maximum_bytes_exclusive": 150000,
     "within_budget": true
   },

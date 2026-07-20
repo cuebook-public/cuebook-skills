@@ -11,15 +11,16 @@ Freeze the selected title, body, image, creator meaning, evidence refs, and enco
 
 Backend malware, decoding, EXIF/metadata, and upload-hash checks remain authoritative. Do not duplicate them as an HTML or font gate.
 
-Assemble the frozen backend draft and binding only after all media roles are ready. Assembly media hashes use encoded PNG bytes; visual-manifest role hashes use canonical RGBA8 pixels. The manifest's alt text is authoritative, and any assembly duplicate must match.
+Assemble the frozen backend draft and binding only after the publication master is ready. The assembly media hash uses the encoded PNG bytes; the visual manifest's `publication` role hash uses canonical RGBA8 pixels. The manifest's publication alt text is authoritative, and any assembly duplicate must match. Do not create compact, web, thumbnail, or OG authoring roles.
 
 ## Publish Sequence
 
 Use the capability map in `../../assets/mcp-capability-map-v1.json` and follow this order exactly:
 
-`get_frame_capabilities` → begin each role upload → signed HTTPS PUT → complete each role upload → poll owner-only `get_frame_media_status` → `register_frame_visual_manifest` → create or update the draft with assembly plus registered binding → `prepare_frame_publish` → `publish_frame` with the returned `prepared_hash` and `publish_token` → `get_frame` readback.
+`get_frame_capabilities` → begin the publication upload → one signed HTTPS PUT → complete the publication upload → poll owner-only `get_frame_media_status` → `register_frame_visual_manifest` → create or update the draft with assembly plus registered binding → `prepare_frame_publish` → `publish_frame` with the returned `prepared_hash` and `publish_token` → `get_frame` readback.
 
 - Never pull image bytes back through MCP, browse a display URL, use a standalone media retrieval operation, or fall back to base64.
+- Upload exactly one 2488 × 1056 PNG under the `publication` role. Feed and detail surfaces reuse it. Any future CDN resize is transparent delivery infrastructure, not a Skill-generated rendition or Frame wire role.
 - Give every mutation a fresh lowercase UUIDv7. Replay a key only with the identical payload.
 - Ordinary initial publication goes directly from prepare to publish under the active publish grant and first-party publish action. It does not request or poll separate action consent.
 - Correction uses `prepare_frame_correction_publish` → `publish_frame_correction`, also without separate consent.

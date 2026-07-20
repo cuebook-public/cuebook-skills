@@ -49,7 +49,7 @@ function withTemp(run) {
 
 function writeAssets(item, root) {
   for (const candidateItem of item.candidates) {
-    for (const key of ["preview_ref", "compact_preview_ref"]) {
+    for (const key of ["preview_ref"]) {
       const path = join(root, candidateItem.visual[key]);
       mkdirSync(dirname(path), { recursive: true });
       writeFileSync(path, "png");

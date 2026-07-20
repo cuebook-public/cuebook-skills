@@ -25,7 +25,7 @@ Public disclosures stay beside the visual in the candidate payload. They never c
 
 - Declare upstream `input_refs`, `fact_refs`, and `data_requirement_refs` in `VisualDirectionSetV1`; every binding source ref must resolve to one of them.
 - Copy `request_class` and `material_to_claim` from the upstream requirement and set `selected_for_display` for the evidence chosen for the image.
-- A selected material news anchor, valuation metric, comparison metric, market series, official event, price level, or settlement reference survives in every full and compact direction. Reverse deletion cannot remove it.
+- A selected material news anchor, valuation metric, comparison metric, market series, official event, price level, or settlement reference survives in every master and at phone display scale. Reverse deletion cannot remove it.
 - A missing material anchor blocks a selectable set. Do not replace it with a generic phrase, proxy, or decorative mark.
 
 ## Hard Copy Budget
@@ -45,10 +45,10 @@ Prefer 55-95 total characters. Use the remaining budget only for a data-led comp
 - Mark the root `data-cuebook-visual-contract="launch-v1"`.
 - Mark every visible text container with `data-role="claim|evidence|condition|context|brand"`.
 - Do not place `<br>` inside the claim. Use `text-wrap: balance`, a deliberate width, and natural wrapping.
-- Keep the claim to two lines at 1244 x 528 and at most three lines in the 622 x 264 compact composition.
+- Keep the claim to two authored lines and ensure it remains readable when the same master is displayed at 622 x 264.
 - Keep verb-object phrases, ticker-action phrases, dates, values, and units together.
 - CJK text breaks between any two characters by default, so `text-wrap: balance` alone cannot protect a word. Segment every visible CJK string — claim, evidence, and condition alike — into semantic phrase spans (`<span class="w">` with `white-space: nowrap`) so lines can break only between phrases.
-- A CJK semantic word — a market term such as `油价`, `库存`, or `增产`, a proper name, a ticker phrase, or a value with its unit — must never split across lines at any rendered size, including the OG share card.
+- A CJK semantic word — a market term such as `油价`, `库存`, or `增产`, a proper name, a ticker phrase, or a value with its unit — must never split across lines in the publication master.
 - Attach trailing punctuation to the preceding phrase span. No rendered line may start with a closing punctuation mark or end with an opening one.
 - Reject orphan lines made only of a connector, modal, or short verb such as `拿到`, `因为`, `所以`, or `但是`.
 - Rewrite before reducing the claim below 64px at the 1244 canvas.
@@ -62,7 +62,7 @@ Prefer 55-95 total characters. Use the remaining budget only for a data-led comp
 - Mark the root with `data-entry-role`, `data-color-system="semantic-v1"`, `data-palette-family`, `data-palette-strategy`, and `data-palette-preset`. The family and preset IDs must match the registry. Mark every non-brand visible group with `data-visual-level="1|2|3|4"`, and every chromatic element with a supported `data-color-role`.
 - Generated CSS text is forbidden. Factual labels must exist in HTML and carry a role and source binding.
 - A `data-binding-ref` counts only inside the launch root when it is visibly rendered on or inside a non-brand `data-role` or `data-logic-step-id` element and labels visible text or geometry. `hidden`, `aria-hidden="true"`, `display:none`, `visibility:hidden`, zero opacity, empty markers, and unrelated metadata fail the binding audit.
-- Put bindings directly on text or SVG data geometry. For meaningful CSS-only geometry, add `data-binding-display="geometry"`; the rendered audit still verifies nonzero visible bounds at both sizes.
+- Put bindings directly on text or SVG data geometry. For meaningful CSS-only geometry, add `data-binding-display="geometry"`; the rendered audit still verifies nonzero visible bounds at full and phone display scales.
 - Decorative HTML and SVG remain unbound. They may use `aria-hidden="true"` and need no launch role, visual level, or logic-step marker when they carry no visible copy or evidence.
 - Reserve the bottom-right 218 x 93 safe zone. Argument text, labels, curve endpoints, and data marks cannot enter it.
 

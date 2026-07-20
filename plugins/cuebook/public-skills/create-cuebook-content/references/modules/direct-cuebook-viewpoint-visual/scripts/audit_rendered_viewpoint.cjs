@@ -20,18 +20,32 @@ function loadPlaywright() {
   }
 }
 
-async function inspectViewport(page, width, height) {
-  await page.setViewportSize({ width, height });
+async function inspectViewport(page, width, height, sourceWidth = width, sourceHeight = height, displayScale = 1) {
+  await page.setViewportSize({ width: sourceWidth, height: sourceHeight });
   await page.reload({ waitUntil: "load" });
   await page.evaluate(() => document.fonts && document.fonts.ready);
 
-  return page.evaluate(({ viewportWidth, viewportHeight }) => {
+  return page.evaluate(({ viewportWidth, viewportHeight, displayScale: logicalScale }) => {
     const errors = [];
     const warnings = [];
     const root = document.querySelector("[data-cuebook-viewpoint]");
     if (!root) return { width: viewportWidth, height: viewportHeight, scale: 1, errors: [{ code: "ROOT", message: "Missing data-cuebook-viewpoint root." }], warnings, elements: [] };
 
-    const rootRect = root.getBoundingClientRect();
+    function logicalRect(element) {
+      const rect = element.getBoundingClientRect();
+      return {
+        x: rect.x * logicalScale,
+        y: rect.y * logicalScale,
+        left: rect.left * logicalScale,
+        top: rect.top * logicalScale,
+        right: rect.right * logicalScale,
+        bottom: rect.bottom * logicalScale,
+        width: rect.width * logicalScale,
+        height: rect.height * logicalScale,
+      };
+    }
+
+    const rootRect = logicalRect(root);
     const fontProfile = root.dataset.fontProfile || null;
     const fontLicenseMode = root.dataset.fontLicenseMode || null;
     const fontManifestRef = root.dataset.fontManifestRef || null;
@@ -44,7 +58,7 @@ async function inspectViewport(page, width, height) {
       if (!fontManifestRef || fontManifestRef.startsWith("/") || fontManifestRef.split("/").includes("..") || !fontManifestRef.endsWith(".json")) errors.push({ code: "FONT_MANIFEST_REF", message: "Noi renders require a safe artifact-local font manifest ref." });
       if (loadedNoiFaces.length === 0) errors.push({ code: "NOI_FONT_NOT_LOADED", message: "Cuebook Noi was declared but no face loaded in the browser." });
     }
-    const transformScale = root.offsetWidth ? rootRect.width / root.offsetWidth : 1;
+    const transformScale = root.offsetWidth ? rootRect.width / root.offsetWidth : logicalScale;
     const authoredWidth = Number(root.dataset.width || 1244);
     const authoredHeight = Number(root.dataset.height || 528);
     const contractScale = Math.min(rootRect.width / authoredWidth, rootRect.height / authoredHeight);
@@ -59,12 +73,12 @@ async function inspectViewport(page, width, height) {
 
     function visible(element) {
       const style = getComputedStyle(element);
-      const rect = element.getBoundingClientRect();
+      const rect = logicalRect(element);
       return style.display !== "none" && style.visibility !== "hidden" && Number(style.opacity) > 0 && rect.width > 0.5 && rect.height > 0.5;
     }
 
     function visibleBinding(element) {
-      const rect = element.getBoundingClientRect();
+      const rect = logicalRect(element);
       for (let node = element; node; node = node.parentElement) {
         const style = getComputedStyle(node);
         if (style.display === "none" || style.visibility === "hidden" || Number(style.opacity) <= 0) return false;
@@ -152,7 +166,7 @@ async function inspectViewport(page, width, height) {
     const elements = [];
     candidates.filter(visible).forEach((element, index) => {
       const style = getComputedStyle(element);
-      const rect = element.getBoundingClientRect();
+      const rect = logicalRect(element);
       const role = element.getAttribute("data-role");
       const logicStepId = element.getAttribute("data-logic-step-id");
       const id = selectorFor(element, index);
@@ -307,7 +321,7 @@ async function inspectViewport(page, width, height) {
       if (!visibleBinding(geometry) || geometry.closest('[data-overlap-ok="true"]')) continue;
       const role = geometry.closest('[data-role]');
       if (!role || role.getAttribute('data-role') === 'brand') continue;
-      const geometryRect = geometry.getBoundingClientRect();
+      const geometryRect = logicalRect(geometry);
       const protectedRect = {
         left: geometryRect.left - geometryClearance,
         top: geometryRect.top - geometryClearance,
@@ -320,7 +334,7 @@ async function inspectViewport(page, width, height) {
         return Array.from(candidate.childNodes).some((node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
       });
       for (const leaf of textLeaves) {
-        const textRect = leaf.getBoundingClientRect();
+        const textRect = logicalRect(leaf);
         if (!intersects(protectedRect, textRect, 0.5)) continue;
         errors.push({
           code: 'TEXT_GEOMETRY_CLEARANCE',
@@ -354,11 +368,46 @@ async function inspectViewport(page, width, height) {
       auditableTextLeaves.push({ leaf, text: directText, rects: textLeafRects(leaf) });
     }
 
+    const visibleEssentialGroups = Array.from(root.querySelectorAll("[data-essential-copy-group]"))
+      .filter((element) => visibleBinding(element));
+    const essentialGroupNames = new Set();
+    for (const element of visibleEssentialGroups) {
+      const name = (element.getAttribute("data-essential-copy-group") || "").trim();
+      if (!/^[a-z0-9][a-z0-9_-]*$/.test(name)) {
+        errors.push({ code: "PHONE_COPY_GROUP_NAME", message: "Essential copy groups need stable lowercase names." });
+        continue;
+      }
+      essentialGroupNames.add(name);
+    }
+    const essentialFontSizes = [];
+    for (const name of essentialGroupNames) {
+      const groupLeaves = auditableTextLeaves.filter(({ leaf }) => leaf.closest("[data-essential-copy-group]")?.getAttribute("data-essential-copy-group") === name);
+      if (groupLeaves.length === 0) {
+        errors.push({ code: "PHONE_COPY_GROUP_EMPTY", element: name, message: "An essential copy group must contain visible reader-facing text." });
+        continue;
+      }
+      for (const { leaf } of groupLeaves) {
+        const effectivePx = Number.parseFloat(getComputedStyle(leaf).fontSize || "0") * transformScale;
+        essentialFontSizes.push(effectivePx);
+        if (viewportWidth <= 622 && effectivePx < 18) {
+          errors.push({ code: "PHONE_ESSENTIAL_FONT", element: name, message: `Essential copy is ${effectivePx.toFixed(2)}px at phone display scale; minimum is 18px.` });
+        }
+      }
+    }
+    if (viewportWidth <= 622 && (essentialGroupNames.size < 2 || essentialGroupNames.size > 3)) {
+      errors.push({ code: "PHONE_COPY_GROUPS", message: `Phone display needs 2-3 essential copy groups; found ${essentialGroupNames.size}.` });
+    }
+    const attentionMetrics = {
+      essential_copy_groups: Array.from(essentialGroupNames).sort(),
+      essential_copy_group_count: essentialGroupNames.size,
+      essential_font_floor: essentialFontSizes.length ? Number(Math.min(...essentialFontSizes).toFixed(3)) : null,
+    };
+
     const borderEdges = [];
     for (const element of [root, ...root.querySelectorAll("*")]) {
       if (!visible(element) || element.closest('[data-role="brand"]') || element.closest('[data-overlap-ok="true"]')) continue;
       const style = getComputedStyle(element);
-      const rect = element.getBoundingClientRect();
+      const rect = logicalRect(element);
       const sides = [
         ["top", Number.parseFloat(style.borderTopWidth), style.borderTopStyle, style.borderTopColor, { left: rect.left, top: rect.top, right: rect.right, bottom: rect.top + Number.parseFloat(style.borderTopWidth) }],
         ["right", Number.parseFloat(style.borderRightWidth), style.borderRightStyle, style.borderRightColor, { left: rect.right - Number.parseFloat(style.borderRightWidth), top: rect.top, right: rect.right, bottom: rect.bottom }],
@@ -435,6 +484,7 @@ async function inspectViewport(page, width, height) {
     return {
       width: viewportWidth,
       height: viewportHeight,
+      display_scale: logicalScale,
       transform_scale: Number(transformScale.toFixed(4)),
       contract_scale: Number(contractScale.toFixed(4)),
       font_profile: fontProfile,
@@ -449,6 +499,7 @@ async function inspectViewport(page, width, height) {
       baseline_policy: baselinePolicy,
       chart_decision: chartDecision,
       layout_metrics: layoutMetrics,
+      attention_metrics: attentionMetrics,
       valid: errors.length === 0,
       errors,
       warnings,
@@ -456,7 +507,7 @@ async function inspectViewport(page, width, height) {
       logic_step_ids: Array.from(declaredSteps).sort(),
       binding_refs: Array.from(bindingRefs).sort(),
     };
-  }, { viewportWidth: width, viewportHeight: height });
+  }, { viewportWidth: width, viewportHeight: height, displayScale });
 }
 
 async function auditRenderedViewpoint(htmlArg, outputArg, browserOverride = null, profile = "wide") {
@@ -467,13 +518,15 @@ async function auditRenderedViewpoint(htmlArg, outputArg, browserOverride = null
   if (!browserPath) throw new Error("No supported Chromium executable found.");
   const { chromium } = loadPlaywright();
   fs.mkdirSync(outputDir, { recursive: true });
-  const profileViewports = profile === "og" ? [[1200, 630]] : [[1244, 528], [622, 264]];
+  const profileViewports = profile === "og"
+    ? [[1200, 630, 1200, 630, 1]]
+    : [[1244, 528, 1244, 528, 1], [622, 264, 1244, 528, 0.5]];
   const browser = await chromium.launch({ executablePath: browserPath, headless: true });
   try {
     const page = await browser.newPage({ viewport: { width: profileViewports[0][0], height: profileViewports[0][1] } });
     await page.goto(pathToFileURL(htmlPath).href, { waitUntil: "load" });
     const viewports = [];
-    for (const [width, height] of profileViewports) viewports.push(await inspectViewport(page, width, height));
+    for (const viewport of profileViewports) viewports.push(await inspectViewport(page, ...viewport));
     const errors = viewports.flatMap((viewport) => viewport.errors.map((item) => ({ ...item, viewport: `${viewport.width}x${viewport.height}` })));
     const warnings = viewports.flatMap((viewport) => viewport.warnings.map((item) => ({ ...item, viewport: `${viewport.width}x${viewport.height}` })));
     const full = viewports[0];

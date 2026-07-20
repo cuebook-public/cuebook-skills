@@ -27,7 +27,7 @@ Do not transfer: FT pink paper, Economist red and Milo, Datawrapper product chro
 - **Display numbers are simplified**: at display scale, one decimal place unless the extra digit is the claim (a settlement threshold keeps its exact form). Exact long-form values live in data payloads, not on the canvas.
 - **Two text hierarchy levels per zone**: within any one role group, use at most two size/weight steps. The canvas-wide four-size budget still applies; this rule stops micro-hierarchies inside a group.
 - **Text stays horizontal by default; body copy left-aligns.** Rotated or right-aligned type is a declared poster device (see exception clause), never a way to fit an oversized label.
-- **Halo text over geometry**: when copy overlays a curve, field, or tinted zone (the full-bleed compositions canvas-craft encourages), give it a background-colored text stroke or a quiet backing plate so legibility never depends on where the geometry happens to pass. Verify at both sizes.
+- **Halo text over geometry**: when copy overlays a curve, field, or tinted zone (the full-bleed compositions canvas-craft encourages), give it a background-colored text stroke or a quiet backing plate so legibility never depends on where the geometry happens to pass. Verify the same master at full and phone display scales.
 
 ## One-message discipline (The Economist)
 

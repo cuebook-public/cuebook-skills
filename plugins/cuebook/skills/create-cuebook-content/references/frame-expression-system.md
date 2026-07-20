@@ -159,7 +159,7 @@ Frame is social-editorial. The native title and body already carry prose; the im
 
 Use open editorial columns, tension fields, branches, rails, and contribution stages. Avoid turning every beat into the same rounded card. Do not copy navigation bars, tabs, KPI tiles, or app chrome from a dashboard reference. Borrow the useful idea—dense chart plus explanatory layers—without importing dashboard furniture.
 
-Render publication and compact as two compositions from one meaning lock. The compact view uses a native 622 x 264 canvas, one dominant geometry, at most two essential copy groups, a 22 px essential-type floor, and one future check. It is never a uniform downscale. Preserve diversity through grayscale silhouette and reading direction, not by adding more small labels.
+Render one 2488 x 1056 publication master from the meaning lock. Inspect that exact composition at a 622 x 264 display size: use one dominant geometry, at most two essential copy groups, an effective 11 px type floor, and one future check. Repair the master when it fails; never create a separate compact composition. Preserve diversity through grayscale silhouette and reading direction, not by adding more small labels.
 
 Surface comes after structure. `paper_signal`, `midnight`, `warm_editorial`, and `cool_mono` should change tone, not substitute for a different reading path. Three requested alternatives need different grammars or compositions, not merely different colors.
 
@@ -176,7 +176,7 @@ A preview passes only when:
 - title, body, and image do different jobs;
 - no visible text is truncated;
 - the SVG is accessible, contains no network asset, and uses the canonical Cuebook wordmark;
-- the publication and compact PNGs are fully decodable, materially painted, exactly 2488 × 1056 and 622 × 264 respectively, and byte-hashed;
+- the sole publication PNG is fully decodable, materially painted, exactly 2488 × 1056, phone-scale legible, and byte-hashed;
 - mutable current or entry prices remain absent until a backend quote or entry lock exists.
 
 Return the four-field public Frame immediately after these gates pass. Internal preview lineage, selection, derivatives, upload, and publication remain backstage.

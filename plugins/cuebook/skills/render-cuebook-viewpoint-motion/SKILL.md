@@ -19,7 +19,7 @@ Build the selected Cuebook motion direction as a production-compatible React com
    - `autoplay?: boolean` for Feed behavior;
    - `reducedMotion?: boolean` for explicit testing.
 5. Keep one persistent hero element across beats. Animate state changes inside the approved `layout_system` and spatial skeleton; preserve its grid, type scale, density, alignment, and reading order.
-6. Preserve the selected 1244 x 528 authoring composition, exact 2488 x 1056 poster, and 622 x 264 compact composition. Text must remain readable throughout, including intermediate keyframes.
+6. Preserve the selected 1244 x 528 authoring composition and exact 2488 x 1056 poster. Verify that the same poster remains readable at a 622 x 264 display size; do not create a separate compact bitmap. Text must remain readable throughout, including intermediate keyframes.
 7. Capture 4-7 keyframes with `scripts/capture_motion_keyframes.cjs`. Inspect pixels at both sizes.
 8. Keep the approved `ViewpointVisualV1` PNG as poster and reduced-motion fallback.
 9. For video export, use `assets/CuebookRemotionAdapter.tsx` to drive the same component by frame time. Export H.264 MP4 by default; add WebM only when the destination needs it.

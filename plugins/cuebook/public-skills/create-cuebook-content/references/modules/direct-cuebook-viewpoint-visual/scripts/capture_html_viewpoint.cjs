@@ -269,12 +269,8 @@ async function captureViewpoint(htmlArg, outputArg, browserOverride = null, ogHt
   const htmlPath = path.resolve(htmlArg);
   const outputDir = path.resolve(outputArg);
   const html = readNetworkFreeHtml(htmlPath, 1244, 528);
-  const ogHtmlPath = ogHtmlArg ? path.resolve(ogHtmlArg) : null;
-  let ogAllowDark = false;
-  if (ogHtmlPath) {
-    const ogHtml = readNetworkFreeHtml(ogHtmlPath, 1200, 630);
-    ogAllowDark = /data-theme=["']dark["']/i.test(ogHtml);
-  }
+  if (ogHtmlArg !== null && ogHtmlArg !== undefined) throw new Error("Frame capture accepts one publication master; OG input is no longer supported.");
+  void options;
   const allowDark = /data-theme=["']dark["']/i.test(html);
   const browserPath = browserOverride || browserExecutable();
   if (!browserPath) throw new Error("No supported Chromium executable found.");
@@ -282,7 +278,8 @@ async function captureViewpoint(htmlArg, outputArg, browserOverride = null, ogHt
   const full = path.join(outputDir, "viewpoint-2488.png");
   const compact = path.join(outputDir, "viewpoint-622.png");
   const og = path.join(outputDir, "og-1200x630.png");
-  if (options.fullOnly === true) fs.rmSync(compact, { force: true });
+  fs.rmSync(compact, { force: true });
+  fs.rmSync(og, { force: true });
   const startedAt = Date.now();
   const { chromium } = loadPlaywright();
   const browser = await chromium.launch({
@@ -291,28 +288,15 @@ async function captureViewpoint(htmlArg, outputArg, browserOverride = null, ogHt
     args: [...chromiumPlatformArgs(), "--font-render-hinting=none"],
   });
   try {
-    const fullOnly = options.fullOnly === true;
-    const captures = [captureReliable(browser, htmlPath, 1244, 528, 2, full, allowDark)];
-    if (!fullOnly) captures.push(captureReliable(browser, htmlPath, 622, 264, 1, compact, allowDark));
-    if (ogHtmlPath) captures.push(captureReliable(browser, ogHtmlPath, 1200, 630, 1, og, ogAllowDark));
-    const captured = await Promise.all(captures);
-    const fullPaint = captured[0];
-    const compactPaint = fullOnly ? null : captured[1];
-    const ogPaint = ogHtmlPath ? captured[fullOnly ? 1 : 2] : null;
+    const fullPaint = await captureReliable(browser, htmlPath, 1244, 528, 2, full, allowDark);
     const derivatives = [
       { kind: "full", ref: path.basename(full), width: 2488, height: 1056, sha256: sha256(fs.readFileSync(full)), pixel_sha256: canonicalRgbaPixelSha256(full), painted_ratio: Number(fullPaint.paintedRatio.toFixed(6)) },
     ];
-    if (!fullOnly) derivatives.push({ kind: "compact_622", ref: path.basename(compact), width: 622, height: 264, sha256: sha256(fs.readFileSync(compact)), pixel_sha256: canonicalRgbaPixelSha256(compact), painted_ratio: Number(compactPaint.paintedRatio.toFixed(6)) });
-    if (ogHtmlPath) {
-      derivatives.push({ kind: "og", ref: path.basename(og), source: path.basename(ogHtmlPath), width: 1200, height: 630, sha256: sha256(fs.readFileSync(og)), pixel_sha256: canonicalRgbaPixelSha256(og), painted_ratio: Number(ogPaint.paintedRatio.toFixed(6)) });
-    }
     const report = {
       schema_version: "viewpoint-html-capture-v1",
       source: path.basename(htmlPath),
       source_sha256: sha256(fs.readFileSync(htmlPath)),
-      og_source: ogHtmlPath ? path.basename(ogHtmlPath) : null,
-      og_source_sha256: ogHtmlPath ? sha256(fs.readFileSync(ogHtmlPath)) : null,
-      capture_mode: fullOnly ? "full_only" : "parallel_sizes",
+      capture_mode: "publication_master",
       duration_ms: Date.now() - startedAt,
       derivatives,
     };
@@ -325,11 +309,11 @@ async function captureViewpoint(htmlArg, outputArg, browserOverride = null, ogHt
 
 async function main() {
   const args = process.argv.slice(2);
-  const fullOnly = args.includes("--full-only");
+  // Keep --full-only as a no-op for older callers; single-master is now the only mode.
   const positionals = args.filter((arg) => arg !== "--full-only");
-  const [htmlArg, outputArg, ogArg] = positionals;
-  if (!htmlArg || !outputArg || positionals.length > 3 || (fullOnly && ogArg)) throw new Error("Usage: capture_html_viewpoint.cjs <direction.html> <output-dir> [og-1200x630.html] [--full-only]");
-  const result = await captureViewpoint(htmlArg, outputArg, null, ogArg || null, { fullOnly });
+  const [htmlArg, outputArg] = positionals;
+  if (!htmlArg || !outputArg || positionals.length !== 2) throw new Error("Usage: capture_html_viewpoint.cjs <direction.html> <output-dir>");
+  const result = await captureViewpoint(htmlArg, outputArg);
   process.stdout.write(`${result.outputDir}\n`);
 }
 

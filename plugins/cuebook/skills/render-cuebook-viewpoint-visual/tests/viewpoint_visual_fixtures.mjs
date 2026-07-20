@@ -261,15 +261,13 @@ export function createWideFinalizerFixture(root) {
   writeFileSync(join(fonts, "font-assets-v1.json"), fontManifestBytes);
   const html = `<link rel="stylesheet" href="./fonts/cuebook-noi-fonts.css"><main data-cuebook-visual-contract="launch-v1" data-font-profile="cuebook-noi-v1" data-font-license-mode="production" data-font-manifest-ref="fonts/font-assets-v1.json">${wordmark}</main>`;
   writeFileSync(join(root, "direction.html"), html, "utf8");
-  const full = fakePng(2488, 1056), compact = fakePng(622, 264);
+  const full = fakePng(2488, 1056);
   writeFileSync(join(root, "viewpoint-2488.png"), full);
-  writeFileSync(join(root, "viewpoint-622.png"), compact);
   const capture = {
     schema_version: "viewpoint-html-capture-v1",
     source_sha256: sha256(Buffer.from(html)),
     derivatives: [
       { kind: "full", ref: "viewpoint-2488.png", width: 2488, height: 1056, sha256: sha256(full), painted_ratio: 0.08 },
-      { kind: "compact_622", ref: "viewpoint-622.png", width: 622, height: 264, sha256: sha256(compact), painted_ratio: 0.10 },
     ],
   };
   writeFileSync(join(root, "capture.json"), JSON.stringify(capture), "utf8");
@@ -293,12 +291,11 @@ export function createWideFinalizerFixture(root) {
       binding_refs: ["BIND_FACT", "BIND_VIEW"],
       html_ref: "direction.html",
       preview_ref: "viewpoint-2488.png",
-      compact_preview_ref: "viewpoint-622.png",
       capture_report_ref: "capture.json",
       route: "claim_first",
       layout_system: { color_system: { preset_id: "quiet-cobalt" } },
     }],
     selected_direction_id: "VDIR_finalizer20260715",
   };
-  return { directionSet, html, full, compact, fontManifestBytes };
+  return { directionSet, html, full, fontManifestBytes };
 }

@@ -80,7 +80,7 @@
           "visual_job": {"const": "render_selected_direction"},
           "theme": {"pattern": "^[a-z0-9]+(?:-[a-z0-9]+){1,5}$"},
           "dimensions": {"properties": {"width": {"const": 2488}, "height": {"const": 1056}}},
-          "asset": {"required": ["font_manifest"], "properties": {"html": {"$ref": "#/$defs/assetRef"}, "svg": {"type": "null"}, "font_manifest": {"$ref": "#/$defs/assetRef"}}}
+          "asset": {"required": ["font_manifest"], "properties": {"html": {"$ref": "#/$defs/assetRef"}, "svg": {"type": "null"}, "font_manifest": {"$ref": "#/$defs/assetRef"}, "png_derivatives": {"type": "array", "minItems": 1, "maxItems": 1, "items": {"allOf": [{"$ref": "#/$defs/pngDerivative"}, {"properties": {"kind": {"const": "full"}, "width": {"const": 2488}, "height": {"const": 1056}}}]}}}}
         }
       }
     },

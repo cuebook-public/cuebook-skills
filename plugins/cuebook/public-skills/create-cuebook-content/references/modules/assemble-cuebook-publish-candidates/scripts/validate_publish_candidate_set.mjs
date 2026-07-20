@@ -353,7 +353,7 @@ export function validate(payload, assetRoot = null) {
   if (new Set(["ready_for_selection", "selected"]).has(state) && candidates.length !== policy.candidate_count) errors.push(issue("CANDIDATE_COUNT", "$.candidates", "Selectable output must match its declared one or three candidates."));
   if (state === "blocked" && candidates.length) errors.push(issue("BLOCKED_HAS_CANDIDATES", "$.candidates", "Blocked output must not expose partial candidates."));
 
-  const ids = new Set(), labels = new Set(), angles = new Set(), posts = new Set(), directions = new Set(), previews = new Set(), compactPreviews = new Set(), htmlRefs = new Set(), normalizedCopies = new Set(), settlementProjections = new Set(), materialAnchorSets = new Set(), passedCandidates = new Set();
+  const ids = new Set(), labels = new Set(), angles = new Set(), posts = new Set(), directions = new Set(), previews = new Set(), htmlRefs = new Set(), normalizedCopies = new Set(), settlementProjections = new Set(), materialAnchorSets = new Set(), passedCandidates = new Set();
   const settlementStates = [];
   const materialAnchorPayloads = new Map();
 
@@ -437,7 +437,7 @@ export function validate(payload, assetRoot = null) {
     const declaredVisualChars = visual.visible_char_count;
     if (!pyInt(declaredVisualChars) || pyNumber(declaredVisualChars) < 1) errors.push(issue("VISUAL_CHAR_COUNT", `${path}.visual.visible_char_count`, "A positive visual character count is required."));
     else if (pyInt(visualCharMax) && pyNumber(declaredVisualChars) > pyNumber(visualCharMax)) errors.push(issue("VISUAL_COPY_BUDGET", `${path}.visual.visible_char_count`, `Visual copy exceeds ${pythonStr(visualCharMax)} characters.`));
-    for (const [key, seen] of [["preview_ref", previews], ["compact_preview_ref", compactPreviews]]) {
+    for (const [key, seen] of [["preview_ref", previews]]) {
       const ref = visual[key];
       if (!safeRelativeRef(ref, ".png")) { errors.push(issue("VISUAL_REF", `${path}.visual.${key}`, "Use a safe relative PNG ref.")); continue; }
       if (seen.has(ref)) errors.push(issue("DUPLICATE_VISUAL_REF", `${path}.visual.${key}`, "Preview refs must be unique."));

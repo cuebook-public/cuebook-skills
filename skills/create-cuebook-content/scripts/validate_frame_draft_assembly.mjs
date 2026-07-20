@@ -21,9 +21,9 @@ const FAMILIES = ["single_asset_direction", "single_asset_price_target", "pair_a
 const PAIR_FAMILIES = ["pair_asset_direction", "pair_asset_price_targets"];
 const TARGET_FAMILIES = ["single_asset_price_target", "pair_asset_price_targets"];
 const HORIZON_UNIT_MAX = { hour: 24 * 183, calendar_day: 183, market_session: 130 };
-const MEDIA_ROLES = ["publication", "compact", "og"];
-const CAPTURE_KIND_BY_ROLE = { publication: "full", compact: "compact_622", og: "og" };
-const CAPTURE_DIMENSIONS = { publication: [2488, 1056], compact: [622, 264], og: [1200, 630] };
+const MEDIA_ROLES = ["publication"];
+const CAPTURE_KIND_BY_ROLE = { publication: "full" };
+const CAPTURE_DIMENSIONS = { publication: [2488, 1056] };
 
 function isDict(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -233,7 +233,7 @@ function validate_generation_handoff(payload, draft, lineage, roles, visualManif
     if (get(candidateVisual, "direction_ref") !== selectedDirectionId) {
       errors.push(issue("CANDIDATE_DIRECTION_MISMATCH", "$.handoff.candidateSet.candidates", "Selected content must retain its paired selected visual direction."));
     }
-    for (const field of ["html_ref", "preview_ref", "compact_preview_ref"]) {
+    for (const field of ["html_ref", "preview_ref"]) {
       if (get(candidateVisual, field) !== get(selectedDirection, field)) {
         errors.push(issue("CANDIDATE_VISUAL_REF_MISMATCH", `$.handoff.candidateSet.candidates.visual.${field}`, `Selected candidate ${field} must match the selected visual direction.`));
       }
@@ -310,6 +310,11 @@ function validate_generation_handoff(payload, draft, lineage, roles, visualManif
     for (const item of Array.isArray(get(captureReport, "derivatives")) ? get(captureReport, "derivatives") : []) {
       if (isDict(item)) derivatives.set(get(item, "kind"), item);
     }
+    for (const kind of derivatives.keys()) {
+      if (kind !== "full") {
+        errors.push(issue("CAPTURE_ROLE_UNEXPECTED", `$.handoff.captureReport.derivatives.${pystr(kind)}`, "Frame handoff accepts only the publication master capture."));
+      }
+    }
     const roleHashes = isDict(visualManifest) && isDict(get(visualManifest, "role_hashes")) ? get(visualManifest, "role_hashes") : null;
     const reviewedRoleHashes = directionRendererMode === "finished_bitmap" && isDict(get(captureReport, "image_review")) && isDict(get(get(captureReport, "image_review"), "reviewed_role_sha256"))
       ? get(get(captureReport, "image_review"), "reviewed_role_sha256")
@@ -318,12 +323,8 @@ function validate_generation_handoff(payload, draft, lineage, roles, visualManif
       const kind = CAPTURE_KIND_BY_ROLE[role];
       const derivative = derivatives.get(kind);
       const [width, height] = CAPTURE_DIMENSIONS[role];
-      const expectedRef = role === "publication"
-        ? basename(pystr(get(selectedDirection, "preview_ref", "")))
-        : role === "compact"
-          ? basename(pystr(get(selectedDirection, "compact_preview_ref", "")))
-          : null;
-      if (!isDict(derivative) || get(derivative, "width") !== width || get(derivative, "height") !== height || (expectedRef !== null && get(derivative, "ref") !== expectedRef)) {
+      const expectedRef = basename(pystr(get(selectedDirection, "preview_ref", "")));
+      if (!isDict(derivative) || get(derivative, "width") !== width || get(derivative, "height") !== height || get(derivative, "ref") !== expectedRef) {
         errors.push(issue("CAPTURE_DERIVATIVE_MISMATCH", `$.handoff.captureReport.derivatives.${kind}`, `Capture derivative ${kind} must match the selected ${role} asset and dimensions.`));
         continue;
       }
@@ -384,8 +385,11 @@ export function validate(payload, binding = null, visualManifest = null, handoff
   media.forEach((item, index) => {
     const role = isDict(item) ? get(item, "rendition_role") : null;
     if (!MEDIA_ROLES.includes(role)) {
-      errors.push(issue("MEDIA_ROLE", `$.frame_draft.media[${index}]`, "Media roles are publication, compact, or og."));
+      errors.push(issue("MEDIA_ROLE", `$.frame_draft.media[${index}]`, "The only authoring media role is publication."));
       return;
+    }
+    if (Object.hasOwn(roles, role)) {
+      errors.push(issue("MEDIA_ROLE_DUPLICATE", `$.frame_draft.media[${index}]`, "Frame assembly accepts exactly one publication master."));
     }
     roles[role] = item;
     if (!pystrip(pystr(get(item, "alt_text", "")))) {
@@ -395,13 +399,10 @@ export function validate(payload, binding = null, visualManifest = null, handoff
       errors.push(issue("MEDIA_HASH", `$.frame_draft.media[${index}]`, "Each media item carries the exact encoded PNG byte sha256."));
     }
   });
-  for (const required of ["publication", "compact"]) {
+  for (const required of ["publication"]) {
     if (!Object.hasOwn(roles, required)) {
-      errors.push(issue("MEDIA_ROLE_MISSING", "$.frame_draft.media", `${required} rendition is required for every publication.`));
+      errors.push(issue("MEDIA_ROLE_MISSING", "$.frame_draft.media", `${required} master is required for every publication.`));
     }
-  }
-  if (["public", "unlisted"].includes(visibility) && !Object.hasOwn(roles, "og")) {
-    errors.push(issue("OG_REQUIRED", "$.frame_draft.media", "Public and unlisted drafts require an independently composed og rendition."));
   }
 
   const lineage = isDict(get(payload, "lineage")) ? get(payload, "lineage") : {};
@@ -498,17 +499,11 @@ export function validate(payload, binding = null, visualManifest = null, handoff
       if (assemblyRoles.size !== altRoles.size || [...assemblyRoles].some((role) => !altRoles.has(role))) {
         errors.push(issue("VISUAL_MANIFEST_ALT_ROLES", "$.visual_manifest.alt_text_by_role", "Manifest alt-text roles must exactly match assembly media roles."));
       }
-      const pixelHashes = [];
       for (const role of hashRoles) {
         const pixelHash = pystr(roleHashes[role]);
         if (!SHA_PATTERN.test(pixelHash)) {
           errors.push(issue("VISUAL_PIXEL_HASH", `$.visual_manifest.role_hashes.${role}`, "role_hashes must carry canonical RGBA8 pixel sha256 values."));
-        } else {
-          pixelHashes.push(pixelHash);
         }
-      }
-      if (new Set(pixelHashes).size !== pixelHashes.length) {
-        errors.push(issue("VISUAL_PIXEL_HASH_DUPLICATE", "$.visual_manifest.role_hashes", "Each rendition role must bind distinct canonical pixels."));
       }
       for (const [role, item] of Object.entries(roles)) {
         if (Object.hasOwn(manifestAlt, role) && manifestAlt[role] !== get(item, "alt_text")) {

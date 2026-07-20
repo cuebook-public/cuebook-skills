@@ -171,7 +171,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["direction_id", "design_logic", "design_anchor", "layout_system", "route", "logic_route", "concept", "form_from_content", "hero_primitive", "support_primitives", "reading_order", "spatial_skeleton", "html_ref", "preview_ref", "compact_preview_ref", "capture_report_ref", "render_audit_ref", "binding_refs", "preflight", "critique"],
+        "required": ["direction_id", "design_logic", "design_anchor", "layout_system", "route", "logic_route", "concept", "form_from_content", "hero_primitive", "support_primitives", "reading_order", "spatial_skeleton", "html_ref", "preview_ref", "capture_report_ref", "render_audit_ref", "binding_refs", "preflight", "critique"],
         "properties": {
           "direction_id": {"type": "string", "pattern": "^VDIR_[A-Za-z0-9_:-]{6,}$"},
           "design_logic": {"enum": ["product_native", "benchmark_transfer", "content_native"]},
@@ -211,7 +211,7 @@
               "craft_system": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["type_family_mode", "claim_weight", "claim_line_height", "claim_wrap", "number_style", "max_type_sizes", "max_weights", "radius_rule", "surface_separation", "optical_priority", "compact_mode", "compact_type_scale"],
+                "required": ["type_family_mode", "claim_weight", "claim_line_height", "claim_wrap", "number_style", "max_type_sizes", "max_weights", "radius_rule", "surface_separation", "optical_priority", "phone_scale_mode", "phone_type_scale"],
                 "properties": {
                   "type_family_mode": {"enum": ["system", "brand", "creator"]},
                   "claim_weight": {"type": "integer", "minimum": 500, "maximum": 900},
@@ -223,8 +223,8 @@
                   "radius_rule": {"enum": ["sharp", "soft", "concentric", "mixed_documented"]},
                   "surface_separation": {"enum": ["whitespace", "divider", "shadow", "mixed"]},
                   "optical_priority": {"type": "string", "minLength": 8, "maxLength": 180},
-                  "compact_mode": {"enum": ["reflow", "recompose"]},
-                  "compact_type_scale": {
+                  "phone_scale_mode": {"const": "fixed_master"},
+                  "phone_type_scale": {
                     "type": "object",
                     "additionalProperties": false,
                     "required": ["hero_px_622", "body_px_622", "meta_px_622"],
@@ -311,8 +311,7 @@
           "spatial_skeleton": {"type": "string", "minLength": 5, "maxLength": 160},
           "renderer_mode": {"enum": ["cuebook_template", "finished_bitmap"], "description": "Defaults to cuebook_template for legacy artifacts. external_bitmap inputs normalize to finished_bitmap."},
           "html_ref": {"type": ["string", "null"], "pattern": "^[^/].*\\.html$"},
-          "preview_ref": {"type": "string", "pattern": "^[^/].*\\.png$"},
-          "compact_preview_ref": {"type": "string", "pattern": "^[^/].*\\.png$"},
+          "preview_ref": {"type": "string", "pattern": "^[^/].*\\.png$", "description": "The sole 2488 x 1056 publication master."},
           "capture_report_ref": {"type": ["string", "null"], "pattern": "^[^/].*\\.json$"},
           "render_audit_ref": {"type": ["string", "null"], "pattern": "^[^/].*\\.json$"},
           "binding_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^BIND_"}},

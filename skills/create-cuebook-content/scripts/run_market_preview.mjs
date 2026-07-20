@@ -11,25 +11,17 @@ import { validateInstance } from "./validate_json_schema.mjs";
 import { validate as validateFramePreview } from "./validate_frame_preview.mjs";
 import {
   assertNoMutablePriceText,
-  auditExpressionCompactSvg,
   auditExpressionSvg,
   compileExpression,
   expressionDesignProfile,
   expressionBindingIds,
   generateExpressionAltText,
-  renderExpressionCompactSvg,
   renderExpressionSvg,
 } from "./render_market_expression.mjs";
 
 const require = createRequire(import.meta.url);
 const rasterizerScript = fileURLToPath(new URL("../references/modules/render-cuebook-thesis-chart/scripts/rasterize_thesis_chart.cjs", import.meta.url));
 const { rasterizeSvg } = require(rasterizerScript);
-const captureHelpers = require(fileURLToPath(new URL(
-  "../references/modules/direct-cuebook-viewpoint-visual/scripts/capture_html_viewpoint.cjs",
-  import.meta.url,
-)));
-const { paintStats, pngDimensions } = captureHelpers;
-
 const JOB_SCHEMA = JSON.parse(readFileSync(new URL("../references/frame-market-preview-job.schema.json", import.meta.url), "utf8"));
 const PUBLIC_FRAME_SCHEMA = JSON.parse(readFileSync(new URL("../references/frame.schema.json", import.meta.url), "utf8"));
 const QUALITY_CHECKS = ["creator_ownership", "source_binding", "copy_fit", "image_render"];
@@ -95,7 +87,7 @@ function makePublicFrame(candidate, rendered) {
   const frame = {
     title: candidate.frame.title,
     body: candidate.frame.body,
-    image_ref: rendered.compact_image_ref,
+    image_ref: rendered.image_ref,
     alt_text: rendered.alt_text,
   };
   const errors = validateInstance(frame, PUBLIC_FRAME_SCHEMA);
@@ -105,14 +97,6 @@ function makePublicFrame(candidate, rendered) {
 
 function sha256(file) {
   return `sha256:${createHash("sha256").update(readFileSync(file)).digest("hex")}`;
-}
-
-function assertCompactPng(file) {
-  const dimensions = pngDimensions(file);
-  if (dimensions[0] !== 622 || dimensions[1] !== 264) throw new Error("Compact feed PNG must be exactly 622 x 264.");
-  const paint = paintStats(file);
-  if (!Number.isFinite(paint.paintedRatio) || paint.paintedRatio < 0.006) throw new Error("Compact feed PNG must contain at least 0.6% materially painted pixels.");
-  if (!Number.isFinite(paint.nearBlackRatio) || paint.nearBlackRatio > 0.96) throw new Error("Compact feed PNG cannot be an incompletely painted black raster.");
 }
 
 function candidateSources(expression) {
@@ -570,36 +554,22 @@ async function renderCandidate(expression, candidate, outputRoot, dependencies) 
   const svg = renderExpressionSvg(expression, candidate, compiled);
   const audit = auditExpressionSvg(svg, expression, candidate);
   if (!audit.valid) failValidation("Fast expression SVG", audit.errors.map((message) => issue("SVG_AUDIT", "$.expressions", message)));
-  const compactSvg = renderExpressionCompactSvg(expression, candidate, compiled);
-  const compactAudit = auditExpressionCompactSvg(compactSvg, expression, candidate);
-  if (!compactAudit.valid) failValidation("Fast expression compact SVG", compactAudit.errors.map((message) => issue("COMPACT_SVG_AUDIT", "$.expressions", message)));
   const expressionPath = path.join(candidateDir, "market-expression.json");
   const svgPath = path.join(candidateDir, "frame-preview.svg");
   const pngPath = path.join(candidateDir, "viewpoint-2488.png");
-  const compactSvgPath = path.join(candidateDir, "frame-feed-622.svg");
-  const compactPngPath = path.join(candidateDir, "viewpoint-622.png");
   writeJson(expressionPath, expression);
   writeFileSync(svgPath, `${svg}\n`, "utf8");
-  writeFileSync(compactSvgPath, `${compactSvg}\n`, "utf8");
-  await Promise.all([
-    (dependencies.rasterize ?? rasterizeSvg)(svgPath, pngPath),
-    (dependencies.rasterize ?? rasterizeSvg)(compactSvgPath, compactPngPath),
-  ]);
+  await (dependencies.rasterize ?? rasterizeSvg)(svgPath, pngPath);
   if (!existsSync(pngPath)) throw new Error("Market preview rasterizer did not produce the publication PNG.");
-  if (!existsSync(compactPngPath)) throw new Error("Market preview rasterizer did not produce the compact feed PNG.");
-  assertCompactPng(compactPngPath);
   return {
     candidate_id: candidate.candidate_id,
     visual_kind: "editorial_visual",
     template_id: expression.grammar,
     image_ref: path.relative(outputRoot, pngPath).split(path.sep).join("/"),
     image_sha256: sha256(pngPath),
-    compact_image_ref: path.relative(outputRoot, compactPngPath).split(path.sep).join("/"),
-    compact_image_sha256: sha256(compactPngPath),
     duration_ms: Date.now() - startedAt,
     expression_ref: path.relative(outputRoot, expressionPath).split(path.sep).join("/"),
     svg_ref: path.relative(outputRoot, svgPath).split(path.sep).join("/"),
-    compact_svg_ref: path.relative(outputRoot, compactSvgPath).split(path.sep).join("/"),
     grammar: expression.grammar,
     composition: expression.composition,
     surface: expression.surface,
@@ -617,7 +587,6 @@ async function renderCandidate(expression, candidate, outputRoot, dependencies) 
       support: expression.market.support_transform,
     } : null,
     audit,
-    compact_audit: compactAudit,
   };
 }
 

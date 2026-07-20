@@ -22,10 +22,8 @@ const PROFILE = "frame-raster-audit-v1";
 const FONT_PROFILE = "embedded-pixels-v1";
 const ROLE_SPECS = {
   publication: { kind: "full", width: 2488, height: 1056 },
-  compact: { kind: "compact_622", width: 622, height: 264 },
-  og: { kind: "og", width: 1200, height: 630 },
 };
-const REQUIRED_ROLES = ["publication", "compact"];
+const REQUIRED_ROLES = ["publication"];
 const SAFE_REF = /^(?!\/)(?!.*(?:^|\/)\.\.(?:\/|$))[^\0]+\.png$/i;
 const BACKEND_LOCK_REF = /^(?:quote-lock|entry-lock):[A-Za-z0-9._:-]{8,}$/;
 
@@ -84,8 +82,8 @@ export function auditFinishedBitmap(request, assetRoot) {
   if (!parseIso(auditedAt)) errors.push(issue("AUDITED_AT", "$.audited_at", "audited_at must be an ISO date-time."));
   if (!parseIso(review.reviewed_at)) errors.push(issue("IMAGE_REVIEW_TIME", "$.image_review.reviewed_at", "Image review needs an ISO date-time."));
   if (!["model", "human"].includes(review.reviewer)) errors.push(issue("IMAGE_REVIEWER", "$.image_review.reviewer", "Image review must identify a model or human reviewer."));
-  if (review.legibility !== "pass") errors.push(issue("LEGIBILITY_REVIEW", "$.image_review.legibility", "Every rendition must pass image-level legibility review."));
-  if (review.collision !== "pass") errors.push(issue("COLLISION_REVIEW", "$.image_review.collision", "Every rendition must pass image-level clipping and collision review."));
+  if (review.legibility !== "pass") errors.push(issue("LEGIBILITY_REVIEW", "$.image_review.legibility", "The publication master must pass image-level and phone-scale legibility review, including 2-3 essential prose groups with at least 18px effective phone type."));
+  if (review.collision !== "pass") errors.push(issue("COLLISION_REVIEW", "$.image_review.collision", "The publication master must pass image-level clipping and collision review."));
   if (!["no_external_untrusted", "not_required"].includes(review.imagery_policy) || review.imagery_result !== "pass") {
     errors.push(issue("IMAGERY_REVIEW", "$.image_review", "Declare the applicable imagery policy and a passing visual review result."));
   }
@@ -139,13 +137,6 @@ export function auditFinishedBitmap(request, assetRoot) {
     } catch (error) {
       errors.push(issue("RENDITION_PNG", `$.renditions.${role}.ref`, `Cannot decode supported PNG pixels: ${error.message}`));
     }
-  }
-
-  if (new Set(derivatives.map((item) => item.sha256)).size !== derivatives.length) {
-    errors.push(issue("ENCODED_HASH_DUPLICATE", "$.renditions", "Each rendition role must bind distinct PNG bytes."));
-  }
-  if (new Set(derivatives.map((item) => item.pixel_sha256)).size !== derivatives.length) {
-    errors.push(issue("PIXEL_HASH_DUPLICATE", "$.renditions", "Each rendition role must bind distinct canonical pixels."));
   }
 
   return {

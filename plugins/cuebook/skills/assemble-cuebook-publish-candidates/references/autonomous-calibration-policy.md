@@ -88,4 +88,4 @@ Use one dominant visual idea, one proof, and an optional condition. Keep total v
 
 ## Public Surface
 
-Expose only `frame.title`, `frame.body`, and the paired `frame.image_ref`; attach alt text to the image. Keep labels, copy splits, tags, compact/OG derivatives, evidence anchors, settlement status, disclosures, calibration, routing, fingerprints, scores, and retry history internal.
+Expose only `frame.title`, `frame.body`, and the paired publication `frame.image_ref`; attach alt text to the image. Keep labels, copy splits, tags, evidence anchors, settlement status, disclosures, calibration, routing, fingerprints, scores, and retry history internal. Do not create compact or OG authoring assets.

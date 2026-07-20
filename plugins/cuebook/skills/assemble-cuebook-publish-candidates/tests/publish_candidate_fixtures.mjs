@@ -130,7 +130,6 @@ export function candidate(index, label, angle, headline, body, close) {
       direction_ref: `VDIR_HOOD_${index}`,
       html_ref: `candidate-${index}/viewpoint.html`,
       preview_ref: `candidate-${index}/viewpoint.png`,
-      compact_preview_ref: `candidate-${index}/viewpoint-622.png`,
       visible_char_count: 2,
       alt_text: `HOOD candidate ${index}`,
     },

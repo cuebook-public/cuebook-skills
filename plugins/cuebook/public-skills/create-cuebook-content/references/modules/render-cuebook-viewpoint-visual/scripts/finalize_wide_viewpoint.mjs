@@ -116,17 +116,16 @@ export function buildManifest(directionSet, assetRoot, { observedAt, decisionCut
   const bindingIds = new Set(direction.binding_refs ?? []);
   const bindings = (directionSet.bindings ?? []).filter((item) => bindingIds.has(item.binding_id));
   if (!bindings.length) throw new Error("Selected direction has no resolved bindings.");
-  const htmlPath = join(assetRoot, direction.html_ref), fullPath = join(assetRoot, direction.preview_ref), compactPath = join(assetRoot, direction.compact_preview_ref), capturePath = join(assetRoot, direction.capture_report_ref);
-  for (const filePath of [htmlPath, fullPath, compactPath, capturePath]) if (!isFile(filePath)) throw new Error(`Required selected-direction asset is missing: ${filePath}`);
+  const htmlPath = join(assetRoot, direction.html_ref), fullPath = join(assetRoot, direction.preview_ref), capturePath = join(assetRoot, direction.capture_report_ref);
+  for (const filePath of [htmlPath, fullPath, capturePath]) if (!isFile(filePath)) throw new Error(`Required selected-direction asset is missing: ${filePath}`);
 
   const htmlBytes = readFileSync(htmlPath);
   const [fontManifestRef, fontManifestBytes] = productionFontManifest(new TextDecoder("utf-8", { fatal: true }).decode(htmlBytes), assetRoot);
-  const fullBytes = readFileSync(fullPath), compactBytes = readFileSync(compactPath);
+  const fullBytes = readFileSync(fullPath);
   const capture = JSON.parse(readFileSync(capturePath, "utf8"));
   const captureByKind = Object.fromEntries((capture.derivatives ?? []).filter((item) => item !== null && typeof item === "object" && !Array.isArray(item)).map((item) => [item.kind, item]));
   const expected = {
     full: [direction.preview_ref, 2488, 1056, sha256Bytes(fullBytes)],
-    compact_622: [direction.compact_preview_ref, 622, 264, sha256Bytes(compactBytes)],
   };
   if (capture.source_sha256 !== sha256Bytes(htmlBytes)) throw new Error("Capture report does not bind the selected HTML bytes.");
   for (const [kind, [, width, height, digest]] of Object.entries(expected)) {
@@ -179,7 +178,7 @@ export function buildManifest(directionSet, assetRoot, { observedAt, decisionCut
       svg: null,
       font_manifest: { ref: fontManifestRef, sha256: sha256Bytes(fontManifestBytes) },
       png_derivatives: Object.entries(expected).map(([kind, [ref, width, height, digest]]) => ({ kind, ref, width, height, sha256: digest })),
-      derivative_bundle_hash: sha256Bytes(Buffer.concat([fullBytes, compactBytes])),
+      derivative_bundle_hash: sha256Bytes(fullBytes),
     },
     quality_report: { decision: "ready", warnings: [], hard_failures: [] },
   };

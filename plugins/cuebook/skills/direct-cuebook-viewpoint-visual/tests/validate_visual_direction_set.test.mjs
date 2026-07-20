@@ -154,7 +154,7 @@ const mutations = [
   ["message map distinct", (p) => { p.logic_progression.message_step_map.because_step_id = "LSTEP_CLAIM"; }, "LOGIC_MESSAGE_MAP"],
   ["compact reasoning bridge", (p) => { p.directions[0].logic_route.compact_step_ids = ["LSTEP_OBS", "LSTEP_ACTION", "LSTEP_UNKNOWN"]; }, "LOGIC_ROUTE_BRIDGE"],
   ["verified benchmark", (p) => { p.directions[1].design_anchor.source_ref = "unverified reference"; }, "BENCHMARK_REF"],
-  ["compact mode cannot scale only", (p) => { p.directions[0].layout_system.craft_system.compact_mode = "scale_only"; }, "CRAFT_COMPACT_MODE"],
+  ["phone display must use fixed master", (p) => { p.directions[0].layout_system.craft_system.phone_scale_mode = "recompose"; }, "CRAFT_PHONE_SCALE_MODE"],
 ];
 
 for (const [name, mutate, expected] of mutations) {
@@ -267,7 +267,6 @@ test("previewed HTML binds declared items", () => {
       const html = `<style>.claim{text-wrap:balance}[data-binding-ref]{font-variant-numeric:tabular-nums}.cuebook-wordmark{right:41px;bottom:34px;width:136px;height:26px;color:#101411}</style><main data-cuebook-viewpoint data-width="1244" data-height="528" data-cuebook-visual-contract="launch-v1" data-direction-id="${direction.direction_id}" data-design-variance="8" data-visual-density="5" data-layout-grid="${grid}" data-entry-role="${entryRole}" data-color-system="semantic-v1" data-palette-family="${colors.palette_family}" data-palette-strategy="${colors.palette_strategy}" data-palette-preset="${colors.preset_id}"><h1 class="claim" data-role="claim" data-visual-level="${claimLevel}" data-logic-step-id="LSTEP_CLAIM" data-binding-ref="BIND_VIEW_01">观点判断</h1>${evidence}<span data-role="condition" data-visual-level="3" data-logic-step-id="LSTEP_ACTION" data-binding-ref="BIND_ACTION_01">行动</span>${hiddenBinding}${wordmark}</main>`;
       writeFileSync(path.join(temp, direction.html_ref), html);
       writeFileSync(path.join(temp, direction.preview_ref), "preview");
-      writeFileSync(path.join(temp, direction.compact_preview_ref), "compact preview");
     });
     const result = codes(payload, {}, temp);
     assert.ok(result.has("HTML_BINDING"));

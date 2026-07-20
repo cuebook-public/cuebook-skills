@@ -6,14 +6,12 @@ import test from "node:test";
 
 import { build, jcs_sha256 } from "../scripts/build_frame_visual_manifest.mjs";
 
-const captureReport = (withOg = false) => ({
+const captureReport = () => ({
   schema_version: "viewpoint-html-capture-v1",
   source: "viewpoint.html",
   source_sha256: `sha256:${"9".repeat(64)}`,
   derivatives: [
     { kind: "full", ref: "viewpoint-2488.png", width: 2488, height: 1056, sha256: `sha256:${"a".repeat(64)}`, pixel_sha256: `sha256:${"d".repeat(64)}` },
-    { kind: "compact_622", ref: "viewpoint-622.png", width: 622, height: 264, sha256: `sha256:${"b".repeat(64)}`, pixel_sha256: `sha256:${"e".repeat(64)}` },
-    ...(withOg ? [{ kind: "og", ref: "og-1200x630.png", width: 1200, height: 630, sha256: `sha256:${"c".repeat(64)}`, pixel_sha256: `sha256:${"f".repeat(64)}` }] : []),
   ],
 });
 const renderAudit = (valid = true) => ({
@@ -23,7 +21,7 @@ const renderAudit = (valid = true) => ({
   profile_version: "render-audit-wide-v1",
   audited_at: "2026-07-17T00:00:00.000Z",
 });
-const rasterAudit = (withOg = false) => ({
+const rasterAudit = () => ({
   schema_version: "frame-raster-audit-v1",
   profile_version: "frame-raster-audit-v1",
   source_kind: "finished_bitmap",
@@ -39,11 +37,9 @@ const rasterAudit = (withOg = false) => ({
     mutable_price: "absent",
     reviewed_role_sha256: {
       publication: `sha256:${"a".repeat(64)}`,
-      compact: `sha256:${"b".repeat(64)}`,
-      ...(withOg ? { og: `sha256:${"c".repeat(64)}` } : {}),
     },
   },
-  derivatives: captureReport(withOg).derivatives,
+  derivatives: captureReport().derivatives,
 });
 const directionSet = (rendererMode = "cuebook_template") => ({
   state: "selected",
@@ -53,7 +49,6 @@ const directionSet = (rendererMode = "cuebook_template") => ({
     renderer_mode: rendererMode,
     html_ref: rendererMode === "finished_bitmap" ? null : "viewpoint.html",
     preview_ref: "viewpoint-2488.png",
-    compact_preview_ref: "viewpoint-622.png",
     binding_refs: ["BIND_VIEW"],
     preflight: { copy_audited: true, compact_readable: true, source_bindings_complete: true },
     critique: { verdict: "pass" },
@@ -64,17 +59,17 @@ const directionSet = (rendererMode = "cuebook_template") => ({
   ],
 });
 
-function invoke({ withOg = false, auditValid = true, licenseMode = "production", alt = null, report = null, audit = null, rendererMode = "cuebook_template" } = {}) {
+function invoke({ auditValid = true, licenseMode = "production", alt = null, report = null, audit = null, rendererMode = "cuebook_template" } = {}) {
   const root = mkdtempSync(path.join(os.tmpdir(), "cuebook-manifest-test-"));
   try {
     const fonts = path.join(root, "font-assets-v1.json");
     writeFileSync(fonts, JSON.stringify({ profile: "cuebook-noi-v1", license_mode: licenseMode, files: [] }));
     return build(
-      report ?? captureReport(withOg),
+      report ?? captureReport(),
       audit ?? renderAudit(auditValid),
       directionSet(rendererMode),
       rendererMode === "finished_bitmap" ? null : fonts,
-      alt ?? { publication: "USO 30 天偏多的观点图", compact: "USO 观点紧凑图", og: "USO 分享卡" },
+      alt ?? { publication: "USO 30 天偏多的观点图" },
     );
   } finally {
     rmSync(root, { recursive: true, force: true });
@@ -84,10 +79,10 @@ function invoke({ withOg = false, auditValid = true, licenseMode = "production",
 const errorCodes = (errors) => new Set(errors.map((entry) => entry.code));
 
 test("builds manifest with stable JCS hash", () => {
-  const [manifest, errors] = invoke({ withOg: true });
+  const [manifest, errors] = invoke();
   assert.deepEqual(errors, []);
   assert.equal(manifest.schema_version, "frame-visual-manifest-v1");
-  assert.deepEqual(new Set(Object.keys(manifest.role_hashes)), new Set(["publication", "compact", "og"]));
+  assert.deepEqual(Object.keys(manifest.role_hashes), ["publication"]);
   assert.equal(manifest.role_hashes.publication, `sha256:${"d".repeat(64)}`);
   assert.deepEqual(manifest.capture_audit, { decision: "ready", status: "passed", profile_version: "render-audit-wide-v1", audited_at: "2026-07-17T00:00:00.000Z" });
   assert.equal(manifest.source_bindings.length, 1);
@@ -99,9 +94,8 @@ test("builds manifest with stable JCS hash", () => {
 
 test("finished bitmap builds the same wire manifest without HTML or font files", () => {
   const [manifest, errors] = invoke({
-    withOg: true,
     rendererMode: "finished_bitmap",
-    report: rasterAudit(true),
+    report: rasterAudit(),
     audit: null,
   });
   assert.deepEqual(errors, []);
@@ -114,7 +108,7 @@ test("finished bitmap builds the same wire manifest without HTML or font files",
   });
   assert.equal(manifest.font_profile.profile, "embedded-pixels-v1");
   assert.match(manifest.font_profile.manifest_sha256, /^sha256:[0-9a-f]{64}$/);
-  assert.deepEqual(new Set(Object.keys(manifest.role_hashes)), new Set(["publication", "compact", "og"]));
+  assert.deepEqual(Object.keys(manifest.role_hashes), ["publication"]);
 });
 
 test("finished bitmap cannot claim a verified font or skip image review", () => {
@@ -134,25 +128,25 @@ test("finished bitmap review is bound to exact rendition bytes", () => {
 });
 
 const failures = [
-  ["missing compact", () => {
+  ["missing publication", () => {
     const report = captureReport();
-    report.derivatives = report.derivatives.filter((item) => item.kind !== "compact_622");
+    report.derivatives = [];
     return invoke({ report, alt: { publication: "x" } });
   }, "ROLE_MISSING"],
   ["missing pixel hashes", () => {
     const report = captureReport();
     for (const item of report.derivatives) delete item.pixel_sha256;
-    return invoke({ report, alt: { publication: "x", compact: "y" } });
+    return invoke({ report, alt: { publication: "x" } });
   }, "PIXEL_HASH_MISSING"],
-  ["duplicate pixel hashes", () => {
+  ["legacy rendition role", () => {
     const report = captureReport();
-    report.derivatives[1].pixel_sha256 = report.derivatives[0].pixel_sha256;
-    return invoke({ report, alt: { publication: "x", compact: "y" } });
-  }, "ROLE_HASH_DUPLICATE"],
-  ["audit metadata missing", () => invoke({ audit: { valid: true }, alt: { publication: "x", compact: "y" } }), "AUDIT_METADATA_MISSING"],
+    report.derivatives.push({ kind: "compact_622", ref: "viewpoint-622.png", width: 622, height: 264, sha256: `sha256:${"b".repeat(64)}`, pixel_sha256: `sha256:${"e".repeat(64)}` });
+    return invoke({ report, alt: { publication: "x" } });
+  }, "ROLE_UNEXPECTED"],
+  ["audit metadata missing", () => invoke({ audit: { valid: true }, alt: { publication: "x" } }), "AUDIT_METADATA_MISSING"],
   ["failed audit", () => invoke({ auditValid: false }), "AUDIT_NOT_PASSED"],
   ["Trial fonts", () => invoke({ licenseMode: "evaluation" }), "TRIAL_FONTS"],
-  ["missing alt text", () => invoke({ alt: { publication: "有" } }), "ALT_TEXT_MISSING"],
+  ["missing alt text", () => invoke({ alt: {} }), "ALT_TEXT_MISSING"],
   ["direction not selected", () => {
     const selected = directionSet();
     selected.state = "previewed";
@@ -160,7 +154,7 @@ const failures = [
     try {
       const fonts = path.join(root, "font-assets-v1.json");
       writeFileSync(fonts, JSON.stringify({ profile: "cuebook-noi-v1", license_mode: "production", files: [] }));
-      return build(captureReport(), renderAudit(), selected, fonts, { publication: "x", compact: "y" });
+      return build(captureReport(), renderAudit(), selected, fonts, { publication: "x" });
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
@@ -168,17 +162,17 @@ const failures = [
   ["capture from another visual", () => {
     const report = captureReport();
     report.source = "other.html";
-    return invoke({ report, alt: { publication: "x", compact: "y" } });
+    return invoke({ report, alt: { publication: "x" } });
   }, "CAPTURE_SOURCE_MISMATCH"],
   ["audit from another visual", () => {
     const audit = renderAudit();
     audit.source_sha256 = `sha256:${"8".repeat(64)}`;
-    return invoke({ audit, alt: { publication: "x", compact: "y" } });
+    return invoke({ audit, alt: { publication: "x" } });
   }, "AUDIT_SOURCE_MISMATCH"],
   ["capture derivative from another direction", () => {
     const report = captureReport();
     report.derivatives[0].ref = "other-2488.png";
-    return invoke({ report, alt: { publication: "x", compact: "y" } });
+    return invoke({ report, alt: { publication: "x" } });
   }, "CAPTURE_REF_MISMATCH"],
 ];
 

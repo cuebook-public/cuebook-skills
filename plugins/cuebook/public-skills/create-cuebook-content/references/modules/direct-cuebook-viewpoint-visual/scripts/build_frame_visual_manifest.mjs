@@ -2,8 +2,8 @@
 // Build the frame visual manifest that binds rendered viewpoint media to its lineage.
 //
 // The manifest is the handshake between the visual Skill and the Frame backend:
-// per-role rendition hashes, the rendered-audit verdict, the source bindings the
-// image displays, the font profile, and per-role alt text. `role_hashes` bind
+// the publication pixel hash, the rendered-audit verdict, the source bindings the
+// image displays, the font profile, and publication alt text. `role_hashes` binds
 // canonical RGBA8 pixels, while FrameDraftAssemblyV1 binds encoded PNG bytes;
 // the backend verifies both independent hash chains and stores the manifest JCS hash.
 //
@@ -17,8 +17,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const SCHEMA_VERSION = "frame-visual-manifest-v1";
-const CAPTURE_KIND_TO_ROLE = { full: "publication", compact_622: "compact", og: "og" };
-const REQUIRED_ROLES = ["publication", "compact"];
+const CAPTURE_KIND_TO_ROLE = { full: "publication" };
+const REQUIRED_ROLES = ["publication"];
 const SHA256_PATTERN = /^sha256:[0-9a-f]{64}$/;
 const RENDERER_MODES = new Set(["cuebook_template", "finished_bitmap"]);
 const EMBEDDED_PIXEL_PROFILE = { profile: "embedded-pixels-v1", verification: "not_asserted" };
@@ -164,7 +164,6 @@ export function build(captureReport, renderAudit, directionSet, fontsManifestPat
     const derivatives = new Map((captureReport.derivatives ?? []).filter((item) => item !== null && typeof item === "object" && !Array.isArray(item)).map((item) => [item.kind, item]));
     const selectedRefs = [
       ["full", selectedDirection.preview_ref, 2488, 1056],
-      ["compact_622", selectedDirection.compact_preview_ref, 622, 264],
     ];
     for (const [kind, selectedRef, width, height] of selectedRefs) {
       const derivative = derivatives.get(kind);
@@ -175,9 +174,10 @@ export function build(captureReport, renderAudit, directionSet, fontsManifestPat
         errors.push(issue("CAPTURE_DIMENSIONS", `Capture ${kind} derivative must be ${width} x ${height}.`));
       }
     }
-    const og = derivatives.get("og");
-    if (og !== undefined && (og.width !== 1200 || og.height !== 630)) {
-      errors.push(issue("CAPTURE_DIMENSIONS", "Capture og derivative must be 1200 x 630."));
+    for (const kind of derivatives.keys()) {
+      if (!Object.hasOwn(CAPTURE_KIND_TO_ROLE, kind)) {
+        errors.push(issue("ROLE_UNEXPECTED", `Capture report contains unsupported ${pyStr(kind)} output; Frame authoring accepts only the publication master.`));
+      }
     }
   }
 
@@ -196,11 +196,8 @@ export function build(captureReport, renderAudit, directionSet, fontsManifestPat
   }
   for (const role of REQUIRED_ROLES) {
     if (!(role in roleHashes)) {
-      errors.push(issue("ROLE_MISSING", `Capture report has no ${role} rendition; the backend blocks publication without it.`));
+      errors.push(issue("ROLE_MISSING", `Capture report has no ${role} master; the backend blocks publication without it.`));
     }
-  }
-  if (new Set(Object.values(roleHashes)).size !== Object.keys(roleHashes).length) {
-    errors.push(issue("ROLE_HASH_DUPLICATE", "Each capture role must bind distinct normalized pixels; two renditions decoded to identical pixels."));
   }
 
   const audit = rendererMode === "finished_bitmap" ? captureReport : renderAudit;
