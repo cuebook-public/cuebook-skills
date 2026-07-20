@@ -972,8 +972,8 @@ function renderEvidenceBalance(expression, palette, locale) {
   return parts.join("");
 }
 
-const COMPACT_FEED_PROFILE = "mobile-622";
-const COMPACT_ESSENTIAL_FONT_FLOOR = 22;
+const MOBILE_MASTER_PROFILE = "single-master-mobile";
+const MOBILE_ESSENTIAL_FONT_FLOOR = 22;
 
 function compactWordmark(palette) {
   const inner = WORDMARK
@@ -991,7 +991,7 @@ function compactProvenance(expression, palette, locale) {
   return [
     `<circle cx="20" cy="22" r="4" fill="${palette.signal}"/>`,
     `<text x="31" y="28" fill="${palette.ink}" font-size="16" font-weight="760" letter-spacing="0.02em">${esc(`${expression.subject_label} · ${expression.horizon_label}`)}</text>`,
-    `<g data-role="compact-provenance"><text x="602" y="27" text-anchor="end" fill="${expression.data_status === "synthetic_fixture" ? palette.danger : palette.muted}" font-size="14" font-weight="650">${esc(`${source}${asOf ? ` · ${asOf}` : ""}`)}</text></g>`,
+    `<g data-role="mobile-provenance"><text x="602" y="27" text-anchor="end" fill="${expression.data_status === "synthetic_fixture" ? palette.danger : palette.muted}" font-size="14" font-weight="650">${esc(clipped(`${source}${asOf ? ` · ${asOf}` : ""}`, 28))}</text></g>`,
   ].join("");
 }
 
@@ -1017,6 +1017,16 @@ function compactSeriesPath(panel, box, expression, palette) {
   const threshold = expression.annotations.find((annotation) => annotation.kind === "threshold" && Number.isFinite(annotation.value));
   if (threshold && threshold.value >= low && threshold.value <= high) {
     parts.push(`<line x1="${f(box.x)}" y1="${f(yScale(threshold.value))}" x2="${f(box.x + historyWidth)}" y2="${f(yScale(threshold.value))}" stroke="${palette.signal}" stroke-width="3" stroke-dasharray="9 5" ${bindingAttr(threshold.binding_id, threshold.state, "threshold")}/>`);
+  }
+  const event = expression.annotations.find((annotation) => annotation.kind === "event" && annotation.occurred_at);
+  if (event) {
+    const occurredAt = Date.parse(event.occurred_at);
+    if (occurredAt >= start && occurredAt <= end) {
+      const eventX = xScale(occurredAt);
+      parts.push(
+        `<g ${bindingAttr(event.binding_id, event.state, "event")} data-role="event-marker"><line x1="${f(eventX)}" y1="${f(box.y)}" x2="${f(eventX)}" y2="${f(box.y + box.h)}" stroke="${palette.signal}" stroke-width="2.5" stroke-dasharray="5 4"/><circle cx="${f(eventX)}" cy="${f(box.y + 8)}" r="5" fill="${palette.canvas}" stroke="${palette.signal}" stroke-width="3"/></g>`,
+      );
+    }
   }
   const labels = panel.series.map((series) => {
     const point = panel.transform === "drawdown"
@@ -1061,7 +1071,7 @@ function compactEssentialText({ x, y, text, color, widthUnits, lines = 2, anchor
     weight: 780,
     maxUnits: widthUnits,
     maxLines: lines,
-    minSize: COMPACT_ESSENTIAL_FONT_FLOOR,
+    minSize: MOBILE_ESSENTIAL_FONT_FLOOR,
     anchor,
     attrs: `${binding} data-essential-copy="true" data-essential-copy-group="${group}"`,
   });
@@ -1073,6 +1083,7 @@ function compactFuture(expression, { x, y, widthUnits, palette, locale, group = 
   const time = beat.at ? relativeDayLabel(beat.at, expression.time.declared_at, locale).split(" · ")[0] : expression.horizon_label;
   const label = `${time} · ${beat.label}`;
   return [
+    `<g data-role="next-watch">`,
     `<text x="${f(x)}" y="${f(y - 25)}" fill="${stateColor(beat.state, palette)}" font-size="14" font-weight="820" letter-spacing="0.06em">${esc(locale === "zh-CN" ? "下一步只看" : "WATCH NEXT")}</text>`,
     compactEssentialText({
       x,
@@ -1084,18 +1095,27 @@ function compactFuture(expression, { x, y, widthUnits, palette, locale, group = 
       binding: bindingAttr(beat.binding_id, beat.state),
       group,
     }),
+    `</g>`,
   ].join("");
 }
 
+function mobileEvidencePanel(expression, compiled) {
+  if (
+    expression.observation_test?.kind === "primary_outperformed_benchmark"
+    && compiled.support?.transform === "relative_spread"
+  ) return compiled.support;
+  return compiled.main;
+}
+
 function renderCompactChart(expression, compiled, palette, locale) {
-  const panel = compiled.main;
+  const panel = mobileEvidencePanel(expression, compiled);
   const claim = expression.argument.claim;
   const observation = expression.argument.observation;
   if (expression.composition === "editorial_split") {
     return [
-      `<g ${bindingAttr(observation.binding_id, observation.state, "annotation")} data-role="compact-observation-marker"/>`,
+      `<g ${bindingAttr(observation.binding_id, observation.state, "annotation")} data-role="compact-observation-marker" data-annotation-role="observation"/>`,
       `<line x1="222" y1="48" x2="222" y2="224" stroke="${palette.grid}" stroke-width="1.5"/>`,
-      compactEssentialText({ x: 20, y: 82, text: claim.text, color: palette.ink, widthUnits: 8.5, lines: 3, binding: bindingAttr(claim.binding_id, claim.state), group: "interpretation" }),
+      compactEssentialText({ x: 20, y: 82, text: claim.text, color: palette.ink, widthUnits: 8.5, lines: 3, binding: `${bindingAttr(claim.binding_id, claim.state)} data-role="creator-interpretation"`, group: "interpretation" }),
       compactFuture(expression, { x: 20, y: 206, widthUnits: 8.5, palette, locale, lines: 2 }),
       compactSeriesPath(panel, { x: 246, y: 54, w: 356, h: 166 }, expression, palette),
     ].join("");
@@ -1109,16 +1129,16 @@ function renderCompactChart(expression, compiled, palette, locale) {
         ? `<g ${bindingAttr(future.binding_id, future.state)} data-role="compact-time-rail" data-future-region="unresolved"><line x1="20" y1="55" x2="602" y2="55" stroke="${palette.conditional}" stroke-width="2" stroke-dasharray="7 5"/><circle cx="20" cy="55" r="5" fill="${palette.canvas}" stroke="${palette.signal}" stroke-width="3"/><circle cx="602" cy="55" r="5" fill="${palette.canvas}" stroke="${palette.conditional}" stroke-width="3"/></g>`
         : "",
       compactSeriesPath(panel, { x: 20, y: plotY, w: 582, h: plotH }, expression, palette),
-      `<g ${bindingAttr(observation.binding_id, observation.state, "annotation")} data-role="compact-observation-marker"/>`,
-      compactEssentialText({ x: 20, y: 224, text: claim.text, color: palette.ink, widthUnits: 15.2, lines: 2, binding: bindingAttr(claim.binding_id, claim.state), group: "interpretation" }),
+      `<g ${bindingAttr(observation.binding_id, observation.state, "annotation")} data-role="compact-observation-marker" data-annotation-role="observation"/>`,
+      compactEssentialText({ x: 20, y: 224, text: claim.text, color: palette.ink, widthUnits: 15.2, lines: 2, binding: `${bindingAttr(claim.binding_id, claim.state)} data-role="creator-interpretation"`, group: "interpretation" }),
       compactFuture(expression, { x: 416, y: 224, widthUnits: 7.2, palette, locale, lines: 2 }),
     ].join("");
   }
   return [
     compactSeriesPath(panel, { x: 20, y: 52, w: 376, h: 172 }, expression, palette),
-    `<g ${bindingAttr(observation.binding_id, observation.state, "annotation")} data-role="compact-observation-marker"/>`,
+    `<g ${bindingAttr(observation.binding_id, observation.state, "annotation")} data-role="compact-observation-marker" data-annotation-role="observation"/>`,
     `<line x1="416" y1="52" x2="416" y2="224" stroke="${palette.grid}" stroke-width="1.5"/>`,
-    compactEssentialText({ x: 438, y: 84, text: claim.text, color: palette.ink, widthUnits: 7.2, lines: 3, binding: bindingAttr(claim.binding_id, claim.state), group: "interpretation" }),
+    compactEssentialText({ x: 438, y: 84, text: claim.text, color: palette.ink, widthUnits: 7.2, lines: 3, binding: `${bindingAttr(claim.binding_id, claim.state)} data-role="creator-interpretation"`, group: "interpretation" }),
     compactFuture(expression, { x: 438, y: 205, widthUnits: 7.2, palette, locale, lines: 2 }),
   ].join("");
 }
@@ -1126,18 +1146,23 @@ function renderCompactChart(expression, compiled, palette, locale) {
 function renderCompactScenario(expression, palette, locale) {
   const claim = expression.argument.claim;
   const branches = expression.future_beats.slice(0, 3);
-  const branchHeight = Math.min(62, 172 / Math.max(1, branches.length));
+  const branchHeight = Math.min(58, 174 / Math.max(1, branches.length));
   const parts = [
-    compactEssentialText({ x: 20, y: 82, text: claim.text, color: palette.ink, widthUnits: 8.8, lines: 3, binding: bindingAttr(claim.binding_id, claim.state), group: "interpretation" }),
+    compactEssentialText({ x: 20, y: 82, text: claim.text, color: palette.ink, widthUnits: 8.8, lines: 3, binding: `${bindingAttr(claim.binding_id, claim.state)} data-role="creator-interpretation"`, group: "interpretation" }),
     `<circle cx="222" cy="142" r="9" fill="${palette.canvas}" stroke="${palette.signal}" stroke-width="4"/>`,
     `<g data-future-region="unresolved" data-role="compact-branch-group" data-essential-copy-group="branches">`,
   ];
   branches.forEach((beat, index) => {
-    const y = 67 + index * branchHeight;
+    const y = 56 + index * branchHeight;
+    const centerY = y + 28;
     const color = beat.role === "invalidation" ? palette.danger : palette.conditional;
+    const branch = locale === "zh-CN"
+      ? (beat.role === "invalidation" ? "失效分支" : beat.role === "settlement" ? "到期检查" : "成立分支")
+      : (beat.role === "invalidation" ? "INVALIDATION" : beat.role === "settlement" ? "SETTLEMENT" : "CONFIRMATION");
+    const time = beat.at ? relativeDayLabel(beat.at, expression.time.declared_at, locale).split(" · ")[0] : expression.horizon_label;
     parts.push(
-      `<g ${bindingAttr(beat.binding_id, beat.state)}><path d="M 231 142 C 270 142, 278 ${f(y + 18)}, 314 ${f(y + 18)}" fill="none" stroke="${color}" stroke-width="3" stroke-dasharray="7 5"/><line x1="314" y1="${f(y + 18)}" x2="600" y2="${f(y + 18)}" stroke="${color}" stroke-width="2"/>`,
-      compactEssentialText({ x: 330, y: y + 26, text: beat.label, color: palette.ink, widthUnits: 11.2, lines: 1, binding: "", group: "branches" }),
+      `<g ${bindingAttr(beat.binding_id, beat.state)} data-geometry-type="conditional-lane" data-future-role="${beat.role}"><path d="M 231 142 C 270 142, 278 ${f(centerY)}, 310 ${f(centerY)}" fill="none" stroke="${color}" stroke-width="3" stroke-dasharray="7 5"/><circle cx="314" cy="${f(centerY)}" r="5" fill="${palette.canvas}" stroke="${color}" stroke-width="3"/><text x="330" y="${f(y + 11)}" fill="${color}" font-size="12" font-weight="820">${esc(`${time} · ${branch}`)}</text>`,
+      compactEssentialText({ x: 330, y: y + 39, text: beat.label, color: palette.ink, widthUnits: 11.2, lines: 1, binding: "", group: "branches" }),
       `</g>`,
     );
   });
@@ -1170,49 +1195,6 @@ function renderCompactEvidence(expression, palette, locale) {
   ].join("");
 }
 
-export function renderExpressionCompactSvg(expression, candidate, compiled = compileExpression(expression)) {
-  const palette = PALETTES[expression.surface];
-  if (!palette) throw new Error(`Unknown surface ${expression.surface}.`);
-  const locale = localeFor(candidate);
-  const design = expressionDesignProfile(expression);
-  const attentionSignature = `${design.design_family}/${design.narrative_placement}/${expression.grammar}/${COMPACT_FEED_PROFILE}`;
-  const body = [
-    `<svg xmlns="http://www.w3.org/2000/svg" width="622" height="264" viewBox="0 0 622 264" role="img" aria-labelledby="frame-compact-title frame-compact-desc" data-expression-system="market" data-feed-profile="${COMPACT_FEED_PROFILE}" data-attention-signature="${esc(attentionSignature)}" data-design-family="${design.design_family}" data-narrative-placement="${design.narrative_placement}" data-display-system="${design.display_system}" data-essential-font-floor="${COMPACT_ESSENTIAL_FONT_FLOOR}" font-family="-apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-variant-numeric="tabular-nums">`,
-    `<title id="frame-compact-title">${esc(candidate.frame.title)}</title>`,
-    `<desc id="frame-compact-desc">${esc(generateExpressionAltText(expression, candidate, compiled))}</desc>`,
-    `<rect width="622" height="264" fill="${palette.canvas}"/>`,
-    compactProvenance(expression, palette, locale),
-  ];
-  if (compiled.main) body.push(renderCompactChart(expression, compiled, palette, locale));
-  else if (expression.grammar === "scenario_lanes") body.push(renderCompactScenario(expression, palette, locale));
-  else if (expression.grammar === "evidence_balance") body.push(renderCompactEvidence(expression, palette, locale));
-  else body.push(renderCompactCausal(expression, palette, locale));
-  body.push(compactWordmark(palette), "</svg>");
-  return body.join("");
-}
-
-export function auditExpressionCompactSvg(svg, expression, candidate) {
-  const errors = [];
-  const design = expressionDesignProfile(expression);
-  if (!/<svg\b[^>]*\bwidth="622"[^>]*\bheight="264"/u.test(svg)) errors.push("Compact SVG must declare the exact 622 x 264 feed size.");
-  if (!/viewBox="0 0 622 264"/u.test(svg)) errors.push("Compact SVG must use a native 622 x 264 viewBox, not a publication downscale.");
-  if (!svg.includes(`data-feed-profile="${COMPACT_FEED_PROFILE}"`)) errors.push("Compact SVG is missing its mobile feed profile.");
-  if (!svg.includes(`data-design-family="${design.design_family}"`) || !/data-attention-signature=/u.test(svg)) errors.push("Compact SVG is missing its design and attention fingerprint.");
-  if (!/role="img"/u.test(svg) || !/<title id="frame-compact-title">/u.test(svg) || !/<desc id="frame-compact-desc">/u.test(svg)) errors.push("Compact SVG needs an accessible title and description.");
-  if (!/id="cuebook-wordmark"/u.test(svg)) errors.push("Compact SVG is missing the canonical Cuebook wordmark.");
-  if (/(?:href|src)=["']https?:\/\//iu.test(svg)) errors.push("Compact SVG must not load network assets.");
-  if (MUTABLE_PRICE_LABEL.test(svg)) errors.push("Compact SVG cannot print a mutable current or entry price before a backend lock exists.");
-  if (/data-text-truncated="true"/u.test(svg)) errors.push("Compact essential copy must fit without ellipsis or hidden truncation.");
-  if (/<text\b[^>]*font-size="(?:[0-9]|1[0-9]|2[01](?:\.[0-9]+)?)"[^>]*data-essential-copy="true"|<text\b[^>]*data-essential-copy="true"[^>]*font-size="(?:[0-9]|1[0-9]|2[01](?:\.[0-9]+)?)"/u.test(svg)) errors.push("Every essential compact copy group must use at least 22 px type.");
-  const groups = new Set([...svg.matchAll(/data-essential-copy-group="([^"]+)"/gu)].map((match) => match[1]));
-  if (groups.size > 2) errors.push("Compact SVG may contain at most two essential copy groups.");
-  if (/data-role="(?:source-detail|formula|limitations|component-reason)"/u.test(svg)) errors.push("Compact SVG contains publication-only source or method detail.");
-  if (compiledFutureRequired(expression) && !/data-future-region="unresolved"|data-essential-copy-group="future"|data-essential-copy-group="branches"/u.test(svg)) errors.push("Compact SVG must preserve one visible unresolved future cue.");
-  if (expression.market && !/data-series-state="observed"/u.test(svg)) errors.push("Compact market SVG needs one observed evidence curve.");
-  if (candidate.frame.title.trim() === expression.argument.claim.text.trim()) errors.push("The compact image claim must add to the native Frame title.");
-  return { valid: errors.length === 0, errors, essential_copy_groups: groups.size, essential_font_floor: COMPACT_ESSENTIAL_FONT_FLOOR, attention_signature: `${design.design_family}/${design.narrative_placement}/${expression.grammar}/${COMPACT_FEED_PROFILE}` };
-}
-
 function compiledFutureRequired(expression) {
   return expression.time.future_mode !== "none" && expression.future_beats.length > 0;
 }
@@ -1234,19 +1216,19 @@ export function renderExpressionSvg(expression, candidate, compiled = compileExp
   if (!palette) throw new Error(`Unknown surface ${expression.surface}.`);
   const locale = localeFor(candidate);
   const design = expressionDesignProfile(expression);
-  const title = candidate.frame.title;
+  const attentionSignature = `${design.design_family}/${design.narrative_placement}/${expression.grammar}/${MOBILE_MASTER_PROFILE}`;
   const body = [
-    `<svg xmlns="http://www.w3.org/2000/svg" width="2488" height="1056" viewBox="0 0 1244 528" role="img" aria-labelledby="frame-title frame-desc" data-expression-system="market" data-grammar="${esc(expression.grammar)}" data-composition="${esc(expression.composition)}" data-surface="${esc(expression.surface)}" data-design-family="${design.design_family}" data-narrative-placement="${design.narrative_placement}" data-display-system="${design.display_system}" font-family="-apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-variant-numeric="tabular-nums">`,
-    `<title id="frame-title">${esc(title)}</title>`,
-    `<rect width="1244" height="528" fill="${palette.canvas}"/>`,
-    renderHeader(expression, candidate, compiled, palette, locale),
+    `<svg xmlns="http://www.w3.org/2000/svg" width="2488" height="1056" viewBox="0 0 622 264" role="img" aria-labelledby="frame-title frame-desc" data-expression-system="market" data-grammar="${esc(expression.grammar)}" data-composition="${esc(expression.composition)}" data-surface="${esc(expression.surface)}" data-data-status="${esc(expression.data_status)}" data-master-profile="${MOBILE_MASTER_PROFILE}" data-mobile-display="622x264" data-single-master="true" data-attention-signature="${esc(attentionSignature)}" data-design-family="${design.design_family}" data-narrative-placement="${design.narrative_placement}" data-display-system="${design.display_system}" data-essential-font-floor="${MOBILE_ESSENTIAL_FONT_FLOOR}" font-family="-apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-variant-numeric="tabular-nums">`,
+    `<title id="frame-title">${esc(candidate.frame.title)}</title>`,
+    `<desc id="frame-desc">${esc(generateExpressionAltText(expression, candidate, compiled))}</desc>`,
+    `<rect width="622" height="264" fill="${palette.canvas}"/>`,
+    compactProvenance(expression, palette, locale),
   ];
-  if (compiled.main) body.push(renderChartExpression(expression, candidate, compiled, palette, locale));
-  else if (expression.grammar === "scenario_lanes") body.push(renderScenario(expression, palette, locale));
-  else if (expression.grammar === "evidence_balance") body.push(renderEvidenceBalance(expression, palette, locale));
-  else body.push(renderCausal(expression, palette, locale));
-  body.push(renderWordmark(palette));
-  body.push("</svg>");
+  if (compiled.main) body.push(renderCompactChart(expression, compiled, palette, locale));
+  else if (expression.grammar === "scenario_lanes") body.push(renderCompactScenario(expression, palette, locale));
+  else if (expression.grammar === "evidence_balance") body.push(renderCompactEvidence(expression, palette, locale));
+  else body.push(renderCompactCausal(expression, palette, locale));
+  body.push(compactWordmark(palette), "</svg>");
   return body.join("");
 }
 
@@ -1254,7 +1236,8 @@ export function auditExpressionSvg(svg, expression, candidate) {
   const errors = [];
   const design = expressionDesignProfile(expression);
   if (!/<svg\b[^>]*\bwidth="2488"[^>]*\bheight="1056"/u.test(svg)) errors.push("SVG must declare the exact 2488 x 1056 publication size.");
-  if (!/viewBox="0 0 1244 528"/u.test(svg)) errors.push("SVG must use the compact-first 1244 x 528 authoring viewBox.");
+  if (!/viewBox="0 0 622 264"/u.test(svg)) errors.push("The publication master must be authored against its exact 622 x 264 mobile display box.");
+  if (!svg.includes(`data-master-profile="${MOBILE_MASTER_PROFILE}"`) || !svg.includes('data-single-master="true"')) errors.push("SVG is missing its single-master mobile profile.");
   if (!/role="img"/u.test(svg) || !/<title id="frame-title">/u.test(svg) || !/<desc id="frame-desc">/u.test(svg)) errors.push("SVG needs an accessible title and description.");
   if (!/id="cuebook-wordmark"/u.test(svg)) errors.push("SVG is missing the canonical Cuebook wordmark.");
   if (!svg.includes(`data-design-family="${design.design_family}"`) || !svg.includes(`data-display-system="${design.display_system}"`)) errors.push("SVG is missing its truthful design-family and display-system fingerprint.");
@@ -1263,18 +1246,25 @@ export function auditExpressionSvg(svg, expression, candidate) {
   if (/data-text-truncated="true"/u.test(svg)) errors.push("Visible Frame copy must fit without ellipsis or hidden truncation.");
   if (/data-series-state="(?:future|forecast|modelled)"/u.test(svg)) errors.push("Future or modelled market series are forbidden in fast previews.");
   if (/forecast[_ -]?path|projected candle|预测价格路径/iu.test(svg)) errors.push("SVG leaks a forbidden future-price instruction.");
-  if (expression.market && (svg.match(/data-annotation-role="observation"/gu) ?? []).length !== 1) errors.push("A chart expression must attach the tested observation to its evidence geometry exactly once.");
-  if (expression.market && (svg.match(/data-role="creator-pulse"/gu) ?? []).length !== 1) errors.push("A chart expression must make the creator's mechanism the central visual pulse exactly once.");
-  if (expression.market && /data-layout="open-beat"/u.test(svg)) errors.push("Chart expressions cannot fall back to three paragraph-like summary beats.");
+  if (expression.market && (svg.match(/data-role="compact-observation-marker"/gu) ?? []).length !== 1) errors.push("A chart expression must attach the tested observation to its evidence geometry exactly once.");
+  if (expression.market && !/data-series-state="observed"/u.test(svg)) errors.push("A market master needs one observed evidence curve.");
   if (candidate.frame.title.trim() === expression.argument.claim.text.trim()) errors.push("The image claim must add to the Frame title instead of repeating it exactly.");
   const alt = generateExpressionAltText(expression, candidate);
   if (!svg.includes(`<desc id="frame-desc">${esc(alt)}</desc>`)) errors.push("SVG description must be generated from the selected expression grammar.");
-  for (const bindingId of expressionBindingIds(expression)) {
-    if (!svg.includes(`data-binding-ref="${bindingId}"`)) {
-      errors.push(`Visible binding ${bindingId} is missing from the SVG.`);
-    }
-  }
-  return { valid: errors.length === 0, errors };
+  if (/<text\b[^>]*font-size="(?:[0-9]|1[0-9]|2[01](?:\.[0-9]+)?)"[^>]*data-essential-copy="true"|<text\b[^>]*data-essential-copy="true"[^>]*font-size="(?:[0-9]|1[0-9]|2[01](?:\.[0-9]+)?)"/u.test(svg)) errors.push("Every essential copy group must use at least 22 display pixels.");
+  const groups = new Set([...svg.matchAll(/data-essential-copy-group="([^"]+)"/gu)].map((match) => match[1]));
+  if (groups.size > 2) errors.push("The publication master may contain at most two essential copy groups.");
+  if (/data-role="(?:source-detail|formula|limitations|component-reason)"/u.test(svg)) errors.push("The mobile master contains publication-only source or method detail.");
+  if (compiledFutureRequired(expression) && !/data-future-region="unresolved"|data-essential-copy-group="future"|data-essential-copy-group="branches"/u.test(svg)) errors.push("The publication master must preserve one visible unresolved future cue.");
+  return {
+    valid: errors.length === 0,
+    errors,
+    single_master: true,
+    mobile_display: "622x264",
+    essential_copy_groups: groups.size,
+    essential_font_floor: MOBILE_ESSENTIAL_FONT_FLOOR,
+    attention_signature: `${design.design_family}/${design.narrative_placement}/${expression.grammar}/${MOBILE_MASTER_PROFILE}`,
+  };
 }
 
 export function assertNoMutablePriceText(value, label) {

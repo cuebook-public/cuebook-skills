@@ -10,7 +10,7 @@ Score each dimension from 1 to 5. Any hard failure blocks publication regardless
 | Market reasoning | The post explains who may act, why, and what changes next |
 | Angle quality | One supported tension carries the post without forced drama |
 | Human language | Concrete, conversational, varied, and free of template residue |
-| Frame fit | The title, 160-280-character body, and paired image divide labor without platform wrappers or duplicated sections |
+| Frame fit | The title, reasoned three-to-five-paragraph body, and paired image divide labor without platform wrappers, padding, or duplicated sections |
 | Decision utility | A reader can follow the asset expression, horizon, market consequence, and next observable |
 | Assisted authorship | Internal provenance keeps the creator seed, evidence-linked additions, creator judgment, and idea change distinct while body copy contains no workflow narration |
 | Creator lift | The creator's idea is recognizably theirs and feels clearer, sharper, and better expressed rather than graded or corrected by default |

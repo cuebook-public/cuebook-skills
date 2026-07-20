@@ -156,7 +156,10 @@ const FRAME_PUBLICATION_FLOW = {
   skill_may_pull_media: false,
   status_tool: "get_frame_media_status",
   status_returns: "processing_and_hash_receipts_only",
-  published_read_tool: "get_frame",
+  explicit_frame_query_tool: "get_frame",
+  automatic_post_publish_readback: false,
+  publish_success_source: "validated_publish_receipt",
+  creator_link_policy: "never_present_canonical_url",
   published_visual_semantics: "one_visual_attached_to_frame_release",
   client_upload_roles: ["publication"],
   capture_profiles: { publication: { width: 2488, height: 1056 } },
@@ -172,12 +175,10 @@ const FRAME_PUBLICATION_FLOW = {
     "create_or_update_frame_draft",
     "prepare_frame_publish",
     "publish_frame",
-    "get_frame",
   ],
   correction_publish_sequence: [
     "prepare_frame_correction_publish",
     "publish_frame_correction",
-    "get_frame",
   ],
   withdraw_sequence: [
     "prepare_frame_withdraw",
@@ -742,10 +743,7 @@ export function validate(pluginRoot) {
       if (owner !== undefined) {
         const allowed = owner === moduleId || ((modules.get(owner) ?? {}).may_invoke ?? []).includes(moduleId);
         check(allowed, "TOOL_MODULE_EDGE", `tools.${toolName}.used_by`, `${owner} Skill ${skillId} cannot use ${moduleId} tool ${toolName}.`);
-        if (moduleId === "query") {
-          const isPublishedFrameVerification = toolName === "get_frame" && skillId === "create-cuebook-content";
-          check(owner === "query" || isPublishedFrameVerification, "CREATE_DIRECT_READ", `tools.${toolName}.used_by`, `Create Skill ${skillId} must consume QueryBundleV1 instead of calling Query tool ${toolName} directly.`);
-        }
+        if (moduleId === "query") check(owner === "query", "CREATE_DIRECT_READ", `tools.${toolName}.used_by`, `Create Skill ${skillId} must consume QueryBundleV1 instead of calling Query tool ${toolName} directly.`);
       }
     }
   }
@@ -770,7 +768,7 @@ export function validate(pluginRoot) {
       !/\bget_frame_media\b/u.test(body),
       "FRAME_SKILL_MEDIA_PULL",
       `skills/${skillId}/SKILL.md`,
-      "Skill instructions must not call or reintroduce standalone Frame media retrieval; use owner-only status receipts during upload and get_frame after publish.",
+      "Skill instructions must not call or reintroduce standalone Frame media retrieval; use owner-only status receipts during upload and end publication on the validated publish receipt.",
     );
     for (const toolName of [...SUPERSEDED_TOOLS, ...PLANNED_TOOLS]) {
       check(!new RegExp(`\\b${toolName}\\b`, "u").test(body), "PUBLIC_SKILL_NONCALLABLE_TOOL", `skills/${skillId}/SKILL.md`, `Public entrypoint must not route to non-callable tool ${toolName}.`);

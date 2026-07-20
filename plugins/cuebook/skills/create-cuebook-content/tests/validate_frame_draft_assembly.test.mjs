@@ -29,7 +29,7 @@ function assembly() {
       family: "single_asset_direction",
       claim_text: "USO 30 天内跑出正收益",
       observation_policy_id: "launch-us-equity-v1",
-      horizon: { kind: "duration", value: 30, unit: "calendar_day", creator_timezone: "Asia/Shanghai", session_policy: "next_eligible_close" },
+      horizon: { kind: "duration", value: 30, unit: "calendar_day", creator_timezone: "Asia/Shanghai", session_policy: "at_instant" },
       leg: { asset_ref: "asset:uso", direction: "long", threshold_bps: "0" },
     },
     lineage: { intake_ref: "VINT_uso_20260716", direction_set_ref: "VDSET_uso_1", visual_manifest_sha256: "sha256:" + "d".repeat(64) },
@@ -152,6 +152,27 @@ function finishedBitmapHandoffFor(payload) {
 test("valid assembly", () => {
   const result = V.validate(assembly());
   assert.ok(result.valid, JSON.stringify(result.errors));
+  assert.equal(assembly().settlement_intent.horizon.session_policy, "at_instant");
+});
+
+test("direct Fast Publish accepts preview and candidate refs without an optional generation handoff", () => {
+  const payload = assembly();
+  payload.lineage.intake_ref = "FPREV_USO_20260716";
+  payload.lineage.direction_set_ref = "FPREV_USO_20260716#FPREV_CAND_USO_LONG";
+  const binding = {
+    media_asset_id: "0198a5b0-2222-7000-8000-000000000002",
+    visual_manifest_id: "0198a5b0-3333-7000-8000-000000000003",
+    visual_manifest_sha256: payload.lineage.visual_manifest_sha256,
+  };
+  const result = V.validate(payload, binding, visualManifestFor(payload));
+  assert.ok(result.valid, JSON.stringify(result.errors));
+});
+
+test("legacy next-eligible-close assembly remains readable", () => {
+  const payload = assembly();
+  payload.settlement_intent.horizon.session_policy = "next_eligible_close";
+  const result = V.validate(payload);
+  assert.ok(result.valid, JSON.stringify(result.errors));
 });
 
 test("public requires one publication master and intent", () => {
@@ -222,7 +243,7 @@ test("manifest lineage required", () => {
   assert.ok(codes(payload).has("LINEAGE_MANIFEST"));
 });
 
-test("cross-repository assembly and registered binding golden validates", () => {
+test("legacy cross-repository assembly and registered binding golden validates", () => {
   const golden = JSON.parse(readFileSync(path.join(ROOT, "references", "skill-assembly-golden.json"), "utf8"));
   const result = V.validate(golden.assembly, golden.binding, visualManifestFor(golden.assembly));
   assert.ok(result.valid, JSON.stringify(result.errors));

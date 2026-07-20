@@ -16,16 +16,15 @@ function intake() {
       direction: { value: "long", provenance: "stated" },
       horizon: {
         value: "30D",
-        intent: { kind: "duration", value: 30, unit: "calendar_day", creator_timezone: "Asia/Shanghai", session_policy: "next_eligible_close" },
+        intent: { kind: "duration", value: 30, unit: "calendar_day", creator_timezone: "Asia/Shanghai", session_policy: "at_instant" },
         provenance: "elicited",
       },
       price_anchor: { value: null, currency: null, kind: null, operator: null, provenance: "missing" },
-      settlement: { family: "single_asset_direction", threshold_bps: "0", provenance: "elicited" },
+      settlement: { family: "single_asset_direction", threshold_bps: "0", provenance: "policy_default" },
     },
     elicitation_log: [
       { round: 1, asked: ["asset", "horizon"], prompt_text: "记在哪个标的上（USO / CL / XLE）？看多久（48H / 30D / 90D）？", answered_verbatim: "USO，一个月吧" },
       { round: 2, asked: ["intuition"], prompt_text: "你已经提到霍尔木兹；这个判断里最想保留的直觉是什么？没有更多也可以直接说就按这个做。", answered_verbatim: "风险溢价会在实际断供前先反映" },
-      { round: 3, asked: ["settlement"], prompt_text: "你要现在冻结结算吗？如果要，按方向对错（阈值 0）可以吗？", answered_verbatim: "方向对错就行" },
     ],
     verification: {
       asset_resolution: { status: "pass", method: "search_assets", resolved_ref: "asset:uso", note: null },
@@ -34,7 +33,7 @@ function intake() {
       price_sanity: { status: "skipped", reference_price: null, deviation_pct: null, note: "No anchor requested." },
       target_direction: { status: "skipped", reference_price: null, note: "No target price." },
     },
-    confirmation: { card_text: "USO · 30D · 偏多 · 方向对错结算（阈值 0） · 依据：霍尔木兹运输风险", confirmed: true, confirmed_at: "2026-07-16T10:02:00+08:00" },
+    confirmation: { card_text: "USO · 30D · 偏多 · 依据：霍尔木兹运输风险", confirmed: true, confirmed_at: "2026-07-16T10:02:00+08:00" },
     handback: {
       target: "compile-cuebook-market-view-semantics",
       eligible: true,
@@ -44,7 +43,7 @@ function intake() {
         asset_ref: "asset:uso",
         pair_asset_ref: null,
         direction: "long",
-        horizon_intent: { kind: "duration", value: 30, unit: "calendar_day", creator_timezone: "Asia/Shanghai", session_policy: "next_eligible_close" },
+        horizon_intent: { kind: "duration", value: 30, unit: "calendar_day", creator_timezone: "Asia/Shanghai", session_policy: "at_instant" },
         settlement_family: "single_asset_direction",
         threshold_bps: "0",
         target_price: null,
@@ -100,8 +99,43 @@ test("creation preview can hand back without settlement or a target price", () =
 test("creator interview must precede settlement and price questions", () => {
   const payload = intake();
   payload.elicitation_log[1].round = 3;
-  payload.elicitation_log[2].round = 2;
+  payload.elicitation_log.push({
+    round: 2,
+    asked: ["price_anchor"],
+    prompt_text: "Do you want a target price?",
+    answered_verbatim: "No",
+  });
   assert.ok(codes(payload).has("CREATOR_INTERVIEW_ORDER"));
+});
+
+test("standard single-asset deadline settlement needs no settlement prompt", () => {
+  const payload = intake();
+  assert.equal(payload.fields.horizon.intent.session_policy, "at_instant");
+  assert.equal(payload.fields.settlement.provenance, "policy_default");
+  assert.equal(payload.elicitation_log.some((entry) => entry.asked.includes("settlement")), false);
+  const result = VALIDATOR.validate(payload);
+  assert.ok(result.valid, JSON.stringify(result.errors));
+});
+
+test("policy_default cannot select a target or pair family", () => {
+  let payload = intake();
+  payload.fields.settlement.family = "single_asset_price_target";
+  assert.ok(codes(payload).has("SETTLEMENT_POLICY_DEFAULT"));
+
+  payload = intake();
+  payload.fields.horizon.intent.session_policy = "next_eligible_close";
+  payload.handback.seed.horizon_intent.session_policy = "next_eligible_close";
+  assert.ok(codes(payload).has("SETTLEMENT_POLICY_DEFAULT"));
+
+  payload = intake();
+  payload.fields.horizon.intent.unit = "market_session";
+  payload.handback.seed.horizon_intent.unit = "market_session";
+  assert.ok(codes(payload).has("SETTLEMENT_POLICY_DEFAULT"));
+
+  payload = intake();
+  payload.fields.direction.value = "relative";
+  payload.handback.seed.direction = "relative";
+  assert.ok(codes(payload).has("SETTLEMENT_POLICY_DEFAULT"));
 });
 
 test("creator interview cannot turn into a repeated questionnaire", () => {
@@ -144,7 +178,7 @@ test("settled state requires required fields and verification", () => {
 
 test("horizon bounds one hour to six months", () => {
   let payload = intake();
-  payload.fields.horizon.intent = { kind: "duration", value: 200, unit: "calendar_day", creator_timezone: "Asia/Shanghai", session_policy: "next_eligible_close" };
+  payload.fields.horizon.intent = { kind: "duration", value: 200, unit: "calendar_day", creator_timezone: "Asia/Shanghai", session_policy: "at_instant" };
   assert.ok(codes(payload).has("HORIZON_BOUNDS"));
 
   payload = intake();

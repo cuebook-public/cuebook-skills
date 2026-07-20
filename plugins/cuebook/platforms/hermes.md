@@ -37,7 +37,7 @@ Then complete one login:
 hermes mcp login cuebook
 ```
 
-Do not mark Cuebook as safe for parallel MCP calls. Its read operations can be batched where the host permits, but the upload, manifest, draft, prepare, publish, and readback mutations are ordered and independently idempotent.
+Do not mark Cuebook as safe for parallel MCP calls. Its read operations can be batched where the host permits, but upload, manifest, draft, prepare, and publish mutations remain ordered and independently idempotent. A validated publish receipt ends the creator flow; do not add an automatic `get_frame` readback or present a canonical web link.
 
 ## Verification
 

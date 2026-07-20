@@ -1,6 +1,6 @@
 # Cuebook Frame Feed Attention
 
-Use this reference for the compact `622 x 264` Frame rendition and for creator-requested visual rerolls. The publication image may carry zoom detail; the compact image is an independently composed feed artifact, never a scaled-down research card.
+Use this reference for the sole `2488 x 1056` publication master and creator-requested visual rerolls. Author that master against a `622 x 264` mobile display box, then rasterize it at 4x. There is no separate compact, detail, thumbnail, web, or OG composition.
 
 ## Product principle
 
@@ -15,15 +15,15 @@ Borrow discovery from short-form feeds without copying compulsion:
 
 ## Mobile attention contract
 
-Assume the `622 x 264` bitmap is shown at roughly half-resolution on a phone.
+Judge the same publication master at its `622 x 264` phone display size.
 
 - The native Frame title is the hook. Do not repeat it as a large image headline.
-- The image contains one dominant geometry, one compact creator-owned interpretation, and at most one future check.
+- The image contains one dominant geometry, one concise creator-owned interpretation, and at most one future check.
 - Use no more than two essential copy groups inside the bitmap. Supporting metadata and the wordmark do not count.
-- Essential compact type is at least `22 px` in the 622-pixel asset. Metadata is at least `14 px` and is never required to understand the argument.
+- Essential type is at least `22 px` in the 622-pixel authoring box. Metadata is at least `14 px` and is never required to understand the argument.
 - Prefer 24–48 visible Chinese characters across essential groups; allow up to 70 only when the composition has no chart labels or component rows.
 - Keep one observation label at most. Remove minor axes, repeated dates, grids, legends, formulas, long source strings, component reasons, and limitations before reducing essential type.
-- Keep only a minimal provenance cue such as source family plus as-of date. Detailed sources, transforms, formula, limitations, and disclosures remain in the full publication view, structured Frame references, body, or alt text.
+- Keep only a minimal provenance cue such as source family plus as-of date. Detailed sources, transforms, formula, limitations, and disclosures remain in the Frame body, structured references, or alt text.
 - The past/future boundary must remain visible. Future space carries a condition or clock, never a forecast price path.
 
 At a three-second glance, a reader should answer:
@@ -32,11 +32,11 @@ At a three-second glance, a reader should answer:
 2. What is this creator seeing in it?
 3. What single thing changes or confirms the view next?
 
-## Compact silhouettes
+## Mobile-master silhouettes
 
 The families must remain distinguishable without color:
 
-| Family | Compact silhouette |
+| Family | Phone-scale silhouette |
 | --- | --- |
 | `signal_poster` | dominant curve left, creator interpretation right |
 | `editorial_argument` | interpretation left, evidence curve right |
@@ -66,13 +66,14 @@ A reroll may not silently change the thesis, observed sentence, direction, horiz
 
 ## Mechanical gates
 
-Fail the compact rendition when:
+Fail the publication master when:
 
-- it is a uniform downscale of the publication SVG;
+- it is authored as a dense desktop research card and only scaled down afterward;
+- a second compact, detail, thumbnail, web, or OG bitmap is produced;
 - any essential copy is smaller than 22 px;
 - more than two essential copy groups compete with the geometry;
 - formula, limitations, long source detail, or more than three Lens component rows appear;
 - the native title is repeated as the image's largest sentence;
 - the creator interpretation or the next condition is clipped or ellipsized;
 - adjacent requested alternatives share the same grayscale silhouette;
-- the compact image cannot be understood without zooming.
+- the image cannot be understood at `622 x 264` without zooming.

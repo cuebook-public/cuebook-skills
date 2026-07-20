@@ -12,7 +12,7 @@ import { validPaintedPng } from "./png_fixture.mjs";
 const AS_OF = "2026-07-17T08:58:00Z";
 
 async function fakeRasterize(svg, output) {
-  assert.match(readFileSync(svg, "utf8"), /width="1244" height="528"/u);
+  assert.match(readFileSync(svg, "utf8"), /<svg\b[^>]*width="2488"[^>]*height="1056"[^>]*viewBox="0 0 622 264"/u);
   writeFileSync(output, validPaintedPng());
   return output;
 }
@@ -175,16 +175,22 @@ test("LENS computes and renders a transparent four-component Creator Lens", asyn
     assert.match(svg, /data-expression-system="lens"/u);
     assert.match(svg, /data-design-family="lens_ledger"/u);
     assert.match(svg, /data-display-system="signal_sans"/u);
-    assert.match(svg, /data-lens-anatomy="true"/u);
+    assert.match(svg, /data-lens-stage="true"/u);
     assert.match(svg, /不是官方指数/u);
     assert.match(svg, /data-future-region="unresolved"/u);
     assert.match(svg, /data-annotation-role="observation"/u);
-    assert.match(svg, /data-role="creator-pulse"/u);
-    assert.match(svg, /data-role="next-watch"/u);
+    assert.match(svg, /data-role="compact-contributions"/u);
     assert.doesNotMatch(svg, /data-layout="open-beat"/u);
     assert.doesNotMatch(svg, /data-series-state="future"/u);
     assert.doesNotMatch(svg, /data-text-truncated="true"/u);
-    for (const item of job.expression.lens.components) assert.match(svg, new RegExp(`data-binding-ref="${item.binding_id}"`, "u"));
+    const visibleComponents = [...compiled.components]
+      .sort((left, right) => Math.abs(right.latest_contribution_pp) - Math.abs(left.latest_contribution_pp))
+      .slice(0, 3);
+    for (const item of visibleComponents) assert.match(svg, new RegExp(`data-binding-ref="${item.binding_id}"`, "u"));
+    assert.equal((svg.match(/data-role="compact-component-row"/gu) ?? []).length, 3);
+    assert.equal(report.renders[0].audit.single_master, true);
+    assert.equal(report.renders[0].audit.mobile_display, "622x264");
+    assert.ok(report.renders[0].audit.essential_copy_groups <= 2);
     assert.equal(Object.hasOwn(report.renders[0], "compact_image_ref"), false);
     assert.equal(Object.hasOwn(report.renders[0], "compact_audit"), false);
     assert.equal(existsSync(path.join(output, preview.candidates[0].candidate_id, "frame-feed-622.svg")), false);

@@ -133,7 +133,7 @@ Plan all six slots: `hook`, `proof`, `mechanism`, `action`, `caveat`, and `close
 - Supplement only the missing links that materially improve the decision. A supplement needs a fact or source ref and may narrow confidence; it may not add a new trade, target, deadline, or personal experience.
 - Keep addition history, idea delta, workflow status, and Cuebook attribution out of all public text slots.
 - Keep invalidation and countercase in the semantic contract. Surface either in body copy only when explicitly requested by the user or selected format; never frame it as `我认错`, `哪里认错`, or `错了怎么办`.
-- For the public Frame, use one title, one 160-280-character body, and one paired image. The body carries the viewpoint and concise mechanism; the image carries two to four reasoning beats, observed evidence, and a timing marker when material. Do not duplicate the complete argument across both surfaces.
+- For the public Frame, use one title, one reasoned body, and one paired image. Normally use 260–700 visible Chinese characters across three to five short paragraphs (roughly 120–300 English words), with a 1,200-character hard Frame ceiling. The body carries the strongest observation, creator viewpoint, causal sequence, horizon, and next observable; the image carries the relationship, two to four reasoning beats, observed evidence, and a timing marker when material. Do not duplicate the complete argument across both surfaces or pad a simple idea merely to hit a target.
 - Set `text_blueprint.data_requirement_refs` to every root data requirement whose `expression_surfaces` contains `text`, including requirements that have no visual role.
 - Map action exactly from source trade intent:
 

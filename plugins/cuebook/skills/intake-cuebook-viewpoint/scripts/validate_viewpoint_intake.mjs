@@ -236,7 +236,7 @@ export function validate(payload) {
     errors.push(issue("PAIR_ASSET_UNEXPECTED", "$.fields.pair_asset", "A single-asset family cannot carry a second asset."));
   }
   if (DIRECTION_FAMILIES.includes(family) && [null, ""].includes(get(settlement, "threshold_bps"))) {
-    errors.push(issue("THRESHOLD_NOT_EXPLICIT", "$.fields.settlement.threshold_bps", "Direction families freeze an explicit threshold; a default of 0 must still be stated as \"0\"."));
+    errors.push(issue("THRESHOLD_NOT_EXPLICIT", "$.fields.settlement.threshold_bps", "Direction families freeze an explicit threshold; the standard policy-derived default must be recorded as \"0\"."));
   }
   if (TARGET_FAMILIES.includes(family) && get(priceAnchor, "value") === null) {
     errors.push(issue("TARGET_PRICE_MISSING", "$.fields.price_anchor.value", "Price-target families require a captured target price."));
@@ -297,8 +297,22 @@ export function validate(payload) {
         errors.push(issue("HORIZON_BOUNDS", "$.fields.horizon.intent", boundsError));
       }
     }
-    if (!CAPTURED_PROVENANCE.includes(get(settlement, "provenance")) && family !== null) {
-      errors.push(issue("SETTLEMENT_PROVENANCE", "$.fields.settlement", "A chosen settlement family needs stated, elicited, or confirmed-inference provenance."));
+    const settlementProvenance = get(settlement, "provenance");
+    if (![...CAPTURED_PROVENANCE, "policy_default"].includes(settlementProvenance) && family !== null) {
+      errors.push(issue("SETTLEMENT_PROVENANCE", "$.fields.settlement", "A settlement family needs creator provenance or the standard policy_default provenance."));
+    }
+    if (
+      settlementProvenance === "policy_default"
+      && !(
+        family === "single_asset_direction"
+        && get(settlement, "threshold_bps") === "0"
+        && ["long", "short"].includes(directionValue)
+        && intent !== null
+        && get(intent, "session_policy") === "at_instant"
+        && !(get(intent, "kind") === "duration" && get(intent, "unit") === "market_session")
+      )
+    ) {
+      errors.push(issue("SETTLEMENT_POLICY_DEFAULT", "$.fields.settlement", "policy_default is reserved for a single-asset long/short zero-threshold rule with an exact at_instant deadline."));
     }
     for (const [check, allowed] of [
       ["asset_resolution", ["pass"]],

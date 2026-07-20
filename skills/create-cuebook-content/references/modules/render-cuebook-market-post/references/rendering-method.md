@@ -78,9 +78,11 @@ A profile may not add facts, private access, biography, exact catchphrases, or a
 
 ## 5. Frame Shape
 
-The Frame surface always presents one title, one body, and one paired image. Use plain, market-native language. Lead with the creator's judgment or the concrete change, explain only the strongest causal link in the body, and end with the horizon or next observable when it adds information.
+The Frame surface always presents one title, one body, and one paired image. Use plain, market-native language. Lead with the strongest tested observation or creator judgment, connect the actors and transmission mechanism in a short causal sequence, and end with the horizon plus one confirming or weakening next observable.
 
-Keep the body to two to four short paragraphs and normally 160-280 visible Chinese characters. Let the image carry the observed trend, two to four reasoning beats, and a deadline or observation marker when material. Do not duplicate every image label in prose, append source lists or settlement forms to the body, or manufacture a future price path.
+Normally use three to five short paragraphs and 260–700 visible Chinese characters (roughly 120–300 English words), with a 1,200-character hard Frame ceiling. Finish sooner when the argument is complete; never add generic background simply to make it longer. Let the image carry the observed relationship, two to four reasoning beats, and a deadline or observation marker when material. Do not duplicate every image label in prose, append source lists or settlement forms to the body, or manufacture a future price path.
+
+The opening paragraph must stand alone as a Feed lead if the App truncates the detail body. Put the expanded causal chain and future observation in the later paragraphs. This preserves a fast-scroll hook while giving an interested reader the full reasoning after opening the Frame.
 
 Facts, inferences, and the creator's viewpoint remain distinct in the evidence ledger even when the public wording is seamless. A material contradiction is surfaced to the creator for a decision; it is not silently rewritten into a different view.
 

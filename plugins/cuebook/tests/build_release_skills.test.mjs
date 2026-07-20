@@ -98,7 +98,8 @@ test("create bundle keeps the one-round creator interview before price", () => {
     assert.ok(interview >= 0, skillPath);
     assert.ok(skip > interview, skillPath);
     assert.ok(price > skip, skillPath);
-    assert.match(text, /Ask for a price only after the creator explicitly chooses a price-target settlement/u);
+    assert.match(text, /Ask for a price only when the creator explicitly requests a price-target override/u);
+    assert.match(text, /requires no separate settlement interview/u);
   });
 });
 

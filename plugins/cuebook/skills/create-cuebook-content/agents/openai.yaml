@@ -1,4 +1,4 @@
 interface:
   display_name: "Create With Cuebook"
   short_description: "Turn a market view into a sourced, editorial Frame"
-  default_prompt: "Use $create-cuebook-content to turn my market idea into one creator-owned Frame with a sharp title, concise body, and a sourced editorial image whose curve, scenario, transparent Creator Lens, or long-short contribution design fits the viewpoint."
+  default_prompt: "Use $create-cuebook-content to turn my market idea into one creator-owned Frame with a sharp title, reasoned body, and a sourced editorial image whose curve, scenario, transparent Creator Lens, or long-short contribution design fits the viewpoint."

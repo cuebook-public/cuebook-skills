@@ -14,13 +14,13 @@ function fakePng() {
 }
 
 async function fakeRasterize(svg, output) {
-  assert.match(readFileSync(svg, "utf8"), /width="1244" height="528"/u);
+  assert.match(readFileSync(svg, "utf8"), /<svg\b[^>]*width="2488"[^>]*height="1056"[^>]*viewBox="0 0 622 264"/u);
   writeFileSync(output, fakePng());
   return output;
 }
 
 async function fakeHeaderRasterize(svg, output) {
-  assert.match(readFileSync(svg, "utf8"), /width="1244" height="528"/u);
+  assert.match(readFileSync(svg, "utf8"), /<svg\b[^>]*width="2488"[^>]*height="1056"[^>]*viewBox="0 0 622 264"/u);
   const png = Buffer.alloc(24);
   Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]).copy(png, 0);
   png.write("IHDR", 12, "ascii");
@@ -230,18 +230,20 @@ test("MARKET compiles one sourced curve, a derived support panel, and an honest 
     assert.match(report.renders[0].design_fingerprint, /^curve_story\/curve_stage\/paper_signal\//u);
     const svg = readFileSync(path.join(output, preview.candidates[0].candidate_id, "frame-preview.svg"), "utf8");
     assert.match(svg, /data-future-region="unresolved"/u);
-    assert.match(svg, /data-chart-transform="raw_price"/u);
     assert.match(svg, /data-chart-transform="relative_spread"/u);
+    assert.doesNotMatch(svg, /data-chart-transform="raw_price"/u);
     assert.match(svg, /data-binding-ref="BIND_MARKET_CHECKPOINT"/u);
     assert.match(svg, /data-data-status="synthetic_fixture"/u);
     assert.match(svg, /data-design-family="signal_poster"/u);
     assert.match(svg, /data-display-system="signal_sans"/u);
     assert.match(svg, /data-annotation-role="observation"/u);
-    assert.match(svg, /data-role="creator-pulse"/u);
+    assert.match(svg, /data-role="creator-interpretation"/u);
     assert.match(svg, /data-role="next-watch"/u);
     assert.doesNotMatch(svg, /data-layout="open-beat"/u);
-    assert.ok(svg.indexOf('data-time-axis="common"') > svg.indexOf('data-chart-transform="relative_spread"'));
     assert.doesNotMatch(svg, /data-series-state="future"/u);
+    assert.equal(report.renders[0].audit.single_master, true);
+    assert.equal(report.renders[0].audit.mobile_display, "622x264");
+    assert.ok(report.renders[0].audit.essential_copy_groups <= 2);
     assert.equal(preview.state, "conditional");
     assert.equal(report.release_eligible, false);
     assert.match(preview.candidates[0].frame.alt_text, /历史曲线与未来观察/u);
@@ -283,7 +285,8 @@ test("MARKET routes a drawdown argument to observed drawdown geometry", async ()
     const { preview } = await runFastPreviewJob(job, output, { rasterize: fakeRasterize });
     const svg = readFileSync(path.join(output, preview.candidates[0].candidate_id, "frame-preview.svg"), "utf8");
     assert.match(svg, /data-chart-transform="drawdown"/u);
-    assert.match(svg, /data-geometry-type="recovery-duration"/u);
+    assert.match(svg, /data-binding-ref="BIND_MARKET_BTC_DRAWDOWN"/u);
+    assert.match(svg, /data-binding-ref="BIND_MARKET_SPY_DRAWDOWN"/u);
     assert.match(preview.candidates[0].frame.alt_text, /回撤与修复速度/u);
   } finally {
     rmSync(output, { recursive: true, force: true });

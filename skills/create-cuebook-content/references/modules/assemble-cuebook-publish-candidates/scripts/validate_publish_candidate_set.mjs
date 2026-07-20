@@ -281,7 +281,7 @@ export function validate(payload, assetRoot = null) {
   const retryLimit = policy.retry_limit;
   if (!pyInt(retryLimit) || pyNumber(retryLimit) < 0 || pyNumber(retryLimit) > 3) errors.push(issue("RETRY_LIMIT", "$.generation_policy.retry_limit", "Retry limit must be 0-3."));
   const budget = isObject(policy.copy_budget) ? policy.copy_budget : {};
-  const budgetLimits = { headline_max: [12, 32], body_max: [80, 220], close_max: [20, 56], total_max: [160, 300], paragraph_max: [2, 4], hard_number_max: [1, 3] };
+  const budgetLimits = { headline_max: [12, 32], body_max: [80, 800], close_max: [20, 80], total_max: [160, 960], paragraph_max: [2, 5], hard_number_max: [1, 6] };
   for (const [key, [minimum, maximum]] of Object.entries(budgetLimits)) {
     const value = budget[key];
     if (!pyInt(value) || pyNumber(value) < minimum || pyNumber(value) > maximum) errors.push(issue("COPY_BUDGET", `$.generation_policy.copy_budget.${key}`, `Budget must be ${minimum}-${maximum}.`));
@@ -458,7 +458,7 @@ export function validate(payload, assetRoot = null) {
     }
     if (!safeRelativeRef(frame.image_ref, ".png")) errors.push(issue("FRAME_IMAGE_REF", `${path}.frame.image_ref`, "Frame image_ref must be one safe relative PNG ref."));
     if (!nonemptyString(frame.title) || pyLen(pyStrip(frame.title)) < 2 || pyLen(pyStrip(frame.title)) > 32) errors.push(issue("FRAME_TITLE", `${path}.frame.title`, "Frame title must be 2-32 visible characters."));
-    if (!nonemptyString(frame.body) || pyLen(pyStrip(frame.body)) < 20 || pyLen(pyStrip(frame.body)) > 280) errors.push(issue("FRAME_BODY", `${path}.frame.body`, "Frame body must be 20-280 visible characters."));
+    if (!nonemptyString(frame.body) || pyLen(pyStrip(frame.body)) < 20 || pyLen(pyStrip(frame.body)) > 1200) errors.push(issue("FRAME_BODY", `${path}.frame.body`, "Frame body must be 20-1200 visible characters."));
     if (!nonemptyString(frame.alt_text) || pyLen(pyStrip(frame.alt_text)) < 2 || pyLen(pyStrip(frame.alt_text)) > 120) errors.push(issue("FRAME_ALT_TEXT", `${path}.frame.alt_text`, "Frame alt text must be 2-120 visible characters."));
 
     let evidenceAnchors = candidate.evidence_anchors;
@@ -563,10 +563,10 @@ export function validate(payload, assetRoot = null) {
     if (settlementRef === null || settlementRef === undefined) errors.push(issue("SETTLEMENT_CONFIRMATION", "$.lineage.settlement_claim_ref", "Settlement confirmation requires a bound claim."));
     if (!setEquals(confirmedFields, SETTLEMENT_CONFIRMATION_FIELDS)) {
       const missing = sortedStrings([...SETTLEMENT_CONFIRMATION_FIELDS].filter((field) => !confirmedFields.has(field)));
-      errors.push(issue("SETTLEMENT_CONFIRMATION", "$.selection.settlement_confirmation_fields", `Missing explicit settlement confirmations: ${pyrepr(missing)}.`));
+      errors.push(issue("SETTLEMENT_CONFIRMATION", "$.selection.settlement_confirmation_fields", `Missing locked settlement fields from the confirmed publish action: ${pyrepr(missing)}.`));
     }
     if (eligibilityStatus !== "eligible" || computedMissingEligibility.size) errors.push(issue("SETTLEMENT_ELIGIBILITY", "$.shared_view.settlement_eligibility", "Confirmed settlement requires complete eligible semantics."));
-    if (settlementStates.some((item) => item !== "frozen") || settlementStates.length !== candidates.length) errors.push(issue("SETTLEMENT_STATE", "$.candidates", "Explicitly confirmed settlement must be frozen across all candidates."));
+    if (settlementStates.some((item) => item !== "frozen") || settlementStates.length !== candidates.length) errors.push(issue("SETTLEMENT_STATE", "$.candidates", "Settlement confirmed with the publish action must be frozen across all candidates."));
   } else {
     if (confirmedFields.size) errors.push(issue("SETTLEMENT_CONFIRMATION", "$.selection.settlement_confirmation_fields", "Unconfirmed settlement cannot record confirmed fields."));
     if (settlementStates.includes("frozen")) errors.push(issue("SETTLEMENT_PREMATURE_FREEZE", "$.candidates", "Settlement cannot be frozen before explicit candidate selection and settlement confirmation."));

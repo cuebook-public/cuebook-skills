@@ -67,7 +67,7 @@
             "required": ["title", "body", "image_ref", "alt_text"],
             "properties": {
               "title": {"type": "string", "minLength": 2, "maxLength": 32},
-              "body": {"type": "string", "minLength": 20, "maxLength": 280},
+              "body": {"type": "string", "minLength": 20, "maxLength": 1200},
               "image_ref": {"type": "string", "pattern": "^[^/].*\\.png$"},
               "alt_text": {"type": "string", "minLength": 2, "maxLength": 240}
             }

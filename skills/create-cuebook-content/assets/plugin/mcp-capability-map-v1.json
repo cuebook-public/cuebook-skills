@@ -472,8 +472,7 @@
       "input_contract": "FrameRefV1",
       "output_contract": "FrameMcpViewV1 (full Frame plus one attached visual)",
       "used_by": [
-        "query-cuebook",
-        "create-cuebook-content"
+        "query-cuebook"
       ],
       "source": "Frame Remote MCP Phase B §6-7"
     },
@@ -637,7 +636,10 @@
     "skill_may_pull_media": false,
     "status_tool": "get_frame_media_status",
     "status_returns": "processing_and_hash_receipts_only",
-    "published_read_tool": "get_frame",
+    "explicit_frame_query_tool": "get_frame",
+    "automatic_post_publish_readback": false,
+    "publish_success_source": "validated_publish_receipt",
+    "creator_link_policy": "never_present_canonical_url",
     "published_visual_semantics": "one_visual_attached_to_frame_release",
     "client_upload_roles": ["publication"],
     "capture_profiles": {"publication": {"width": 2488, "height": 1056}},
@@ -657,13 +659,11 @@
       "register_frame_visual_manifest",
       "create_or_update_frame_draft",
       "prepare_frame_publish",
-      "publish_frame",
-      "get_frame"
+      "publish_frame"
     ],
     "correction_publish_sequence": [
       "prepare_frame_correction_publish",
-      "publish_frame_correction",
-      "get_frame"
+      "publish_frame_correction"
     ],
     "withdraw_sequence": [
       "prepare_frame_withdraw",

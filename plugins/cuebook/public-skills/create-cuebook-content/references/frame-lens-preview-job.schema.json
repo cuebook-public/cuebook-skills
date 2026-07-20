@@ -78,7 +78,7 @@
           "required": ["title", "body"],
           "properties": {
             "title": {"type": "string", "minLength": 2, "maxLength": 32},
-            "body": {"type": "string", "minLength": 20, "maxLength": 280}
+            "body": {"type": "string", "minLength": 20, "maxLength": 1200}
           }
         },
         "evidence_refs": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}}

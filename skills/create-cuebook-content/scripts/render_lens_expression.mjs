@@ -471,8 +471,8 @@ function renderBottomArgument(expression, palette, locale) {
   ].join("");
 }
 
-const COMPACT_LENS_PROFILE = "mobile-622";
-const COMPACT_LENS_FONT_FLOOR = 22;
+const MOBILE_LENS_MASTER_PROFILE = "single-master-mobile";
+const MOBILE_LENS_FONT_FLOOR = 22;
 
 function compactLensWordmark(palette) {
   const inner = WORDMARK
@@ -492,7 +492,7 @@ function compactLensEssentialText({ x, y, text, color, widthUnits, lines = 2, an
     weight: 790,
     maxUnits: widthUnits,
     maxLines: lines,
-    minSize: COMPACT_LENS_FONT_FLOOR,
+    minSize: MOBILE_LENS_FONT_FLOOR,
     anchor,
     attrs: `${binding} data-essential-copy="true" data-essential-copy-group="${group}"`,
   });
@@ -557,7 +557,7 @@ function renderCompactLensAnatomy(expression, compiled, palette, locale) {
     compactLensCurve(expression, compiled, palette, { x: 20, y: 58, w: 346, h: 144 }),
     `<g ${bindingAttr(expression.argument.observation.binding_id, expression.argument.observation.state, "annotation")} data-annotation-role="observation"/>`,
     `<line x1="386" y1="52" x2="386" y2="204" stroke="${palette.grid}" stroke-width="1.5"/>`,
-    `<text x="406" y="62" fill="${palette.signal}" font-size="14" font-weight="820">${esc(locale === "zh-CN" ? "CREATOR LENS · 非官方指数" : "CREATOR LENS · NOT OFFICIAL")}</text>`,
+    `<text x="406" y="62" fill="${palette.signal}" font-size="14" font-weight="820">${esc(locale === "zh-CN" ? "创作者 LENS · 非官方指数" : "CREATOR LENS · NOT AN OFFICIAL INDEX")}</text>`,
     textBlock({ x: 406, y: 90, text: expression.lens.name, size: 19, color: palette.ink, weight: 800, maxUnits: 10.8, maxLines: 2, minSize: 16 }),
     `<g data-role="compact-contributions" ${bindingAttr(expression.lens.contribution_binding_id, "derived", "contribution-bars")}>`,
   ];
@@ -580,6 +580,7 @@ function renderCompactSpreadArena(expression, compiled, palette, locale) {
   const longTotal = compiled.components.filter((component) => component.side === "long").reduce((sum, component) => sum + component.latest_contribution_pp, 0);
   const shortTotal = compiled.components.filter((component) => component.side === "short").reduce((sum, component) => sum + component.latest_contribution_pp, 0);
   const parts = [
+    `<text x="311" y="47" text-anchor="middle" fill="${palette.signal}" font-size="12" font-weight="820">${esc(locale === "zh-CN" ? "创作者 LENS · 非官方指数" : "CREATOR LENS · NOT AN OFFICIAL INDEX")}</text>`,
     `<rect x="20" y="52" width="276" height="154" fill="${palette.primary}" opacity="0.07"/><rect x="326" y="52" width="276" height="154" fill="${palette.danger}" opacity="0.06"/>`,
     `<line x1="311" y1="52" x2="311" y2="206" stroke="${palette.signal}" stroke-width="3"/>`,
     compactLensCurve(expression, compiled, palette, { x: 210, y: 56, w: 202, h: 54 }, { arena: true, showDelta: false }),
@@ -597,48 +598,6 @@ function renderCompactSpreadArena(expression, compiled, palette, locale) {
   return parts.join("");
 }
 
-export function renderLensCompactSvg(expression, candidate, compiled = compileLensExpression(expression)) {
-  const palette = PALETTES[expression.surface];
-  if (!palette) throw new Error(`Unknown surface ${expression.surface}.`);
-  const locale = localeFor(candidate);
-  const design = lensDesignProfile(expression);
-  const attentionSignature = `${design.design_family}/${design.narrative_placement}/${expression.grammar}/${COMPACT_LENS_PROFILE}`;
-  return [
-    `<svg xmlns="http://www.w3.org/2000/svg" width="622" height="264" viewBox="0 0 622 264" role="img" aria-labelledby="frame-compact-title frame-compact-desc" data-expression-system="lens" data-feed-profile="${COMPACT_LENS_PROFILE}" data-attention-signature="${esc(attentionSignature)}" data-design-family="${design.design_family}" data-narrative-placement="${design.narrative_placement}" data-display-system="${design.display_system}" data-essential-font-floor="${COMPACT_LENS_FONT_FLOOR}" font-family="-apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-variant-numeric="tabular-nums">`,
-    `<title id="frame-compact-title">${esc(candidate.frame.title)}</title>`,
-    `<desc id="frame-compact-desc">${esc(generateLensAltText(expression, candidate, compiled))}</desc>`,
-    `<rect width="622" height="264" fill="${palette.canvas}"/>`,
-    compactLensProvenance(expression, palette, locale),
-    expression.composition === "contribution_stage"
-      ? renderCompactSpreadArena(expression, compiled, palette, locale)
-      : renderCompactLensAnatomy(expression, compiled, palette, locale),
-    compactLensWordmark(palette),
-    "</svg>",
-  ].join("");
-}
-
-export function auditLensCompactSvg(svg, expression) {
-  const errors = [];
-  const design = lensDesignProfile(expression);
-  if (!/<svg\b[^>]*\bwidth="622"[^>]*\bheight="264"/u.test(svg)) errors.push("Compact Lens SVG must declare the exact 622 x 264 feed size.");
-  if (!/viewBox="0 0 622 264"/u.test(svg)) errors.push("Compact Lens SVG must use a native 622 x 264 viewBox.");
-  if (!svg.includes(`data-feed-profile="${COMPACT_LENS_PROFILE}"`) || !/data-attention-signature=/u.test(svg)) errors.push("Compact Lens SVG is missing its mobile attention profile.");
-  if (!svg.includes(`data-design-family="${design.design_family}"`)) errors.push("Compact Lens SVG is missing its truthful design family.");
-  if (!/role="img"/u.test(svg) || !/<title id="frame-compact-title">/u.test(svg) || !/<desc id="frame-compact-desc">/u.test(svg)) errors.push("Compact Lens SVG needs an accessible title and description.");
-  if (!/id="cuebook-wordmark"/u.test(svg)) errors.push("Compact Lens SVG is missing the canonical Cuebook wordmark.");
-  if (/(?:href|src)=["']https?:\/\//iu.test(svg)) errors.push("Compact Lens SVG must not load network assets.");
-  if (MUTABLE_PRICE_LABEL.test(svg)) errors.push("Compact Lens SVG cannot print a mutable current or entry price.");
-  if (/data-text-truncated="true"/u.test(svg)) errors.push("Compact Lens copy must fit without hidden truncation.");
-  if (/<text\b[^>]*font-size="(?:[0-9]|1[0-9]|2[01](?:\.[0-9]+)?)"[^>]*data-essential-copy="true"|<text\b[^>]*data-essential-copy="true"[^>]*font-size="(?:[0-9]|1[0-9]|2[01](?:\.[0-9]+)?)"/u.test(svg)) errors.push("Every essential compact Lens copy group must use at least 22 px type.");
-  const groups = new Set([...svg.matchAll(/data-essential-copy-group="([^"]+)"/gu)].map((match) => match[1]));
-  if (groups.size > 2) errors.push("Compact Lens SVG may contain at most two essential copy groups.");
-  if ((svg.match(/data-role="compact-component-row"/gu) ?? []).length > 3) errors.push("Compact Lens SVG may show at most three component rows.");
-  if (/data-role="(?:formula|limitations|component-reason|source-detail)"/u.test(svg) || svg.includes(expression.lens.formula)) errors.push("Compact Lens SVG contains publication-only method detail.");
-  if (!/data-future-region="unresolved"/u.test(svg) || !/data-series-state="observed"/u.test(svg)) errors.push("Compact Lens SVG must separate its observed curve from unresolved future space.");
-  if (!/CREATOR LENS|data-design-family="spread_arena"/u.test(svg)) errors.push("Compact Lens identity must remain explicit.");
-  return { valid: errors.length === 0, errors, essential_copy_groups: groups.size, essential_font_floor: COMPACT_LENS_FONT_FLOOR, attention_signature: `${design.design_family}/${design.narrative_placement}/${expression.grammar}/${COMPACT_LENS_PROFILE}` };
-}
-
 export function lensBindingIds(expression) {
   return [...new Set([
     ...Object.values(expression.argument).filter(Boolean).map((beat) => beat.binding_id),
@@ -654,17 +613,17 @@ export function renderLensSvg(expression, candidate, compiled = compileLensExpre
   if (!palette) throw new Error(`Unknown surface ${expression.surface}.`);
   const locale = localeFor(candidate);
   const design = lensDesignProfile(expression);
+  const attentionSignature = `${design.design_family}/${design.narrative_placement}/${expression.grammar}/${MOBILE_LENS_MASTER_PROFILE}`;
   return [
-    `<svg xmlns="http://www.w3.org/2000/svg" width="2488" height="1056" viewBox="0 0 1244 528" role="img" aria-labelledby="frame-title frame-desc" data-expression-system="lens" data-grammar="${esc(expression.grammar)}" data-composition="${esc(expression.composition)}" data-surface="${esc(expression.surface)}" data-design-family="${design.design_family}" data-narrative-placement="${design.narrative_placement}" data-display-system="${design.display_system}" font-family="-apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-variant-numeric="tabular-nums">`,
+    `<svg xmlns="http://www.w3.org/2000/svg" width="2488" height="1056" viewBox="0 0 622 264" role="img" aria-labelledby="frame-title frame-desc" data-expression-system="lens" data-grammar="${esc(expression.grammar)}" data-composition="${esc(expression.composition)}" data-surface="${esc(expression.surface)}" data-master-profile="${MOBILE_LENS_MASTER_PROFILE}" data-mobile-display="622x264" data-single-master="true" data-attention-signature="${esc(attentionSignature)}" data-design-family="${design.design_family}" data-narrative-placement="${design.narrative_placement}" data-display-system="${design.display_system}" data-essential-font-floor="${MOBILE_LENS_FONT_FLOOR}" font-family="-apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-variant-numeric="tabular-nums">`,
     `<title id="frame-title">${esc(candidate.frame.title)}</title>`,
-    `<rect width="1244" height="528" fill="${palette.canvas}"/>`,
-    renderHeader(expression, candidate, compiled, palette, locale),
-    renderLensChart(expression, compiled, palette, locale),
+    `<desc id="frame-desc">${esc(generateLensAltText(expression, candidate, compiled))}</desc>`,
+    `<rect width="622" height="264" fill="${palette.canvas}"/>`,
+    compactLensProvenance(expression, palette, locale),
     expression.composition === "contribution_stage"
-      ? renderContributionStage(expression, compiled, palette, locale)
-      : renderAnatomy(expression, compiled, palette, locale),
-    renderBottomArgument(expression, palette, locale),
-    renderWordmark(palette),
+      ? renderCompactSpreadArena(expression, compiled, palette, locale)
+      : renderCompactLensAnatomy(expression, compiled, palette, locale),
+    compactLensWordmark(palette),
     "</svg>",
   ].join("");
 }
@@ -673,7 +632,8 @@ export function auditLensSvg(svg, expression, candidate) {
   const errors = [];
   const design = lensDesignProfile(expression);
   if (!/<svg\b[^>]*\bwidth="2488"[^>]*\bheight="1056"/u.test(svg)) errors.push("SVG must declare the exact 2488 x 1056 publication size.");
-  if (!/viewBox="0 0 1244 528"/u.test(svg)) errors.push("SVG must use the compact-first 1244 x 528 authoring viewBox.");
+  if (!/viewBox="0 0 622 264"/u.test(svg)) errors.push("The publication master must be authored against its exact 622 x 264 mobile display box.");
+  if (!svg.includes(`data-master-profile="${MOBILE_LENS_MASTER_PROFILE}"`) || !svg.includes('data-single-master="true"')) errors.push("Lens SVG is missing its single-master mobile profile.");
   if (!/role="img"/u.test(svg) || !/<title id="frame-title">/u.test(svg) || !/<desc id="frame-desc">/u.test(svg)) errors.push("SVG needs an accessible title and description.");
   if (!/id="cuebook-wordmark"/u.test(svg)) errors.push("SVG is missing the canonical Cuebook wordmark.");
   if (!svg.includes(`data-design-family="${design.design_family}"`) || !svg.includes(`data-display-system="${design.display_system}"`)) errors.push("SVG is missing its truthful design-family and display-system fingerprint.");
@@ -682,17 +642,29 @@ export function auditLensSvg(svg, expression, candidate) {
   if (/data-text-truncated="true"/u.test(svg)) errors.push("Visible Frame copy must fit without hidden truncation.");
   if (/data-series-state="(?:future|forecast|modelled)"/u.test(svg)) errors.push("A Creator Lens cannot draw a future or modelled series.");
   if (!/data-future-region="unresolved"/u.test(svg)) errors.push("A dated Creator Lens needs an unresolved future region.");
-  if (!/NOT AN OFFICIAL INDEX|不是官方指数/u.test(svg)) errors.push("Creator Lens identity must be explicit in the visual.");
+  if (!/NOT AN OFFICIAL INDEX|非官方指数/u.test(svg)) errors.push("Creator Lens identity must be explicit in the visual.");
   if ((svg.match(/data-annotation-role="observation"/gu) ?? []).length !== 1) errors.push("The tested observation must appear once as chart-attached evidence.");
-  if ((svg.match(/data-role="creator-pulse"/gu) ?? []).length !== 1) errors.push("The creator mechanism must appear once as the visual's central creator pulse.");
-  if (/data-layout="open-beat"/u.test(svg)) errors.push("Creator Lens visuals cannot fall back to three paragraph-like summary beats.");
+  if (!svg.includes(`data-binding-ref="${expression.lens.curve_binding_id}"`)) errors.push("The observed Lens curve binding is missing from the visual.");
+  if (!svg.includes(`data-binding-ref="${expression.lens.contribution_binding_id}"`)) errors.push("The visible Lens contribution binding is missing from the visual.");
   if (candidate.frame.title.trim() === expression.argument.claim.text.trim()) errors.push("The image claim must add to the Frame title instead of repeating it exactly.");
   const alt = generateLensAltText(expression, candidate);
   if (!svg.includes(`<desc id="frame-desc">${esc(alt)}</desc>`)) errors.push("SVG description must match the deterministic Creator Lens description.");
-  for (const bindingId of lensBindingIds(expression)) {
-    if (!svg.includes(`data-binding-ref="${bindingId}"`)) errors.push(`Visible binding ${bindingId} is missing from the SVG.`);
-  }
-  return { valid: errors.length === 0, errors };
+  if (/<text\b[^>]*font-size="(?:[0-9]|1[0-9]|2[01](?:\.[0-9]+)?)"[^>]*data-essential-copy="true"|<text\b[^>]*data-essential-copy="true"[^>]*font-size="(?:[0-9]|1[0-9]|2[01](?:\.[0-9]+)?)"/u.test(svg)) errors.push("Every essential Lens copy group must use at least 22 display pixels.");
+  const groups = new Set([...svg.matchAll(/data-essential-copy-group="([^"]+)"/gu)].map((match) => match[1]));
+  if (groups.size > 2) errors.push("The Lens master may contain at most two essential copy groups.");
+  const visibleComponents = (svg.match(/data-role="compact-component-row"/gu) ?? []).length;
+  if (visibleComponents > 3) errors.push("The Lens master may show at most three component rows.");
+  if (/data-role="(?:formula|limitations|component-reason|source-detail)"/u.test(svg) || svg.includes(expression.lens.formula)) errors.push("The Lens master contains method detail that belongs in body, alt text, or references.");
+  return {
+    valid: errors.length === 0,
+    errors,
+    single_master: true,
+    mobile_display: "622x264",
+    essential_copy_groups: groups.size,
+    essential_font_floor: MOBILE_LENS_FONT_FLOOR,
+    visible_component_rows: visibleComponents,
+    attention_signature: `${design.design_family}/${design.narrative_placement}/${expression.grammar}/${MOBILE_LENS_MASTER_PROFILE}`,
+  };
 }
 
 export function assertNoMutableLensPriceText(value, label) {
