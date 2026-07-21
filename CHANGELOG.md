@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.9.1 — 2026-07-21
+
+- Made Frame publication explicitly independent of market hours: creators can publish equities, ETFs, and indexes before open, after close, on weekends, and on exchange holidays using the latest eligible persisted observation.
+- Prevented Agents from presenting `missing_eligible_observation` as a reason to wait for the next trading session; it is a temporary data-availability condition only.
+
 ## 0.9.0 — 2026-07-21
 
 - Reduced ordinary Frame publication after approval to one upload reservation, one signed image PUT, and one high-level publish call; media processing, manifest registration, draft assembly, preparation, and baseline capture now stay server-side.

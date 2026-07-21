@@ -528,6 +528,9 @@ test("ordinary one-preview publish does not reconstruct the advanced release gra
   assert.match(publish, /## Initial Publish: Three Steps/u);
   assert.match(publish, /Do not reread design references/u);
   assert.match(publish, /Do not call `complete_frame_media_upload`/u);
+  assert.match(publish, /including before market open, after market close, on weekends/u);
+  assert.match(publish, /never waits for a trading session/u);
+  assert.match(publish, /Never tell the creator to return when the market opens/u);
   assert.match(publish, /replay it at most once with the same idempotency key/u);
   assert.match(publish, /Do not probe alternate payload shapes/u);
 });
