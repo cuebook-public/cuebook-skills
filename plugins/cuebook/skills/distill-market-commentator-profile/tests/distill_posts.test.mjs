@@ -26,7 +26,7 @@ test("profile contract and boundary", () => {
   assert.ok(profile.risk_map.prohibited_actions.length);
 });
 
-test("Chinese attention patterns have event type", () => {
+test("English attention patterns have event type", () => {
   const entries = profile.attention_map;
   assert.ok(entries.every((entry) => Object.hasOwn(entry, "event_type")));
   const eventTypes = new Set(entries.map((entry) => entry.event_type));

@@ -870,10 +870,10 @@ export function render_svg(spec, fetched) {
     }
     let stateLabel = "";
     if (g(latestPrimary, "state") === "forming") {
-      stateLabel = locale === "zh-CN" ? "形成中" : "forming";
+      stateLabel = "forming";
     }
     const detailLabel = [deltaLabel, stateLabel].filter((item) => item).join(" · ");
-    const metricCaption = locale === "zh-CN" ? "最新" : "Latest";
+    const metricCaption = "Latest";
     pieces.push(
       `<text x="${pyFloatRepr(right)}" y="30" text-anchor="end" fill="${COLORS.muted}" font-size="12">${escape(metricCaption)} · ${escape(pyStr(g(primaryFetched, "observed_interval") || "?"))}</text>`
     );
@@ -956,8 +956,7 @@ export function render_svg(spec, fetched) {
           pyFloatConv(sub(latestSealed, "volume")) / (previous.reduce((total, item) => total + item, 0) / previous.length);
       }
     }
-    const volumeLabel =
-      locale === "zh-CN" ? `成交量 · 前${volumeWindow}根均量` : `Volume · prior ${volumeWindow}-bar average`;
+    const volumeLabel = `Volume · prior ${volumeWindow}-bar average`;
     pieces.push(`<g id="volume-panel" data-average-window="${volumeWindow}">`);
     pieces.push(
       `<line x1="${pyFloatRepr(left)}" y1="${pyFixed(volumeTop, 2)}" x2="${pyFloatRepr(right)}" y2="${pyFixed(volumeTop, 2)}" stroke="${COLORS.grid}" stroke-width="1"/>`
@@ -966,8 +965,7 @@ export function render_svg(spec, fetched) {
       `<text x="${pyFloatRepr(left)}" y="${pyFixed(volumeTop + 11, 2)}" fill="${COLORS.muted}" font-size="10.5" font-weight="600">${escape(volumeLabel)}</text>`
     );
     if (latestRatio !== null) {
-      const ratioCopy =
-        locale === "zh-CN" ? `最新封盘 ${pyFixed(latestRatio, 2)}×均量` : `Last sealed ${pyFixed(latestRatio, 2)}× average`;
+      const ratioCopy = `Last sealed ${pyFixed(latestRatio, 2)}x average`;
       const ratioColor = latestRatio >= 1.0 ? COLORS.primary : COLORS.muted;
       pieces.push(
         `<text id="volume-ratio" x="${pyFloatRepr(right)}" y="${pyFixed(volumeTop + 11, 2)}" text-anchor="end" fill="${ratioColor}" font-size="10.5" font-weight="650">${escape(ratioCopy)}</text>`
@@ -1014,10 +1012,8 @@ export function render_svg(spec, fetched) {
       );
     }
     const splitX = x_scale(declared, start, end, left, right);
-    const publishLabel =
-      locale === "zh-CN" ? `发布 ${short_date(declared, locale)}` : `Published ${short_date(declared, locale)}`;
-    const expiryLabel =
-      locale === "zh-CN" ? `结算 ${short_date(horizon, locale)}` : `Settle ${short_date(horizon, locale)}`;
+    const publishLabel = `Published ${short_date(declared, locale)}`;
+    const expiryLabel = `Settle ${short_date(horizon, locale)}`;
     pieces.push(
       `<text x="${pyFixed(splitX + 7, 2)}" y="${pyFixed(axisY, 2)}" text-anchor="start" fill="${COLORS.benchmark}" font-size="11" font-weight="650">${escape(publishLabel)}</text>`
     );
@@ -1206,7 +1202,7 @@ export function render_svg(spec, fetched) {
       `<rect x="${pyFixed(panelX, 2)}" y="${pyFixed(panelY, 2)}" width="${pyFixed(panelWidth, 2)}" height="70" rx="6" fill="${COLORS.panel}" stroke="${COLORS.benchmark}" stroke-width="1"/>`
     );
     const horizonDate = iso_utc(horizon).slice(0, 10);
-    const panelTitle = locale === "zh-CN" ? `结算条件 · ${horizonDate}` : `Settlement · ${horizonDate}`;
+    const panelTitle = `Settlement · ${horizonDate}`;
     pieces.push(
       `<text x="${pyFixed(panelX + 12, 2)}" y="${pyFixed(panelY + 21, 2)}" fill="${COLORS.benchmark}" font-size="11" font-weight="700">${escape(panelTitle)}</text>`
     );
@@ -1240,9 +1236,7 @@ export function render_svg(spec, fetched) {
     footerLines.push(`Cuebook OHLCV · ${sourceIntervals}`);
   }
   if (showGuide) {
-    if (locale === "zh-CN") {
-      footerLines.push("实体/实线：已封盘 · 空心虚线：形成中 · 淡黄区：待结算");
-    } else if (g(render, "chart_type") === "candles") {
+    if (g(render, "chart_type") === "candles") {
       footerLines.push("Solid candle: sealed · hollow/dashed: forming · pale area: unresolved");
     } else {
       footerLines.push("Solid: sealed · dashed/hollow: forming · pale area: unresolved");

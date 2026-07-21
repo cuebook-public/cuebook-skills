@@ -653,7 +653,7 @@ const LSTEP_ID_RE = /^LSTEP_[A-Za-z0-9_:-]{3,}$/;
 const PALETTE_FAMILY_RE = /^[a-z0-9]+(?:-[a-z0-9]+){1,5}$/;
 const FONT_MANIFEST_REF_RE = /^(?!\/)(?!.*(?:^|\/)\.\.(?:\/|$))[A-Za-z0-9._/-]+\.json$/;
 const BACKEND_PRICE_LOCK_REF_RE = /^(?:quote-lock|entry-lock):[A-Za-z0-9._:-]{8,}$/;
-const MUTABLE_PRICE_LABEL_RE = /(?:现价|当前价|最新价|入场价|current\s+price|latest\s+price|entry\s+price)/iu;
+const MUTABLE_PRICE_LABEL_RE = /(?:\u73b0\u4ef7|\u5f53\u524d\u4ef7|\u6700\u65b0\u4ef7|\u5165\u573a\u4ef7|current\s*price|latest\s*price|entry\s*price)/iu;
 
 export function audit_html(html) {
   const errors = [];

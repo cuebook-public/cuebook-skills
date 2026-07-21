@@ -1126,7 +1126,7 @@ function canonicalize_url(value) {
   let raw = clean_scalar(value);
   if (raw === null) return null;
   raw = stripChars(raw, "<>[]{}\"'");
-  raw = raw.replace(/[.,;:!?，。；：！？)\]}]+$/, "");
+  raw = raw.replace(/[.,;:!?\uff0c\u3002\uff1b\uff1a\uff01\uff1f)\]}]+$/, "");
   if (raw.startsWith("www.")) raw = `https://${raw}`;
   if (!/^https?:\/\//i.test(raw)) return null;
 
@@ -1295,7 +1295,7 @@ function normalize_mention(value) {
 const TICKER_RE = /(?<![\p{L}\p{N}_$])\$([A-Za-z][A-Za-z0-9.\-]{0,14})/gu;
 const WORD_BOUNDARY = "(?:(?<=[\\p{L}\\p{N}_])(?![\\p{L}\\p{N}_])|(?<![\\p{L}\\p{N}_])(?=[\\p{L}\\p{N}_]))";
 const VENUE_RE = new RegExp(`${WORD_BOUNDARY}(NASDAQ|NYSE|AMEX|HKEX|SSE|SZSE|SH|SZ):([A-Z0-9.\\-]{1,15})${WORD_BOUNDARY}`, "giu");
-const HASHTAG_RE = /(?<![\p{L}\p{N}_])#([\p{L}\p{N}_㐀-鿿][\p{L}\p{N}_㐀-鿿-]{0,49})#?/gu;
+const HASHTAG_RE = /(?<![\p{L}\p{N}_])#([\p{L}\p{N}_\u3400-\u9fff][\p{L}\p{N}_\u3400-\u9fff-]{0,49})#?/gu;
 const MENTION_RE = /(?<![\p{L}\p{N}_])@([A-Za-z0-9_]{1,32})/gu;
 
 function normalize_entities(record, text) {
@@ -1352,11 +1352,11 @@ function parse_metric_number(value) {
     number = value;
   } else {
     let text = pyStrip(pyStr(value).normalize("NFKC")).toLowerCase();
-    text = text.replaceAll(",", "").replaceAll("，", "").replaceAll(" ", "");
-    const match = /^([+-]?[0-9]+(?:\.[0-9]+)?)(k|m|b|万|亿)?$/.exec(text);
+    text = text.replaceAll(",", "").replaceAll("\uff0c", "").replaceAll(" ", "");
+    const match = /^([+-]?[0-9]+(?:\.[0-9]+)?)(k|m|b|\u4e07|\u4ebf)?$/.exec(text);
     if (!match) return null;
     number = Number(match[1]);
-    const multiplier = { k: 1_000, m: 1_000_000, b: 1_000_000_000, "万": 10_000, "亿": 100_000_000 }[match[2]] ?? 1;
+    const multiplier = { k: 1_000, m: 1_000_000, b: 1_000_000_000, "\u4e07": 10_000, "\u4ebf": 100_000_000 }[match[2]] ?? 1;
     number *= multiplier;
   }
   if (!Number.isFinite(number) || number < 0) return null;
@@ -1474,7 +1474,7 @@ function normalize_content_type(record) {
 }
 
 function detect_language(text) {
-  const han = (text.match(/[㐀-鿿]/g) || []).length;
+  const han = (text.match(/[\u3400-\u9fff]/g) || []).length;
   const latin = (text.match(/[A-Za-z]/g) || []).length;
   if (han) {
     const ratio = latin / Math.max(1, han + latin);

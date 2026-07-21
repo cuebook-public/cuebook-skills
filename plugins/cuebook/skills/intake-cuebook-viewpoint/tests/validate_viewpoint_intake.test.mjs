@@ -8,7 +8,7 @@ function intake() {
     schema_version: "viewpoint-intake-v1",
     intake_id: "VINT_uso_20260716",
     state: "handed_back",
-    raw_input: { text: "我觉得油价最近要涨，霍尔木兹那边不太平", language: "zh", received_at: "2026-07-16T10:00:00+08:00" },
+    raw_input: { text: "I think oil prices will rise soon because Hormuz is unstable", language: "en", received_at: "2026-07-16T10:00:00+08:00" },
     triage: { intent: "express_view", query_route: null, reason: "First-person directional judgment with a mechanism." },
     fields: {
       asset: { value: "asset:uso", display: "USO", candidates: [], provenance: "elicited" },
@@ -23,23 +23,23 @@ function intake() {
       settlement: { family: "single_asset_direction", threshold_bps: "0", provenance: "policy_default" },
     },
     elicitation_log: [
-      { round: 1, asked: ["asset", "horizon"], prompt_text: "记在哪个标的上（USO / CL / XLE）？看多久（48H / 30D / 90D）？", answered_verbatim: "USO，一个月吧" },
-      { round: 2, asked: ["intuition"], prompt_text: "你已经提到霍尔木兹；这个判断里最想保留的直觉是什么？没有更多也可以直接说就按这个做。", answered_verbatim: "风险溢价会在实际断供前先反映" },
+      { round: 1, asked: ["asset", "horizon"], prompt_text: "Which asset should carry the view (USO / CL / XLE), and for how long (48H / 30D / 90D)?", answered_verbatim: "USO, about one month" },
+      { round: 2, asked: ["intuition"], prompt_text: "You mentioned Hormuz; which intuition matters most? If there is nothing more, say proceed with this.", answered_verbatim: "The risk premium will move before an actual supply interruption" },
     ],
     verification: {
       asset_resolution: { status: "pass", method: "search_assets", resolved_ref: "asset:uso", note: null },
       horizon_validity: { status: "pass", note: "30 calendar days within 1h-6mo bounds." },
-      direction_consistency: { status: "pass", note: "要涨 matches long." },
+      direction_consistency: { status: "pass", note: "Will rise matches long." },
       price_sanity: { status: "skipped", reference_price: null, deviation_pct: null, note: "No anchor requested." },
       target_direction: { status: "skipped", reference_price: null, note: "No target price." },
     },
-    confirmation: { card_text: "USO · 30D · 偏多 · 依据：霍尔木兹运输风险", confirmed: true, confirmed_at: "2026-07-16T10:02:00+08:00" },
+    confirmation: { card_text: "USO · 30D · Bullish · Basis: Hormuz shipping risk", confirmed: true, confirmed_at: "2026-07-16T10:02:00+08:00" },
     handback: {
       target: "compile-cuebook-market-view-semantics",
       eligible: true,
       seed: {
-        claim_gist: "油价先计入霍尔木兹运输风险溢价",
-        because_gist: "航道规则收紧，绕行与保险成本先动",
+        claim_gist: "Oil prices first absorb the Hormuz shipping risk premium",
+        because_gist: "Tighter channel rules move rerouting and insurance costs first",
         asset_ref: "asset:uso",
         pair_asset_ref: null,
         direction: "long",
@@ -74,8 +74,8 @@ test("creator may skip the one-round interview without blocking handback", () =>
   payload.elicitation_log[1] = {
     round: 2,
     asked: ["news_signal", "intuition"],
-    prompt_text: "还有什么新闻、signal 或直觉想保留？没有就说就按这个做。",
-    answered_verbatim: "就按这个做",
+    prompt_text: "Is there any news, signal, or intuition to preserve? Otherwise say proceed with this.",
+    answered_verbatim: "Proceed with this",
   };
   const result = VALIDATOR.validate(payload);
   assert.ok(result.valid, JSON.stringify(result.errors));
@@ -143,8 +143,8 @@ test("creator interview cannot turn into a repeated questionnaire", () => {
   payload.elicitation_log.push({
     round: 4,
     asked: ["news_signal"],
-    prompt_text: "还有别的 signal 吗？",
-    answered_verbatim: "没有",
+    prompt_text: "Any other signal?",
+    answered_verbatim: "No",
   });
   assert.ok(codes(payload).has("CREATOR_INTERVIEW_ROUNDS"));
 });
@@ -201,7 +201,7 @@ test("long target below reference is a conflict", () => {
   payload.fields.direction = { value: "short", provenance: "elicited" };
   payload.fields.price_anchor.operator = "lte";
   payload.handback.seed.direction = "short";
-  payload.elicitation_log.push({ round: 4, asked: ["direction"], prompt_text: "500 在现价 550 下方——你是想做空吗？", answered_verbatim: "对，是做空" });
+  payload.elicitation_log.push({ round: 4, asked: ["direction"], prompt_text: "500 is below the current 550 price—do you mean a short?", answered_verbatim: "Yes, short" });
   const found = codes(payload);
   assert.ok(!found.has("TARGET_DIRECTION_CONFLICT"));
 });
@@ -219,7 +219,7 @@ test("pair family requires second asset", () => {
   assert.ok(codes(payload).has("PAIR_ASSET_MISSING"));
 
   payload.fields.pair_asset = { value: "asset:xle", display: "XLE", candidates: [], provenance: "elicited" };
-  payload.elicitation_log.push({ round: 4, asked: ["pair_asset"], prompt_text: "相对谁？", answered_verbatim: "XLE" });
+  payload.elicitation_log.push({ round: 4, asked: ["pair_asset"], prompt_text: "Relative to what?", answered_verbatim: "XLE" });
   assert.ok(!codes(payload).has("PAIR_ASSET_MISSING"));
 });
 
@@ -238,7 +238,7 @@ test("non settleable direction cannot carry family", () => {
 test("blocked terminal requires reasons and no handback", () => {
   const payload = intake();
   payload.state = "blocked";
-  payload.handback = { target: "none", eligible: false, seed: null, blockers: ["用户坚持做多但目标价低于现价，方向与目标矛盾"] };
+  payload.handback = { target: "none", eligible: false, seed: null, blockers: ["The user insists on a long view but the target is below the current price, so direction and target conflict"] };
   payload.confirmation = { card_text: null, confirmed: false, confirmed_at: null };
   const result = VALIDATOR.validate(payload);
   assert.ok(result.valid, JSON.stringify(result.errors));

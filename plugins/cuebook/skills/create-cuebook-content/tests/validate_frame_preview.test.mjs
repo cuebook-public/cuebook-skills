@@ -13,10 +13,10 @@ function candidate(index = 1, angle = "conviction", template = "verdict") {
     visual_kind: "logic_card",
     template_id: template,
     frame: {
-      title: `BTC 的韧性正在变成机会 ${index}`,
-      body: `美股承压时，BTC 没有同步走弱。未来 30 天，我更关注这种相对强势能否继续吸引边际资金。版本 ${index}`,
+      title: `BTC Resilience Is Becoming an Opportunity ${index}`,
+      body: `BTC did not weaken alongside US equities under pressure. Over the next 30 days, I am watching whether this relative strength keeps attracting marginal capital. Version ${index}`,
       image_ref: `FPREV_CAND_BTC_${index}/viewpoint-2488.png`,
-      alt_text: `BTC 相对强势、资金迁移假设与 30 天观察窗口的观点图，版本 ${index}`,
+      alt_text: `Viewpoint visual showing BTC relative strength, a capital-rotation hypothesis, and a 30-day observation window, version ${index}`,
     },
     image_sha256: HASH,
     image_byte_size: 1,
@@ -33,14 +33,14 @@ function preview() {
     created_at: "2026-07-17T17:00:00+08:00",
     meaning_lock_ref: "MLOCK_BTC_30D_001",
     creator_view: {
-      original_text: "最近 BTC 跌不下去，我觉得还会冲一波。",
+      original_text: "BTC has refused to break lower, and I think it has another move up.",
       subject: "BTC",
       direction: "long",
-      observation_window: "最近 21 天",
-      horizon: "30 天",
-      claim: "BTC 的抗跌可能演化为下一轮上冲",
-      mechanism: "美股风险偏好承压时，边际资金可能寻找全天候流动性资产",
-      next_watch: "BTC 相对纳指强弱与现货承接",
+      observation_window: "Past 21 days",
+      horizon: "30 days",
+      claim: "BTC's resilience may develop into the next move higher",
+      mechanism: "When risk appetite in US equities is under pressure, marginal capital may seek assets with around-the-clock liquidity",
+      next_watch: "BTC relative strength versus Nasdaq and spot demand",
     },
     query_binding: {
       required: true,
@@ -119,7 +119,7 @@ test("unavailable required evidence blocks instead of fabricating", () => {
 
 test("public Frame stays Frame-only and hides workflow narration", () => {
   const item = preview();
-  item.candidates[0].frame.body = "这是给 Reddit 的候选集，已经通过质量评分和工作流检查。";
+  item.candidates[0].frame.body = "This is a Reddit candidate set that passed quality scoring and workflow checks.";
   assert.ok(codes(item).has("PUBLIC_LANGUAGE"));
 });
 

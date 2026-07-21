@@ -2,7 +2,7 @@
 
 Read this reference only after the creator has seen one complete Frame and explicitly asks to publish, correct, or withdraw it. Keep every transport field and server state backstage.
 
-An explicit “publish,” “发吧,” “就这版,” or equivalent is the one publication authorization for the already confirmed Frame. Do not restate the copy or settlement, ask “confirm publish?” again, or add a release checklist.
+An explicit “publish,” “send this version,” or equivalent instruction in any language is the one publication authorization for the already confirmed Frame. Do not restate the copy or settlement, ask “confirm publish?” again, or add a release checklist.
 
 ## Initial Publish: Three Steps
 
@@ -40,4 +40,4 @@ After success, respond warmly in two or three short sentences. Say that the idea
 
 Ask at most one optional next step: share the finished idea from Cuebook App with another AI for a fresh judgment, share another signal or intuition, or—when Paper tools are available—offer to record a separate simulated Paper Trade. An offer is not authorization; after explicit opt-in, call `preview_paper_order` and still require explicit placement intent.
 
-The App, not the Skill or publication flow, owns sharing. Its one-sentence share copy is: “这是 Cuebook Agent 帮我完善并记录的交易想法，想听听你怎么判断；请用 Cuebook 打开，尚未连接时按提示安装并连接：<Cuebook 分享入口>”. The App binds that entry to the just-published Frame; the Skill never extracts IDs or fabricates an entry from a web URL.
+The App, not the Skill or publication flow, owns sharing. Its one-sentence share copy is: “Cuebook Agent helped me develop and record this market idea, and I would like your judgment. Open it with Cuebook; if Cuebook is not connected, follow the prompt to install and connect it: <Cuebook share entry>”. The App localizes this copy for the creator and binds that entry to the just-published Frame; the Skill never extracts IDs or fabricates an entry from a web URL.

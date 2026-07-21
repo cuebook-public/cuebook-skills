@@ -50,7 +50,7 @@ const TRADE_LOGIC_FAMILIES = new Set(["event_driven", "relative_value", "directi
 const TRADE_LOGIC_MECHANISMS = new Set(["risk_premium_transmission", "expectation_revision", "supply_demand_repricing", "forced_flow", "positioning_squeeze", "liquidity_amplification", "price_discovery_lead_lag", "valuation_mean_reversion", "fundamental_compounding", "momentum_continuation", "volatility_repricing", "carry_roll_down", "cross_asset_transmission"]);
 const TRADE_LOGIC_EXPRESSIONS = new Set(["outright_long", "outright_short", "relative_value_pair", "long_short_basket", "etf_basket", "curve_spread", "options_convexity", "volatility_trade", "hedge_overlay", "no_trade"]);
 const TRADE_LOGIC_HORIZONS = new Set(["intraday", "one_to_three_days", "one_to_four_weeks", "one_to_three_months", "structural"]);
-const PUBLIC_BACKEND_TERMS = ["已确认", "已计算", "推演", "待确认", "形成中", "等待确认", "交给市场验证", "observed", "derived", "provisional", "conditional", "confirmed", "pending"];
+const PUBLIC_BACKEND_TERMS = ["\u5df2\u786e\u8ba4", "\u5df2\u8ba1\u7b97", "\u63a8\u6f14", "\u5f85\u786e\u8ba4", "\u5f62\u6210\u4e2d", "\u7b49\u5f85\u786e\u8ba4", "\u4ea4\u7ed9\u5e02\u573a\u9a8c\u8bc1", "observed", "derived", "provisional", "conditional", "confirmed", "pending"];
 
 function isDict(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);

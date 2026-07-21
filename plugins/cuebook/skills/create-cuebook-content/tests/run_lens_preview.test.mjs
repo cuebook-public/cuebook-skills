@@ -49,7 +49,7 @@ function component(ticker, index, weight, side, series = {}) {
     },
     weight,
     side,
-    inclusion_reason: `${ticker} 是需求链上的可观察代理`,
+    inclusion_reason: `${ticker} is an observable proxy in the demand chain`,
     origin: index % 2 === 0 ? "creator_named" : "cuebook_discovered",
     binding_id: `BIND_LENS_COMPONENT_${ticker}`,
   };
@@ -63,9 +63,9 @@ export function baseLensJob() {
     component("VRT", 3, 0.25, "long", { start: 70, drift: 0.65 }),
   ];
   const refs = components.map((item) => item.leg.result_ref);
-  const observation = "这组 AI 基建代理在冻结窗口内合成 Lens 为正";
-  const title = "AI 投资不能只盯一家公司";
-  const body = `${observation}。我的判断是需求正在从算力向网络与电力扩散；未来 30 天，看广度能否保持，任一关键环节转弱则重新评估。`;
+  const observation = "This AI infrastructure proxy Lens is positive over the frozen window";
+  const title = "AI Investment Cannot Be Read Through One Company";
+  const body = `${observation}. My view is that demand is spreading from compute into networking and power. Over the next 30 days, watch whether breadth holds; reassess if any critical link weakens.`;
   return {
     schema_version: "frame-lens-preview-job",
     preview: {
@@ -73,14 +73,14 @@ export function baseLensJob() {
       state: "conditional",
       created_at: "2026-07-17T09:00:00Z",
       creator_view: {
-        original_text: "我感觉 AI 投资还没结束，但想把需求链而不是一家公司画出来。",
+        original_text: "I do not think AI investment is over, but I want to chart the demand chain rather than one company.",
         subject: "AI infrastructure demand",
         direction: "long",
-        observation_window: "2026-06-24 至 2026-07-17",
-        horizon: "未来 30 天",
-        claim: "AI 投资的强度应该从一篮子基础设施代理来观察",
-        mechanism: "算力、网络和电力链若同步增强，需求比单一龙头更有广度",
-        next_watch: "观察广度是否继续扩散，并在任一关键环节转弱时重新评估",
+        observation_window: "2026-06-24 to 2026-07-17",
+        horizon: "Next 30 days",
+        claim: "The strength of AI investment should be observed through a basket of infrastructure proxies",
+        mechanism: "If compute, networking, and power strengthen together, demand has more breadth than a single leader can show",
+        next_watch: "Watch whether breadth keeps expanding and reassess if any critical link weakens",
       },
       meaning_lock: {
         lock_id: "MLOCK_AI_LENS_LENS_001",
@@ -90,10 +90,10 @@ export function baseLensJob() {
         body,
         subject: "AI infrastructure demand",
         direction: "long",
-        horizon: "未来 30 天",
-        claim: "AI 投资的强度应该从一篮子基础设施代理来观察",
-        mechanism: "算力、网络和电力链若同步增强，需求比单一龙头更有广度",
-        next_watch: "观察广度是否继续扩散，并在任一关键环节转弱时重新评估",
+        horizon: "Next 30 days",
+        claim: "The strength of AI investment should be observed through a basket of infrastructure proxies",
+        mechanism: "If compute, networking, and power strengthen together, demand has more breadth than a single leader can show",
+        next_watch: "Watch whether breadth keeps expanding and reassess if any critical link weakens",
         settlement: {
           mode: "non_settleable",
           reason: "This creator-owned observation basket is not one canonical asset contract.",
@@ -135,13 +135,13 @@ export function baseLensJob() {
       horizon_label: "30D VIEW",
       data_status: "synthetic_fixture",
       data_as_of: AS_OF,
-      source_label: "合成评测序列",
+      source_label: "Synthetic evaluation series",
       argument: {
-        claim: { text: "真正的信号，是需求从芯片走向整条基础设施", state: "creator_view", binding_id: "BIND_LENS_CLAIM", source_refs: [] },
+        claim: { text: "The real signal is demand spreading from chips across the infrastructure stack", state: "creator_view", binding_id: "BIND_LENS_CLAIM", source_refs: [] },
         observation: { text: observation, state: "derived", binding_id: "BIND_LENS_OBSERVATION", source_refs: refs },
-        mechanism: { text: "我把同步走强理解为 AI 投资广度仍在扩散", state: "creator_view", binding_id: "BIND_LENS_MECHANISM", source_refs: [] },
-        implication: { text: "未来先看广度保持，再看需求能否继续外溢", state: "conditional", binding_id: "BIND_LENS_IMPLICATION", source_refs: [] },
-        countercase: { text: "若网络或电力代理率先转弱，扩散叙事失去支点", state: "conditional", binding_id: "BIND_LENS_COUNTER", source_refs: [] },
+        mechanism: { text: "Breadth signals durable AI demand", state: "creator_view", binding_id: "BIND_LENS_MECHANISM", source_refs: [] },
+        implication: { text: "First watch whether breadth holds, then whether demand continues to spill over", state: "conditional", binding_id: "BIND_LENS_IMPLICATION", source_refs: [] },
+        countercase: { text: "If networking or power proxies weaken first, the expansion thesis loses its footing", state: "conditional", binding_id: "BIND_LENS_COUNTER", source_refs: [] },
       },
       observation_test: {
         kind: "lens_positive",
@@ -167,13 +167,13 @@ export function baseLensJob() {
         rebalance: "none",
         formula: CANONICAL_FORMULA,
         components,
-        limitations: ["代理篮子不等于企业订单", "未计入股息、费用与交易成本"],
+        limitations: ["A proxy basket is not the same as company orders", "Dividends, fees, and trading costs are excluded"],
         curve_binding_id: "BIND_LENS_LENS_CURVE",
         contribution_binding_id: "BIND_LENS_CONTRIBUTIONS",
       },
       future_beats: [
-        { role: "confirmation", label: "广度继续扩散", criterion: "20D Lens 保持 > 100", at: "2026-08-02T09:00:00Z", state: "conditional", binding_id: "BIND_LENS_CONFIRM", source_refs: [] },
-        { role: "invalidation", label: "扩散关系失效", criterion: "Lens 跌破 100 并保持 5D", at: "2026-08-16T09:00:00Z", state: "conditional", binding_id: "BIND_LENS_INVALIDATE", source_refs: [] },
+        { role: "confirmation", label: "Breadth keeps expanding", criterion: "20D Lens remains above 100", at: "2026-08-02T09:00:00Z", state: "conditional", binding_id: "BIND_LENS_CONFIRM", source_refs: [] },
+        { role: "invalidation", label: "Expansion relationship fails", criterion: "Lens falls below 100 and stays there for 5D", at: "2026-08-16T09:00:00Z", state: "conditional", binding_id: "BIND_LENS_INVALIDATE", source_refs: [] },
       ],
     },
   };
@@ -199,7 +199,7 @@ test("LENS computes and renders a transparent four-component Creator Lens", asyn
     assert.match(svg, /data-design-family="lens_ledger"/u);
     assert.match(svg, /data-display-system="signal_sans"/u);
     assert.match(svg, /data-lens-stage="true"/u);
-    assert.match(svg, /不是官方指数/u);
+    assert.match(svg, /NOT AN OFFICIAL INDEX/u);
     assert.match(svg, /data-future-region="unresolved"/u);
     assert.match(svg, /data-annotation-role="observation"/u);
     assert.match(svg, /data-role="compact-contributions"/u);
@@ -268,7 +268,7 @@ test("LENS rejects an observed sentence contradicted by the computed lens", () =
 
 test("LENS rejects copy changed after creator confirmation", () => {
   const job = baseLensJob();
-  job.preview.candidate.frame.title = "AI 基建广度需要一篮子验证";
+  job.preview.candidate.frame.title = "AI Infrastructure Breadth Needs a Basket Test";
   const result = validateLensPreviewJob(job);
   assert.equal(result.valid, false);
   assert.ok(result.errors.some((error) => error.code === "MEANING_LOCK_TITLE"));
@@ -317,7 +317,7 @@ test("LENS allows a retrospective exploratory Lens only with visible selection-b
   let result = validateLensPreviewJob(job);
   assert.equal(result.valid, false);
   assert.ok(result.errors.some((error) => error.code === "RETROSPECTIVE_DISCLOSURE"));
-  job.expression.lens.limitations[0] = "回看选择成分，存在选择偏差";
+  job.expression.lens.limitations[0] = "Constituents were selected retrospectively, introducing selection bias";
   result = validateLensPreviewJob(job);
   assert.equal(result.valid, true);
 });

@@ -858,9 +858,10 @@ export function validate(payload) {
     if (styleProfile !== null) {
       const publicCopy = ["title", "subtitle"].map((key) => pyStr(g(render, key) || "")).join(" ");
       const internalPhrases = [
-        "Cuebook 从观点",
-        "Cuebook提取",
-        "从观点描述中提取",
+        "Cuebook \u4ece\u89c2\u70b9",
+        "Cuebook\u63d0\u53d6",
+        "\u4ece\u89c2\u70b9\u63cf\u8ff0\u4e2d\u63d0\u53d6",
+        "Cuebook extracts",
         "SKILL",
         "CONDITIONAL",
         "DRAFT",

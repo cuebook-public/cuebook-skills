@@ -1,13 +1,13 @@
 {
   "schema_version": "cuebook-release-skills-manifest-v2",
   "catalog_version": "1.28.0",
-  "plugin_version": "0.9.5",
+  "plugin_version": "0.9.6",
   "discovery_budget": {
     "legacy_skill_count": 38,
     "public_skill_count": 2,
-    "legacy_metadata_bytes": 23427,
-    "public_metadata_bytes": 1556,
-    "reduction_percent": 93.4,
+    "legacy_metadata_bytes": 23452,
+    "public_metadata_bytes": 1567,
+    "reduction_percent": 93.3,
     "minimum_reduction_percent": 60
   },
   "frame_fast_preview_budget": {
@@ -23,7 +23,7 @@
       "references/modules/query-cuebook/references/cuebook-query-request-v1.schema.json",
       "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json"
     ],
-    "cumulative_bytes": 106972,
+    "cumulative_bytes": 107201,
     "maximum_bytes_exclusive": 110000,
     "within_budget": true
   },
@@ -32,7 +32,7 @@
       "references/frame-publish-workflow.md",
       "assets/plugin/mcp-capability-map-v1.json"
     ],
-    "cumulative_bytes": 31417,
+    "cumulative_bytes": 31514,
     "maximum_bytes_exclusive": 40000,
     "within_budget": true
   },

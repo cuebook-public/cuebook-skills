@@ -276,9 +276,9 @@ export function createWideFinalizerFixture(root) {
     state: "selected",
     input_refs: ["CEXP_finalizer20260715"],
     message: {
-      claim: "坏消息落地，价格仍然跌不动",
-      because: "卖压增加，价格反应却变轻",
-      implication: "把回调视为观察多头承接的窗口",
+      claim: "Bad news lands, yet price still refuses to fall",
+      because: "Selling pressure rises while the price reaction becomes lighter",
+      implication: "Treat the pullback as a window to observe bullish demand",
       direction: "long",
     },
     bindings: [

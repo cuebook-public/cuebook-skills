@@ -65,7 +65,7 @@ const GRAMMAR_OBSERVATION_TESTS = Object.freeze({
   event_window: new Set(["primary_positive_after_event", "primary_negative_after_event", "primary_outperformed_after_event"]),
   threshold_regime: new Set(["latest_above_threshold", "latest_below_threshold"]),
 });
-const CHECKABLE_CRITERION = /(?:\d+\s*(?:D|日|天|周|根|sessions?|bars?)|[<>≤≥]|新高|新低|转正|转负|突破|跌破|发生|落地|确认|失效|holds?|cross(?:es)?|above|below|occurs?|settles?)/iu;
+const CHECKABLE_CRITERION = /(?:\d+\s*(?:D|\u65e5|\u5929|\u5468|\u6839|sessions?|bars?)|[<>≤≥]|\u65b0\u9ad8|\u65b0\u4f4e|\u8f6c\u6b63|\u8f6c\u8d1f|\u7a81\u7834|\u8dcc\u7834|\u53d1\u751f|\u843d\u5730|\u786e\u8ba4|\u5931\u6548|holds?|cross(?:es)?|above|below|occurs?|settles?)/iu;
 
 function issue(code, issuePath, message) {
   return { code, path: issuePath, message };

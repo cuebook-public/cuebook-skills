@@ -16,7 +16,7 @@ Some views start only after confirmation and then remain active through a market
 
 Example public projection:
 
-`BTC 条件看多｜至下一次 BTC 减半｜日线放量收盘站上 65,000 -> 减半后首次日线收盘 > 触发收盘价｜待确认`
+`BTC conditional long | through the next BTC halving | a high-volume daily close above 65,000 -> first post-halving daily close > trigger close | pending confirmation`
 
 ## Field Policy
 
@@ -76,8 +76,8 @@ Never collapse regular-session high, extended-hours trade, official close, ETF N
 
 The full summary explains success and failure in natural language. The deterministic one-line is generated from the contract:
 
-`USO 看多｜截至 2026-07-17｜到期常规收盘 > 117.79 USD｜待结算`
+`USO long | through 2026-07-17 | regular-session close at expiry > 117.79 USD | pending settlement`
 
 For a barrier:
 
-`USO 看多｜截至 2026-07-17｜期间任一常规收盘 >= 119.83 USD｜待结算`
+`USO long | through 2026-07-17 | any regular-session close during the window >= 119.83 USD | pending settlement`

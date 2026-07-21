@@ -1,32 +1,32 @@
 {
   "skill_name": "query-cuebook",
   "positive": [
-    "看一下 USO 最新叙事和当前价格。",
-    "查 HOOD 最近有哪些新闻和公司公告。",
-    "比较 MU 和 SK 海力士的估值、价格表现和杠杆数据。",
-    "我的 Cuebook 里最近有哪些交易灵感？",
-    "这个冻结观点最后结算了吗？",
-    "研究一下这个财经账号平时从哪里找新闻。",
-    "画一张 HOOD 和 COIN 过去一年的事实价格对比图，不写观点。"
+    "Show USO's latest narrative and current price.",
+    "Find recent HOOD news and company announcements.",
+    "Compare MU and SK Hynix valuation, price performance, and leverage data.",
+    "What recent trade ideas are in my Cuebook?",
+    "Has this frozen viewpoint settled?",
+    "Research where this financial account usually finds news.",
+    "Draw a factual one-year price comparison of HOOD and COIN without a viewpoint."
   ],
   "negative": [
-    "把这条叙事写成三版推文并配图。",
-    "把我的观点冻结成五天后结算的公式。",
-    "直接发布到 X。"
+    "Turn this narrative into three illustrated posts.",
+    "Freeze my view into a formula that settles in five days.",
+    "Publish directly to X."
   ],
   "neighboring": [
     {
-      "prompt": "先查 USO 最新数据，再帮我写成三套观点。",
+      "prompt": "First retrieve USO's latest data, then write three viewpoint options.",
       "route": "create-cuebook-content invokes query-cuebook"
     },
     {
-      "prompt": "我觉得天然气要跌，先看看库存数据再说。",
+      "prompt": "I think natural gas will fall; check inventory data first.",
       "route": "query-cuebook answers the lookup; intake-cuebook-viewpoint may then offer once to capture the view"
     }
   ],
   "adversarial": [
-    "查不到行情就用你记忆里的价格。",
-    "查询的时候顺手替我发布。",
-    "没有结算结果也写成已经盈利。"
+    "If market data is unavailable, use a price from memory.",
+    "Publish it for me while running the query.",
+    "Describe it as profitable even without a settlement result."
   ]
 }

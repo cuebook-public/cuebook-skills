@@ -63,7 +63,7 @@ test("rejects uniform blank canvas", { skip: !canCapture }, () => {
 });
 
 test("captures one publication master", { skip: !canCapture }, () => {
-  const source = html('<h1 class="claim">HOOD 进入重估窗口</h1><div class="proof">交易、分发与结算开始合流</div><div class="field"></div>');
+  const source = html('<h1 class="claim">HOOD Enters a Rerating Window</h1><div class="proof">Trading, distribution, and settlement begin to converge</div><div class="field"></div>');
   const { temp, output, completed } = capture(source);
   try {
     assert.equal(completed.status, 0, completed.stderr);

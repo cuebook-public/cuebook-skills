@@ -20,10 +20,10 @@ function numberSpec() {
       decision_cutoff_at: "2026-07-14T08:30:00Z",
     },
     frame: {
-      category: "预期修正",
+      category: "Expectation revision",
       asset_label: "AAPL",
-      headline: "新品要发，我先做多 AAPL，窗口看 1-4 周",
-      interpretation: "我押服务收入预期上修接过新品热度，把一次发布会变成盈利定价。",
+      headline: "New product ahead: long AAPL over a 1-4 week window",
+      interpretation: "I expect upward services-revenue revisions to carry the product-launch excitement into earnings pricing.",
     },
     trade_logic: {
       profile_ref: "TLOGIC_AAPL_SERVICE_REV_20260714",
@@ -31,16 +31,16 @@ function numberSpec() {
       mechanism: "expectation_revision",
       expression: "outright_long",
       horizon: "one_to_four_weeks",
-      public_tags: ["事件驱动", "预期修正", "直接做多"],
+      public_tags: ["event-driven", "expectation revision", "outright long"],
     },
     key_number: {
-      label: "未来 12 个月服务收入预期",
+      label: "Next-12-month services revenue estimate",
       display_value: "+4.8%",
       numeric_value: 4.8,
       unit: "%",
       as_of: "2026-07-14T08:20:00Z",
       status: "observed",
-      comparison: "7 日前 +1.6%",
+      comparison: "+1.6% seven days ago",
       source_ref: "source:consensus:aapl-services",
     },
     key_news: null,
@@ -68,10 +68,10 @@ function newsSpec() {
       decision_cutoff_at: "2026-07-14T08:30:00Z",
     },
     frame: {
-      category: "财报",
+      category: "Earnings",
       asset_label: "IBM",
-      headline: "收入掉链子，我先做空 IBM，窗口看 1-3 天",
-      interpretation: "我押这次收入缺口先压估值，再让市场重估企业 IT 需求。",
+      headline: "Revenue missed: short IBM over a 1-3 day window",
+      interpretation: "I expect the revenue shortfall to pressure valuation first, then force a reassessment of enterprise IT demand.",
     },
     trade_logic: {
       profile_ref: "TLOGIC_IBM_Q2_SHORT_20260714",
@@ -79,11 +79,11 @@ function newsSpec() {
       mechanism: "expectation_revision",
       expression: "outright_short",
       horizon: "one_to_three_days",
-      public_tags: ["事件驱动", "预期修正", "直接做空"],
+      public_tags: ["event-driven", "expectation revision", "outright short"],
     },
     key_number: null,
     key_news: {
-      headline: "IBM 第二季度收入低于市场预期",
+      headline: "IBM second-quarter revenue missed market expectations",
       publisher: "IBM IR",
       published_at: "2026-07-14T08:12:00Z",
       status: "provisional",
@@ -91,7 +91,7 @@ function newsSpec() {
     },
     quality_report: {
       decision: "conditional",
-      warnings: ["板块传导尚未由同业指引确认。"],
+      warnings: ["Peer guidance has not yet confirmed the sector transmission."],
       hard_failures: [],
     },
   });
@@ -126,10 +126,10 @@ test("number render uses restrained single-signal layout", () => {
   try {
     const result = render(numberSpec(), directory);
     const svg = readFileSync(result.svg_path, "utf8");
-    for (const expected of ['data-signal-mode="key_number"', "+4.8%", "07/14 08:20 UTC", "Cuebook", "事件驱动 · 预期修正 · 直接做多"]) {
+    for (const expected of ['data-signal-mode="key_number"', "+4.8%", "07/14 08:20 UTC", "Cuebook", "event-driven · expectation revision · outright long"]) {
       assert.ok(svg.includes(expected));
     }
-    for (const forbidden of ["条数据引用", "虚线为形成中", "结算", "已计算"]) assert.ok(!svg.includes(forbidden));
+    for (const forbidden of ["data references", "dashed means forming", "settlement", "calculated"]) assert.ok(!svg.toLowerCase().includes(forbidden));
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
@@ -140,20 +140,20 @@ test("news render preserves publisher and hides evidence state", () => {
   try {
     const result = render(newsSpec(), directory);
     const svg = readFileSync(result.svg_path, "utf8");
-    for (const expected of ['data-signal-mode="key_news"', "IBM IR", "收入掉链子，我先做空 IBM", "事件驱动 · 预期修正 · 直接做空", "07/14 08:12 UTC"]) {
+    for (const expected of ['data-signal-mode="key_news"', "IBM IR", "Revenue missed: short IBM", "event-driven · expectation revision · outright short", "07/14 08:12 UTC"]) {
       assert.ok(svg.includes(expected));
     }
-    assert.ok(!svg.includes("待确认"));
-    assert.ok(!svg.includes("已确认"));
+    assert.ok(!svg.includes("TO CONFIRM"));
+    assert.ok(!svg.includes("CONFIRMED"));
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
 });
 
 test("trade horizon wraps as one phrase", () => {
-  const lines = wrapText("油轮遇袭，我先做 USO 跑赢 XLE，窗口看 1-3 天", 43, 2);
-  assert.ok(lines.some((line) => line.includes("窗口看 1-3 天")), JSON.stringify(lines));
-  assert.notEqual(lines.at(-1), "天");
+  const lines = wrapText("After the tanker attack, I favor USO over XLE over a 1-3 day window", 43, 2);
+  assert.ok(lines.some((line) => line.includes("1-3 day window")), JSON.stringify(lines));
+  assert.notEqual(lines.at(-1), "day");
 });
 
 test("manifest hash and asset validate", () => {

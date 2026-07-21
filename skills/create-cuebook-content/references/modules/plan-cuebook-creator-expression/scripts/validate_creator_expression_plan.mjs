@@ -96,20 +96,20 @@ const DATA_MODES_BY_VISUAL = new Map([
 const FALLBACK_SUBSTITUTIONS = new Set(["invent_metric", "proxy_without_bridge", "anecdote_as_market_fact", "decorative_chart"]);
 const BACKEND_TERMS = new Set([
   "observed", "derived", "inferred", "provisional", "conditional", "confirmed", "pending", "unresolved",
-  "已确认", "已计算", "推演", "待确认", "形成中", "交给市场验证", "等待确认",
+  "\u5df2\u786e\u8ba4", "\u5df2\u8ba1\u7b97", "\u63a8\u6f14", "\u5f85\u786e\u8ba4", "\u5f62\u6210\u4e2d", "\u4ea4\u7ed9\u5e02\u573a\u9a8c\u8bc1", "\u7b49\u5f85\u786e\u8ba4",
 ]);
-const REQUIRED_ANTI_AI_PHRASES = new Set(["值得关注的是", "核心逻辑在于", "从机制上看"]);
+const REQUIRED_ANTI_AI_PHRASES = new Set(["It is worth noting that", "The core logic is", "From a mechanism perspective"]);
 const CUEBOOK_WORKFLOW_PATTERNS = [
-  /cuebook.{0,40}(?:帮|补(?:全|充)?|完善|启发|协助|生成|改写|润色|写(?:出|成)?|建议|让我|给我|替我|完成)/iu,
-  /(?:放进|用|通过|经过|借助|帮|补(?:全|充)?|完善|启发|协助|生成|改写|润色).{0,40}cuebook/iu,
+  /cuebook.{0,40}(?:\u5e2e|\u8865(?:\u5168|\u5145)?|\u5b8c\u5584|\u542f\u53d1|\u534f\u52a9|\u751f\u6210|\u6539\u5199|\u6da6\u8272|\u5199(?:\u51fa|\u6210)?|\u5efa\u8bae|\u8ba9\u6211|\u7ed9\u6211|\u66ff\u6211|\u5b8c\u6210)/iu,
+  /(?:\u653e\u8fdb|\u7528|\u901a\u8fc7|\u7ecf\u8fc7|\u501f\u52a9|\u5e2e|\u8865(?:\u5168|\u5145)?|\u5b8c\u5584|\u542f\u53d1|\u534f\u52a9|\u751f\u6210|\u6539\u5199|\u6da6\u8272).{0,40}cuebook/iu,
   /\bcuebook\b.{0,48}\b(?:helped?|completed?|improved?|inspired?|generated?|drafted?|rewrote|suggested?)\b/iu,
   /\b(?:used?|put|through|with)\b.{0,48}\bcuebook\b/iu,
 ];
 const FIRST_PERSON_EXPERIENCE_PATTERNS = [
   /\bI\s+(?:saw|heard|bought|sold|lost|made|switched|rotated|held|owned|traded|experienced|remembered|discovered|found|realized|identified|noticed|learned|was\s+liquidated|got\s+liquidated|came\s+across)\b/iu,
   /\bmy\s+(?:trade|position|portfolio|dashboard|loss|profit|experience)\b/iu,
-  /我(?:亲历|听说|看到|买了|卖了|亏了|赚了|切换|换仓|爆仓|被清算|持有|做了|发现|意识到|注意到|找到了|识别出)/u,
-  /我的(?:仓位|组合|交易|亏损|盈利|仪表盘|经历)/u,
+  /\u6211(?:\u4eb2\u5386|\u542c\u8bf4|\u770b\u5230|\u4e70\u4e86|\u5356\u4e86|\u4e8f\u4e86|\u8d5a\u4e86|\u5207\u6362|\u6362\u4ed3|\u7206\u4ed3|\u88ab\u6e05\u7b97|\u6301\u6709|\u505a\u4e86|\u53d1\u73b0|\u610f\u8bc6\u5230|\u6ce8\u610f\u5230|\u627e\u5230\u4e86|\u8bc6\u522b\u51fa)/u,
+  /\u6211\u7684(?:\u4ed3\u4f4d|\u7ec4\u5408|\u4ea4\u6613|\u4e8f\u635f|\u76c8\u5229|\u4eea\u8868\u76d8|\u7ecf\u5386)/u,
 ];
 const IMAGE_BUDGET_LIMITS = new Map([
   ["title_max", [8, 48]], ["subtitle_max", [16, 96]], ["node_label_max", [8, 32]],
@@ -560,7 +560,7 @@ export function validate(payload, { expectedSourceSemanticsHash = null } = {}) {
   if (g(antiAi, "enabled") !== true) errors.push(issue("ANTI_AI_LANGUAGE", "$.voice_spec.anti_ai_language.enabled", "Anti-AI-language controls must be enabled."));
   const bannedStockPhrases = stringList(g(antiAi, "banned_stock_phrases"), "$.voice_spec.anti_ai_language.banned_stock_phrases", errors, { minimum: 3 });
   if (!setSubset(REQUIRED_ANTI_AI_PHRASES, new Set(bannedStockPhrases))) errors.push(issue("ANTI_AI_PHRASE_SET", "$.voice_spec.anti_ai_language.banned_stock_phrases", "Banned phrases must include the required Cuebook stock-language set."));
-  if (!pyEquals(g(antiAi, "max_not_a_but_b_frames"), 1)) errors.push(issue("ANTI_AI_REFRAME_LIMIT", "$.voice_spec.anti_ai_language.max_not_a_but_b_frames", "Allow at most one 不是 A 而是 B frame."));
+  if (!pyEquals(g(antiAi, "max_not_a_but_b_frames"), 1)) errors.push(issue("ANTI_AI_REFRAME_LIMIT", "$.voice_spec.anti_ai_language.max_not_a_but_b_frames", "Allow at most one \u4e0d\u662f A \u800c\u662f B frame."));
   if (g(antiAi, "repeated_openings_allowed") !== false) errors.push(issue("ANTI_AI_OPENINGS", "$.voice_spec.anti_ai_language.repeated_openings_allowed", "Repeated stock openings must be disabled."));
 
   const allowedSemanticRefs = new Set([...claimRefs, ...factRefs]);
@@ -888,8 +888,8 @@ export function validate(payload, { expectedSourceSemanticsHash = null } = {}) {
     if (!ownedExperienceRefs.length && containsFirstPersonExperience(value)) errors.push(issue("INVENTED_FIRST_PERSON_EXPERIENCE", path, "First-person experience is not creator-owned in the semantic input."));
   }
   const publicExpressionText = publicPlanText.map(([, value]) => value).join("\n");
-  const notAButBCount = [...publicExpressionText.matchAll(/不是\s*[^。！？\n]{1,80}?\s*而是/gu)].length;
-  if (notAButBCount > 1) errors.push(issue("REPEATED_NOT_A_BUT_B", "$.voice_spec.anti_ai_language", "Use at most one 不是 A 而是 B frame across public expression guidance."));
+  const notAButBCount = [...publicExpressionText.matchAll(/(?:not\b[^.!?\n]{1,160}?\bbut|\u4e0d\u662f\s*[^\u3002\uff01\uff1f\n]{1,80}?\s*\u800c\u662f)/giu)].length;
+  if (notAButBCount > 1) errors.push(issue("REPEATED_NOT_A_BUT_B", "$.voice_spec.anti_ai_language", "Use at most one 'not A but B' frame across public expression guidance."));
 
   validateQuality(g(payload, "quality_report"), state, errors);
   return { valid: errors.length === 0, errors, warnings: [] };

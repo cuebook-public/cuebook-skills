@@ -28,7 +28,7 @@ Keep these cases in every renderer regression pass.
 | Raw event return is attributed without a benchmark or correct window | Add the benchmark/window or soften the claim |
 | Trade claim omits liquidity, asset expression, or horizon | Render as a watch, not an instruction; retain risk boundaries in structured metadata |
 | Draft says Cuebook found, inspired, completed, or improved the idea | Remove workflow narration; retain the assistance record internally |
-| Draft ends with `我认错` or `什么情况算看错` | Replace it with the horizon, next catalyst, or next observable |
+| Draft ends with `I admit I was wrong` or `what would prove this wrong` | Replace it with the horizon, next catalyst, or next observable |
 | User supplies a viewpoint and the draft opens by disproving or correcting them without contradictory evidence | Preserve the viewpoint, strengthen its mechanism, and keep uncertainty proportional |
 | Result includes X, Xiaohongshu, Reddit, Telegram, thread, caption, tags, or platform-specific variants | Remove every platform wrapper and return the Frame-only projection |
 | Candidate card shows evidence links, settlement panel, quality state, or workflow metadata next to the creative | Keep those fields backstage; show only title, body, and one paired image |

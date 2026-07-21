@@ -4,58 +4,58 @@
   "cases": [
     {
       "case_id": "btc-relative-resilience",
-      "input": "最近 BTC 跌不下去，我觉得未来 30 天还会冲一波。美股最近跌得厉害，资金可能在回流币圈。",
+      "input": "BTC has refused to break lower, and I think it will rally again over the next 30 days. US equities have fallen sharply, and capital may be rotating back into crypto.",
       "expected_heuristic": "anomaly",
       "cue_scaffolds": [
-        {"relation": "aligned", "summary": "持续承接可能让相对抗跌先于趋势扩散出现"},
-        {"relation": "contrasting", "summary": "若风险资产重新同步去杠杆，短期抗跌可能只是暂时错位"}
+        {"relation": "aligned", "summary": "Persistent demand may make relative resilience appear before the broader trend expands"},
+        {"relation": "contrasting", "summary": "If risk assets resume synchronized deleveraging, short-term resilience may be only a temporary dislocation"}
       ],
-      "example_interview": "你抓到的可能不只是 BTC 看涨，而是美股泄压时，BTC 的不跌本身正在变成资金选择。Cuebook 里一条同向 Cue 把重点放在持续买盘吸收抛压，另一条相反 Cue 提醒同步去杠杆可能让抗跌消失。你更想沿资金提前换仓还是承接尚未松动继续推？都不是也可以，没有更多就按这个做。",
-      "example_completion_check": "这条推演还可以补两个角度：如果是资金换仓，BTC 对纳指的相对强弱应该继续扩张；如果只是短期错位，下一轮风险资产共振会很快把它打回去。要加哪一个？都不加就按你现在这版。"
+      "example_interview": "You may be seeing more than a bullish BTC setup: as US equities release pressure, BTC's refusal to fall is itself becoming a capital-allocation choice. One aligned Cue emphasizes persistent buying absorbing supply, while a contrasting Cue warns that synchronized deleveraging could erase the resilience. Do you want to develop the early rotation or the still-firm demand? Neither is fine; if there is nothing more, I will proceed with your version.",
+      "example_completion_check": "Two angles could sharpen this: if capital is rotating, BTC's relative strength versus Nasdaq should keep widening; if this is only a short-term dislocation, the next synchronized risk-off move should quickly reverse it. Add either one, or keep your current version."
     },
     {
       "case_id": "nvda-post-earnings",
-      "input": "英伟达财报很好，我觉得未来五天还会涨，帮我做个 Frame。",
+      "input": "Nvidia's earnings were strong, and I think it will keep rising over the next five days. Make me a Frame.",
       "expected_heuristic": "causal_bridge",
       "cue_scaffolds": [
-        {"relation": "aligned", "summary": "盈利预期继续上修可能让财报后的重估延续"},
-        {"relation": "adjacent", "summary": "真正的下一步可能不是公司数据本身，而是供应链与同业预期跟随"}
+        {"relation": "aligned", "summary": "Continued upward earnings revisions could extend the post-earnings rerating"},
+        {"relation": "adjacent", "summary": "The next step may be expectations following through across suppliers and peers, not the company result itself"}
       ],
-      "example_interview": "我听到的不是单纯财报好，而是你觉得财报后的重估还没有走完。Cuebook 里一条同向 Cue 沿着盈利预期上修看，另一条相邻 Cue 在等供应链和同业预期跟随。你更在意哪条传导，还是你看到的是别的力量？没有更多就按这个做。",
-      "example_completion_check": "还可以补一个你没明说的点：五天判断要成立，市场可能需要从公司结果继续推到整个 AI 链条，而不只是重复消化财报。要加就加，不加就按当前版。"
+      "example_interview": "I hear more than simply good earnings: you think the post-earnings rerating is unfinished. One aligned Cue follows continued upward revisions, while an adjacent Cue waits for suppliers and peers to follow. Which transmission matters more to you, or are you seeing another force? If there is nothing more, I will proceed with this.",
+      "example_completion_check": "One unspoken point could help: for the five-day view to hold, the market may need to carry the result across the AI chain rather than merely digest the same report again. Add it or keep the current version."
     },
     {
       "case_id": "gold-long-held-view",
-      "input": "我一直看多黄金，未来三个月应该还会涨，帮我表达出来。",
+      "input": "I have long been bullish on gold and think it will keep rising over the next three months. Help me express the view.",
       "expected_heuristic": "why_now",
-      "example_interview": "你不是刚刚转多，而是觉得这个长期判断现在到了值得被放大的窗口。最近发生了什么变化，让你觉得是现在，而不是更早或更晚？没有更多就按这个做。"
+      "example_interview": "You did not just turn bullish; you think this long-held view has reached a moment worth amplifying. What recently changed that makes now different from earlier or later? If there is nothing more, I will proceed with this."
     },
     {
       "case_id": "oil-risk-premium",
-      "input": "我觉得油价未来 30 天偏多，霍尔木兹不稳，保险和绕航成本会在断供前先动。",
+      "input": "I am bullish on oil over the next 30 days. Hormuz is unstable, and insurance and rerouting costs may move before any supply interruption.",
       "expected_heuristic": "next_footprint",
-      "example_interview": "你抓到的是供应还没真正中断，风险溢价可能已经沿成本链条先走。这个逻辑开始兑现时，你最先会看运价、期限结构，还是能源资产的相对强弱？没有更多就按这个做。"
+      "example_interview": "You are seeing the risk premium move through the cost chain before supply is actually interrupted. If this begins to play out, will you first watch freight rates, the futures curve, or relative strength across energy assets? If there is nothing more, I will proceed with this."
     },
     {
       "case_id": "mu-margin-edge",
-      "input": "市场都在盯 AI capex，但我觉得 MU 未来 30 天真正的看点是毛利率修复。",
+      "input": "The market is focused on AI capex, but I think MU's real catalyst over the next 30 days is gross-margin recovery.",
       "expected_heuristic": "blind_spot",
-      "example_interview": "你的差异不在于也看 AI，而在于你认为市场盯错了传导结果。你觉得大家最容易低估的是毛利率修复的幅度、持续时间，还是它对估值的影响？没有更多就按这个做。"
+      "example_interview": "Your edge is not simply watching AI; it is believing the market is focused on the wrong transmission outcome. Is the market most likely to underestimate the size of the margin recovery, its duration, or its valuation impact? If there is nothing more, I will proceed with this."
     },
     {
       "case_id": "complete-viewpoint",
-      "input": "BTC 未来 30 天偏多；美股下跌时它保持相对强势，现货承接没有松，边际资金可能在提前换仓。我想观察 BTC 对纳指的相对强弱。",
+      "input": "I am bullish on BTC over the next 30 days. It stayed relatively strong while US equities fell, spot demand held firm, and marginal capital may be rotating early. I want to watch BTC's relative strength versus Nasdaq.",
       "expected_heuristic": "voice_lock",
-      "example_interview": "这套判断已经完整了：反常、机制和下一步信号都有。成品里你最不想被稀释的是 BTC 的抗跌、跨资产资金迁移，还是未来 30 天这个明确判断？没有更多就按这个做。"
+      "example_interview": "This view is already complete: it has an anomaly, a mechanism, and a next signal. In the final expression, what must not be diluted: BTC's resilience, the cross-asset capital rotation, or the explicit 30-day call? If there is nothing more, I will proceed with this."
     }
   ],
   "forbidden_moves": [
-    "把新闻、线索、signal、直觉一次性列成问卷",
-    "要求用户证明观点或先说什么会证明他错",
-    "在用户采用前把助手建议的机制写成用户观点",
-    "把 Cue 的数量、热度、排名或同向一致性当作事实证明或社会压力",
-    "把其他创作者的 Cue 未经采用写成当前用户的第一人称观点",
-    "在普通快速预览里追问目标价",
-    "用户跳过后再次开启 Cue 采访或补全检查"
+    "Turn news, signals, and intuition into a single questionnaire",
+    "Ask the user to prove the view or begin by stating what would prove it wrong",
+    "Write an assistant-suggested mechanism as the user's own view before the user adopts it",
+    "Use Cue count, popularity, ranking, or directional agreement as factual proof or social pressure",
+    "Write another creator's Cue in the current user's first-person voice without adoption",
+    "Ask for a target price during an ordinary fast preview",
+    "Restart the Cue interview or completion check after the user skips it"
   ]
 }

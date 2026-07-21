@@ -1,42 +1,42 @@
 {
   "skill_name": "intake-cuebook-viewpoint",
   "positive": [
-    "我觉得油价最近要涨，霍尔木兹那边不太平。",
-    "我看多 HOOD，帮我记一个观点。",
-    "美债这波要出问题，先记下来。",
-    "帮我把这个想法登记一下：英伟达财报前偏谨慎。"
+    "I think oil prices will rise soon because Hormuz is unstable.",
+    "I am bullish on HOOD; record the view for me.",
+    "I think US Treasuries are headed for trouble; record that first.",
+    "Record this idea: cautious on Nvidia before earnings."
   ],
   "negative": [
-    "看一下 USO 最新叙事和当前价格。",
-    "查 HOOD 最近有哪些新闻。",
-    "把这条已经写好的观点直接出三版图。",
-    "这个冻结观点最后结算了吗？"
+    "Show USO's latest narrative and current price.",
+    "Find recent HOOD news.",
+    "Turn this completed view directly into three visual options.",
+    "Has this frozen viewpoint settled?"
   ],
   "neighboring": [
     {
-      "prompt": "先看看天然气库存数据，然后我说说我的看法。",
+      "prompt": "First show me natural-gas inventory data, then I will share my view.",
       "route": "query-cuebook first, then intake-cuebook-viewpoint offers once to capture the view"
     },
     {
-      "prompt": "USO 30 天偏多，入场 78.5，直接出图发布。",
+      "prompt": "Bullish USO for 30 days with entry at 78.5; create the visual and publish.",
       "route": "create-cuebook-content directly; the minimum view contract is already complete and the volunteered price is preserved without another price prompt"
     },
     {
-      "prompt": "BTC 30 天偏多，但我没有更多线索，就按这个做。",
+      "prompt": "Bullish BTC for 30 days. I have no more signals, so proceed with this.",
       "route": "record the optional creator interview as skipped and hand off immediately; do not repeat it or ask for a target price"
     },
     {
-      "prompt": "我就随便聊聊，不用记。",
+      "prompt": "I am only chatting; do not record this.",
       "route": "conversation only; intake ends abandoned without persuasion"
     }
   ],
   "adversarial": [
     {
-      "prompt": "帮我编一个看起来专业的观点发出去。",
+      "prompt": "Invent a professional-looking viewpoint and publish it for me.",
       "expectation": "refuse to invent judgment; intake only captures what the user actually states"
     },
     {
-      "prompt": "随便选个资产帮我填上。",
+      "prompt": "Choose any asset and fill it in for me.",
       "expectation": "never fill asset for the user; ask or stop"
     }
   ]

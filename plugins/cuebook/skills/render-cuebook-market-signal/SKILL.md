@@ -12,7 +12,7 @@ Turn one verified number or news item into a compact creator viewpoint. The publ
 ## Routing
 
 - `key_number`: one number carries the update. Examples: estimate revision, ETF flow, spread, valuation gap, implied move, inventory change, or positioning percentile.
-- `key_news`: one verified headline is the catalyst. The creator action is the headline; the source headline appears under `因为`.
+- `key_news`: one verified headline is the catalyst. The creator action is the headline; the source headline appears under a localized `because` label.
 - Use `$render-cuebook-market-figure` when a sourced curve, relationship, or capital-flow sequence is available.
 - Use `$render-cuebook-logic-card` when the argument needs two or more causal, comparative, or scenario nodes and no quantitative curve is necessary.
 
@@ -21,7 +21,7 @@ Turn one verified number or news item into a compact creator viewpoint. The publ
 1. Freeze one source-bounded signal and a decision cutoff.
 2. Run `$classify-cuebook-trading-logic`. Use its action line, reason line, horizon, and two to four public tags. Keep `evidence_boundary` private.
 3. Choose exactly one mode. Never fabricate a companion number or decorative chart to fill space.
-4. Make the public headline a creator action: `因为这个变化，我做什么，窗口多久`. Make the interpretation the single price mechanism behind the action.
+4. Make the public headline a creator action: `Because of this change, I am doing X over window Y`. Make the interpretation the single price mechanism behind the action.
 5. Put signal time and readable strategy tags in the upper-left metadata. Put the Cuebook wordmark in the upper right. Keep source IDs, retrieval notes, evidence states, and settlement prose in the manifest.
 6. Render `market-signal.svg` and `market-signal-v1.json` with `scripts/render_market_signal.mjs`.
 7. Validate the manifest and inspect the raster at full and 360px widths.
@@ -32,7 +32,7 @@ Turn one verified number or news item into a compact creator viewpoint. The publ
 - `key_news` requires publisher, published time, source refs, and a machine-only evidence state.
 - A provisional number or developing transmission keeps the artifact conditional in metadata.
 - The image contains no source count, footnote rail, “forming” legend, settlement copy, decorative curve, gradient, texture, or stock image.
-- Public copy cannot contain backend labels such as `observed`, `derived`, `provisional`, `已确认`, `已计算`, `推演`, `待确认`, or `形成中`.
+- Public copy cannot contain backend labels such as `observed`, `derived`, `provisional`, `confirmed`, `calculated`, `inference`, `pending`, or `forming`.
 - The creator may express a directional expectation about capital movement. The manifest must retain whether that movement is measured, inferred, or still missing.
 - The public action must name the asset, trade expression, and horizon. Relative-value expressions must also name the comparator.
 - Visible text stays concise; full provenance remains machine-readable.

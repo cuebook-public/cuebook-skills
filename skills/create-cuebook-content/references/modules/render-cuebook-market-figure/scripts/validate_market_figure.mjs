@@ -41,7 +41,7 @@ const TRADE_LOGIC_HORIZONS = new Set([
   "intraday", "one_to_three_days", "one_to_four_weeks", "one_to_three_months", "structural",
 ]);
 const PUBLIC_BACKEND_TERMS = new Set([
-  "已确认", "已计算", "推演", "待确认", "形成中", "observed", "derived", "provisional",
+  "\u5df2\u786e\u8ba4", "\u5df2\u8ba1\u7b97", "\u63a8\u6f14", "\u5f85\u786e\u8ba4", "\u5f62\u6210\u4e2d", "observed", "derived", "provisional",
   "conditional", "confirmed", "pending",
 ]);
 
@@ -477,9 +477,9 @@ export function validateSpec(payload) {
   }
 
   const [qualityWarnings] = validateQuality(g(payload, "quality_report"), state, errors);
-  if (hasForming && (state !== "conditional" || !qualityWarnings.some((warning) => warning.toLowerCase().includes("forming") || warning.includes("形成")))) errors.push(issue("FORMING_DISCLOSURE", "$.quality_report", "Forming data requires conditional state and an explicit warning."));
+  if (hasForming && (state !== "conditional" || !qualityWarnings.some((warning) => warning.toLowerCase().includes("forming") || warning.includes("\u5f62\u6210")))) errors.push(issue("FORMING_DISCLOSURE", "$.quality_report", "Forming data requires conditional state and an explicit warning."));
   if (hasDigitized) {
-    const redrawDisclosed = qualityWarnings.some((warning) => ["digitized", "source-chart", "source chart", "重绘", "截图"].some((token) => warning.toLowerCase().includes(token)));
+    const redrawDisclosed = qualityWarnings.some((warning) => ["digitized", "source-chart", "source chart", "\u91cd\u7ed8", "\u622a\u56fe"].some((token) => warning.toLowerCase().includes(token)));
     if (state !== "conditional" || !redrawDisclosed) errors.push(issue("DIGITIZED_DISCLOSURE", "$.quality_report", "Digitized source-chart series require conditional state and an explicit redraw warning."));
     if (settleable) errors.push(issue("DIGITIZED_SETTLEMENT", "$.settlement", "Source-chart redraws cannot be used for settlement."));
   }

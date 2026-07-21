@@ -5,8 +5,8 @@
   "modules": [
     {
       "module_id": "query",
-      "label": "查询",
-      "description": "搜索、查看、比较和解释 Cuebook 数据，只产生可引用的只读结果。",
+      "label": "Query",
+      "description": "Search, view, compare, and explain Cuebook data while producing only citable read-only results.",
       "entrypoint_skill": "query-cuebook",
       "menu_ref": "./query-menu-v1.json",
       "access": "read_only",
@@ -27,8 +27,8 @@
     },
     {
       "module_id": "create",
-      "label": "创作",
-      "description": "把用户的交易观点优化成 Frame：一个标题、一段正文和一张配对观点图；证据与可选结算留在后台，缺数据时可调用查询。",
+      "label": "Create",
+      "description": "Strengthen a user's trading view into a Frame with one title, one body, and one paired viewpoint visual; keep evidence and optional settlement in the background, querying when data is missing.",
       "entrypoint_skill": "create-cuebook-content",
       "menu_ref": "./creation-menu-v1.json",
       "access": "compose_with_authorized_writes",

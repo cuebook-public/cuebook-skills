@@ -1,4 +1,4 @@
 interface:
-  display_name: "渲染 Cuebook 观点动画"
-  short_description: "生成 React 动态观点卡、关键帧、静态兜底和视频衍生物"
-  default_prompt: "把已批准的 Cuebook 观点动画规格实现成 React 组件，并输出可复现关键帧与静态兜底。"
+  display_name: "Render Cuebook Viewpoint Motion"
+  short_description: "Render approved viewpoint motion and keyframes"
+  default_prompt: "Use $render-cuebook-viewpoint-motion to implement the approved Cuebook motion specification and export reproducible keyframes plus a static fallback."

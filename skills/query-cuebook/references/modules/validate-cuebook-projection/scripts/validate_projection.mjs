@@ -350,7 +350,7 @@ function titleSourceIdentityMatch(card, sourceText) {
   return setIntersect(titleBigrams, sourceBigrams).size > 0 || setIntersect(titleProper, sourceProper).size > 0;
 }
 
-const MATERIAL_NUMBER = pyRegex("(?<![A-Za-z])(?:[$€£¥]?\\d+(?:\\.\\d+)?\\s?(?:%|pp|bps|[BMK]|亿|万))(?![A-Za-z])", "gi");
+const MATERIAL_NUMBER = pyRegex("(?<![A-Za-z])(?:[$€£¥]?\\d+(?:\\.\\d+)?\\s?(?:%|pp|bps|[BMK]|\u4ebf|\u4e07))(?![A-Za-z])", "gi");
 
 function materiallyNumbered(text) {
   const out = new Set();

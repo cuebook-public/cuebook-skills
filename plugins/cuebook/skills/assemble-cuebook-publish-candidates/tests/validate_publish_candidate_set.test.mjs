@@ -12,6 +12,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
+  canonicalFrameBody,
   MATERIAL_REQUEST_CLASSES,
   SETTLEMENT_CONFIRMATION_FIELDS,
   SETTLEMENT_ELIGIBILITY_FIELDS,
@@ -122,7 +123,7 @@ test("fingerprint cannot drift", () => {
 
 test("copy budget is hard", () => {
   const item = baseSet();
-  item.candidates[0].copy.body = "长".repeat(961);
+  item.candidates[0].copy.body = "x".repeat(961);
   item.candidates[0].copy.visible_char_count = visibleCharCount(item.candidates[0].copy);
   const result = validate(item);
   assertCode(result, "COPY_BUDGET_EXCEEDED");
@@ -134,12 +135,12 @@ test("reasoned Frame body may exceed the old 280-character ceiling", () => {
   item.generation_policy.candidate_count = 1;
   item.candidates = [item.candidates[0]];
   item.candidates[0].copy.body = [
-    "第一段保留创作者观察。".repeat(8),
-    "第二段展开资金、行为与价格之间的传导。".repeat(8),
-    "第三段说明期限内要继续观察的信号。".repeat(8),
+    "The first paragraph preserves the creator observation. ".repeat(3),
+    "The second paragraph explains transmission between capital, behavior, and price. ".repeat(3),
+    "The third paragraph defines the signal to watch over the horizon. ".repeat(3),
   ].join("\n");
   item.candidates[0].copy.visible_char_count = visibleCharCount(item.candidates[0].copy);
-  item.candidates[0].frame.body = `${item.candidates[0].copy.body}\n\n${item.candidates[0].copy.close}`;
+  item.candidates[0].frame.body = canonicalFrameBody(item.candidates[0].copy);
   confirmSelection(item);
   const result = validate(item);
   assert.equal(result.valid, true, JSON.stringify(result.errors));
@@ -187,14 +188,14 @@ test("Frame image remains paired with the selected visual", () => {
 
 test("stock AI phrase is rejected", () => {
   const item = baseSet();
-  item.candidates[0].copy.body = "值得关注的是，Robinhood Chain 已经上线。";
+  item.candidates[0].copy.body = "It is worth noting that Robinhood Chain is now live.";
   item.candidates[0].copy.visible_char_count = visibleCharCount(item.candidates[0].copy);
   assertCode(validate(item), "PUBLIC_LANGUAGE");
 });
 
 test("settlement is shared", () => {
   const item = baseSet();
-  item.candidates[2].settlement.one_line = "HOOD 看多｜另一个期限";
+  item.candidates[2].settlement.one_line = "HOOD bullish | another horizon";
   assertCode(validate(item), "SETTLEMENT_DRIFT");
 });
 
@@ -228,7 +229,7 @@ test("assets can be checked", () => withTemp((root) => {
 test("assets require launch visual contract", () => withTemp((root) => {
   const item = baseSet();
   writeAssets(item, root);
-  writeFileSync(join(root, item.candidates[0].visual.html_ref), "<main>观点</main>", "utf8");
+  writeFileSync(join(root, item.candidates[0].visual.html_ref), "<main>Viewpoint</main>", "utf8");
   assertCode(validate(item, root), "VISUAL_LAUNCH_CONTRACT");
 }));
 

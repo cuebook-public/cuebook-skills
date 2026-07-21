@@ -13,24 +13,24 @@ const FRESHNESS = new Set(["current", "stale", "unknown"]);
 const CONTENT_CLASSES = new Set(["market_commentary", "financial_education", "investment_analysis", "product_marketing", "personalized_advice"]);
 const TEMPORAL_MODES = new Set(["realtime", "historical_replay", "evergreen"]);
 const STATE_RANK = { ready: 0, conditional: 1, blocked: 2 };
-const BANNED_PUBLIC_PHRASES = ["值得关注的是", "从机制上看", "核心逻辑在于", "传导路径", "验证路径"];
+const BANNED_PUBLIC_PHRASES = ["It is worth noting that", "From a mechanism perspective", "The core logic is", "transmission path", "verification path", "\u503c\u5f97\u5173\u6ce8\u7684\u662f", "\u4ece\u673a\u5236\u4e0a\u770b", "\u6838\u5fc3\u903b\u8f91\u5728\u4e8e", "\u4f20\u5bfc\u8def\u5f84", "\u9a8c\u8bc1\u8def\u5f84"];
 const INTERNAL_MARKERS = ["SOURCE_ASSET_MISMATCH", "PROXY_BRIDGE_MISSING", "projection-rejected", "gate-v1", "post-v1"];
-const CONDITIONAL_MARKERS_ZH = ["如果", "要是", "除非", "仍需", "还要看", "取决于", "一旦", "能否", "是否", "待确认", "可能", "观察"];
+const CONDITIONAL_MARKERS_ZH = ["\u5982\u679c", "\u8981\u662f", "\u9664\u975e", "\u4ecd\u9700", "\u8fd8\u8981\u770b", "\u53d6\u51b3\u4e8e", "\u4e00\u65e6", "\u80fd\u5426", "\u662f\u5426", "\u5f85\u786e\u8ba4", "\u53ef\u80fd", "\u89c2\u5bdf"];
 const CONDITIONAL_MARKERS_EN = /\b(if|unless|may|might|could|depends?|watch|conditional|needs? confirmation)\b/i;
-const HISTORICAL_MARKERS = ["历史", "复盘", "截至", "当时", "historical", "replay", "as of"];
-const SELF_CORRECTION_PHRASES = ["认错", "哪里看错", "什么情况算看错", "错了怎么办"];
+const HISTORICAL_MARKERS = ["\u5386\u53f2", "\u590d\u76d8", "\u622a\u81f3", "\u5f53\u65f6", "historical", "replay", "as of"];
+const SELF_CORRECTION_PHRASES = ["admit I was wrong", "where I was wrong", "what would prove me wrong", "what if I am wrong", "\u8ba4\u9519", "\u54ea\u91cc\u770b\u9519", "\u4ec0\u4e48\u60c5\u51b5\u7b97\u770b\u9519", "\u9519\u4e86\u600e\u4e48\u529e"];
 const CUEBOOK_WORKFLOW_PATTERNS = [
-  /cuebook.{0,40}(?:帮|补(?:全|充)?|完善|启发|协助|生成|改写|润色|写(?:出|成)?|建议|让我|给我|替我|完成)/i,
-  /(?:放进|用|通过|经过|借助|帮|补(?:全|充)?|完善|启发|协助|生成|改写|润色).{0,40}cuebook/i,
+  /cuebook.{0,40}(?:\u5e2e|\u8865(?:\u5168|\u5145)?|\u5b8c\u5584|\u542f\u53d1|\u534f\u52a9|\u751f\u6210|\u6539\u5199|\u6da6\u8272|\u5199(?:\u51fa|\u6210)?|\u5efa\u8bae|\u8ba9\u6211|\u7ed9\u6211|\u66ff\u6211|\u5b8c\u6210)/i,
+  /(?:\u653e\u8fdb|\u7528|\u901a\u8fc7|\u7ecf\u8fc7|\u501f\u52a9|\u5e2e|\u8865(?:\u5168|\u5145)?|\u5b8c\u5584|\u542f\u53d1|\u534f\u52a9|\u751f\u6210|\u6539\u5199|\u6da6\u8272).{0,40}cuebook/i,
   /\bcuebook\b.{0,48}\b(?:helped?|completed?|improved?|inspired?|generated?|drafted?|rewrote|suggested?)\b/i,
   /\b(?:used?|put|through|with)\b.{0,48}\bcuebook\b/i,
 ];
 const ACTION_PATTERNS = [
-  /(?:^|[。！!?；;\n])\s*(?:买|买入|卖|卖出|做多|做空|开仓|平仓)\s*\d+(?:\.\d+)?\s*(?:股|手|张|枚|份|个)/i,
-  /(?:建议|你可以|你应当|你应该|直接|现在|立刻|马上|请).{0,16}(?:买入|卖出|做多|做空|开仓|平仓|仓位|杠杆|止损|止盈)/i,
+  /(?:^|[\u3002\uff01!?\uff1b;\n])\s*(?:\u4e70|\u4e70\u5165|\u5356|\u5356\u51fa|\u505a\u591a|\u505a\u7a7a|\u5f00\u4ed3|\u5e73\u4ed3)\s*\d+(?:\.\d+)?\s*(?:\u80a1|\u624b|\u5f20|\u679a|\u4efd|\u4e2a)/i,
+  /(?:\u5efa\u8bae|\u4f60\u53ef\u4ee5|\u4f60\u5e94\u5f53|\u4f60\u5e94\u8be5|\u76f4\u63a5|\u73b0\u5728|\u7acb\u523b|\u9a6c\u4e0a|\u8bf7).{0,16}(?:\u4e70\u5165|\u5356\u51fa|\u505a\u591a|\u505a\u7a7a|\u5f00\u4ed3|\u5e73\u4ed3|\u4ed3\u4f4d|\u6760\u6746|\u6b62\u635f|\u6b62\u76c8)/i,
   /(?:^|[.!?;\n])\s*(?:buy|sell|short|go long)\s+\d+(?:\.\d+)?\s*(?:shares?|contracts?|lots?)/i,
   /\b(?:you should|i recommend|right now).{0,24}\b(?:buy|sell|short|go long|position size|leverage|stop[- ]?loss)\b/i,
-  /(?:助记词|私钥|API\s*secret|secret\s*key|seed\s*phrase)/i,
+  /(?:\u52a9\u8bb0\u8bcd|\u79c1\u94a5|API\s*secret|secret\s*key|seed\s*phrase)/i,
 ];
 const THESIS_REF = /^THESIS_[a-z0-9]{8,64}@r[1-9][0-9]*$/;
 const EXPRESSION_REF = /^CEXP_[A-Za-z0-9_:-]{8,}@r[1-9][0-9]*$/;
@@ -250,7 +250,7 @@ export function validate(item) {
     if (expectedState === "conditional" && !hasConditionalMarker(draft)) errors.push(issue("CONDITIONAL_WORDING", `$.drafts.${platform}`, "Conditional drafts must name uncertainty, a condition, or a confirmation check."));
     if (ACTION_PATTERNS.some((pattern) => pattern.test(draft))) errors.push(issue("ACTION_BOUNDARY", `$.drafts.${platform}`, "Draft crosses into personalized orders, sizing, leverage, or credential handling."));
   }
-  if ((publicText.match(/不是.{0,30}而是/g) ?? []).length > 1) warnings.push(issue("REPEATED_CONTRAST", "$.drafts", "Repeated 不是...而是 framing reads formulaic."));
+  if ((publicText.match(/\u4e0d\u662f.{0,30}\u800c\u662f/g) ?? []).length > 1) warnings.push(issue("REPEATED_CONTRAST", "$.drafts", "Repeated \u4e0d\u662f...\u800c\u662f framing reads formulaic."));
 
   const quality = item.quality_report;
   if (!isDict(quality) || !["scores", "hard_failures", "revisions"].every((key) => Object.hasOwn(quality, key))) errors.push(issue("QUALITY_REPORT", "$.quality_report", "quality_report is incomplete."));

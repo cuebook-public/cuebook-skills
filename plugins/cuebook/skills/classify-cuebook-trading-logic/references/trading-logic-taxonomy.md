@@ -15,14 +15,14 @@ Cuebook adds content-facing mechanism and expression dimensions so one viewpoint
 
 | Value | Public tag | Use when |
 |---|---|---|
-| `event_driven` | 事件驱动 | A discrete event creates the opportunity window |
-| `relative_value` | 相对价值 | The edge is a mispricing between related instruments |
-| `directional` | 方向交易 | The thesis is primarily up/down exposure |
-| `global_macro` | 宏观交易 | Macro variables or geopolitical regimes drive cross-asset positioning |
-| `factor_style` | 因子交易 | Value, quality, momentum, size, yield, growth, or low-volatility exposure drives the view |
-| `volatility` | 波动率交易 | Implied/realized volatility or convexity is the primary object |
-| `liquidity_microstructure` | 资金与流动性 | Order flow, dealer capacity, depth, squeeze, or price discovery is primary |
-| `carry_income` | Carry / 收益率 | Carry, roll-down, basis, funding, or income dominates return |
+| `event_driven` | Event driven | A discrete event creates the opportunity window |
+| `relative_value` | Relative value | The edge is a mispricing between related instruments |
+| `directional` | Directional | The thesis is primarily up/down exposure |
+| `global_macro` | Global macro | Macro variables or geopolitical regimes drive cross-asset positioning |
+| `factor_style` | Factor or style | Value, quality, momentum, size, yield, growth, or low-volatility exposure drives the view |
+| `volatility` | Volatility | Implied/realized volatility or convexity is the primary object |
+| `liquidity_microstructure` | Flow and liquidity | Order flow, dealer capacity, depth, squeeze, or price discovery is primary |
+| `carry_income` | Carry or yield | Carry, roll-down, basis, funding, or income dominates return |
 
 ## Catalyst
 
@@ -32,42 +32,42 @@ Cuebook adds content-facing mechanism and expression dimensions so one viewpoint
 
 | Value | Public tag |
 |---|---|
-| `risk_premium_transmission` | 风险溢价传导 |
-| `expectation_revision` | 预期修正 |
-| `supply_demand_repricing` | 供需重定价 |
-| `forced_flow` | 被迫资金流 |
-| `positioning_squeeze` | 仓位挤压 |
-| `liquidity_amplification` | 流动性放大 |
-| `price_discovery_lead_lag` | 价格发现 / 领先滞后 |
-| `valuation_mean_reversion` | 估值回归 |
-| `fundamental_compounding` | 基本面复利 |
-| `momentum_continuation` | 趋势延续 |
-| `volatility_repricing` | 波动率重定价 |
+| `risk_premium_transmission` | Risk-premium transmission |
+| `expectation_revision` | Expectation revision |
+| `supply_demand_repricing` | Supply-demand repricing |
+| `forced_flow` | Forced flow |
+| `positioning_squeeze` | Positioning squeeze |
+| `liquidity_amplification` | Liquidity amplification |
+| `price_discovery_lead_lag` | Price discovery or lead-lag |
+| `valuation_mean_reversion` | Valuation mean reversion |
+| `fundamental_compounding` | Fundamental compounding |
+| `momentum_continuation` | Momentum continuation |
+| `volatility_repricing` | Volatility repricing |
 | `carry_roll_down` | Carry / Roll-down |
-| `cross_asset_transmission` | 跨资产传导 |
+| `cross_asset_transmission` | Cross-asset transmission |
 
 ## Trade Expression
 
 | Value | Public tag |
 |---|---|
-| `outright_long` | 直接做多 |
-| `outright_short` | 直接做空 |
-| `relative_value_pair` | 相对价值 |
-| `long_short_basket` | 多空篮子 |
-| `etf_basket` | ETF 组合 |
-| `curve_spread` | 曲线 / 价差 |
-| `options_convexity` | 期权凸性 |
-| `volatility_trade` | 波动率 |
-| `hedge_overlay` | 对冲覆盖 |
-| `no_trade` | 暂不交易 |
+| `outright_long` | Outright long |
+| `outright_short` | Outright short |
+| `relative_value_pair` | Relative-value pair |
+| `long_short_basket` | Long/short basket |
+| `etf_basket` | ETF basket |
+| `curve_spread` | Curve or spread |
+| `options_convexity` | Options convexity |
+| `volatility_trade` | Volatility trade |
+| `hedge_overlay` | Hedge overlay |
+| `no_trade` | No trade |
 
 ## Horizon
 
-- `intraday`: 日内
-- `one_to_three_days`: 1-3 天
-- `one_to_four_weeks`: 1-4 周
-- `one_to_three_months`: 1-3 个月
-- `structural`: 中长期
+- `intraday`: intraday
+- `one_to_three_days`: 1-3 days
+- `one_to_four_weeks`: 1-4 weeks
+- `one_to_three_months`: 1-3 months
+- `structural`: medium to long term
 
 ## Edge
 
@@ -78,7 +78,7 @@ Cuebook adds content-facing mechanism and expression dimensions so one viewpoint
 1. Prefer one family tag, one mechanism tag, and one expression tag.
 2. Remove duplicates such as family `relative_value` plus expression `relative_value_pair` appearing twice.
 3. Keep two to four tags and at most 12 display characters per tag.
-4. Never use evidence workflow terms as public tags: `已确认`, `已计算`, `推演`, `待确认`, `形成中`, `observed`, `derived`, `provisional`, `conditional`.
+4. Never use evidence workflow terms as public tags: `confirmed`, `calculated`, `simulation`, `pending`, `forming`, `observed`, `derived`, `provisional`, `conditional`.
 
 ## Example
 
@@ -90,6 +90,6 @@ Creator view: an oil-tanker attack should move direct crude exposure before broa
 - expression: `relative_value_pair`
 - horizon: `one_to_three_days`
 - edge: `causal`
-- action: `油轮遇袭，我先做 USO 跑赢 XLE，窗口看 1-3 天。`
-- reason: `航运风险溢价会先写进原油期货，直接敞口通常比能源股更快。`
-- tags: `事件驱动`, `风险溢价传导`, `相对价值`
+- action: `After the tanker attack, I expect USO to outperform XLE over the next 1-3 days.`
+- reason: `Shipping risk should enter crude futures first, so direct exposure may react faster than energy equities.`
+- tags: `event driven`, `risk-premium transmission`, `relative value`

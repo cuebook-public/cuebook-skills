@@ -304,7 +304,7 @@ test("ai disclosure required", () => {
 
 test("execution instruction", () => {
   const item = baseThesis();
-  item.setup.entry_condition = "立即买入并加五倍杠杆";
+  item.setup.entry_condition = "Buy immediately with 5x leverage";
   assert.ok(codes(validate(item)).has("EXECUTION_INSTRUCTION"));
 });
 

@@ -63,7 +63,7 @@ Use `render.semantic_mode: argument_curve` when a curve alone would hide the cre
 
 Example for AAPL:
 
-`新品发布（催化剂） -> 服务收入预期上修（基本面确认） -> 周线突破（价格确认） -> 看多成立（观点状态）`
+`product launch (catalyst) -> service-revenue expectations revised higher (fundamental confirmation) -> weekly breakout (price confirmation) -> long thesis active (view state)`
 
 The plot shows weekly AAPL price, the event date, and the explicit breakout level. The dominant number shows the sourced services estimate revision. Missing estimate history or breakout provenance makes the output conditional.
 

@@ -414,16 +414,16 @@ test("Cuebook-assisted contract records all addition decisions", () => {
   const publicAttribution = clone(plan);
   Object.assign(publicAttribution.authorship_assistance, {
     public_attribution_required: true,
-    public_attribution_line: "Cuebook 帮我完善了交易想法。",
+    public_attribution_line: "Cuebook helped me refine the trade idea.",
   });
   assert.ok(resultCodes(validate(publicAttribution)).has("CUEBOOK_ASSISTANCE_INTERNAL"));
 
   const publicNarration = clone(plan);
-  publicNarration.narrative.frame = "Cuebook 帮我补全了这笔交易。";
+  publicNarration.narrative.frame = "Cuebook completed this trade idea for me.";
   assert.ok(resultCodes(validate(publicNarration)).has("PUBLIC_CUEBOOK_NARRATION"));
 
   const sourceLabel = clone(plan);
-  sourceLabel.narrative.frame = "数据来源：Cuebook；交易判断仍由创作者提出。";
+  sourceLabel.narrative.frame = "Data source: Cuebook; the trading judgment remains the creator's own.";
   assertValid(sourceLabel);
 
   const broken = clone(plan);
@@ -433,8 +433,8 @@ test("Cuebook-assisted contract records all addition decisions", () => {
 
 test("anti-AI language rejects stock phrases and repeated reframe", () => {
   const plan = makePlan(archetype("S1"));
-  plan.narrative.frame = "值得关注的是，这不是价格噪音而是结构变化。";
-  plan.visual_plan.intent.primary_message = "这不是短期波动而是长期重估。";
+  plan.narrative.frame = "It is worth noting that this is not price noise but a structural change.";
+  plan.visual_plan.intent.primary_message = "This is not short-term volatility but a long-term rerating.";
   const codes = resultCodes(validate(plan));
   assert.ok(codes.has("AI_STOCK_PHRASE"));
   assert.ok(codes.has("REPEATED_NOT_A_BUT_B"));

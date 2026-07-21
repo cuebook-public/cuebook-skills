@@ -43,25 +43,25 @@ function pyRegex(pattern, flags = "") {
 }
 
 const EVENT_PATTERNS = {
-  "technical-level": ["\\b(?:20|50|100|200)[- ]day\\b", "\\bdma\\b", "moving average", "break(?:down|out)", "day low", "gap (?:fill|risk)", "跌破", "均线", "新低", "支撑位"],
-  "prediction-market": ["polymarket", "kalshi", "prediction market", "implied probability", "\\bodds\\b", "预测市场", "隐含概率"],
-  "mechanical-flow": ["index (?:addition|inclusion|reconstitution)", "added to .*index", "russell", "buyback", "repurchase", "share issuance", "secondary offering", "unlock", "指数纳入", "回购", "增发", "解禁"],
-  "credit-financing": ["senior (?:secured |unsecured )?notes", "\\bbonds?\\b", "refinanc", "coupon", "maturit", "debt issuance", "credit spread", "信用债", "债券", "再融资"],
-  "company-guidance": ["guidance", "outlook", "expects? .*\\b(?:revenue|ebitda|eps)\\b", "reiterates? .*\\b(?:revenue|ebitda|eps)\\b", "业绩指引", "收入指引"],
-  "earnings-result": ["quarterly results", "earnings (?:beat|miss)", "reported (?:eps|revenue)", "财报", "盈利.*(?:上升|下降)"],
-  "inventory-print": ["storage .* (?:vs|versus)", "inventory .* (?:vs|versus)", "cpi .* (?:vs|versus)", "库存", "储量"],
-  "macro-policy": ["\\bfed\\b", "fomc", "core cpi", "inflation", "rate (?:cut|hike)", "treasury yield", "央行", "通胀", "降息", "加息"],
-  "analyst-action": ["price target", "raises? target", "lowers? target", "analyst", "upgrades? .{0,50} to", "downgrades? .{0,50} to", "目标价", "评级上调", "评级下调"],
-  "government-contract": ["government contract", "contract award", "procurement", "awarded .*contract", "政府合同", "中标"],
-  "deal-event": ["merger approval", "merger closes?", "shareholder approval", "closing conditions", "并购获批", "合并完成"],
-  "legal-regulatory": ["lawsuit", "sues?", "regulator", "regulatory approval", "antitrust", "oig", "micar", "诉讼", "监管", "反垄断"],
-  "geopolitical-risk": ["hormuz", "shipping route", "safe passage", "military strike", "war", "sanction", "brent", "wti", "战争", "制裁", "航运"],
-  "capital-investment": ["\\$?\\d+(?:\\.\\d+)?[BMK]? investment", "capital expenditure", "capex", "投资计划", "资本开支"],
-  "operating-data": ["shipments?", "deliveries", "same-store", "subscribers?", "daily active", "同比", "环比", "出货"],
-  "crowded-positioning": ["liquidat", "crowded", "unwind", "leveraged", "margin call", "circuit breaker", "爆仓", "杠杆", "熔断", "拥挤"],
-  "social-sentiment": ["lost .*savings", "blew up", "worst summer", "pain", "fomo", "亏掉", "无法翻身", "彻底失败"],
-  "product-strategy": ["product cycle", "\\btam\\b", "adoption", "platform strategy", "category expansion", "knowledge ownership", "产品周期", "渗透率", "市场空间"],
-  "price-action": ["stock (?:is )?(?:up|down)", "shares? (?:rise|fall)", "risk-off", "price dislocation", "股价.*(?:上涨|下跌)", "暴涨", "暴跌"],
+  "technical-level": ["\\b(?:20|50|100|200)[- ]day\\b", "\\bdma\\b", "moving average", "break(?:down|out)", "day low", "gap (?:fill|risk)", "\u8dcc\u7834", "\u5747\u7ebf", "\u65b0\u4f4e", "\u652f\u6491\u4f4d"],
+  "prediction-market": ["polymarket", "kalshi", "prediction market", "implied probability", "\\bodds\\b", "\u9884\u6d4b\u5e02\u573a", "\u9690\u542b\u6982\u7387"],
+  "mechanical-flow": ["index (?:addition|inclusion|reconstitution)", "added to .*index", "russell", "buyback", "repurchase", "share issuance", "secondary offering", "unlock", "\u6307\u6570\u7eb3\u5165", "\u56de\u8d2d", "\u589e\u53d1", "\u89e3\u7981"],
+  "credit-financing": ["senior (?:secured |unsecured )?notes", "\\bbonds?\\b", "refinanc", "coupon", "maturit", "debt issuance", "credit spread", "\u4fe1\u7528\u503a", "\u503a\u5238", "\u518d\u878d\u8d44"],
+  "company-guidance": ["guidance", "outlook", "expects? .*\\b(?:revenue|ebitda|eps)\\b", "reiterates? .*\\b(?:revenue|ebitda|eps)\\b", "\u4e1a\u7ee9\u6307\u5f15", "\u6536\u5165\u6307\u5f15"],
+  "earnings-result": ["quarterly results", "earnings (?:beat|miss)", "reported (?:eps|revenue)", "\u8d22\u62a5", "\u76c8\u5229.*(?:\u4e0a\u5347|\u4e0b\u964d)"],
+  "inventory-print": ["storage .* (?:vs|versus)", "inventory .* (?:vs|versus)", "cpi .* (?:vs|versus)", "\u5e93\u5b58", "\u50a8\u91cf"],
+  "macro-policy": ["\\bfed\\b", "fomc", "core cpi", "inflation", "rate (?:cut|hike)", "treasury yield", "\u592e\u884c", "\u901a\u80c0", "\u964d\u606f", "\u52a0\u606f"],
+  "analyst-action": ["price target", "raises? target", "lowers? target", "analyst", "upgrades? .{0,50} to", "downgrades? .{0,50} to", "\u76ee\u6807\u4ef7", "\u8bc4\u7ea7\u4e0a\u8c03", "\u8bc4\u7ea7\u4e0b\u8c03"],
+  "government-contract": ["government contract", "contract award", "procurement", "awarded .*contract", "\u653f\u5e9c\u5408\u540c", "\u4e2d\u6807"],
+  "deal-event": ["merger approval", "merger closes?", "shareholder approval", "closing conditions", "\u5e76\u8d2d\u83b7\u6279", "\u5408\u5e76\u5b8c\u6210"],
+  "legal-regulatory": ["lawsuit", "sues?", "regulator", "regulatory approval", "antitrust", "oig", "micar", "\u8bc9\u8bbc", "\u76d1\u7ba1", "\u53cd\u5784\u65ad"],
+  "geopolitical-risk": ["hormuz", "shipping route", "safe passage", "military strike", "war", "sanction", "brent", "wti", "\u6218\u4e89", "\u5236\u88c1", "\u822a\u8fd0"],
+  "capital-investment": ["\\$?\\d+(?:\\.\\d+)?[BMK]? investment", "capital expenditure", "capex", "\u6295\u8d44\u8ba1\u5212", "\u8d44\u672c\u5f00\u652f"],
+  "operating-data": ["shipments?", "deliveries", "same-store", "subscribers?", "daily active", "\u540c\u6bd4", "\u73af\u6bd4", "\u51fa\u8d27"],
+  "crowded-positioning": ["liquidat", "crowded", "unwind", "leveraged", "margin call", "circuit breaker", "\u7206\u4ed3", "\u6760\u6746", "\u7194\u65ad", "\u62e5\u6324"],
+  "social-sentiment": ["lost .*savings", "blew up", "worst summer", "pain", "fomo", "\u4e8f\u6389", "\u65e0\u6cd5\u7ffb\u8eab", "\u5f7b\u5e95\u5931\u8d25"],
+  "product-strategy": ["product cycle", "\\btam\\b", "adoption", "platform strategy", "category expansion", "knowledge ownership", "\u4ea7\u54c1\u5468\u671f", "\u6e17\u900f\u7387", "\u5e02\u573a\u7a7a\u95f4"],
+  "price-action": ["stock (?:is )?(?:up|down)", "shares? (?:rise|fall)", "risk-off", "price dislocation", "\u80a1\u4ef7.*(?:\u4e0a\u6da8|\u4e0b\u8dcc)", "\u66b4\u6da8", "\u66b4\u8dcc"],
 };
 
 const PRIORITY = Object.keys(EVENT_PATTERNS);
@@ -190,7 +190,7 @@ function scoreEvents(card) {
   );
 }
 
-const HARD_NUMBER = pyRegex("(?<![A-Za-z])[$€£¥]?\\d+(?:\\.\\d+)?\\s?(?:%|pp|bps|[BMK]|亿|万)(?![A-Za-z])", "gi");
+const HARD_NUMBER = pyRegex("(?<![A-Za-z])[$€£¥]?\\d+(?:\\.\\d+)?\\s?(?:%|pp|bps|[BMK]|\u4ebf|\u4e07)(?![A-Za-z])", "gi");
 
 function hardNumbers(card) {
   const text = blob(card, ["source_content", "sourceContent", "source_events", "sourceEvents", "evidence", "title", "bottom_line", "bottomLine"]);

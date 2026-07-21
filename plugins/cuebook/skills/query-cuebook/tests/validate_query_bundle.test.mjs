@@ -13,7 +13,7 @@ function bundle() {
     read_only: true,
     query_type: "latest_stories",
     as_of: "2026-07-15T19:00:00+08:00",
-    request: { raw_text: "看 USO 最新叙事", asset_refs: ["asset:uso"], time_range: null, depth: "quick" },
+    request: { raw_text: "Show USO's latest narrative", asset_refs: ["asset:uso"], time_range: null, depth: "quick" },
     results: [{ result_id: "RES_story", kind: "story", title: "Oil risk premium", summary: "Risk premium is unwinding.", data_ref: "story:uso:1", source_refs: ["SRC_story"], as_of: "2026-07-15T18:50:00+08:00", status: "available" }],
     source_register: [{ source_ref: "SRC_story", source_type: "cuebook_story", locator: "cuebook://story/uso/1", published_at: "2026-07-15T18:45:00+08:00", retrieved_at: "2026-07-15T19:00:00+08:00", retrieved_via: "cuebook_mcp", usage_rights: "citation_only" }],
     retrieval_report: { cuebook_batches: 1, web_batches: 0, web_queries: 0, web_source_refs: [] },
@@ -27,7 +27,7 @@ function request() {
   return {
     schema_version: "cuebook-query-request-v1",
     request_id: "QREQ_hood_chart",
-    raw_text: "画一张 HOOD 和 COIN 过去一年的事实价格对比图，不写观点。",
+    raw_text: "Draw a factual one-year price comparison of HOOD and COIN without a viewpoint.",
     query_type: "market_series",
     asset_inputs: ["HOOD", "COIN"],
     time_range: "1y",

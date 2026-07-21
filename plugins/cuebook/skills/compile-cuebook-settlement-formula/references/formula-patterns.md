@@ -47,7 +47,7 @@ For pair `all` formulas, aggregate per-leg verdicts in this order:
 
 For `long_short`, compute simple returns from synchronized endpoints and subtract the short asset's raw return from the long asset's raw return. This correctly succeeds when the long leg falls less than the short leg, for example `-2% - (-5%) = +3%`. If either leg lacks an eligible endpoint, return `no_data`. Equality is `flat` for strict `gt`; equality is `hit` for inclusive `gte`.
 
-The launch pair is equal-notional. Default `margin_bps` to `0` when the creator states only “A 跑赢 B” or “A 跑输 B”. A stated minimum excess return may freeze a positive margin. This is a raw long/short spread, not a beta-neutral or factor-alpha estimate.
+The launch pair is equal-notional. Default `margin_bps` to `0` when the creator states only “A outperforms B” or “A underperforms B”. A stated minimum excess return may freeze a positive margin. This is a raw long/short spread, not a beta-neutral or factor-alpha estimate.
 
 Both legs must belong to the same settlement session family. Continuous crypto and scheduled exchange sessions cannot be made compatible by choosing a convenient shared timestamp. BTC/QQQ may still be shown as a sourced comparison, but the current settlement engine must return `MIXED_SESSION_FAMILY`; the creator may explicitly choose a single-asset settlement or publish without settlement.
 

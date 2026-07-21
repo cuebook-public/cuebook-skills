@@ -89,7 +89,7 @@ function baseClaim() {
     public_view: {
       settlement_summary: "USO is successful if its official regular-session close at the deadline is above 117.79 USD; otherwise it fails.",
       one_line: "",
-      status_label: "待结算",
+      status_label: "Ready to settle",
     },
     quality_report: { decision: "ready", warnings: [], missing_fields: [] },
   };
@@ -104,7 +104,7 @@ function errorCodes(result) {
 test("valid terminal claim", () => {
   const result = validate(baseClaim());
   assert.equal(result.valid, true, JSON.stringify(result.errors));
-  assert.equal(result.generated_one_line, "USO 看多｜截至 2026-07-17｜到期常规收盘 > 117.79 USD｜待结算");
+  assert.equal(result.generated_one_line, "USO bullish | through 2026-07-17 | at expiry regular close > 117.79 USD | Ready to settle");
 });
 
 test("window barrier", () => {
@@ -115,7 +115,7 @@ test("window barrier", () => {
   item.public_view.one_line = renderOneLine(item);
   const result = validate(item);
   assert.equal(result.valid, true, JSON.stringify(result.errors));
-  assert.ok(result.generated_one_line.includes("期间任一常规收盘 >= 119.83 USD"));
+  assert.ok(result.generated_one_line.includes("at any point in the window regular close >= 119.83 USD"));
 });
 
 test("unconfirmed proposal blocks ready", () => {
@@ -133,7 +133,7 @@ test("needs confirmation allows proposal", () => {
   item.extraction.mode = "mixed";
   item.extraction.proposed_fields = ["clock.window_end"];
   item.quality_report.decision = "needs_confirmation";
-  item.public_view.status_label = "待确认";
+  item.public_view.status_label = "Needs confirmation";
   item.public_view.one_line = renderOneLine(item);
   const result = validate(item);
   assert.equal(result.valid, true, JSON.stringify(result.errors));
@@ -190,7 +190,7 @@ test("conditional intent requires ordered trigger", () => {
   item.public_view.one_line = renderOneLine(item);
   let result = validate(item);
   assert.equal(result.valid, true, JSON.stringify(result.errors));
-  assert.ok(result.generated_one_line.includes("条件看多"));
+  assert.ok(result.generated_one_line.includes("conditional bullish"));
 
   item.intent.trigger_condition_ref = "C2";
   item.public_view.one_line = renderOneLine(item);
@@ -225,7 +225,7 @@ test("triggered regime uses protocol event horizon", () => {
     window_end: null,
     end_mode: "protocol_event",
     end_event_ref: "EVENT_btc-halving-next",
-    end_event_label: "下一次 BTC 减半",
+    end_event_label: "next BTC halving",
     end_event_source_ref: "source:bitcoin-chain",
     fallback_window_end: null,
     market_session: "continuous",
@@ -246,7 +246,7 @@ test("triggered regime uses protocol event horizon", () => {
         data_source_ref: "source:cuebook-btc-d1-signal-v1",
         benchmark_ref: null,
         event_ref: "SIGNAL_btc-d1-close-65000-volume-20",
-        description: "日线收盘 > 65,000 且成交量 >= 前20个完整日均量",
+        description: "daily close > 65,000 and volume >= the average of the prior 20 completed days",
       },
       {
         id: "C2",
@@ -276,7 +276,7 @@ test("triggered regime uses protocol event horizon", () => {
   assert.equal(result.valid, true, JSON.stringify(result.errors));
   assert.equal(
     result.generated_one_line,
-    "BTC 条件看多｜至下一次 BTC 减半｜日线收盘 > 65,000 且成交量 >= 前20个完整日均量 -> 事件后首次官方收盘 > 触发收盘价｜待结算",
+    "BTC conditional bullish | until next BTC halving | daily close > 65,000 and volume >= the average of the prior 20 completed days -> at the first observation after the event official close > trigger close | Ready to settle",
   );
 });
 
@@ -295,12 +295,12 @@ test("compound all", () => {
     data_source_ref: "source:maritime-advisory",
     benchmark_ref: null,
     event_ref: "EVENT_verified-traffic-restriction",
-    description: "到期前权威航运数据确认通航仍受限",
+    description: "authoritative shipping data confirms restricted transit before expiry",
   });
   item.public_view.one_line = renderOneLine(item);
   const result = validate(item);
   assert.equal(result.valid, true, JSON.stringify(result.errors));
-  assert.ok(result.generated_one_line.includes(" 且 到期前权威航运数据确认通航仍受限"));
+  assert.ok(result.generated_one_line.includes(" and authoritative shipping data confirms restricted transit before expiry"));
 });
 
 test("relative requires benchmark", () => {
@@ -330,13 +330,13 @@ test("relative one line names benchmark", () => {
   item.public_view.one_line = renderOneLine(item);
   const result = validate(item);
   assert.equal(result.valid, true, JSON.stringify(result.errors));
-  assert.ok(result.generated_one_line.includes("（相对 XLE）"));
+  assert.ok(result.generated_one_line.includes("(relative to XLE)"));
 });
 
 test("frozen hash", () => {
   const item = baseClaim();
   item.state = "frozen";
-  item.public_view.status_label = "已冻结";
+  item.public_view.status_label = "Frozen";
   item.public_view.one_line = renderOneLine(item);
   item.lineage.canonical_hash = canonicalHash(item);
   const result = validate(item);

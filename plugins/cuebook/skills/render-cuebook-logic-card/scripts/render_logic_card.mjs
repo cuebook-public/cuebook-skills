@@ -43,19 +43,19 @@ const PALETTES = {
 };
 
 const STATUS_META = {
-  observed: ["已观察", "cyan", "cyan_soft"],
-  derived: ["推演", "green", "green_soft"],
-  conditional: ["待验证", "yellow", "yellow_soft"],
-  unresolved: ["未解决", "red", "red_soft"],
+  observed: ["OBSERVED", "cyan", "cyan_soft"],
+  derived: ["DERIVED", "green", "green_soft"],
+  conditional: ["TO VERIFY", "yellow", "yellow_soft"],
+  unresolved: ["UNRESOLVED", "red", "red_soft"],
 };
 const KIND_LABELS = {
-  event: "事件", evidence: "证据", mechanism: "机制", actor_action: "资金动作",
-  market_effect: "市场结果", metric: "指标", condition: "条件", countercase: "反例",
-  invalidation: "失效", settlement: "结算",
+  event: "EVENT", evidence: "EVIDENCE", mechanism: "MECHANISM", actor_action: "CAPITAL ACTION",
+  market_effect: "MARKET EFFECT", metric: "METRIC", condition: "CONDITION", countercase: "COUNTERCASE",
+  invalidation: "INVALIDATION", settlement: "SETTLEMENT",
 };
 const GRAMMAR_LABELS = {
-  causal_chain: "因果链", metric_thesis: "指标论证", scenario_tree: "情景树",
-  evidence_balance: "证据天平", comparison: "相对比较",
+  causal_chain: "CAUSAL CHAIN", metric_thesis: "METRIC THESIS", scenario_tree: "SCENARIO TREE",
+  evidence_balance: "EVIDENCE BALANCE", comparison: "RELATIVE COMPARISON",
 };
 
 function pyTruthy(value) {
@@ -171,7 +171,7 @@ export function topologicalNodes(argument, candidates) {
 
 function commonOpen(argument, grammar, colors) {
   const sourceCount = nodeSources(argument.graph.nodes).concat(argument.metrics.map((item) => item.source_ref)).length;
-  const statusLabel = { draft: "草稿", conditional: "待确认", ready: "可发布", frozen: "已冻结" }[argument.state];
+  const statusLabel = { draft: "DRAFT", conditional: "TO CONFIRM", ready: "READY", frozen: "FROZEN" }[argument.state];
   const statusFill = new Set(["draft", "conditional"]).has(argument.state) ? colors.yellow_soft : colors.green_soft;
   const statusInk = new Set(["draft", "conditional"]).has(argument.state) ? colors.yellow : colors.green;
   return [
@@ -183,9 +183,9 @@ function commonOpen(argument, grammar, colors) {
     rect(0, 0, WIDTH, HEIGHT, colors.bg, "none", 0),
     rect(34, 28, 38, 38, colors.black, "none", 7),
     textBlock(53, 56, "C", 2, 1, 24, 26, colors.yellow, 800, "middle", "Georgia,serif"),
-    textBlock(88, 56, `Cuebook 观点逻辑 · ${GRAMMAR_LABELS[grammar]}`, 40, 1, 17, 20, colors.ink, 700),
+    textBlock(88, 56, `Cuebook View Logic · ${GRAMMAR_LABELS[grammar]}`, 40, 1, 17, 20, colors.ink, 700),
     pill(1014, 34, statusLabel, statusFill, statusInk, 112),
-    textBlock(965, 55, `${sourceCount} 个来源`, 20, 1, 13, 16, colors.muted, 500, "end"),
+    textBlock(965, 55, `${sourceCount} sources`, 20, 1, 13, 16, colors.muted, 500, "end"),
     textBlock(56, 110, argument.frame.headline, 62, 2, 34, 42, colors.ink, 750),
     textBlock(56, 188, argument.frame.thesis, 100, 2, 18, 25, colors.muted, 450),
   ];
@@ -202,11 +202,11 @@ export function settlementLine(argument) {
   let readable;
   if (benchmark && new Set(["outperform", "underperform"]).has(direction)) {
     const operator = direction === "outperform" ? ">" : "<";
-    readable = `${primary} 相对 ${benchmark.ticker} 收益 ${operator} 0%`;
+    readable = `${primary} return relative to ${benchmark.ticker} ${operator} 0%`;
   } else {
     readable = settlement.condition;
   }
-  return `截至 ${deadlineLabel} · 成功条件：${readable}`;
+  return `Through ${deadlineLabel} · Success: ${readable}`;
 }
 
 function commonFooter(argument, colors) {
@@ -216,18 +216,18 @@ function commonFooter(argument, colors) {
     parts.push(
       rect(56, 608, 1088, 96, colors.black, "none", 7),
       rect(56, 608, 8, 96, colors.yellow, "none", 7),
-      textBlock(84, 640, "可结算观点", 16, 1, 14, 16, colors.yellow, 700),
+      textBlock(84, 640, "SETTLEABLE VIEW", 16, 1, 14, 16, colors.yellow, 700),
       textBlock(84, 674, line, 82, 2, 18, 23, "#FFFFFF", 600),
     );
   } else {
     parts.push(
       `<line x1="56" y1="624" x2="1144" y2="624" stroke="${colors.line}" stroke-width="1"/>`,
-      textBlock(56, 657, "观点仍在形成中，按可观察条件继续验证。", 70, 2, 17, 22, colors.muted, 500),
+      textBlock(56, 657, "The view is still forming; continue testing it against observable conditions.", 70, 2, 17, 22, colors.muted, 500),
     );
   }
   parts.push(
     textBlock(56, 738, "Cuebook", 20, 1, 20, 22, colors.muted, 700),
-    textBlock(1144, 738, "观点有来源 · 推演有状态 · 到期可验证", 44, 1, 13, 16, colors.muted, 500, "end"),
+    textBlock(1144, 738, "Sourced views · Explicit states · Verifiable at expiry", 60, 1, 13, 16, colors.muted, 500, "end"),
     "</svg>",
   );
   return parts;
@@ -278,7 +278,7 @@ function renderCausalChain(argument, colors) {
     parts.push(
       `<path d="M ${pyFloatFixed(challengeX + challengeWidth / 2, 1)} 466 C ${pyFloatFixed(challengeX + challengeWidth / 2, 1)} 446, ${pyFloatFixed(targetX, 1)} 452, ${pyFloatFixed(targetX, 1)} 438" fill="none" stroke="${colors.red}" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrow-red)"/>`,
       rect(challengeX, 466, challengeWidth, 110, colors.red_soft, colors.red, 7),
-      textBlock(challengeX + 22, 494, "反例 / 失效条件", 24, 1, 13, 15, colors.red, 750),
+      textBlock(challengeX + 22, 494, "COUNTERCASE / INVALIDATION", 30, 1, 13, 15, colors.red, 750),
       textBlock(challengeX + 22, 530, node.label, 48, 2, 18, 23, colors.ink, 650),
     );
   }
@@ -289,12 +289,12 @@ function renderCausalChain(argument, colors) {
 function renderMetricThesis(argument, colors) {
   const metrics = argument.metrics.slice(0, 4);
   if (metrics.length < 2) throw new Error("metric_thesis requires at least two metrics.");
-  const parts = [textBlock(56, 248, "决定这条观点的数字", 30, 1, 14, 17, colors.cyan, 750)];
+  const parts = [textBlock(56, 248, "THE NUMBERS THAT DECIDE THIS VIEW", 30, 1, 14, 17, colors.cyan, 750)];
   const gap = 18;
   const width = (1088 - gap * (metrics.length - 1)) / metrics.length;
   metrics.forEach((metric, index) => {
     const x = 56 + index * (width + gap);
-    const statusLabel = { verified: "已核验", provisional: "形成中", estimated: "估算" }[metric.status];
+    const statusLabel = { verified: "VERIFIED", provisional: "FORMING", estimated: "ESTIMATED" }[metric.status];
     const accent = metric.status === "verified" ? colors.green : colors.yellow;
     const soft = metric.status === "verified" ? colors.green_soft : colors.yellow_soft;
     parts.push(
@@ -308,7 +308,7 @@ function renderMetricThesis(argument, colors) {
   if (challenge.length) {
     parts.push(
       rect(56, 494, 1088, 82, colors.red_soft, colors.red, 7),
-      textBlock(78, 524, "观点失效", 16, 1, 13, 15, colors.red, 750),
+      textBlock(78, 524, "VIEW INVALIDATED", 16, 1, 13, 15, colors.red, 750),
       textBlock(190, 526, challenge[0].label, 78, 2, 18, 23, colors.ink, 600),
     );
   }
@@ -323,16 +323,16 @@ function renderScenarioTree(argument, colors) {
   const root = rootNodes.length ? rootNodes[0] : argument.graph.nodes[0];
   const parts = [
     rect(376, 244, 448, 94, colors.surface, colors.cyan, 7),
-    textBlock(398, 274, "当前设置", 14, 1, 13, 15, colors.cyan, 750),
+    textBlock(398, 274, "CURRENT SETUP", 14, 1, 13, 15, colors.cyan, 750),
     textBlock(398, 309, root.label, 38, 2, 19, 24, colors.ink, 700),
   ];
   const gap = 24;
   const width = (1088 - gap * (scenarios.length - 1)) / scenarios.length;
   const stanceMeta = {
-    bull: ["上行情景", colors.green, colors.green_soft],
-    base: ["基准情景", colors.cyan, colors.cyan_soft],
-    bear: ["下行情景", colors.red, colors.red_soft],
-    risk: ["风险情景", colors.yellow, colors.yellow_soft],
+    bull: ["BULL CASE", colors.green, colors.green_soft],
+    base: ["BASE CASE", colors.cyan, colors.cyan_soft],
+    bear: ["BEAR CASE", colors.red, colors.red_soft],
+    risk: ["RISK CASE", colors.yellow, colors.yellow_soft],
   };
   scenarios.forEach((scenario, index) => {
     const x = 56 + index * (width + gap);
@@ -358,8 +358,8 @@ function renderEvidenceBalance(argument, colors) {
   const parts = [
     rect(56, 250, 524, 294, colors.green_soft, colors.green, 7),
     rect(620, 250, 524, 294, colors.red_soft, colors.red, 7),
-    textBlock(80, 284, "支持这条观点", 22, 1, 15, 18, colors.green, 750),
-    textBlock(644, 284, "反例与失效", 22, 1, 15, 18, colors.red, 750),
+    textBlock(80, 284, "SUPPORTING THE VIEW", 22, 1, 15, 18, colors.green, 750),
+    textBlock(644, 284, "COUNTERCASE AND INVALIDATION", 32, 1, 15, 18, colors.red, 750),
   ];
   support.forEach((node, index) => {
     const y = 330 + index * 66;

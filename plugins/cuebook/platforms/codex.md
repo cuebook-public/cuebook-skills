@@ -25,7 +25,7 @@ Codex reads exactly two `SKILL.md` files at startup. Internal capabilities are
 vendored as non-discoverable `references/modules/*.md` resources behind
 `query-cuebook` and `create-cuebook-content`.
 
-The default marketplace follows stable releases from `main`. Add `--ref v0.9.5`
+The default marketplace follows stable releases from `main`. Add `--ref v0.9.6`
 only for an intentionally frozen install.
 
 ## Update
@@ -44,8 +44,10 @@ marketplace upgrades for local checkouts because it does not own their Git
 state.
 
 Do not uninstall, duplicate `.mcp.json`, or repeat OAuth for a normal update.
-The connector owns its existing credential. Open one new task after refresh so
-Codex loads the new Skill bundle; reauthenticate only when the connector
+The connector owns its existing credential. After a version-changing refresh,
+fully quit and reopen the Codex app, or restart the Codex CLI process, before
+opening one new task. A new task alone can retain an older in-memory Plugin and
+Tool snapshot. Reauthenticate only when the connector
 explicitly reports `not_logged_in`, requires scope step-up, or the grant was
 revoked.
 
@@ -62,9 +64,11 @@ authenticated; do not start a second login after the first succeeds.
 
 The installing task owns installation and that one necessary host login. It
 must not create a background test task, publish a placeholder idea, or use a
-public ChatGPT plugin manager to diagnose this local marketplace. The user
-opens one new task only after authentication completes so plugin discovery
-happens once with an authenticated connector.
+public ChatGPT plugin manager to diagnose this local marketplace. After
+authentication completes, fully quit and reopen the Codex app (`Cmd+Q` on
+macOS), or restart the Codex CLI process. Only then open one new task so Plugin
+and Tool discovery happen from the installed version with an authenticated
+connector.
 
 ## MCP configuration and auth
 
@@ -80,8 +84,8 @@ the install-time connection before opening one later task; do not make the
 Skill repeat DCR, run a CLI login, create a custom client, or open another task.
 
 If the plugin was installed during the current task, finish install-time
-authentication first and then open one new task. Do not reinstall or debug
-plugin discovery inside the creation flow.
+authentication, fully restart the host, and then open one new task. Do not
+reinstall or debug plugin discovery inside the creation flow.
 
 ## Invocation
 

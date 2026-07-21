@@ -69,7 +69,7 @@ function invoke({ auditValid = true, licenseMode = "production", alt = null, rep
       audit ?? renderAudit(auditValid),
       directionSet(rendererMode),
       rendererMode === "finished_bitmap" ? null : fonts,
-      alt ?? { publication: "USO 30 天偏多的观点图" },
+      alt ?? { publication: "Bullish USO 30-day viewpoint visual" },
     );
   } finally {
     rmSync(root, { recursive: true, force: true });

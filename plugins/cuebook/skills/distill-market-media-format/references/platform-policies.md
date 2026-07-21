@@ -21,13 +21,13 @@ Require a current rules URL and check time for the named community. Keep affilia
 ## Xiaohongshu
 
 - Current finance-account governance is time-sensitive. The platform's [professional account qualification help](https://ad.xiaohongshu.com/next_help/docs/195c5fe505c71b4b0335a2fe0d61d8e0) shows that finance-related identities and commercial activity can require qualification.
-- A June 2026 governance update appears in the platform's [`薯管家` announcement](https://weibo.com/5859555080/R2nBKlHlU) and was reported by [中新经纬](https://www.jwview.com/jingwei/html/m/06-04/673518.shtml). Verify the live official account notice before publishing.
+- A June 2026 governance update appears in the platform's [official governance announcement](https://weibo.com/5859555080/R2nBKlHlU) and was covered by [JW View](https://www.jwview.com/jingwei/html/m/06-04/673518.shtml). Verify the live official account notice before publishing.
 
 Record account qualification, content identity, commercial relationship, asset rights, and disclosure. Qualification unknown means conditional for professional investment analysis or marketing. Personalized orders remain blocked.
 
 ## Douyin
 
-- Douyin published a trial finance-industry community convention in December 2025; see the [official convention text](https://95152.douyin.com/article/5561765854302017) and contemporaneous reporting by [中国金融信息网](https://www.cnfin.com/gs-lb/detail/20251216/4351490_1.html).
+- Douyin published a trial finance-industry community convention in December 2025; see the [official convention text](https://95152.douyin.com/article/5561765854302017) and contemporaneous reporting by [China Financial Information Network](https://www.cnfin.com/gs-lb/detail/20251216/4351490_1.html).
 - The convention and related governance distinguish financial education from unqualified professional advice and misleading marketing. Verify the current official text and account qualification before publishing.
 
 Record qualification and content class. Block personalized orders, direct position sizing, leverage instructions, and unsupported buy/sell levels. Use visible disclosures for financial relationships and uncertainty.

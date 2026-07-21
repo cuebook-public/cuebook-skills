@@ -54,7 +54,7 @@ Turn the creator's actual claim into one chart job. The claim chooses the compar
 - Relative thesis: normalized returns for both legs. Never overlay two raw prices on one axis.
 - Conditional thesis: show the trigger as a level or event. Do not paint the directional state as active before the trigger.
 - Open-ended trigger thesis: show observed context, the explicit trigger, and any sourced confirmation pane. Omit expiry, unresolved-future shading, and settlement language until the creator supplies a horizon.
-- Price-and-volume thesis: keep price and volume as two aligned panes. The default Cuebook meaning of an unqualified “放量” is `sealed_bar_volume / mean(previous 20 sealed bars) >= 1.0`; set `volume_average_window` or a stronger explicit ratio when the creator supplies one. Forming-bar volume is context only.
+- Price-and-volume thesis: keep price and volume as two aligned panes. The default Cuebook meaning of an unqualified “volume expansion” is `sealed_bar_volume / mean(previous 20 sealed bars) >= 1.0`; set `volume_average_window` or a stronger explicit ratio when the creator supplies one. Forming-bar volume is context only.
 - Settlement view: emphasize the exact observation basis, numeric threshold when chartable, and expiry. Use forming data for context only, never as an official close; keep composite settlement prose outside the plot.
 
 ## Hard Gates

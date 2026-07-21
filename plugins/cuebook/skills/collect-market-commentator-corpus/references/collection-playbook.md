@@ -62,7 +62,7 @@ Use `--default-platform`, `--default-author-name`, and `--default-author-handle`
 
 - Store only observed numeric values in `metrics.values`.
 - Set `metrics.available` from the presence of at least one value and enumerate absent core fields in `metrics.missing`.
-- Parse commas and `K/M/B` or Chinese `万/亿` count suffixes. Do not convert a missing, invalid, or hidden metric to zero.
+- Parse commas and locale-specific count suffixes such as `K/M/B` or ten-thousand/hundred-million units. Do not convert a missing, invalid, or hidden metric to zero.
 - When duplicates contain different snapshots, retain the maximum observed count per field and the latest valid observation time.
 
 ## Deduplication And Provenance

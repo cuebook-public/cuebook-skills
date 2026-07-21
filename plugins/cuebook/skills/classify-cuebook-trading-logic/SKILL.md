@@ -28,12 +28,12 @@ Expose the trading play a reader would recognize in the viewpoint. The output se
 
 ## Public Expression
 
-- Prefer `因为 X，我做 Y，窗口 Z` or an equally direct natural sentence.
-- Name the actual asset and the trade construction. `看多能源` is weaker than `我先做 USO 跑赢 XLE`.
-- State the hidden play in readable tags, for example `事件驱动 · 风险溢价传导 · 相对价值`.
-- Use conviction as creator voice: `我押`, `我先做`, `我回避`, `我只做`, `我不追`.
-- Keep the evidence boundary intact. A creator may say `我押资金先去直接原油敞口`; the backend still records that flow as inferred when no flow tape exists.
-- Avoid workflow language such as `等待确认`, `交给市场验证`, `已计算`, `已确认`, `推演`, and `待确认` in public copy.
+- Prefer `Because X, I am doing Y over window Z` or an equally direct natural sentence.
+- Name the actual asset and the trade construction. `Bullish energy` is weaker than `I expect USO to outperform XLE`.
+- State the hidden play in readable tags, for example `event driven · risk-premium transmission · relative value`.
+- Use conviction as creator voice: `I am betting`, `I am starting with`, `I am avoiding`, `I will only trade`, or `I will not chase`.
+- Keep the evidence boundary intact. A creator may say `I expect capital to move first into direct crude exposure`; the backend still records that flow as inferred when no flow tape exists.
+- Avoid workflow language such as `awaiting confirmation`, `leave it for the market to validate`, `calculated`, `confirmed`, `simulation`, and `pending` in public copy.
 
 ## Hard Gates
 

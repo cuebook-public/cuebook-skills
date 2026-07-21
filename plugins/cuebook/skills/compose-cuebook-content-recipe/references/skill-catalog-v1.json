@@ -7,68 +7,68 @@
   "categories": [
     {
       "category_id": "category-library",
-      "label": "风格库",
-      "description": "收集和蒸馏账号与媒介规则。",
+      "label": "Style library",
+      "description": "Collect and distill account and media rules.",
       "order": 1
     },
     {
       "category_id": "category-intake",
-      "label": "数据入口",
-      "description": "归一化 Cuebook 数据并选择内容机会。",
+      "label": "Data intake",
+      "description": "Normalize Cuebook data and select content opportunities.",
       "order": 2
     },
     {
       "category_id": "category-recipe",
-      "label": "内容配方",
-      "description": "保存用户选择、做法、口味与出餐配置。",
+      "label": "Content recipe",
+      "description": "Save user choices, methods, flavor, and delivery settings.",
       "order": 3
     },
     {
       "category_id": "category-evidence",
-      "label": "证据检查",
-      "description": "检查资产投射并选择分析路线。",
+      "label": "Evidence check",
+      "description": "Check asset projection and select an analysis route.",
       "order": 4
     },
     {
       "category_id": "category-research",
-      "label": "研究编排",
-      "description": "建立研究包并规划多渠道内容。",
+      "label": "Research orchestration",
+      "description": "Build research packs and plan multi-channel content.",
       "order": 5
     },
     {
       "category_id": "category-thesis",
-      "label": "观点协议",
-      "description": "把研究或最终内容编译成可验证、可结算、可追溯的交易观点。",
+      "label": "Viewpoint protocol",
+      "description": "Compile research or final content into a verifiable, settleable, traceable market view.",
       "order": 6
     },
     {
       "category_id": "category-rendering",
-      "label": "内容制作",
-      "description": "生成紧凑文字和多媒介内容包。",
+      "label": "Content production",
+      "description": "Generate concise copy and multimedia packages.",
       "order": 7
     },
     {
       "category_id": "category-governance",
-      "label": "审批交付",
-      "description": "冻结内容、审批和发布交接。",
+      "label": "Approval and delivery",
+      "description": "Freeze content, approvals, and publication handoffs.",
       "order": 8
     },
     {
       "category_id": "category-history",
-      "label": "历史复盘",
-      "description": "核对发布、纠错、互动和交易记录。",
+      "label": "History review",
+      "description": "Reconcile publications, corrections, engagement, and trade records.",
       "order": 9
     },
     {
       "category_id": "category-orchestration",
-      "label": "流程控制",
-      "description": "生成 DAG、追踪工件和阻断状态。",
+      "label": "Workflow control",
+      "description": "Generate DAGs and track artifacts and blockers.",
       "order": 10
     },
     {
       "category_id": "category-modules",
-      "label": "产品入口",
-      "description": "查询与创作两个稳定入口，以及两者之间的单向调用边界。",
+      "label": "Product entrypoints",
+      "description": "Expose stable Query and Create entrypoints with a one-way invocation boundary.",
       "order": 11
     }
   ],
@@ -101,11 +101,11 @@
       ],
       "ui": {
         "surface": "internal",
-        "group": "账号蒸馏",
+        "group": "Account distillation",
         "order": 1,
         "control_type": "hidden",
         "icon": "database",
-        "summary": "清洗授权账号样本。"
+        "summary": "Clean authorized account samples."
       },
       "maintenance": {
         "owner": "cuebook-content",
@@ -153,11 +153,11 @@
       ],
       "ui": {
         "surface": "library",
-        "group": "账号蒸馏",
+        "group": "Account distillation",
         "order": 2,
         "control_type": "toggle",
         "icon": "user-round-search",
-        "summary": "建立可复用的账号观察与表达规则。"
+        "summary": "Build reusable account observation and expression rules."
       },
       "maintenance": {
         "owner": "cuebook-content",
@@ -204,11 +204,11 @@
       ],
       "ui": {
         "surface": "internal",
-        "group": "媒介蒸馏",
+        "group": "Media distillation",
         "order": 3,
         "control_type": "hidden",
         "icon": "library",
-        "summary": "清洗授权媒介样本。"
+        "summary": "Clean authorized media samples."
       },
       "maintenance": {
         "owner": "cuebook-content",
@@ -256,11 +256,11 @@
       ],
       "ui": {
         "surface": "library",
-        "group": "媒介蒸馏",
+        "group": "Media distillation",
         "order": 4,
         "control_type": "toggle",
         "icon": "panels-top-left",
-        "summary": "建立平台结构、节奏和素材规则。"
+        "summary": "Build platform structure, pacing, and asset rules."
       },
       "maintenance": {
         "owner": "cuebook-content",
@@ -311,11 +311,11 @@
       ],
       "ui": {
         "surface": "internal",
-        "group": "安全入口",
+        "group": "Safe intake",
         "order": 5,
         "control_type": "hidden",
         "icon": "funnel",
-        "summary": "冻结并清洗五类 Cuebook 数据。"
+        "summary": "Freeze and clean five Cuebook data classes."
       },
       "maintenance": {
         "owner": "cuebook-data",
@@ -371,11 +371,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "内容配方",
+        "group": "Content recipe",
         "order": 6,
         "control_type": "hidden",
         "icon": "cooking-pot",
-        "summary": "把选择保存成可复现的内容配方。"
+        "summary": "Save selections as a reproducible content recipe."
       },
       "maintenance": {
         "owner": "cuebook-creator",
@@ -432,11 +432,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "自动选题",
+        "group": "Opportunity selection",
         "order": 7,
         "control_type": "hidden",
         "icon": "list-filter",
-        "summary": "合并重复材料并确定可研究主题。"
+        "summary": "Merge duplicate material and identify researchable topics."
       },
       "maintenance": {
         "owner": "cuebook-editorial",
@@ -490,11 +490,11 @@
       ],
       "ui": {
         "surface": "internal",
-        "group": "证据硬门",
+        "group": "Evidence gate",
         "order": 8,
         "control_type": "hidden",
         "icon": "shield-check",
-        "summary": "阻止资产、方向和代理链错配。"
+        "summary": "Prevent asset, direction, and proxy-chain mismatches."
       },
       "maintenance": {
         "owner": "cuebook-research",
@@ -548,11 +548,11 @@
       ],
       "ui": {
         "surface": "internal",
-        "group": "分析路由",
+        "group": "Analysis routing",
         "order": 9,
         "control_type": "hidden",
         "icon": "route",
-        "summary": "选择分析路径并保留 abstention。"
+        "summary": "Select an analysis path while preserving abstention."
       },
       "maintenance": {
         "owner": "cuebook-research",
@@ -607,11 +607,11 @@
       ],
       "ui": {
         "surface": "query",
-        "group": "查询研究",
+        "group": "Query research",
         "order": 10,
         "control_type": "hidden",
         "icon": "search-check",
-        "summary": "把新闻、PR、估值和比较项逐项查齐并校准口径。"
+        "summary": "Research news, PR, valuation, and comparators with calibrated definitions."
       },
       "maintenance": {
         "owner": "cuebook-research",
@@ -665,11 +665,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "观点协议",
+        "group": "Viewpoint protocol",
         "order": 29,
         "control_type": "hidden",
         "icon": "braces",
-        "summary": "保留来源角色、观点归属、交易意图和结算明确度。"
+        "summary": "Preserve source roles, viewpoint ownership, trade intent, and settlement clarity."
       },
       "maintenance": {
         "owner": "cuebook-thesis",
@@ -725,11 +725,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "观点协议",
+        "group": "Viewpoint protocol",
         "order": 11,
         "control_type": "toggle",
         "icon": "file-lock-2",
-        "summary": "冻结可验证、可结算的交易观点。"
+        "summary": "Freeze a verifiable and settleable market view."
       },
       "maintenance": {
         "owner": "cuebook-thesis",
@@ -786,11 +786,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "观点图",
+        "group": "Viewpoint graph",
         "order": 12,
         "control_type": "hidden",
         "icon": "git-branch",
-        "summary": "把叙事编译成可复用的事件、机制、反例与结算图谱。"
+        "summary": "Compile narratives into reusable event, mechanism, countercase, and settlement graphs."
       },
       "maintenance": {
         "owner": "cuebook-thesis",
@@ -845,11 +845,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "观点协议",
+        "group": "Viewpoint protocol",
         "order": 28,
         "control_type": "hidden",
         "icon": "tags",
-        "summary": "自动识别事件驱动、传导机制、交易表达和时间窗口。"
+        "summary": "Identify event drivers, transmission mechanisms, trade expressions, and time windows."
       },
       "maintenance": {
         "owner": "cuebook-thesis",
@@ -905,11 +905,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "观点协议",
+        "group": "Viewpoint protocol",
         "order": 30,
         "control_type": "hidden",
         "icon": "waypoints",
-        "summary": "锁定含义、作者身份，以及必须补齐的新闻、数字和结算数据。"
+        "summary": "Lock meaning, authorship, and required news, numerical, and settlement data."
       },
       "maintenance": {
         "owner": "cuebook-creator",
@@ -967,11 +967,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "研究",
+        "group": "Research",
         "order": 31,
         "control_type": "hidden",
         "icon": "database-zap",
-        "summary": "装配曲线、新闻簇、分布、扇形、资金流与收益结构；数据不够就不画。"
+        "summary": "Assemble curves, news clusters, distributions, fans, flows, and payoff structures; abstain when data is insufficient."
       },
       "maintenance": {
         "owner": "cuebook-market-data",
@@ -1029,11 +1029,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "观点排版",
+        "group": "Viewpoint layout",
         "order": 33,
         "control_type": "hidden",
         "icon": "gallery-horizontal-end",
-        "summary": "同一交易逻辑生成快速判断、证据证明、系统演绎三种阅读入口，并按数据形态组合新闻、曲线、分布、情景、资金流与策略。"
+        "summary": "Create fast judgment, evidence, and system views from one trade logic using news, curves, distributions, scenarios, flows, and strategies as appropriate."
       },
       "maintenance": {
         "owner": "cuebook-creator",
@@ -1102,11 +1102,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "观点排版",
+        "group": "Viewpoint layout",
         "order": 32,
         "control_type": "toggle",
         "icon": "image",
-        "summary": "选择或混合三套排版，并冻结为最终静态观点图。"
+        "summary": "Select or combine three layouts and freeze the final static viewpoint visual."
       },
       "maintenance": {
         "owner": "cuebook-creator",
@@ -1164,11 +1164,11 @@
       ],
       "ui": {
         "surface": "internal",
-        "group": "暂存能力",
+        "group": "Parked capability",
         "order": 34,
         "control_type": "hidden",
         "icon": "clapperboard",
-        "summary": "动画方向暂存；当前创作流程只生成静态观点图。"
+        "summary": "Motion direction is parked; the current creator flow produces static visuals only."
       },
       "maintenance": {
         "owner": "cuebook-creator",
@@ -1223,11 +1223,11 @@
       ],
       "ui": {
         "surface": "internal",
-        "group": "暂存能力",
+        "group": "Parked capability",
         "order": 35,
         "control_type": "hidden",
         "icon": "circle-play",
-        "summary": "动画渲染暂存；当前版本不出现在创作者前端。"
+        "summary": "Motion rendering is parked and does not appear in the current creator surface."
       },
       "maintenance": {
         "owner": "cuebook-creator",
@@ -1278,11 +1278,11 @@
       ],
       "ui": {
         "surface": "internal",
-        "group": "兼容渲染",
+        "group": "Compatibility rendering",
         "order": 13,
         "control_type": "hidden",
         "icon": "workflow",
-        "summary": "为旧版逻辑卡调用保留兼容输出。"
+        "summary": "Preserve compatible output for legacy logic-card calls."
       },
       "maintenance": {
         "owner": "cuebook-creator",
@@ -1339,11 +1339,11 @@
       ],
       "ui": {
         "surface": "internal",
-        "group": "兼容渲染",
+        "group": "Compatibility rendering",
         "order": 14,
         "control_type": "hidden",
         "icon": "chart-spline",
-        "summary": "为旧版市场图调用保留兼容输出。"
+        "summary": "Preserve compatible output for legacy market-figure calls."
       },
       "maintenance": {
         "owner": "cuebook-market-data",
@@ -1398,11 +1398,11 @@
       ],
       "ui": {
         "surface": "internal",
-        "group": "兼容渲染",
+        "group": "Compatibility rendering",
         "order": 27,
         "control_type": "hidden",
         "icon": "scan-line",
-        "summary": "为旧版市场信号调用保留兼容输出。"
+        "summary": "Preserve compatible output for legacy market-signal calls."
       },
       "maintenance": {
         "owner": "cuebook-creator",
@@ -1457,11 +1457,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "做法",
+        "group": "Method",
         "order": 17,
         "control_type": "toggle",
         "icon": "layout-list",
-        "summary": "生成主稿、衍生稿、系列或事件链。"
+        "summary": "Generate a primary piece, derivatives, a series, or an event chain."
       },
       "maintenance": {
         "owner": "cuebook-editorial",
@@ -1518,11 +1518,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "出餐",
+        "group": "Delivery",
         "order": 18,
         "control_type": "hidden",
         "icon": "message-square-text",
-        "summary": "为 Frame 生成一段观点正文。"
+        "summary": "Generate viewpoint body copy for a Frame."
       },
       "maintenance": {
         "owner": "cuebook-editorial",
@@ -1578,11 +1578,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "出餐",
+        "group": "Delivery",
         "order": 36,
         "control_type": "hidden",
         "icon": "gallery-thumbnails",
-        "summary": "默认冻结一份已选 Frame；明确要求时才生成三份候选。"
+        "summary": "Freeze one selected Frame by default; generate three candidates only when explicitly requested."
       },
       "maintenance": {
         "owner": "cuebook-creator",
@@ -1637,11 +1637,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "观点协议",
+        "group": "Viewpoint protocol",
         "order": 19,
         "control_type": "toggle",
         "icon": "badge-check",
-        "summary": "正文完成后生成可结算观点与一行版。"
+        "summary": "Generate a settleable viewpoint and one-line projection after body copy is complete."
       },
       "maintenance": {
         "owner": "cuebook-thesis",
@@ -1692,11 +1692,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "观点协议",
+        "group": "Viewpoint protocol",
         "order": 37,
         "control_type": "hidden",
         "icon": "sigma",
-        "summary": "把已确认的结算观点变成后端可执行、可审计的公式和状态机。"
+        "summary": "Convert a confirmed settlement view into an executable, auditable formula and state machine."
       },
       "maintenance": {
         "owner": "cuebook-thesis",
@@ -1762,11 +1762,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "出餐",
+        "group": "Delivery",
         "order": 20,
         "control_type": "hidden",
         "icon": "clapperboard",
-        "summary": "按媒介语法生成卡片、长文和视频包。"
+        "summary": "Generate cards, long-form copy, and video packages using media-specific grammar."
       },
       "maintenance": {
         "owner": "cuebook-editorial",
@@ -1823,11 +1823,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "完整行情图",
+        "group": "Full market chart",
         "order": 15,
         "control_type": "hidden",
         "icon": "chart-no-axes-combined",
-        "summary": "在紧凑观点图之外生成真实 K 线、长历史和结算时钟。"
+        "summary": "Generate real candles, longer history, and a settlement clock beyond the compact viewpoint graphic."
       },
       "maintenance": {
         "owner": "cuebook-market-data",
@@ -1880,11 +1880,11 @@
       ],
       "ui": {
         "surface": "query",
-        "group": "查询指标",
+        "group": "Query indicators",
         "order": 16,
         "control_type": "multi_select",
         "icon": "sigma",
-        "summary": "计算强弱、趋势、波动和量价指标。"
+        "summary": "Calculate strength, trend, volatility, and price-volume indicators."
       },
       "maintenance": {
         "owner": "cuebook-market-data",
@@ -1944,11 +1944,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "出餐",
+        "group": "Delivery",
         "order": 21,
         "control_type": "hidden",
         "icon": "panels-top-left",
-        "summary": "把已验证模块装配成观点预览和 Feed 卡片。"
+        "summary": "Assemble validated modules into viewpoint previews and Feed cards."
       },
       "maintenance": {
         "owner": "cuebook-creator",
@@ -2008,11 +2008,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "交付",
+        "group": "Delivery",
         "order": 24,
         "control_type": "toggle",
         "icon": "package-check",
-        "summary": "冻结审批后的精确发布候选。"
+        "summary": "Freeze the exact approved publication candidate."
       },
       "maintenance": {
         "owner": "cuebook-operations",
@@ -2061,11 +2061,11 @@
       ],
       "ui": {
         "surface": "query",
-        "group": "查询历史",
+        "group": "Query history",
         "order": 25,
         "control_type": "toggle",
         "icon": "history",
-        "summary": "核对真实发布、纠错和结果记录。"
+        "summary": "Reconcile real publications, corrections, and outcomes."
       },
       "maintenance": {
         "owner": "cuebook-operations",
@@ -2118,11 +2118,11 @@
       ],
       "ui": {
         "surface": "admin",
-        "group": "流程控制",
+        "group": "Workflow control",
         "order": 26,
         "control_type": "hidden",
         "icon": "workflow",
-        "summary": "预览选定后再冻结可追溯内容、媒体与发布流程。"
+        "summary": "Freeze traceable content, media, and publication flow after preview selection."
       },
       "maintenance": {
         "owner": "cuebook-platform",
@@ -2171,11 +2171,11 @@
       ],
       "ui": {
         "surface": "query",
-        "group": "查询",
+        "group": "Query",
         "order": 38,
         "control_type": "single_select",
         "icon": "search",
-        "summary": "查看 Cuebook 数据、来源、比较与历史，不产生任何写入。"
+        "summary": "Inspect Cuebook data, sources, comparisons, and history without writes."
       },
       "maintenance": {
         "owner": "cuebook-platform",
@@ -2232,11 +2232,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "创作",
+        "group": "Create",
         "order": 39,
         "control_type": "single_select",
         "icon": "square-pen",
-        "summary": "保留用户观点，必要时调用查询，再生成标题、正文和配对图片组成的 Frame。"
+        "summary": "Preserve the creator's view, invoke Query when needed, and generate a Frame with title, body, and paired image."
       },
       "maintenance": {
         "owner": "cuebook-platform",
@@ -2293,11 +2293,11 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "安全入口",
+        "group": "Safe intake",
         "order": 40,
         "control_type": "hidden",
         "icon": "message-circle-question",
-        "summary": "分诊来访输入，补全并核验观点必要项，回传结构化种子。"
+        "summary": "Triage incoming input, complete and verify required viewpoint fields, and return a structured seed."
       },
       "maintenance": {
         "owner": "cuebook-content",
@@ -2320,8 +2320,8 @@
   "presets": [
     {
       "preset_id": "preset-cross-platform-desk",
-      "name": "跨平台交易内容",
-      "description": "一份研究生成 X 与小红书等多个衍生内容。",
+      "name": "Cross-platform market content",
+      "description": "Generate multiple platform derivatives from one research pack.",
       "state": "deprecated",
       "selection_mode": "opportunity_first",
       "default_execution_mode": "single",
@@ -2380,8 +2380,8 @@
     },
     {
       "preset_id": "preset-intraday-move",
-      "name": "盘中异动",
-      "description": "解释价格异动、被迫行为和下一确认点。",
+      "name": "Intraday move",
+      "description": "Explain a price move, forced behavior, and the next confirmation point.",
       "state": "deprecated",
       "selection_mode": "ingredient_first",
       "default_execution_mode": "single",
@@ -2440,8 +2440,8 @@
     },
     {
       "preset_id": "preset-earnings-preview",
-      "name": "财报前瞻",
-      "description": "围绕预期、历史比较、关键变量和电话会确认点组织内容。",
+      "name": "Earnings preview",
+      "description": "Organize expectations, historical comparisons, key variables, and call checkpoints.",
       "state": "deprecated",
       "selection_mode": "opportunity_first",
       "default_execution_mode": "event_lifecycle",
@@ -2499,8 +2499,8 @@
     },
     {
       "preset_id": "preset-thesis-watch",
-      "name": "交易观察",
-      "description": "围绕判断、时间周期、催化剂和下一观察点生成条件式内容。",
+      "name": "Market watch",
+      "description": "Generate conditional content around a judgment, horizon, catalyst, and next observation.",
       "state": "deprecated",
       "selection_mode": "opportunity_first",
       "default_execution_mode": "single",
@@ -2554,8 +2554,8 @@
     },
     {
       "preset_id": "preset-settleable-thesis",
-      "name": "内容 + 结算观点",
-      "description": "先生成自然观点内容，再抽取并冻结一个可验证、可结算的一行主张。",
+      "name": "Content plus settlement view",
+      "description": "Generate natural viewpoint content, then extract and freeze a verifiable one-line settlement claim.",
       "state": "deprecated",
       "selection_mode": "opportunity_first",
       "default_execution_mode": "single",
@@ -2612,8 +2612,8 @@
     },
     {
       "preset_id": "preset-viewpoint-card",
-      "name": "观点卡",
-      "description": "把创作者判断、统一观点图、可选交易协议和证据装成 Cuebook 原生观点卡。",
+      "name": "Viewpoint card",
+      "description": "Package a creator judgment, unified visual, optional trade protocol, and evidence as a native Cuebook card.",
       "state": "deprecated",
       "selection_mode": "ingredient_first",
       "default_execution_mode": "single",
@@ -2669,8 +2669,8 @@
     },
     {
       "preset_id": "preset-publish-candidates",
-      "name": "Frame 快速直出",
-      "description": "默认快速生成一套最佳 Frame；只有明确要求时才生成三套。每套只展示标题、正文和配对观点图。",
+      "name": "Fast Frame",
+      "description": "Generate one best Frame by default and three only when explicitly requested; each shows a title, body, and paired viewpoint visual.",
       "state": "active",
       "selection_mode": "ingredient_first",
       "default_execution_mode": "single",
@@ -2724,8 +2724,8 @@
     },
     {
       "preset_id": "preset-trade-postmortem",
-      "name": "交易复盘",
-      "description": "使用授权和对账后的历史记录复盘过程、判断和失效条件。",
+      "name": "Trade review",
+      "description": "Review process, judgment, and invalidation using authorized reconciled history.",
       "state": "deprecated",
       "selection_mode": "opportunity_first",
       "default_execution_mode": "postmortem",
@@ -2783,8 +2783,8 @@
     },
     {
       "preset_id": "preset-correction-notice",
-      "name": "纠错通知",
-      "description": "失效旧工件后生成带来源、影响范围和传播计划的纠错。",
+      "name": "Correction notice",
+      "description": "Invalidate stale artifacts and generate a sourced correction with impact scope and distribution plan.",
       "state": "deprecated",
       "selection_mode": "opportunity_first",
       "default_execution_mode": "correction",
@@ -2835,8 +2835,8 @@
     },
     {
       "preset_id": "preset-auto-daily-chef",
-      "name": "今日主厨",
-      "description": "从当前 Cuebook snapshot 自动提议多套配方，等待用户确认。",
+      "name": "Today's selections",
+      "description": "Propose several recipes from the current Cuebook snapshot and wait for user selection.",
       "state": "deprecated",
       "selection_mode": "preset_auto",
       "default_execution_mode": "batch",
@@ -2896,7 +2896,7 @@
   "extension_points": [
     {
       "extension_point": "feed_adapter",
-      "display_name": "Cuebook 数据适配器",
+      "display_name": "Cuebook data adapter",
       "contract": "FeedAdapterV1",
       "status": "available",
       "multiple": false,
@@ -2905,7 +2905,7 @@
     },
     {
       "extension_point": "research_source",
-      "display_name": "研究数据源",
+      "display_name": "Research data source",
       "contract": "ResearchSourceProviderV1",
       "status": "available",
       "multiple": true,
@@ -2914,7 +2914,7 @@
     },
     {
       "extension_point": "market_data",
-      "display_name": "实时行情与盘口",
+      "display_name": "Live market data and order book",
       "contract": "MarketDataProviderV1",
       "status": "available",
       "multiple": true,
@@ -2923,7 +2923,7 @@
     },
     {
       "extension_point": "thesis_registry",
-      "display_name": "观点冻结与版本注册",
+      "display_name": "Viewpoint freeze and version registry",
       "contract": "ThesisRegistryProviderV1",
       "status": "deferred",
       "multiple": false,
@@ -2932,7 +2932,7 @@
     },
     {
       "extension_point": "settlement_oracle",
-      "display_name": "观点结算与争议处理",
+      "display_name": "Viewpoint settlement and dispute handling",
       "contract": "ThesisSettlementProviderV1",
       "status": "deferred",
       "multiple": false,
@@ -2941,7 +2941,7 @@
     },
     {
       "extension_point": "reputation",
-      "display_name": "创作者声誉计算",
+      "display_name": "Creator reputation calculation",
       "contract": "ReputationProviderV1",
       "status": "deferred",
       "multiple": false,
@@ -2950,7 +2950,7 @@
     },
     {
       "extension_point": "thesis_feed_ranker",
-      "display_name": "观点 Feed 排序",
+      "display_name": "Viewpoint Feed ranking",
       "contract": "ThesisFeedRankingProviderV1",
       "status": "deferred",
       "multiple": false,
@@ -2959,7 +2959,7 @@
     },
     {
       "extension_point": "media_asset",
-      "display_name": "视觉与视频资产",
+      "display_name": "Visual and video assets",
       "contract": "MediaAssetProviderV1",
       "status": "available",
       "multiple": true,
@@ -2968,7 +2968,7 @@
     },
     {
       "extension_point": "policy",
-      "display_name": "平台与合规政策",
+      "display_name": "Platform and compliance policy",
       "contract": "PolicyProviderV1",
       "status": "available",
       "multiple": true,
@@ -2977,7 +2977,7 @@
     },
     {
       "extension_point": "publisher",
-      "display_name": "发布连接器",
+      "display_name": "Publication connector",
       "contract": "PublicationConnectorV1",
       "status": "deferred",
       "multiple": true,
@@ -2986,7 +2986,7 @@
     },
     {
       "extension_point": "analytics",
-      "display_name": "内容表现分析",
+      "display_name": "Content performance analytics",
       "contract": "AnalyticsProviderV1",
       "status": "deferred",
       "multiple": true,
@@ -2995,7 +2995,7 @@
     },
     {
       "extension_point": "custom_renderer",
-      "display_name": "自定义媒介渲染器",
+      "display_name": "Custom media renderer",
       "contract": "RendererProviderV1",
       "status": "deferred",
       "multiple": true,

@@ -65,14 +65,14 @@ test("volume panel requires one series and valid window", () => {
 
 test("compact chart keeps success prose outside SVG", () => {
   const item = baseSpec();
-  Object.assign(item.render, { style_profile: "cuebook_feed_v1", theme: "cuebook_light", brand: "cuebook", watermark: true, show_state_label: false, show_provenance_footer: false, show_guide: false, locale: "zh-CN", timeline_layout: "decision_split", decision_split_ratio: 0.68, show_settlement_panel: false });
+  Object.assign(item.render, { style_profile: "cuebook_feed_v1", theme: "cuebook_light", brand: "cuebook", watermark: true, show_state_label: false, show_provenance_footer: false, show_guide: false, locale: "en-US", timeline_layout: "decision_split", decision_split_ratio: 0.68, show_settlement_panel: false });
   const fetched = [
     { ticker: "USO", role: "primary", observed_interval: "1d", points: [{ observed_at: "2026-07-13T20:00:00Z", derived_value: 0, state: "sealed" }, { observed_at: "2026-07-14T08:00:00Z", derived_value: 2, state: "forming" }] },
     { ticker: "XLE", role: "benchmark", observed_interval: "1d", points: [{ observed_at: "2026-07-13T20:00:00Z", derived_value: 0, state: "sealed" }, { observed_at: "2026-07-14T08:00:00Z", derived_value: 0.5, state: "forming" }] },
   ];
   const svg = render_svg(item, fetched);
   assert.equal(svg.includes(item.render.success_label), false);
-  assert.match(svg, /结算/);
+  assert.match(svg, /Settle/);
   assert.doesNotMatch(svg, /Cuebook OHLCV|CONDITIONAL/);
   assert.match(svg, /data-style-profile="cuebook_feed_v1"/);
   assert.match(svg, /Cuebook/);
@@ -80,7 +80,7 @@ test("compact chart keeps success prose outside SVG", () => {
 
 test("feed profile rejects internal copy and detail panel", () => {
   const item = baseSpec();
-  Object.assign(item.render, { style_profile: "cuebook_feed_v1", watermark: true, show_settlement_panel: true, subtitle: "Cuebook 从观点描述中提取参数" });
+  Object.assign(item.render, { style_profile: "cuebook_feed_v1", watermark: true, show_settlement_panel: true, subtitle: "Cuebook extracts parameters from the viewpoint description" });
   const result = validate(item);
   assert.ok(codes(result).has("FEED_SETTLEMENT_PANEL"));
   assert.ok(codes(result).has("FEED_INTERNAL_COPY"));
@@ -92,8 +92,8 @@ test("volume panel renders bars, prior average, and ratio", () => {
   item.series = item.series.slice(0, 1);
   Object.assign(item.series[0], { ticker: "BTC", display_name: "Bitcoin", instrument_id: "BTC:USD", asset_id: 1, transformation: "raw_price" });
   Object.assign(item.series[0].baseline, { value: 64000, unit: "USD" });
-  Object.assign(item.render, { mode: "single_price", chart_type: "candles", y_axis: "price", width: 720, height: 420, future_region: false, show_volume: true, volume_average_window: 20, theme: "cuebook_light", style_profile: "cuebook_feed_v1", watermark: true, locale: "zh-CN", timeline_layout: "continuous_time", title: "65,000 上方放量收盘", subtitle: "BTC / USD · 4H" });
-  item.annotations.push({ id: "A4", kind: "trigger", series_ref: "S1", value: 65000, observed_at: null, label: "65,000 触发", provenance: "explicit", source_ref: "creator:test" });
+  Object.assign(item.render, { mode: "single_price", chart_type: "candles", y_axis: "price", width: 720, height: 420, future_region: false, show_volume: true, volume_average_window: 20, theme: "cuebook_light", style_profile: "cuebook_feed_v1", watermark: true, locale: "en-US", timeline_layout: "continuous_time", title: "High-volume close above 65,000", subtitle: "BTC / USD · 4H" });
+  item.annotations.push({ id: "A4", kind: "trigger", series_ref: "S1", value: 65000, observed_at: null, label: "65,000 trigger", provenance: "explicit", source_ref: "creator:test" });
   const start = Date.UTC(2026, 6, 10);
   const points = Array.from({ length: 25 }, (_, index) => {
     const open = 63000 + index * 70;
@@ -106,7 +106,7 @@ test("volume panel renders bars, prior average, and ratio", () => {
   assert.match(svg, /class="volume-bar"/);
   assert.match(svg, /id="volume-average"/);
   assert.match(svg, /id="volume-ratio"/);
-  assert.match(svg, /前20根均量/);
+  assert.match(svg, /prior 20-bar average/);
   item.render.show_volume = false;
   assert.doesNotMatch(render_svg(item, fetched), /id="volume-panel"/);
 });

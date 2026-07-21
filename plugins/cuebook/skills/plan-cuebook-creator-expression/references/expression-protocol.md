@@ -119,7 +119,7 @@ Set independent controls for register, energy, conviction, technicality, emotion
 
 Conviction may never exceed source certainty merely because a profile prefers assertive language.
 
-Enable `anti_ai_language` in every VoiceSpec. At minimum ban `值得关注的是`, `核心逻辑在于`, and `从机制上看`; add locale-equivalent stock phrases when useful. Permit at most one `不是 A 而是 B` frame across all public expression guidance so `category_reframe` remains available without becoming a repetitive template. Vary openings and compose original sentences rather than substituting another commentator's catchphrases.
+Enable `anti_ai_language` in every VoiceSpec. At minimum ban locale-equivalent stock phrases for `it is worth noting`, `the core logic is`, and `from a mechanism perspective`; add other formulaic phrases when useful. Permit at most one `not A but B` frame across all public expression guidance so `category_reframe` remains available without becoming a repetitive template. Vary openings and compose original sentences rather than substituting another commentator's catchphrases.
 
 ## 6. Text Blueprint
 
@@ -132,7 +132,7 @@ Plan all six slots: `hook`, `proof`, `mechanism`, `action`, `caveat`, and `close
 - Reconstruct the trading idea in seven internal passes: creator judgment, observed change, market disagreement, actor under pressure, transmission into price or relative performance, chosen asset and horizon, and next observable. Mark each pass as explicit, genuinely implied, supplied by evidence, or unavailable before writing guidance. These are completeness checks across the combined Frame, not seven required public paragraphs.
 - Supplement only the missing links that materially improve the decision. A supplement needs a fact or source ref and may narrow confidence; it may not add a new trade, target, deadline, or personal experience.
 - Keep addition history, idea delta, workflow status, and Cuebook attribution out of all public text slots.
-- Keep invalidation and countercase in the semantic contract. Surface either in body copy only when explicitly requested by the user or selected format; never frame it as `我认错`, `哪里认错`, or `错了怎么办`.
+- Keep invalidation and countercase in the semantic contract. Surface either in body copy only when explicitly requested by the user or selected format; never frame it as `I admit I was wrong`, `where I was wrong`, or `what if I am wrong`.
 - For the public Frame, use one title, one reasoned body, and one paired image. Normally use 260–700 visible Chinese characters across three to five short paragraphs (roughly 120–300 English words), with a 1,200-character hard Frame ceiling. The body carries the strongest observation, creator viewpoint, causal sequence, horizon, and next observable; the image carries the relationship, two to four reasoning beats, observed evidence, and a timing marker when material. Do not duplicate the complete argument across both surfaces or pad a simple idea merely to hit a target.
 - Set `text_blueprint.data_requirement_refs` to every root data requirement whose `expression_surfaces` contains `text`, including requirements that have no visual role.
 - Map action exactly from source trade intent:

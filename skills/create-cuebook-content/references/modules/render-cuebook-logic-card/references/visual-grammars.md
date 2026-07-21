@@ -12,7 +12,7 @@
 ## Shared Semantics
 
 - `observed`: solid neutral or source-tinted treatment;
-- `derived`: solid support treatment with supporting fact refs and a neutral `推演` state label;
+- `derived`: solid support treatment with supporting fact refs and a neutral `inference` state label;
 - `conditional`: yellow border or dashed edge;
 - `unresolved`: muted red/yellow treatment;
 - `challenges`: red edge toward the claim it weakens;

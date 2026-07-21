@@ -47,7 +47,7 @@ export const ARCHETYPES = [
     direction: "bullish",
     comparator: "generic L2",
     register: "explainer",
-    frame: "这不是一条普通新链，而是对代币化市场基础设施的重估。",
+    frame: "This is not just another chain; it is a rerating of tokenized-market infrastructure.",
   },
   {
     id: "X4",
@@ -380,7 +380,7 @@ export function makePlan(corpusCase) {
       profile_rule_refs: [],
       anti_ai_language: {
         enabled: true,
-        banned_stock_phrases: ["值得关注的是", "核心逻辑在于", "从机制上看"],
+        banned_stock_phrases: ["It is worth noting that", "The core logic is", "From a mechanism perspective"],
         max_not_a_but_b_frames: 1,
         repeated_openings_allowed: false,
       },

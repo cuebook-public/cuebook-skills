@@ -53,14 +53,14 @@ Do not add dashboard chrome, navigation, KPI tile grids, or tiny ledgers to impl
 
 ## Controlled creator variation
 
-The first response shows one recommended mobile preview. If the creator says “再来一版”, “换个感觉”, or asks to reroll:
+The first response shows one recommended mobile preview. If the creator asks for another version, a different feel, or a reroll:
 
 1. Freeze the original idea, adopted interview signal, exact tested observation, evidence refs, observation window, horizon, and factual/conditional typing.
 2. Reuse the frozen query bundle. Do not query again for a layout-only reroll.
 3. Change one truthful expressive route: grammar when the same evidence supports it, composition, narrative placement, surface, or emphasis.
 4. Avoid the last two design fingerprints when another equally truthful silhouette exists.
 5. Return exactly one new recommended variant, never a gallery. If the creator wants several directions, explore them sequentially while keeping the Meaning Lock frozen.
-6. Explain the changed emphasis in one short phrase, then offer a clear stop: “锁定这版”.
+6. Explain the changed emphasis in one short phrase, then offer a clear stop: “Lock this version.”
 
 A reroll may not silently change the thesis, observed sentence, direction, horizon, source set, or settlement meaning. If the creator changes any of those, start a new meaning lock instead of pretending it is only a visual variation.
 

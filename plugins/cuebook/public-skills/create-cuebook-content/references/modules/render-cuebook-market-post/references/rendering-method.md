@@ -62,7 +62,7 @@ Before drafting, build a private logic map with seven fields: creator judgment, 
 
 Use research only to supply missing factual fields that materially change comprehension. Relevant Cues may propose a connection, countercase, comparator, or next footprint for the creator to adopt or reject; they do not establish it as fact. Every supplied factual link needs a fact reference, while an adopted causal bridge, analogy, scenario, or expectation may remain explicitly typed as `hypothesis`. Keep unavailable factual links out of the prose; do not cover them with generic market language. The public draft should read as one coherent view, with no mention of prompts, research passes, Cuebook help, idea delta, or authoring workflow.
 
-Counterevidence and invalidation remain available for internal confidence, settlement, and risk artifacts. Body copy includes them only when the user or destination explicitly asks. Never use self-correction headings such as `我认错`, `哪里认错`, or `什么情况算看错`.
+Counterevidence and invalidation remain available for internal confidence, settlement, and risk artifacts. Body copy includes them only when the user or destination explicitly asks. Never use self-correction headings such as `I admit I was wrong`, `where I was wrong`, or `what would prove this wrong`.
 
 ## 4. Using ProfileV1
 

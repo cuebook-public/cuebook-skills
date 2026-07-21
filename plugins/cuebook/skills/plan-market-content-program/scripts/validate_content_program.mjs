@@ -25,7 +25,7 @@ const COMPACT_TEXT_PLATFORMS = new Set(["x", "telegram", "xiaohongshu", "buy_sid
 const STRUCTURED_MEDIA_PLATFORMS = new Set(["generic", "website", "reddit", "xiaohongshu", "douyin", "seeking_alpha"]);
 // Python \b is Unicode-aware; emulate its word boundary with letter/digit/_
 // lookarounds so CJK neighbours suppress matches exactly like re does.
-const HYPE_PATTERN = /(?<![\p{L}\p{N}_])(?:viral|guaranteed reach|best posting time)(?![\p{L}\p{N}_])|爆款|保证流量|最佳发布时间/iu;
+const HYPE_PATTERN = /(?<![\p{L}\p{N}_])(?:viral|guaranteed reach|best posting time)(?![\p{L}\p{N}_])|\u7206\u6b3e|\u4fdd\u8bc1\u6d41\u91cf|\u6700\u4f73\u53d1\u5e03\u65f6\u95f4/iu;
 
 export function issue(code, path, message) {
   return { code, path, message };

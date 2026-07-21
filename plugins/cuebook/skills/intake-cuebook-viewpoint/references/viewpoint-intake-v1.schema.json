@@ -194,7 +194,7 @@
           "type": "object",
           "additionalProperties": false,
           "required": ["status"],
-          "description": "A long target must sit above the reference price and a short target below it. A conflict triggers one clarifying question (是不是想做空/做多?); an unresolved conflict blocks the intake.",
+          "description": "A long target must sit above the reference price and a short target below it. A conflict triggers one clarifying direction question; an unresolved conflict blocks the intake.",
           "properties": {
             "status": {"enum": ["pass", "fail", "skipped", "unavailable", "pending"]},
             "reference_price": {"type": ["number", "null"]},

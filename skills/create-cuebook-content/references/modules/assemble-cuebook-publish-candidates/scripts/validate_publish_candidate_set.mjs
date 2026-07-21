@@ -13,8 +13,8 @@ const ROOT_FIELDS = new Set(["schema_version", "candidate_set_id", "revision", "
 const CANDIDATE_FIELDS = new Set(["candidate_id", "label", "angle", "meaning_fingerprint", "post_ref", "copy", "visual", "frame", "evidence_anchors", "settlement", "public_disclosures", "quality"]);
 const ANGLES = new Set(["conviction", "evidence", "catalyst", "mechanism", "countercase"]);
 const CALIBRATION_STATES = new Set(["ready", "degraded", "not_applicable", "blocked"]);
-const PROCESS_TERMS = new Set(["工作流", "数据库字段", "证据状态", "内部校准", "已计算", "已确认", "待补数据", "待补充数据", "模型生成过程"]);
-const AI_PHRASES = new Set(["值得关注的是", "核心逻辑在于", "从机制上看", "这意味着什么"]);
+const PROCESS_TERMS = new Set(["workflow", "database field", "evidence state", "internal calibration", "calculated", "confirmed", "data pending", "model generation process", "\u5de5\u4f5c\u6d41", "\u6570\u636e\u5e93\u5b57\u6bb5", "\u8bc1\u636e\u72b6\u6001", "\u5185\u90e8\u6821\u51c6", "\u5df2\u8ba1\u7b97", "\u5df2\u786e\u8ba4", "\u5f85\u8865\u6570\u636e", "\u5f85\u8865\u5145\u6570\u636e", "\u6a21\u578b\u751f\u6210\u8fc7\u7a0b"]);
+const AI_PHRASES = new Set(["It is worth noting that", "The core logic is", "From a mechanism perspective", "What this means", "\u503c\u5f97\u5173\u6ce8\u7684\u662f", "\u6838\u5fc3\u903b\u8f91\u5728\u4e8e", "\u4ece\u673a\u5236\u4e0a\u770b", "\u8fd9\u610f\u5473\u7740\u4ec0\u4e48"]);
 export const MATERIAL_REQUEST_CLASSES = new Set(["news_anchor", "official_event", "valuation_metric", "comparison_metric", "price_level", "market_series", "settlement_reference"]);
 const METRIC_REQUEST_CLASSES = new Set(["valuation_metric", "comparison_metric"]);
 export const SETTLEMENT_ELIGIBILITY_FIELDS = new Set(["metric", "operator", "threshold", "deadline", "authoritative_source"]);
@@ -399,7 +399,7 @@ export function validate(payload, assetRoot = null) {
     if (pyInt(budget.hard_number_max) && numberCount > pyNumber(budget.hard_number_max)) errors.push(issue("HARD_NUMBER_BUDGET", `${path}.copy`, `Copy uses ${numberCount} hard numbers; maximum is ${pythonStr(budget.hard_number_max)}.`));
     const publicCopy = `${headline}\n${body}\n${close}`;
     for (const term of sortedStrings(new Set([...PROCESS_TERMS, ...AI_PHRASES]))) if (publicCopy.includes(term)) errors.push(issue("PUBLIC_LANGUAGE", `${path}.copy`, `Remove internal or stock AI phrase ${pyrepr(term)}.`));
-    if (/不是.{0,18}而是/su.test(publicCopy)) errors.push(issue("PUBLIC_LANGUAGE", `${path}.copy`, "Remove the repeated '不是 A 而是 B' frame."));
+    if (/(?:not\b.{0,60}\bbut|\u4e0d\u662f.{0,18}\u800c\u662f)/isu.test(publicCopy)) errors.push(issue("PUBLIC_LANGUAGE", `${path}.copy`, "Remove the repeated 'not A but B' frame."));
     const copyKey = normalizedText(publicCopy);
     if (normalizedCopies.has(copyKey)) errors.push(issue("DUPLICATE_COPY", `${path}.copy`, "Candidate copies must be structurally distinct."));
     normalizedCopies.add(copyKey);

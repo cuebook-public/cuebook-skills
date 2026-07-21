@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.5"><img alt="Release v0.9.5" src="https://img.shields.io/badge/release-v0.9.5-F6C500?style=flat-square&labelColor=111111"></a>
+  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.6"><img alt="Release v0.9.6" src="https://img.shields.io/badge/release-v0.9.6-F6C500?style=flat-square&labelColor=111111"></a>
   <a href="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml"><img alt="Quality" src="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml/badge.svg?branch=main"></a>
   <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/Node.js-%E2%89%A522-3C873A?style=flat-square&labelColor=111111">
   <img alt="Two public skills" src="https://img.shields.io/badge/public_skills-2-4C6FFF?style=flat-square&labelColor=111111">
@@ -125,7 +125,7 @@ One creator consent covers Cuebook's six explicit authorization domains: public 
 
 The installing task may complete that one host-owned login, but it must not create a background test task, invent a placeholder idea, or publish anything. Installation is ready for use only after Cuebook is enabled and no longer reports `not_logged_in`.
 
-Open one new Codex task only after installation and authentication are complete. That task loads the two Skills and the authenticated Cuebook connector; it should receive your real request immediately instead of repeating setup.
+After installation and authentication are complete, fully restart the host before testing: quit the Codex app with `Cmd+Q` on macOS (or exit it completely on another platform), reopen it, and then start one new task. For Codex CLI, end the current process and start a new one. Merely opening another task in an already-running app can retain the previous in-memory Plugin and Tool snapshot. The restarted task loads the two Skills and the authenticated Cuebook connector; it should receive your real request immediately instead of repeating setup.
 
 Then try either path:
 
@@ -141,7 +141,7 @@ Turn that idea into a Frame.
 > [!NOTE]
 > Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly two public entrypoints; internal modules load only when needed.
 
-For a reproducible, intentionally frozen install, add `--ref v0.9.5` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
+For a reproducible, intentionally frozen install, add `--ref v0.9.6` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
 
 ## Updating
 
@@ -162,7 +162,7 @@ codex mcp list --json
 
 `codex plugin marketplace upgrade cuebook` intentionally rejects a local checkout because it is not a Git marketplace managed by Codex.
 
-Do not uninstall the Plugin, duplicate its MCP entry, or repeat OAuth during a normal update. Existing connector credentials remain host-owned. Log in again only when the connector explicitly reports `not_logged_in`, returns an authorization challenge that requires step-up, or the stored grant has been revoked. Open one new Codex task after the refresh so it loads the new Skill bundle; the current task keeps the version it started with.
+Do not uninstall the Plugin, duplicate its MCP entry, or repeat OAuth during a normal update. Existing connector credentials remain host-owned. Log in again only when the connector explicitly reports `not_logged_in`, returns an authorization challenge that requires step-up, or the stored grant has been revoked. After a version-changing refresh, fully quit and reopen the Codex app (or restart the Codex CLI process), then open one new task. A new task alone may retain the old in-memory Plugin snapshot.
 
 Connections created before the complete creator consent was introduced keep their original immutable scope snapshot. The first Paper Trade or Frame write may therefore request one transparent OAuth step-up; after approval, the same connection covers the complete Cuebook workflow. This is a one-time permission update, not a reinstall.
 
@@ -174,7 +174,7 @@ Keep authentication in the installation flow:
 2. Check `codex mcp list --json`. If Cuebook is already authenticated or the host has an active authentication flow, do not start another one.
 3. On a fresh installation that reports `not_logged_in`, run `codex mcp login cuebook` once. Complete the browser approval and wait for the command to finish.
 4. Check the JSON status again. A browser approval page, an enabled connector, or a public plugin-manager result is not connection proof.
-5. Open one new task and make a real Cuebook request. A normal MCP result is the final end-to-end proof that Tool discovery and token exchange succeeded.
+5. Fully quit and reopen the Codex app, or restart the Codex CLI process. Then open one new task and make a real Cuebook request. A normal MCP result is the final end-to-end proof that Plugin discovery, Tool discovery, and token exchange succeeded.
 
 If authentication or token exchange fails, stop and report that one failure without retrying, reinstalling, or opening more tasks. This flow uses one installation, at most one install-time host login, and one real task. Preview never publishes; publication still requires explicit intent.
 
@@ -287,7 +287,7 @@ npm run build:release
 npm run check
 ```
 
-Validation checks the two-entrypoint boundary, referenced-resource closure, mobile preview and publication context budgets, schema correctness, rendering gates, and byte-for-byte generated bundle parity against an isolated rebuild. CI also rejects tracked Python runtime files.
+Validation checks the repository-wide English-only policy, two-entrypoint boundary, referenced-resource closure, mobile preview and publication context budgets, schema correctness, rendering gates, and byte-for-byte generated bundle parity against an isolated rebuild. CI also rejects tracked Python runtime files.
 
 </details>
 
@@ -297,7 +297,7 @@ Validation checks the two-entrypoint boundary, referenced-resource closure, mobi
 Release preparation has one version source and updates every pinned install ref, Plugin manifest, changelog section, and generated Skill bundle together:
 
 ```bash
-npm run release:prepare -- 0.9.5 \
+npm run release:prepare -- 0.9.6 \
   --date 2026-07-21 \
   --codex-build 20260721103045
 

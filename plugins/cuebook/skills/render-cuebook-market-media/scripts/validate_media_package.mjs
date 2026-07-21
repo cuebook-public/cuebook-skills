@@ -14,16 +14,16 @@ const RESEARCH_DECISIONS = new Set(["ready", "conditional", "blocked", null]);
 const EVIDENCE_CLASSES = new Set(["source", "verified-live", "derived", "hypothesis"]);
 const FRESHNESS = new Set(["current", "stale", "unknown"]);
 const STATE_RANK = { ready: 0, conditional: 1, blocked: 2 };
-const BANNED_PUBLIC_PHRASES = ["值得关注的是", "从机制上看", "核心逻辑在于", "传导路径", "验证路径"];
+const BANNED_PUBLIC_PHRASES = ["It is worth noting that", "From a mechanism perspective", "The core logic is", "transmission path", "verification path", "\u503c\u5f97\u5173\u6ce8\u7684\u662f", "\u4ece\u673a\u5236\u4e0a\u770b", "\u6838\u5fc3\u903b\u8f91\u5728\u4e8e", "\u4f20\u5bfc\u8def\u5f84", "\u9a8c\u8bc1\u8def\u5f84"];
 const INTERNAL_MARKERS = ["SOURCE_ASSET_MISMATCH", "PROXY_BRIDGE_MISSING", "projection-rejected", "gate-v1", "media-package.v1"];
-const CONDITIONAL_MARKERS_ZH = ["如果", "要是", "除非", "仍需", "还要看", "取决于", "一旦", "能否", "是否", "待确认", "可能", "观察"];
+const CONDITIONAL_MARKERS_ZH = ["\u5982\u679c", "\u8981\u662f", "\u9664\u975e", "\u4ecd\u9700", "\u8fd8\u8981\u770b", "\u53d6\u51b3\u4e8e", "\u4e00\u65e6", "\u80fd\u5426", "\u662f\u5426", "\u5f85\u786e\u8ba4", "\u53ef\u80fd", "\u89c2\u5bdf"];
 const CONDITIONAL_MARKERS_EN = /\b(if|unless|may|might|could|depends?|watch|conditional|needs? confirmation)\b/i;
-const HISTORICAL_MARKERS = ["历史", "复盘", "截至", "当时", "historical", "replay", "as of"];
+const HISTORICAL_MARKERS = ["\u5386\u53f2", "\u590d\u76d8", "\u622a\u81f3", "\u5f53\u65f6", "historical", "replay", "as of"];
 const ACTION_PATTERNS = [
-  /(?:建议|你可以|你应当|你应该|直接|现在|立刻|马上|请).{0,20}(?:买入|卖出|做多|做空|开仓|平仓|仓位|杠杆|止损|止盈)/i,
-  /(?:^|[。！!?；;\n])\s*(?:买|买入|卖|卖出|做多|做空|开仓|平仓)\s*\d+(?:\.\d+)?\s*(?:股|手|张|枚|份|个)/i,
+  /(?:\u5efa\u8bae|\u4f60\u53ef\u4ee5|\u4f60\u5e94\u5f53|\u4f60\u5e94\u8be5|\u76f4\u63a5|\u73b0\u5728|\u7acb\u523b|\u9a6c\u4e0a|\u8bf7).{0,20}(?:\u4e70\u5165|\u5356\u51fa|\u505a\u591a|\u505a\u7a7a|\u5f00\u4ed3|\u5e73\u4ed3|\u4ed3\u4f4d|\u6760\u6746|\u6b62\u635f|\u6b62\u76c8)/i,
+  /(?:^|[\u3002\uff01!?\uff1b;\n])\s*(?:\u4e70|\u4e70\u5165|\u5356|\u5356\u51fa|\u505a\u591a|\u505a\u7a7a|\u5f00\u4ed3|\u5e73\u4ed3)\s*\d+(?:\.\d+)?\s*(?:\u80a1|\u624b|\u5f20|\u679a|\u4efd|\u4e2a)/i,
   /\b(?:you should|i recommend|right now).{0,28}\b(?:buy|sell|short|go long|position size|leverage|stop[- ]?loss)\b/i,
-  /(?:助记词|私钥|API\s*secret|secret\s*key|seed\s*phrase)/i,
+  /(?:\u52a9\u8bb0\u8bcd|\u79c1\u94a5|API\s*secret|secret\s*key|seed\s*phrase)/i,
 ];
 const THESIS_REF = /^THESIS_[a-z0-9]{8,64}@r[1-9][0-9]*$/;
 const EXPRESSION_REF = /^CEXP_[A-Za-z0-9_:-]{8,}@r[1-9][0-9]*$/;
@@ -251,7 +251,7 @@ export function validate(item) {
   if (temporalMode === "historical_replay" && !HISTORICAL_MARKERS.some((marker) => lowered.includes(marker.toLowerCase()))) errors.push(issue("HISTORICAL_LABEL", "$.package", "Historical replay must be visibly labeled in public copy."));
   for (const phrase of BANNED_PUBLIC_PHRASES) if (publicText.includes(phrase)) warnings.push(issue("AI_PHRASE", "$.package", `Review stock phrase: ${phrase}`));
   for (const marker of INTERNAL_MARKERS) if (publicText.includes(marker)) errors.push(issue("INTERNAL_MARKER", "$.package", `Internal marker leaked into public copy: ${marker}`));
-  if ((publicText.match(/不是.{0,30}而是/g) ?? []).length > 1) warnings.push(issue("REPEATED_CONTRAST", "$.package", "Repeated 不是...而是 framing reads formulaic."));
+  if ((publicText.match(/\u4e0d\u662f.{0,30}\u800c\u662f/g) ?? []).length > 1) warnings.push(issue("REPEATED_CONTRAST", "$.package", "Repeated \u4e0d\u662f...\u800c\u662f framing reads formulaic."));
   if (ACTION_PATTERNS.some((pattern) => pattern.test(publicText))) errors.push(issue("ACTION_BOUNDARY", "$.package", "Package crosses into personalized orders, sizing, leverage, or credential handling."));
   if (expected === "conditional" && kind !== "blocked" && !hasConditionalMarker(publicText)) errors.push(issue("CONDITIONAL_WORDING", "$.package", "Conditional packages must name uncertainty, a condition, or a confirmation check."));
   const quality = item.quality_report;

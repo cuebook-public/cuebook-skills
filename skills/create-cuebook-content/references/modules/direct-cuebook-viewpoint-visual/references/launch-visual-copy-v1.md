@@ -48,9 +48,9 @@ Prefer 55-95 total characters. Use the remaining budget only for a data-led comp
 - Keep the claim to two authored lines and ensure it remains readable when the same master is displayed at 622 x 264.
 - Keep verb-object phrases, ticker-action phrases, dates, values, and units together.
 - CJK text breaks between any two characters by default, so `text-wrap: balance` alone cannot protect a word. Segment every visible CJK string — claim, evidence, and condition alike — into semantic phrase spans (`<span class="w">` with `white-space: nowrap`) so lines can break only between phrases.
-- A CJK semantic word — a market term such as `油价`, `库存`, or `增产`, a proper name, a ticker phrase, or a value with its unit — must never split across lines in the publication master.
+- A semantic word or phrase—a market term such as `oil price`, `inventory`, or `production increase`, a proper name, a ticker phrase, or a value with its unit—must never split across lines in the publication master. Apply the same rule to unspaced scripts.
 - Attach trailing punctuation to the preceding phrase span. No rendered line may start with a closing punctuation mark or end with an opening one.
-- Reject orphan lines made only of a connector, modal, or short verb such as `拿到`, `因为`, `所以`, or `但是`.
+- Reject orphan lines made only of a connector, modal, or short verb such as `because`, `therefore`, `but`, or their locale equivalent.
 - Rewrite before reducing the claim below 64px at the 1244 canvas.
 
 ## Composition

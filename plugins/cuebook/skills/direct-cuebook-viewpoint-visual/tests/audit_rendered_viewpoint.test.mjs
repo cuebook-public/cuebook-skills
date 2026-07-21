@@ -42,9 +42,9 @@ main{position:relative;width:1244px;height:528px;transform-origin:top left;font-
 ${extraCss}
 </style></head><body>
 <main data-cuebook-viewpoint data-width="1244" data-height="528">
-  <h1 class="claim" data-role="claim" data-visual-level="1" data-logic-step-id="LSTEP_CLAIM" data-essential-copy-group="claim">HOOD 进入重估窗口</h1>
-  <div class="evidence" data-role="evidence" data-visual-level="2" data-logic-step-id="LSTEP_MECH" data-binding-ref="BIND_MECH" data-essential-copy-group="proof">分发、交易与结算开始合流</div>
-  <div class="condition" data-role="condition" data-visual-level="3" data-logic-step-id="LSTEP_ACTION" data-essential-copy-group="future">下一步看使用与收入</div>
+  <h1 class="claim" data-role="claim" data-visual-level="1" data-logic-step-id="LSTEP_CLAIM" data-essential-copy-group="claim">HOOD Rerating Window</h1>
+  <div class="evidence" data-role="evidence" data-visual-level="2" data-logic-step-id="LSTEP_MECH" data-binding-ref="BIND_MECH" data-essential-copy-group="proof">Distribution meets settlement</div>
+  <div class="condition" data-role="condition" data-visual-level="3" data-logic-step-id="LSTEP_ACTION" data-essential-copy-group="future">Watch usage and revenue</div>
 </main></body></html>`;
 }
 
@@ -99,7 +99,7 @@ test("phone audit scales the same master without responsive reflow", opts, () =>
   const source = html().replace(
     "@media(max-width:1000px){main{transform:scale(.5)}}",
     "@media(max-width:1000px){main{width:622px;height:264px;transform:none}.claim{left:26px;top:18px;width:570px;font-size:48px}.evidence{left:26px;top:126px;width:480px;font-size:22px}.condition{left:410px;top:202px;width:90px;font-size:18px}}",
-  ).replace("下一步看使用与收入", "持有");
+  ).replace("Watch usage and revenue", "Hold");
   const [completed, report] = audit(source);
   assert.equal(completed.status, 0, JSON.stringify(report.errors));
   const phone = report.viewports.find((item) => item.width === 622);
@@ -130,7 +130,7 @@ test("text crossing border line fails unless allowed", opts, () => {
 });
 
 test("display-scale value restatement fails unless allowed", opts, () => {
-  const restated = html().replace("HOOD 进入重估窗口", "指引下限 >$600M").replace("分发、交易与结算开始合流", "FY26 指引 $600M+，抬升基线");
+  const restated = html().replace("HOOD Rerating Window", "Floor >$600M").replace("Distribution meets settlement", "$600M+ lifts baseline");
   let [completed, report] = audit(restated);
   assert.notEqual(completed.status, 0);
   assert.ok(codes(report).has("VALUE_RESTATED"));
@@ -139,14 +139,14 @@ test("display-scale value restatement fails unless allowed", opts, () => {
 });
 
 test("small value restatement is warning", opts, () => {
-  const source = html(".claim{font-size:36px}.condition{font-size:36px}").replace("HOOD 进入重估窗口", "库存比预期多 9B").replace("下一步看使用与收入", "失效：9B 缺口收回");
+  const source = html(".claim{font-size:36px}.condition{font-size:36px}").replace("HOOD Rerating Window", "Inventory is 9B above expectations").replace("Watch usage and revenue", "Invalidation: the 9B gap closes");
   const [completed, report] = audit(source);
   assert.equal(completed.status, 0, JSON.stringify(report.errors));
   assert.ok(codes(report, "warnings").has("VALUE_RESTATED"));
 });
 
 test("proof-led composition needs evidence field", opts, () => {
-  const source = html(".claim{left:50px;top:40px;width:320px;font-size:54px}.evidence{left:420px;top:50px;width:820px;height:360px;font-size:36px}.condition{left:50px;top:260px;width:300px;font-size:36px}")
+  const source = html(".claim{left:50px;top:40px;width:360px;font-size:48px}.evidence{left:420px;top:50px;width:820px;height:360px;font-size:36px}.condition{left:50px;top:260px;width:300px;font-size:36px}")
     .replace("data-cuebook-viewpoint data-width", 'data-cuebook-viewpoint data-market-relationship="deviation" data-argument-archetype="forecast_surprise" data-composition-archetype="chart_stage" data-finance-transform="delta" data-baseline-policy="zero" data-chart-decision="chart" data-width');
   let [completed, report] = audit(source);
   assert.equal(completed.status, 0, JSON.stringify(report.errors));

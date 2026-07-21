@@ -15,25 +15,25 @@ function withTempDirectory(run) {
   }
 }
 
-test("json preserves Chinese and merges duplicates", () => {
+test("json preserves source text and merges duplicates", () => {
   const records = [
     {
       id: "1001",
       platform: "twitter",
-      author: { name: "测试作者", handle: "@tester" },
-      text: "英伟达 $NVDA 营收超预期，AI ETF 和 CPI 只是上下文。",
+      author: { name: "Test Author", handle: "@tester" },
+      text: "Nvidia $NVDA revenue beat expectations; the AI ETF and CPI are only context.",
       created_at: "2026-07-14T08:00:00+08:00",
       url: "https://twitter.com/tester/status/1001?utm_source=feed",
       links: [{ url: "https://WWW.REUTERS.COM/markets/chips/?utm_medium=social", type: "source" }],
-      entities: { organizations: ["英伟达"] },
-      metrics: { like_count: "1.2万" },
+      entities: { organizations: ["Nvidia"] },
+      metrics: { like_count: "12K" },
       provenance: { collector: "authorized-export" },
     },
     {
       id: "1001",
       platform: "x",
       author_handle: "tester",
-      text: "英伟达 $NVDA 营收超预期，AI ETF 和 CPI 只是上下文。",
+      text: "Nvidia $NVDA revenue beat expectations; the AI ETF and CPI are only context.",
       created_at: "2026-07-14T00:00:00Z",
       url: "https://x.com/tester/status/1001",
       metrics: { likes: "12,500", replies: "3" },
@@ -47,7 +47,7 @@ test("json preserves Chinese and merges duplicates", () => {
     return normalize_files([inputPath], {
       rights_basis: "authorized",
       source_label: "regression export",
-      subject_name: "测试作者",
+      subject_name: "Test Author",
     });
   });
 
@@ -57,7 +57,7 @@ test("json preserves Chinese and merges duplicates", () => {
   assert.equal(corpus.stats.duplicates_removed, 1);
   assert.equal(corpus.quality.skipped_records, 1);
   const item = corpus.items[0];
-  assert.ok(item.text.includes("英伟达"));
+  assert.ok(item.text.includes("Nvidia"));
   assert.equal(item.url, "https://x.com/tester/status/1001");
   assert.equal(item.links[0].domain, "reuters.com");
   assert.deepEqual(item.entities.tickers, ["NVDA"]);
@@ -78,7 +78,7 @@ test("jsonl and csv are accepted together", () => {
       jsonlPath,
       `${JSON.stringify({
         id: "j1",
-        text: "油价突破前高，成交量同步放大。",
+        text: "Oil broke above its prior high as volume expanded.",
         platform: "x",
         created_at: "2026-07-13T09:00:00Z",
       })}\n`,
@@ -98,7 +98,7 @@ test("jsonl and csv are accepted together", () => {
   });
 
   assert.equal(corpus.stats.output_items, 2);
-  assert.deepEqual(new Set(corpus.items.map((item) => item.language)), new Set(["en", "zh"]));
+  assert.deepEqual(new Set(corpus.items.map((item) => item.language)), new Set(["en"]));
   assert.deepEqual(new Set(corpus.provenance.inputs.map((entry) => entry.format)), new Set(["jsonl", "csv"]));
   const csvItem = corpus.items.find((item) => item.external_id === "c1");
   assert.equal(csvItem.metrics.values.views, 2500);

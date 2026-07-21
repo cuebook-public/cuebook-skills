@@ -183,7 +183,7 @@ function baseFormula() {
       activation_formula: "",
       success_formula: "",
       failure_formula: "",
-      one_line: "USO 到期官方收盘 > 117.79 USD 时成功。",
+      one_line: "USO succeeds when the official expiry close is above 117.79 USD.",
     },
     quality_report: { decision: "ready", warnings: [], missing_fields: [] },
   };
@@ -282,7 +282,7 @@ function btcTriggeredFormula() {
     zero_division_policy: "manual_review",
     observation_order: "event_time",
   });
-  item.public_math.one_line = "BTC 日线站上 65,000 且成交量不低于前 20 日均量后生效；下次减半后首根完整日线高于触发收盘价则成功。";
+  item.public_math.one_line = "Activates after BTC closes above 65,000 with volume at least equal to the prior 20-day average; succeeds if the first completed daily bar after the next halving closes above the trigger close.";
   Object.assign(item.public_math, render_public_math(item));
   return item;
 }

@@ -31,13 +31,13 @@ export const HEIGHT = 760;
 export const COMPACT_WIDTH = 720;
 export const COMPACT_HEIGHT = 420;
 export const GRAMMAR_LABELS = {
-  event_reaction: "新闻反应",
-  relative_strength: "相对强弱",
-  expectation_revision: "预期修正",
-  fundamental_driver: "基本面驱动",
-  positioning_pressure: "资金压力",
-  sensitivity_curve: "敏感性曲线",
-  instrument_map: "工具地图",
+  event_reaction: "NEWS REACTION",
+  relative_strength: "RELATIVE STRENGTH",
+  expectation_revision: "EXPECTATION REVISION",
+  fundamental_driver: "FUNDAMENTAL DRIVER",
+  positioning_pressure: "POSITIONING PRESSURE",
+  sensitivity_curve: "SENSITIVITY CURVE",
+  instrument_map: "INSTRUMENT MAP",
 };
 export const PALETTES = {
   cuebook_light: {
@@ -66,9 +66,9 @@ const STROKE_DASHES = { solid: "", dashed: "8 6", dotted: "2 6" };
 const LEVEL_MARKER_KINDS = new Set(["baseline", "latest", "trigger", "target", "invalidation", "estimate"]);
 const CURRENCY_SYMBOLS = { KRW: "₩", JPY: "¥", CNY: "¥", EUR: "€", GBP: "£" };
 const ARGUMENT_KIND_LABELS = {
-  event: "导火索", evidence: "我看到的", mechanism: "为什么先动", actor_action: "钱先去哪",
-  market_effect: "我押什么", metric: "关键数据", condition: "要盯什么", countercase: "我可能错在",
-  invalidation: "逻辑边界", settlement: "到期看",
+  event: "CATALYST", evidence: "WHAT I SEE", mechanism: "WHY IT MOVES FIRST", actor_action: "WHERE CAPITAL MOVES",
+  market_effect: "THE BET", metric: "KEY DATA", condition: "WHAT TO WATCH", countercase: "WHAT COULD BREAK IT",
+  invalidation: "THESIS BOUNDARY", settlement: "AT EXPIRY",
 };
 
 const f1 = (value) => pyFloatFixed(Number(value), 1);
@@ -85,7 +85,8 @@ export function esc(value) {
 
 export { displayWidth as display_width };
 
-const PROTECTED_WRAP_TOKEN = /(?:窗口看|未来|至少|接下来|先看|看)?\s*[+-]?\d[\d,.]*(?:\s*(?:-|–|—|~|至)\s*[+-]?\d[\d,.]*)?\s*(?:分钟|小时|天|周|个月|月|年|days?|weeks?|months?|years?|%|pp|bps?)|\$?[A-Z][A-Z0-9./-]{1,11}/gu;
+// Localized duration markers stay supported through escaped code points.
+const PROTECTED_WRAP_TOKEN = /(?:\u7a97\u53e3\u770b|\u672a\u6765|\u81f3\u5c11|\u63a5\u4e0b\u6765|\u5148\u770b|\u770b)?\s*[+-]?\d[\d,.]*(?:\s*(?:-|–|—|~|\u81f3)\s*[+-]?\d[\d,.]*)?\s*(?:\u5206\u949f|\u5c0f\u65f6|\u5929|\u5468|\u4e2a\u6708|\u6708|\u5e74|days?|weeks?|months?|years?|%|pp|bps?)|\$?[A-Z][A-Z0-9./-]{1,11}/gu;
 
 export function wrapText(value, maxUnits, maxLines) {
   const source = value ? pyString(value) : "";
@@ -212,7 +213,7 @@ function trimFixed(value) {
 export function fmtX(value, kind, categories) {
   if (kind === "time") {
     const parts = utcParts(value);
-    return `${parts.month}月${parts.day}日`;
+    return `${parts.month}/${parts.day}`;
   }
   if (kind === "category") {
     const index = Math.max(0, Math.min(categories.length - 1, pyRound(value)));
@@ -535,19 +536,19 @@ export function renderSidePanel(spec, colors) {
   const news = spec.news_anchor;
   let cursor = y + 28;
   if (news) {
-    const statusLabel = { observed: "已确认", provisional: "快讯", unconfirmed: "待核实" }[news.status];
+    const statusLabel = { observed: "CONFIRMED", provisional: "BREAKING", unconfirmed: "TO VERIFY" }[news.status];
     parts.push(
-      textBlock(x + 20, cursor, "新闻锚点", 18, 1, 13, 15, colors.yellow_ink, 700),
+      textBlock(x + 20, cursor, "NEWS ANCHOR", 18, 1, 13, 15, colors.yellow_ink, 700),
       pill(x + width - 92, cursor - 20, statusLabel, colors.surface_alt, colors.yellow_ink, 72),
       textBlock(x + 20, cursor + 38, news.headline, 33, 3, 17, 23, colors.ink, 700),
     );
     const published = parseTime(news.published_at);
-    parts.push(textBlock(x + 20, cursor + 112, `${news.publisher} · ${published.month}月${published.day}日 ${pad2(published.hour)}:${pad2(published.minute)} UTC`, 38, 1, 11, 13, colors.muted, 500));
+    parts.push(textBlock(x + 20, cursor + 112, `${news.publisher} · ${published.month}/${published.day} ${pad2(published.hour)}:${pad2(published.minute)} UTC`, 38, 1, 11, 13, colors.muted, 500));
     cursor += 140;
     parts.push(`<line x1="${f1(x + 20)}" y1="${f1(cursor)}" x2="${f1(x + width - 20)}" y2="${f1(cursor)}" stroke="${colors.line}" stroke-width="1"/>`);
     cursor += 28;
   } else {
-    parts.push(textBlock(x + 20, cursor, "关键数字", 20, 1, 13, 15, colors.muted, 700));
+    parts.push(textBlock(x + 20, cursor, "KEY NUMBERS", 20, 1, 13, 15, colors.muted, 700));
     cursor += 28;
   }
   const numbers = spec.key_numbers;
@@ -579,13 +580,13 @@ export function renderBottom(spec, colors) {
       textBlock(76, y + 25, counter.label, 28, 1, 12, 14, colors.red, 700),
       textBlock(76, y + 53, counter.condition, 50, 2, 14, 18, colors.ink, 600),
       rect(592, y, 552, height, colors.surface_alt, colors.yellow, 7),
-      textBlock(612, y + 25, "如何结算", 18, 1, 12, 14, colors.yellow_ink, 700),
+      textBlock(612, y + 25, "HOW IT SETTLES", 18, 1, 12, 14, colors.yellow_ink, 700),
       textBlock(612, y + 53, settlement.success_line, 48, 2, 14, 18, colors.ink, 600),
     );
   } else if (settlement.settleable) {
     parts.push(
       rect(56, y, 1088, height, colors.surface_alt, colors.yellow, 7),
-      textBlock(76, y + 25, "如何结算", 18, 1, 12, 14, colors.yellow_ink, 700),
+      textBlock(76, y + 25, "HOW IT SETTLES", 18, 1, 12, 14, colors.yellow_ink, 700),
       textBlock(76, y + 56, settlement.success_line, 100, 2, 16, 21, colors.ink, 600),
     );
   } else if (counter) {
@@ -650,7 +651,7 @@ export function renderCompactPlot(spec, colors, plotY = 132, plotH = 220) {
   }
   if (spec.grammar !== "instrument_map" && yMin <= 0 && 0 <= yMax) {
     const zeroY = sy(0);
-    const zeroLabel = new Set(["%", "pct"]).has(spec.curve.y_axis.unit) ? "0% 基准" : "0 基准";
+    const zeroLabel = new Set(["%", "pct"]).has(spec.curve.y_axis.unit) ? "0% BASE" : "0 BASE";
     parts.push(
       `<line x1="${f1(innerX)}" y1="${f1(zeroY)}" x2="${f1(innerX + innerW)}" y2="${f1(zeroY)}" stroke="${colors.line}" stroke-width="1.5"/>`,
       textBlock(innerX + 6, zeroY - 5, zeroLabel, 12, 1, 10, 12, colors.muted, 600),

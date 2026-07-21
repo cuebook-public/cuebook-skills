@@ -24,7 +24,7 @@ Turn one meaning-locked settlement claim into math that a deterministic service 
 - Two-asset targets use `all`. Two-asset direction uses either `all` for independent leg tests or `long_short` for one equal-notional long leg against one equal-notional short leg. Persist both leg outcomes and the combined spread.
 - Price targets preserve `>` versus `>=` and `<` versus `<=`. Terminal targets and in-window touches are different clocks.
 - Long/short aggregation compares synchronized simple returns, not nominal price changes: `return_bps(long_leg) - return_bps(short_leg) > margin_bps`.
-- Use `margin_bps: 0` when the creator only says “跑赢/跑输”; populate a positive margin only when the creator states one explicitly. Do not ask the user for a percentage merely to create the pair.
+- Use `margin_bps: 0` when the creator only says “outperform/underperform”; populate a positive margin only when the creator states one explicitly. Do not ask the user for a percentage merely to create the pair.
 - Long/short legs require an endpoint-alignment rule, bounded entry skew, equal-notional weighting, and compatible quote currencies or an explicit local-return policy.
 - Long/short legs must also share one settlement session family. A continuous crypto leg and a scheduled equity leg (for example BTC/QQQ) cannot enter equal-notional pair settlement in the current engine even when they can appear in one comparison chart. Return `MIXED_SESSION_FAMILY` and let the creator explicitly choose a supported single-asset settlement or no settlement; never silently relabel the pair.
 - A ratio names numerator, denominator, lookback, inclusion policy, and zero-division policy.

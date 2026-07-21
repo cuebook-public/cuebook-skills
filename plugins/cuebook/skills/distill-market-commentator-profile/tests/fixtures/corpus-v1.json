@@ -14,10 +14,10 @@
       "platform": "x",
       "author": {"name": "Regression Commentator", "handle": "regression"},
       "content_type": "post",
-      "text": "CPI同比回落到2.1%，原始数据来自统计局。若下月反弹，这个判断失效。",
+      "text": "CPI eased to 2.1% year over year, based on the statistics bureau's original data. If it rebounds next month, this view fails.",
       "created_at": "2026-07-10T01:00:00Z",
       "url": "https://x.com/regression/status/1",
-      "language": "zh",
+      "language": "en",
       "links": [
         {
           "url": "https://www.stats.gov.cn/data/cpi",
@@ -29,9 +29,9 @@
         "tickers": [],
         "hashtags": [],
         "mentions": [],
-        "organizations": ["国家统计局"],
+        "organizations": ["National Bureau of Statistics"],
         "people": [],
-        "locations": ["中国"],
+        "locations": ["China"],
         "other": ["CPI"]
       },
       "metrics": {
@@ -61,10 +61,10 @@
       "platform": "x",
       "author": {"name": "Regression Commentator", "handle": "regression"},
       "content_type": "post",
-      "text": "朋友说 AI ETF 很拥挤，$NVDA 跌破支撑后可能触发被迫平仓。",
+      "text": "A friend says the AI trade is crowded; if $NVDA breaks support, forced selling may follow.",
       "created_at": "2026-07-11T01:00:00Z",
       "url": "https://x.com/regression/status/2",
-      "language": "zh",
+      "language": "en",
       "links": [
         {
           "url": "https://X.COM/market/status/99",
@@ -108,7 +108,7 @@
       "platform": "newsletter",
       "author": {"name": "Regression Commentator", "handle": "regression"},
       "content_type": "newsletter",
-      "text": "Reuters says new GPU export controls could tighten supply; lower capacity changes revenue and gross margin.",
+      "text": "Reuters reports new chip export controls; the change may affect revenue and gross margin.",
       "created_at": "2026-07-12T01:00:00Z",
       "url": "https://example.substack.com/p/gpu-controls",
       "language": "en",
@@ -155,10 +155,10 @@
       "platform": "x",
       "author": {"name": "Regression Commentator", "handle": "regression"},
       "content_type": "post",
-      "text": "为什么降息预期升温、国债收益率却创新高？如果资金流没有改善，估值重估就不成立。",
+      "text": "Why are rate-cut expectations rising while Treasury yields make new highs? The valuation rerating is the question.",
       "created_at": "2026-07-13T01:00:00Z",
       "url": "https://x.com/regression/status/4",
-      "language": "zh",
+      "language": "en",
       "links": [
         {
           "url": "https://polymarket.com/event/rates",
@@ -173,7 +173,7 @@
         "organizations": [],
         "people": [],
         "locations": [],
-        "other": ["国债收益率"]
+        "other": ["Treasury yields"]
       },
       "metrics": {
         "available": false,
@@ -216,7 +216,7 @@
     "output_items": 4,
     "duplicates_removed": 0,
     "metrics_items": 2,
-    "languages": {"en": 1, "zh": 3},
+    "languages": {"en": 4},
     "platforms": {"newsletter": 1, "x": 3}
   },
   "quality": {

@@ -25,7 +25,7 @@ export const PALETTES = {
   },
 };
 
-const PROTECTED_WRAP_TOKEN = /(?:窗口看|未来|至少|接下来|先看|看)?\s*[+-]?\d[\d,.]*(?:\s*(?:-|–|—|~|至)\s*[+-]?\d[\d,.]*)?\s*(?:分钟|小时|天|周|个月|月|年|days?|weeks?|months?|years?|%|pp|bps?)|\$?[A-Z][A-Z0-9./-]{1,11}/gu;
+const PROTECTED_WRAP_TOKEN = /(?:\u7a97\u53e3\u770b|\u672a\u6765|\u81f3\u5c11|\u63a5\u4e0b\u6765|\u5148\u770b|\u770b)?\s*[+-]?\d[\d,.]*(?:\s*(?:-|–|—|~|\u81f3)\s*[+-]?\d[\d,.]*)?\s*(?:\u5206\u949f|\u5c0f\u65f6|\u5929|\u5468|\u4e2a\u6708|\u6708|\u5e74|days?|weeks?|months?|years?|%|pp|bps?)|\$?[A-Z][A-Z0-9./-]{1,11}/gu;
 
 export function esc(value) {
   return htmlEscape(value);
@@ -122,7 +122,7 @@ export function renderKeyNumber(spec, colors) {
   if (comparison) {
     parts.push(
       rect(477, 190, 215, 64, accentSoft, 6),
-      textBlock(494, 215, "同口径比较", 20, 1, 11, 13, accent, 700),
+      textBlock(494, 215, "LIKE-FOR-LIKE", 20, 1, 11, 13, accent, 700),
       textBlock(494, 240, comparison, 26, 1, 18, 21, colors.ink, 700),
     );
   }
@@ -147,7 +147,7 @@ export function renderKeyNews(spec, colors) {
     rect(28, 94, 4, 78, accent, 2),
     textBlock(52, 124, action, 42, 2, actionSize, actionSize + 8, colors.ink, 800),
     rect(28, 194, 664, 72, accentSoft, 6),
-    textBlock(44, 216, "因为", 8, 1, 11, 13, accent, 700),
+    textBlock(44, 216, "WHY", 8, 1, 11, 13, accent, 700),
     textBlock(44, 246, news.headline, 61, 2, 18, 22, colors.ink, 700),
     `<line x1="28" y1="290" x2="692" y2="290" stroke="${colors.line}" stroke-width="1"/>`,
     textBlock(28, 329, spec.frame.interpretation, 57, 2, 20, 28, colors.ink, 650),

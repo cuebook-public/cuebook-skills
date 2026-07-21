@@ -13,7 +13,7 @@ function query_snapshot() {
     read_only: true,
     query_type: "mixed",
     as_of: "2026-07-15T19:00:00+08:00",
-    request: { raw_text: "查询 USO 最新故事和市场状态", asset_refs: ["asset:uso"], time_range: null, depth: "focused" },
+    request: { raw_text: "Query USO's latest story and market state", asset_refs: ["asset:uso"], time_range: null, depth: "focused" },
     results: [
       { result_id: "RES_story", kind: "story", title: "Oil risk premium", summary: "Risk premium is unwinding.", data_ref: "story:uso:1", source_refs: ["SRC_story"], as_of: "2026-07-15T18:50:00+08:00", status: "available" },
       { result_id: "RES_state", kind: "market_state", title: "USO market state", summary: "Latest sealed snapshot.", data_ref: "market:uso:1", source_refs: ["SRC_state"], as_of: "2026-07-15T19:00:00+08:00", status: "available" },
@@ -47,7 +47,7 @@ function bundle() {
     creation_id: "CREATE_uso_view",
     state: "ready",
     created_at: "2026-07-15T19:10:00+08:00",
-    creator_request: { seed_text: "我认为原油风险溢价会回吐", authorship_mode: "cuebook_assisted", stance_source: "creator_seed", adopted_claim_refs: [], adoption_confirmed: false, material_current_claims: true, requested_outputs: ["text", "visual"] },
+    creator_request: { seed_text: "I think the crude-oil risk premium will unwind", authorship_mode: "cuebook_assisted", stance_source: "creator_seed", adopted_claim_refs: [], adoption_confirmed: false, material_current_claims: true, requested_outputs: ["text", "visual"] },
     query_binding: { required: true, status: "executed", query_bundle_ref: null, query_bundle_hash: null, query_state: "not_applicable", result_refs: [], as_of: null, freshness: "fresh", warnings: [] },
     workflow_run_ref: "WORKFLOW_uso",
     candidate_set_ref: "CANDSET_uso",
@@ -68,7 +68,7 @@ function seed() {
   return {
     schema_version: "creator-seed-v1",
     seed_id: "SEED_hood_view",
-    seed_text: "我认为 HOOD 的链上证券业务会带来重估。",
+    seed_text: "I think HOOD's onchain-securities business will drive a rerating.",
     deliverable: "market_post",
     requested_outputs: ["text", "visual"],
     material_current_claims: true,

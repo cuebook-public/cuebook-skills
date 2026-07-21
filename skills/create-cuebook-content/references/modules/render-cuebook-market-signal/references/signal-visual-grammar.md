@@ -33,7 +33,7 @@ Reading order:
 1. publication time and publisher;
 2. readable strategy tags;
 3. creator action, including asset and horizon;
-4. the source headline introduced by `因为`;
+4. the source headline introduced by a localized `because` label;
 5. one price mechanism explaining the trade.
 
 Do not turn the interpretation into a multi-step causal chain. Route a developed mechanism to a logic card or argument-plus-curve figure.
@@ -43,7 +43,7 @@ Do not turn the interpretation into a multi-step causal chain. Route a developed
 - Public: action, reason, asset, horizon, and strategy tags.
 - Private: `observed`, `derived`, `provisional`, `unconfirmed`, source refs, retrieval details, formula lineage, and evidence gaps.
 - Color follows the trade expression: long, short, relative value, volatility, or hedge. It does not expose evidence status.
-- Public tags describe the play, such as `事件驱动`, `预期修正`, `相对价值`, or `流动性挤压`; they never describe workflow state.
+- Public tags describe the play, such as `event driven`, `expectation revision`, `relative value`, or `liquidity squeeze`; they never describe workflow state.
 
 ## Receptive Restraint
 

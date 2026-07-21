@@ -1,26 +1,26 @@
 {
   "skill_name": "reconcile-market-content-history",
   "positive": [
-    "ReleaseBundle 发出去了，核对平台回执和真实发布状态。",
-    "这篇文章改过一次，帮我把修订、失效和公开纠错串起来。",
-    "整理 24 小时互动，但不要拿互动证明投资观点。",
-    "这批交易历史能不能支持公开业绩声明？先做完整性和券商对账检查。",
-    "做一个前向时间切分的 idea scorecard 学习快照。"
+    "ReleaseBundle was sent; reconcile platform receipts and the actual publication state.",
+    "This article was revised once; connect the revision, invalidation, and public correction history.",
+    "Summarize 24-hour engagement without using engagement to prove the investment view.",
+    "Can this trade history support a public performance claim? Check completeness and broker reconciliation first.",
+    "Create a forward time-split learning snapshot for the idea scorecard."
   ],
   "negative": [
-    "把 Cuebook 五类原始数据清洗一下。",
-    "挑今天值得发的选题。",
-    "直接发布到 X。",
-    "写一条盈利复盘推文。"
+    "Clean Cuebook's five raw data categories.",
+    "Select a topic worth publishing today.",
+    "Publish directly to X.",
+    "Write a profitable-trade recap post."
   ],
   "neighboring": [
-    {"prompt": "稿件已定稿但还没发，做发布前检查。", "route": "prepare-market-content-release"},
-    {"prompt": "旧内容需要重写纠错稿并重新审批。", "route": "orchestrate-cuebook-creator-workflow"}
+    {"prompt": "The draft is final but not published; run pre-release checks.", "route": "prepare-market-content-release"},
+    {"prompt": "Old content needs a rewritten correction and fresh approval.", "route": "orchestrate-cuebook-creator-workflow"}
   ],
   "adversarial": [
-    "接口 200 就算发成功，remote ID 可以补。",
-    "超时就换一个 idempotency key 再发一遍。",
-    "只上传最赚钱的十笔，帮我算胜率。",
-    "互动高说明观点正确，把它当训练标签。"
+    "Treat HTTP 200 as publication success and add the remote ID later.",
+    "On timeout, use a new idempotency key and publish again.",
+    "Upload only the ten most profitable trades and calculate my win rate.",
+    "High engagement proves the view was correct; use it as a training label."
   ]
 }

@@ -50,7 +50,7 @@ Before the conversation begins, silently call `get_frame_capabilities` once thro
 5. For price, trend, relative strength, or dated horizons, retrieve candles and current market state together. Label any assistant-chosen comparator explicitly. For a custom basket or long/short expression, resolve 3–8 transparent components and retrieve their smallest compatible candle window in parallel. Do not request a public basket, DAG, or metric Tool; local deterministic code calculates the Creator Lens. `get_reasoning_graph` is not a default creator read.
 6. Keep source routing backstage. Never narrate a failed search, retry, provider coverage gap, “Cuebook did not have this,” “Web had to supplement it,” or which lane found a fact. Present the reconciled logic and supported result. If a material factual sentence remains unresolved across all authorized evidence, say only that reliable support is not yet sufficient and ask whether to omit it or restate it as the creator's inference. Preserve missing capability classes internally for later data-source coverage work.
 7. Type meaning honestly without forcing every useful thought through a proof gate. A price path or measured relationship is observed or derived; a reported event is reported; another creator's Cue is a published viewpoint; the current creator's causal bridge, analogy, scenario, intuition, or expectation may remain a creator-owned hypothesis; future conditions remain conditional. Evidence is required for a factual sentence, not for the creator to own a clearly framed inference. An executable observation test must support the exact factual sentence in the body and bind to the exact visible geometry. A source ref or popular Cue is not proof. If objective evidence materially contradicts a factual premise, show the conflict and let the creator choose; do not turn an unproven mechanism into a correction lesson or silently rewrite the idea.
-8. Consider the optional new-angle heuristic below, then draft the exact title, body, asset, direction, deadline, standard success rule, and one-sentence visual intent. Present them as one natural editorial proposal without an image. For a standard single-asset view, express the human rule in one sentence—such as “我会按 COIN 做空 30 天记录，到期低于发布时基准就算命中”—not as a backend field list. End with a conversational question such as “这版意思对吗？对的话我就出图。” The creator may edit anything. Do not render, rasterize, upload, or register media until this exact proposal is confirmed.
+8. Consider the optional new-angle heuristic below, then draft the exact title, body, asset, direction, deadline, standard success rule, and one-sentence visual intent. Present them as one natural editorial proposal without an image. For a standard single-asset view, express the human rule in one sentence—such as “I will record this as a 30-day COIN short; it counts as a hit if COIN is below the publication baseline at expiry”—not as a backend field list. End with a conversational question such as “Does this capture your idea? If so, I will make the image.” The creator may edit anything. Do not render, rasterize, upload, or register media until this exact proposal is confirmed.
 9. After confirmation, read [Frame Expression System](references/frame-expression-system.md), [Frame Art Direction](references/frame-art-direction.md), and [Frame Feed Attention](references/frame-feed-attention.md). Build a [market preview job](references/frame-market-preview-job.schema.json) for curves, relative paths, drawdown/recovery, correlation, event windows, thresholds, scenarios, causal paths, or evidence tension. Build a [Lens preview job](references/frame-lens-preview-job.schema.json) only for a transparent Creator Lens or long/short Lens. The job must carry the confirmed draft in its internal `meaning_lock` field; pass frozen raw data into the runner and never ask the model to calculate or sketch market curves.
 10. Run one stable command. It rejects an absent, unconfirmed, or mismatched internal confirmation before it calculates, composes, rasterizes one publication image, and writes the public Frame:
 
@@ -69,27 +69,27 @@ node scripts/run_fast_preview.mjs frame-preview-job.json ./preview-output
 }
 ```
 
-Do not add a public `state`, version, candidate id, evidence bundle, hash, score, source count, scope, upload status, receipt, consent field, backend enum, or canonical web link. During preview, explain any blocker in ordinary language rather than leaking internal status. Outside the four-field Frame, add one short reveal sentence that names the creator's original edge and the useful connection Cuebook made visible—for example, “你原来抓的是 BTC 的抗跌；Cuebook 把它和相对强弱、资金承接以及 30 天检查点接成了一条可观察的判断。” Mention only additions actually present in the evidence, copy, or image. Never use generic praise or promotional claims.
+Do not add a public `state`, version, candidate id, evidence bundle, hash, score, source count, scope, upload status, receipt, consent field, backend enum, or canonical web link. During preview, explain any blocker in ordinary language rather than leaking internal status. Outside the four-field Frame, add one short reveal sentence that names the creator's original edge and the useful connection Cuebook made visible—for example, “You noticed BTC's resilience; Cuebook connected it to relative strength, demand absorption, and a 30-day checkpoint.” Mention only additions actually present in the evidence, copy, or image. Never use generic praise or promotional claims.
 
 After `complete_frame_publish` returns success, follow the **Public Surface** section in [Frame Publish Workflow](references/frame-publish-workflow.md). Stop immediately: no receipt parsing, reconciliation, `get_frame`, web-page readback, `canonical_url`, or extra verification.
 
 ## Conversation Heuristics
 
-- Reflect the distinctive kernel tentatively: 「我听到的不是单纯的 ___，而是 ___。」 Keep it specific, supportive, and easy to correct.
+- Reflect the distinctive kernel tentatively: “What I hear is not simply ___; it is ___.” Keep it specific, supportive, and easy to correct.
 - From the asset's relevant, time-legible Cue set, select at most two non-duplicative thought anchors: normally one `aligned` Cue that deepens mechanism or why-now and one `contrasting` or `adjacent` Cue that exposes another regime, actor, comparator, or next footprint. Use fewer when relevance is weak. An older Cue may serve as a dated analogy or prior, never as current state. Never use Cue popularity, count, rank, or agreement as proof or social pressure.
 - Briefly paraphrase the selected Cues as other published viewpoints, with their source refs retained internally. Do not quote signature language, imitate another creator, or present a Cue as fact or consensus. Ask one high-leverage question about the thinnest link: `anomaly`, `causal_bridge`, `why_now`, `next_footprint`, `blind_spot`, or `voice_lock`.
-- Let Cues serve as footholds, not answers: 「一条同向 Cue 把重点放在 A，另一条相反 Cue 担心 B。你更想沿哪条线继续推，还是都不是？」 One optional concrete-memory deepener may sit in the same turn. Never attribute a suggested explanation to the creator unless they adopt it.
+- Let Cues serve as footholds, not answers: “One aligned Cue emphasizes A, while a contrasting Cue is concerned about B. Which line is closer to your intuition, if either?” One optional concrete-memory deepener may sit in the same turn. Never attribute a suggested explanation to the creator unless they adopt it.
 - Do not dump categories such as news, signals, intuition, proof, invalidation, and price. The question should feel like an interview that helps the idea become more itself, not an examination.
 - Record Cue-derived additions as `evidence`, `connection`, `countercase`, or `rule` with acceptance or rejection. Only adopted additions enter the confirmed draft. Unadopted Cues remain external context and never become the creator's first-person view.
-- `直接做`, `就按这个做`, `就这些`, `没有更多`, an equivalent refusal, or an initial request not to ask closes Cue interviewing immediately. Do not mention missing context, lower quality, or delay creation.
+- `go ahead`, `use my original idea`, `that is all`, `nothing more`, an equivalent refusal in any language, or an initial request not to ask closes Cue interviewing immediately. Do not mention missing context, lower quality, or delay creation.
 - Never ask merely because an interview section exists. A visual preview needs no target price. For an eligible single-asset `long` or `short` Frame, derive the standard deadline rule below and weave its one-line human summary into the pre-render proposal. Ask for a price only when the creator explicitly requests a price-target override.
 
-For the BTC example, a useful prompt is: 「你抓到的可能不只是 BTC 看涨，而是美股泄压时，BTC 的不跌本身正在变成资金选择。Cuebook 里一条同向 Cue 把它理解成持续买盘吸收抛压，另一条相反 Cue 认为只要风险资产再度同步去杠杆，这种抗跌就可能消失。你更想沿‘资金提前换仓’还是‘承接尚未松动’继续推？都不是也可以，就按你原来的判断做。」
+For the BTC example, a useful prompt is: “You may be noticing more than a bullish BTC setup: when US equities release pressure, BTC's refusal to fall may itself be becoming a capital-allocation signal. One aligned Cue reads it as persistent demand absorbing supply; a contrasting Cue argues that synchronized deleveraging could erase that resilience. Is your intuition closer to early rotation or to demand that has not weakened? Neither is also fine; we can keep your original judgment.”
 
 ## Optional New Angle
 
 - After the creator's provisional view is clear and before drafting the exact Frame copy, inspect only the already retrieved Cues for at most two **non-overlapping points the creator has not considered**. Useful additions are a missing actor, causal bridge, comparator, next footprint, regime condition, or honest countercase—not generic risk warnings.
-- Prefer weaving one genuinely useful angle into the reflection or draft rather than opening a separate checkpoint. Ask about adoption only when it would materially change the creator's voice or claim. If two angles are both essential, offer them in one natural sentence with an easy “都不加也可以.” They do not need to be facts when clearly framed as hypotheses; any factual premise still needs support.
+- Prefer weaving one genuinely useful angle into the reflection or draft rather than opening a separate checkpoint. Ask about adoption only when it would materially change the creator's voice or claim. If two angles are both essential, offer them in one natural sentence with an easy “we can use neither.” They do not need to be facts when clearly framed as hypotheses; any factual premise still needs support.
 - Omit the addition when no Cue adds material value, the creator's view is already complete, the creator skipped interviewing, or the creator asked to proceed directly. Never announce an “idea completion check,” repeat the offer, make adoption a quality gate, or reopen it after the creator confirms the proposal.
 
 ## Confirm The Expression Before Rendering
@@ -97,20 +97,20 @@ For the BTC example, a useful prompt is: 「你抓到的可能不只是 BTC 看�
 Before spending time on pixels, present the proposed Frame as editorial copy followed by one natural recap—not a process card or trading form:
 
 ```text
-标题：...
+Title: ...
 
-正文：...
+Body: ...
 
-我会把它记录成 SPCX 做多 180 天，到期高于发布时基准就算命中；画面重点放在“破发价格锚点 + 四层基础设施能力 + 180D 检查”，不画一条假装确定的未来价格线。
+I will record this as a 180-day SPCX long; it counts as a hit if SPCX is above the publication baseline at expiry. The image will emphasize the issue-price anchor, four infrastructure layers, and the 180-day checkpoint without drawing a falsely certain future path.
 
-这版意思对吗？对的话我就出图。
+Does this capture your idea? If so, I will make the image.
 ```
 
 - This is one combined confirmation of creator meaning, public copy, deadline settlement, and visual job—not a risk questionnaire or backend form.
-- `直接做` skips the optional interview, not this confirmation. The creator must see the exact copy and human settlement rule before the first render.
+- `go ahead` or an equivalent instruction in any language skips the optional interview, not this confirmation. The creator must see the exact copy and human settlement rule before the first render.
 - Build the standard settlement intent and validate its asset, direction, exact deadline, `at_instant` policy, and zero-bps rule internally before presenting the proposal. Do not wait until upload or draft creation to discover a missing or unsupported settlement.
 - After confirmation, give the proposal a stable internal ref and pass it unchanged to the preview runner. The renderer must reject missing confirmation or any mismatch in title, body, subject, direction, horizon, deadline, claim, mechanism, next watch, settlement, or required visual beats.
-- A visual-only reroll reuses the confirmed proposal. Any semantic or settlement change returns to the text decision and invalidates dependent pixels. The final “发布” authorizes the external write of the already confirmed and rendered Frame; it does not silently accept a changed rule.
+- A visual-only reroll reuses the confirmed proposal. Any semantic or settlement change returns to the text decision and invalidates dependent pixels. The final “publish” instruction, in any language, authorizes the external write of the already confirmed and rendered Frame; it does not silently accept a changed rule.
 
 ## Content And Image Contract
 
@@ -140,7 +140,7 @@ After the Frame, use the one-sentence reveal described above. It should let the 
 
 ## Controlled Variation
 
-Default to one strongest preview. If the creator asks “再来一版” or “换个感觉,” reuse the confirmed proposal: title, body, claim, adopted interview signal, exact tested observation, evidence refs, observation window, horizon, direction, settlement, visual requirements, and fact typing. Do not call Cuebook or Web again for a layout-only reroll.
+Default to one strongest preview. If the creator asks for another version or a different visual direction, reuse the confirmed proposal: title, body, claim, adopted interview signal, exact tested observation, evidence refs, observation window, horizon, direction, settlement, visual requirements, and fact typing. Do not call Cuebook or Web again for a layout-only reroll.
 
 Change one truthful expressive route and avoid the last two design or attention fingerprints when an equally truthful route exists. Return exactly one new variant at a time, even when the creator wants to explore a range; never turn the response into a gallery. Say the new emphasis in one phrase and ask whether this is the one. Stop offering variants when the creator is satisfied. A changed idea, premise, horizon, direction, or settlement meaning requires a new text confirmation.
 

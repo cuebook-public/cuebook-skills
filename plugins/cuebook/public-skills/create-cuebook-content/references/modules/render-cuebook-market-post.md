@@ -87,8 +87,8 @@ When called for explicit alternatives by `references/modules/assemble-cuebook-pu
 - Build the public argument as `claim -> proof -> market consequence -> next condition`. Do not add marketing CTAs or engagement bait unless explicitly requested.
 - Make the market movement concrete: name the participant who is likely to hedge, reprice, rotate, chase, cut, or wait; name what exposure or balance-sheet constraint changes; then connect that action to the selected asset. Do not jump from news to direction in one sentence.
 - Let the expression plan select the actual rhetorical order. `claim -> proof -> consequence -> condition` is a fallback, not a template to repeat across every post.
-- Do not use `我认错`, `哪里认错`, `错了怎么办`, or equivalent self-correction headings. If a selected format explicitly requires a risk boundary, phrase it neutrally as a material condition and keep it separate from the creator's main argument.
-- Avoid stock AI phrases such as `值得关注的是`, `从机制上看`, `核心逻辑在于`, `传导路径`, `验证路径`, and repeated `不是 A，而是 B` framing.
+- Do not use `I admit I was wrong`, `where I was wrong`, `what if I am wrong`, or equivalent self-correction headings. If a selected format explicitly requires a risk boundary, phrase it neutrally as a material condition and keep it separate from the creator's main argument.
+- Avoid stock AI phrases such as `it is worth noting`, `from a mechanism perspective`, `the core logic is`, `transmission path`, `validation path`, and repeated `not A but B` framing or their locale equivalents.
 - Do not add a ticker, target, direction, motive, or hard number merely to make the post sound tradable.
 
 ## Output Contract

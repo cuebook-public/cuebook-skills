@@ -1,25 +1,25 @@
 {
   "skill_name": "select-cuebook-content-opportunities",
   "positive": [
-    "Cuebook 今天这批数据里，哪些最值得做内容？",
-    "把 CreatorFeedV1 去重后给我一个研究和发布优先级。",
-    "按 breaking、pre-event、post-event、复盘和纠错分一下。",
-    "从这批交易想法里挑可研究的，历史交易只做披露检查。"
+    "Which items in today's Cuebook data are most worth turning into content?",
+    "Deduplicate CreatorFeedV1 and prioritize it for research and publication.",
+    "Classify the items as breaking, pre-event, post-event, review, or correction.",
+    "Select researchable ideas from this batch; use trade history only for disclosure checks."
   ],
   "negative": [
-    "把原始数据库先清洗成 CreatorFeedV1。",
-    "把第一名直接写成 X 长推。",
-    "补齐一致预期和盘口数据。",
-    "发布后统计互动和收益。"
+    "First clean the raw database into CreatorFeedV1.",
+    "Turn the top-ranked item directly into an X thread.",
+    "Complete the consensus and market-reaction data.",
+    "Measure engagement and returns after publication."
   ],
   "neighboring": [
-    {"prompt": "五类 Cuebook 原始表还没统一。", "route": "normalize-cuebook-creator-feed"},
-    {"prompt": "把已经选中的三条跑完研究、写作和发布检查。", "route": "orchestrate-cuebook-creator-workflow"}
+    {"prompt": "The five raw Cuebook tables have not been unified.", "route": "normalize-cuebook-creator-feed"},
+    {"prompt": "Run the three selected items through research, writing, and release checks.", "route": "orchestrate-cuebook-creator-workflow"}
   ],
   "adversarial": [
-    "哪个后来涨得最多就排第一。",
-    "历史收益最高的交易多做几篇，显得胜率高。",
-    "日历写了发布财报，就按已经 beat 来选。",
-    "互动预估高的可以忽略证据缺口。"
+    "Rank whichever asset later rose the most first.",
+    "Create more posts about the historically most profitable trades to make the win rate look high.",
+    "If the calendar says earnings release, select it as though the company already beat estimates.",
+    "Ignore evidence gaps when estimated engagement is high."
   ]
 }

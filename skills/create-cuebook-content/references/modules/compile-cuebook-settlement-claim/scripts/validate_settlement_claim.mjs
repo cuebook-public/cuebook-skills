@@ -303,10 +303,10 @@ export function formatNumber(value) {
 function localEndDate(payload) {
   const clock = asObject(get(payload, "clock"));
   if (get(clock, "end_mode") === "protocol_event") {
-    return pyStr(pyTruthy(get(clock, "end_event_label")) ? get(clock, "end_event_label") : "事件待定");
+    return pyStr(pyTruthy(get(clock, "end_event_label")) ? get(clock, "end_event_label") : "Event pending");
   }
   const value = get(clock, "window_end");
-  if (typeof value !== "string") return "待定";
+  if (typeof value !== "string") return "Pending";
   try {
     const parsed = pyFromIsoformat(value.replaceAll("Z", "+00:00"));
     const timeZone = pyStr(pyTruthy(get(clock, "timezone")) ? get(clock, "timezone") : "UTC");
@@ -325,19 +325,19 @@ function localEndDate(payload) {
 
 function metricLabel(metric, marketSession) {
   if (metric === "official_close") {
-    return marketSession === "regular" ? "常规收盘" : "官方收盘";
+    return marketSession === "regular" ? "regular close" : "official close";
   }
   return getDefault({
-    official_settlement: "官方结算价",
-    spot_price: "现价",
-    intraday_high: "盘中最高价",
-    intraday_low: "盘中最低价",
+    official_settlement: "official settlement",
+    spot_price: "spot price",
+    intraday_high: "intraday high",
+    intraday_low: "intraday low",
     vwap: "VWAP",
-    total_return_pct: "总收益率",
-    excess_return_pct: "超额收益率",
-    spread_value: "价差",
-    probability_pct: "概率",
-    fundamental_value: "指标值",
+    total_return_pct: "total return",
+    excess_return_pct: "excess return",
+    spread_value: "spread",
+    probability_pct: "probability",
+    fundamental_value: "metric value",
   }, metric, metric);
 }
 
@@ -359,69 +359,69 @@ function conditionText(condition, marketSession) {
   const target = asObject(get(condition, "target"));
   const mode = get(condition, "observation_mode");
   if (kind === "event") {
-    return pyStr(pyTruthy(get(condition, "description")) ? get(condition, "description") : "事件条件");
+    return pyStr(pyTruthy(get(condition, "description")) ? get(condition, "description") : "event condition");
   }
 
   const prefix = getDefault({
-    at_expiry: "到期",
-    any_in_window: "期间任一",
-    every_observation: "期间每次",
-    first_after_event: "事件后首次",
-    event_by_expiry: "到期前",
+    at_expiry: "at expiry ",
+    any_in_window: "at any point in the window ",
+    every_observation: "at every observation ",
+    first_after_event: "at the first observation after the event ",
+    event_by_expiry: "before expiry ",
   }, mode, "");
   const label = metricLabel(metric, marketSession);
   const dynamicTriggerValue = get(target, "value_source") === "trigger_observation";
   const unit = dynamicTriggerValue ? "" : (pyTruthy(get(target, "unit")) ? ` ${pyStr(get(target, "unit"))}` : "");
   const benchmark = kind === "relative_return" ? benchmarkLabel(get(condition, "benchmark_ref")) : "";
-  const benchmarkSuffix = benchmark ? `（相对 ${benchmark}）` : "";
+  const benchmarkSuffix = benchmark ? ` (relative to ${benchmark})` : "";
   if (operator === "between") {
-    return `${prefix}${label}在 ${formatNumber(get(target, "lower_bound"))}-${formatNumber(get(target, "upper_bound"))}${unit}`;
+    return `${prefix}${label} between ${formatNumber(get(target, "lower_bound"))}-${formatNumber(get(target, "upper_bound"))}${unit}`;
   }
   const symbol = getDefault({ gt: ">", gte: ">=", lt: "<", lte: "<=", eq: "=" }, operator, operator);
-  const targetText = dynamicTriggerValue ? "触发收盘价" : formatNumber(get(target, "value"));
+  const targetText = dynamicTriggerValue ? "trigger close" : formatNumber(get(target, "value"));
   return `${prefix}${label} ${symbol} ${targetText}${unit}${benchmarkSuffix}`;
 }
 
 export function renderOneLine(payload) {
   let direction = getDefault({
-    long: "看多",
-    short: "看空",
-    outperform: "跑赢",
-    underperform: "跑输",
-    range: "区间",
-    event_yes: "事件会发生",
-    event_no: "事件不会发生",
-    neutral: "中性",
-  }, pyStr(pyTruthy(get(payload, "direction")) ? get(payload, "direction") : ""), "待定");
+    long: "bullish",
+    short: "bearish",
+    outperform: "outperform",
+    underperform: "underperform",
+    range: "range-bound",
+    event_yes: "event occurs",
+    event_no: "event does not occur",
+    neutral: "neutral",
+  }, pyStr(pyTruthy(get(payload, "direction")) ? get(payload, "direction") : ""), "pending");
   const actionState = get(asObject(get(payload, "intent")), "action_state");
-  if (actionState === "wait_for_trigger") direction = `条件${direction}`;
-  else if (actionState === "observe_only") direction = "观察";
-  else if (actionState === "avoid") direction = "回避";
-  else if (actionState === "exit") direction = "退出";
-  else if (actionState === "hold") direction = `持有${direction}`;
+  if (actionState === "wait_for_trigger") direction = `conditional ${direction}`;
+  else if (actionState === "observe_only") direction = "observe";
+  else if (actionState === "avoid") direction = "avoid";
+  else if (actionState === "exit") direction = "exit";
+  else if (actionState === "hold") direction = `hold ${direction}`;
   const subject = asObject(get(payload, "subject"));
   const ticker = pyStr(
     pyTruthy(get(subject, "ticker")) ? get(subject, "ticker")
       : pyTruthy(get(subject, "display_name")) ? get(subject, "display_name")
-        : "标的",
+        : "asset",
   );
   const clock = asObject(get(payload, "clock"));
   const session = pyStr(pyTruthy(get(clock, "market_session")) ? get(clock, "market_session") : "regular");
   const success = asObject(get(payload, "success"));
   const conditions = asArray(get(success, "conditions")).filter((item) => item !== null && typeof item === "object" && !Array.isArray(item));
   const pieces = conditions.map((item) => conditionText(item, session));
-  const connector = getDefault({ all: " 且 ", any: " 或 ", sequence: " -> " }, get(success, "logic"), " 且 ");
-  const conditionSummary = pieces.length ? pieces.join(connector) : "条件待定";
+  const connector = getDefault({ all: " and ", any: " or ", sequence: " -> " }, get(success, "logic"), " and ");
+  const conditionSummary = pieces.length ? pieces.join(connector) : "condition pending";
   const statusFallback = getDefault({
-    draft: "草稿",
-    needs_confirmation: "待确认",
-    ready: "待结算",
-    frozen: "已冻结",
-  }, get(payload, "state"), "待确认");
+    draft: "Draft",
+    needs_confirmation: "Needs confirmation",
+    ready: "Ready to settle",
+    frozen: "Frozen",
+  }, get(payload, "state"), "Needs confirmation");
   const statusLabel = get(asObject(get(payload, "public_view")), "status_label");
   const status = pyStr(pyTruthy(statusLabel) ? statusLabel : statusFallback);
-  const horizon = get(clock, "end_mode") === "protocol_event" ? `至${localEndDate(payload)}` : `截至 ${localEndDate(payload)}`;
-  return `${ticker} ${direction}｜${horizon}｜${conditionSummary}｜${status}`;
+  const horizon = get(clock, "end_mode") === "protocol_event" ? `until ${localEndDate(payload)}` : `through ${localEndDate(payload)}`;
+  return `${ticker} ${direction} | ${horizon} | ${conditionSummary} | ${status}`;
 }
 
 export const render_one_line = renderOneLine;
@@ -796,7 +796,7 @@ export function validate(payload) {
   }
 
   const publicView = asObject(get(payload, "public_view"));
-  const expectedStatus = getDefault({ draft: "草稿", needs_confirmation: "待确认", ready: "待结算", frozen: "已冻结" }, state, null);
+  const expectedStatus = getDefault({ draft: "Draft", needs_confirmation: "Needs confirmation", ready: "Ready to settle", frozen: "Frozen" }, state, null);
   if (get(publicView, "status_label") !== expectedStatus) {
     errors.push(issue("STATUS_LABEL", "$.public_view.status_label", `Expected status label ${pyStr(expectedStatus)}.`));
   }

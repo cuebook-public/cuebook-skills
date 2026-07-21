@@ -6,14 +6,14 @@
   "steps": [
     {
       "step_id": "ingredients",
-      "label": "选原料",
+      "label": "Choose inputs",
       "selection": "multi",
       "minimum": 1,
       "maximum": 8,
       "options": [
         {
           "option_id": "news",
-          "label": "新闻",
+          "label": "News",
           "mcp_tools": [
             "list_asset_cues",
             "get_cues",
@@ -23,7 +23,7 @@
         },
         {
           "option_id": "calendar",
-          "label": "日历事件",
+          "label": "Calendar events",
           "mcp_tools": [
             "list_market_calendar"
           ],
@@ -31,7 +31,7 @@
         },
         {
           "option_id": "narrative",
-          "label": "Cuebook 叙事",
+          "label": "Cuebook narratives",
           "mcp_tools": [
             "list_asset_cues"
           ],
@@ -39,7 +39,7 @@
         },
         {
           "option_id": "positioning",
-          "label": "仓位与资金线索",
+          "label": "Positioning and flow signals",
           "mcp_tools": [
             "get_positioning"
           ],
@@ -47,7 +47,7 @@
         },
         {
           "option_id": "creator_note",
-          "label": "自己的观点、新闻或线索",
+          "label": "Your own view, news, or signal",
           "mcp_tools": [],
           "availability": "available"
         }
@@ -55,14 +55,14 @@
     },
     {
       "step_id": "reasoning",
-      "label": "选分析思路",
+      "label": "Choose an analytical approach",
       "selection": "multi",
       "minimum": 1,
       "maximum": 3,
       "options": [
         {
           "option_id": "auto",
-          "label": "自动匹配",
+          "label": "Auto-match",
           "skill_refs": [
             "route-cuebook-narrative",
             "classify-cuebook-trading-logic"
@@ -71,7 +71,7 @@
         },
         {
           "option_id": "event_driven",
-          "label": "事件驱动",
+          "label": "Event-driven",
           "skill_refs": [
             "build-market-research-pack"
           ],
@@ -84,7 +84,7 @@
         },
         {
           "option_id": "transmission",
-          "label": "传导链",
+          "label": "Transmission chain",
           "skill_refs": [
             "compile-cuebook-market-view-semantics",
             "compile-cuebook-visual-argument"
@@ -92,14 +92,14 @@
         },
         {
           "option_id": "expectation_gap",
-          "label": "预期差",
+          "label": "Expectation gap",
           "skill_refs": [
             "build-market-research-pack"
           ]
         },
         {
           "option_id": "positioning_flow",
-          "label": "资金与仓位",
+          "label": "Flow and positioning",
           "skill_refs": [
             "build-market-research-pack",
             "assemble-cuebook-viewpoint-data"
@@ -111,7 +111,7 @@
         },
         {
           "option_id": "technical_confirmation",
-          "label": "技术确认",
+          "label": "Technical confirmation",
           "skill_refs": [
             "compute-cuebook-market-indicators"
           ],
@@ -122,7 +122,7 @@
         },
         {
           "option_id": "relative_value",
-          "label": "相对价值",
+          "label": "Relative value",
           "skill_refs": [
             "build-market-research-pack",
             "render-cuebook-thesis-chart"
@@ -135,7 +135,7 @@
         },
         {
           "option_id": "fundamental",
-          "label": "基本面与估值",
+          "label": "Fundamentals and valuation",
           "skill_refs": [
             "build-market-research-pack"
           ],
@@ -146,7 +146,7 @@
         },
         {
           "option_id": "scenario_countercase",
-          "label": "情景与反例",
+          "label": "Scenarios and countercases",
           "skill_refs": [
             "compose-cuebook-trading-thesis"
           ]
@@ -155,14 +155,14 @@
     },
     {
       "step_id": "voice",
-      "label": "选表达口味",
+      "label": "Choose a voice",
       "selection": "single",
       "minimum": 1,
       "maximum": 1,
       "options": [
         {
           "option_id": "natural_market_talk",
-          "label": "自然市场口吻",
+          "label": "Natural market voice",
           "skill_refs": [
             "plan-cuebook-creator-expression"
           ],
@@ -170,28 +170,28 @@
         },
         {
           "option_id": "conviction_short",
-          "label": "短句强观点",
+          "label": "Concise, high-conviction view",
           "skill_refs": [
             "plan-cuebook-creator-expression"
           ]
         },
         {
           "option_id": "desk_note",
-          "label": "交易台笔记",
+          "label": "Trading desk note",
           "skill_refs": [
             "plan-cuebook-creator-expression"
           ]
         },
         {
           "option_id": "explainer",
-          "label": "拆逻辑讲清楚",
+          "label": "Logic-first explainer",
           "skill_refs": [
             "plan-cuebook-creator-expression"
           ]
         },
         {
           "option_id": "distilled_profile",
-          "label": "已蒸馏创作者方法",
+          "label": "Distilled creator method",
           "skill_refs": [
             "distill-market-commentator-profile",
             "plan-cuebook-creator-expression"
@@ -201,14 +201,14 @@
     },
     {
       "step_id": "visual",
-      "label": "选观点图",
+      "label": "Choose a viewpoint visual",
       "selection": "single",
       "minimum": 1,
       "maximum": 1,
       "options": [
         {
           "option_id": "auto",
-          "label": "按观点关系自动选图",
+          "label": "Auto-select by viewpoint structure",
           "skill_refs": [
             "plan-cuebook-creator-expression",
             "direct-cuebook-viewpoint-visual",
@@ -218,7 +218,7 @@
         },
         {
           "option_id": "curve_story",
-          "label": "趋势与未来时钟",
+          "label": "Trend and future clock",
           "skill_refs": [
             "render-cuebook-thesis-chart"
           ],
@@ -229,7 +229,7 @@
         },
         {
           "option_id": "relative_divergence",
-          "label": "相对强弱与分化",
+          "label": "Relative strength and divergence",
           "skill_refs": [
             "render-cuebook-thesis-chart"
           ],
@@ -240,7 +240,7 @@
         },
         {
           "option_id": "drawdown_recovery",
-          "label": "回撤与修复",
+          "label": "Drawdown and recovery",
           "skill_refs": [
             "render-cuebook-market-figure",
             "render-cuebook-thesis-chart"
@@ -252,7 +252,7 @@
         },
         {
           "option_id": "event_window",
-          "label": "事件前后",
+          "label": "Before and after an event",
           "skill_refs": [
             "build-market-research-pack",
             "render-cuebook-thesis-chart"
@@ -267,7 +267,7 @@
         },
         {
           "option_id": "threshold_regime",
-          "label": "关键位与状态切换",
+          "label": "Key levels and regime shifts",
           "skill_refs": [
             "compute-cuebook-market-indicators",
             "render-cuebook-thesis-chart"
@@ -279,7 +279,7 @@
         },
         {
           "option_id": "causal_or_scenario",
-          "label": "传导链与未来情景",
+          "label": "Transmission chain and future scenarios",
           "skill_refs": [
             "compile-cuebook-visual-argument",
             "render-cuebook-logic-card"
@@ -289,20 +289,20 @@
     },
     {
       "step_id": "settlement",
-      "label": "选结算方式",
+      "label": "Choose a settlement method",
       "selection": "single",
       "minimum": 0,
       "maximum": 1,
       "options": [
         {
           "option_id": "none",
-          "label": "暂不结算",
+          "label": "No settlement for now",
           "skill_refs": [],
           "default": true
         },
         {
           "option_id": "direction_at_deadline",
-          "label": "到期方向",
+          "label": "Direction at deadline",
           "skill_refs": [
             "compile-cuebook-settlement-claim",
             "compile-cuebook-settlement-formula"
@@ -314,7 +314,7 @@
         },
         {
           "option_id": "price_threshold",
-          "label": "到期价格",
+          "label": "Price at deadline",
           "skill_refs": [
             "compile-cuebook-settlement-claim",
             "compile-cuebook-settlement-formula"
@@ -326,7 +326,7 @@
         },
         {
           "option_id": "relative_performance",
-          "label": "相对跑赢",
+          "label": "Relative outperformance",
           "skill_refs": [
             "compile-cuebook-settlement-claim",
             "compile-cuebook-settlement-formula"
@@ -338,7 +338,7 @@
         },
         {
           "option_id": "range",
-          "label": "到期区间",
+          "label": "Range at deadline",
           "skill_refs": [
             "compile-cuebook-settlement-claim",
             "compile-cuebook-settlement-formula"
@@ -350,7 +350,7 @@
         },
         {
           "option_id": "trigger_occurrence",
-          "label": "周期内触发",
+          "label": "Trigger within the window",
           "skill_refs": [
             "compile-cuebook-settlement-claim",
             "compile-cuebook-settlement-formula"
@@ -362,7 +362,7 @@
         },
         {
           "option_id": "triggered_horizon",
-          "label": "触发后周期观点",
+          "label": "Post-trigger horizon view",
           "skill_refs": [
             "compile-cuebook-settlement-claim",
             "compile-cuebook-settlement-formula"
@@ -376,14 +376,14 @@
     },
     {
       "step_id": "output",
-      "label": "生成 Frame",
+      "label": "Create a Frame",
       "selection": "single",
       "minimum": 1,
       "maximum": 1,
       "options": [
         {
           "option_id": "frame",
-          "label": "Frame 快速预览（标题 + 正文 + 图）",
+          "label": "Fast Frame preview (title + body + visual)",
           "skill_refs": [
             "render-cuebook-market-post",
             "direct-cuebook-viewpoint-visual",
@@ -397,7 +397,7 @@
   "write_actions": [
     {
       "action_id": "complete_frame_publish",
-      "label": "发布 Frame",
+      "label": "Publish Frame",
       "mcp_tool": "complete_frame_publish",
       "availability": "backend_required",
       "required_gates": [
@@ -408,7 +408,7 @@
     },
     {
       "action_id": "withdraw_frame",
-      "label": "撤回 Frame",
+      "label": "Withdraw Frame",
       "mcp_tool": "withdraw_frame",
       "availability": "backend_required",
       "required_gates": [

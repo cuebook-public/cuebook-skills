@@ -48,10 +48,10 @@ test("short-video timing and asset rights", () => {
   const artifact = baseArtifact(); Object.assign(artifact.brief, { channel: "douyin", format: "short_video", delivery_mode: "publish_ready", content_class: "financial_education", target_duration_seconds: 20, account_qualification: "declared" });
   artifact.policy_gate = { decision: "ready", checked_at: "2026-07-14T09:00:00Z", rules_checked: [{ rule_id: "douyin.finance", status: "pass", detail: "Checked.", source_url: "https://example.com/policy" }], repairs: [] };
   artifact.asset_plan = [{ id: "media_asset_clip", type: "video", origin: "source-reference-only", reuse_allowed: false, direction: "Reference only.", source_url: "https://example.com/clip", fact_ids: ["F1"] }];
-  artifact.package = { kind: "short_video", duration_seconds: 20, hook: "熔断以后，先看谁还在卖。", beats: [
-    { index: 1, start_second: 1, end_second: 5, role: "hook", voiceover: "先看熔断。", on_screen_text: "市场熔断", visual_direction: "Timeline", fact_ids: ["F1"], asset_ids: ["media_asset_clip"] },
-    { index: 2, start_second: 4, end_second: 22, role: "condition", voiceover: "还要看融资数据。", on_screen_text: "观察融资", visual_direction: "Checklist", fact_ids: ["F2"], asset_ids: ["media_asset_clip"] },
-  ], caption: "观察去杠杆是否结束。", tags: ["市场教育"], disclosures: [] };
+  artifact.package = { kind: "short_video", duration_seconds: 20, hook: "After the circuit breaker, watch who is still selling.", beats: [
+    { index: 1, start_second: 1, end_second: 5, role: "hook", voiceover: "Start with the circuit breaker.", on_screen_text: "MARKET CIRCUIT BREAKER", visual_direction: "Timeline", fact_ids: ["F1"], asset_ids: ["media_asset_clip"] },
+    { index: 2, start_second: 4, end_second: 22, role: "condition", voiceover: "Financing data still matters.", on_screen_text: "WATCH FINANCING", visual_direction: "Checklist", fact_ids: ["F2"], asset_ids: ["media_asset_clip"] },
+  ], caption: "Watch whether deleveraging has ended.", tags: ["market education"], disclosures: [] };
   artifact.publication_state = "ready"; const codes = errorCodes(artifact); for (const code of ["BEAT_START", "BEAT_TIMING", "ASSET_RIGHTS"]) assert.ok(codes.has(code));
 });
 
@@ -61,7 +61,7 @@ test("personalized advice is blocked", () => {
 });
 
 test("unknown facts and formulaic action language fail", () => {
-  const artifact = baseArtifact(); artifact.package.cards[0].fact_ids = ["F404"]; artifact.package.cards[1].body = "你应该立刻买入并加杠杆。";
+  const artifact = baseArtifact(); artifact.package.cards[0].fact_ids = ["F404"]; artifact.package.cards[1].body = "You should buy immediately and add leverage.";
   const codes = errorCodes(artifact); assert.ok(codes.has("UNKNOWN_FACT")); assert.ok(codes.has("ACTION_BOUNDARY"));
 });
 
@@ -75,8 +75,8 @@ test("realtime package requires a current fact", () => {
 });
 
 test("historical replay requires visible label", () => {
-  const artifact = baseArtifact(); artifact.brief.temporal_mode = "historical_replay"; artifact.package.caption = "观察去杠杆是否结束。"; assert.ok(errorCodes(artifact).has("HISTORICAL_LABEL"));
-  artifact.package.caption = "历史复盘：观察去杠杆是否结束。"; assertValid(artifact);
+  const artifact = baseArtifact(); artifact.brief.temporal_mode = "historical_replay"; artifact.package.caption = "Watch whether deleveraging has ended."; assert.ok(errorCodes(artifact).has("HISTORICAL_LABEL"));
+  artifact.package.caption = "Historical replay: watch whether deleveraging has ended."; assertValid(artifact);
 });
 
 test("ready analysis requires known position and commercial state", () => {

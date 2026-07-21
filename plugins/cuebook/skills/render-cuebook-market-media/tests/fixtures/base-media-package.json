@@ -58,7 +58,7 @@
     "identity_status": "unknown",
     "ai_assistance_status": "unknown",
     "public_disclosures": [
-      "仅为公开市场信息整理，不构成个性化投资建议。"
+      "This summarizes public market information and is not personalized investment advice."
     ]
   },
   "route": {
@@ -125,8 +125,8 @@
   "package": {
     "kind": "carousel_note",
     "cover": {
-      "headline": "韩股这次先看被迫卖盘",
-      "subhead": "熔断之后，谁还在降杠杆",
+      "headline": "In Korea, Watch Forced Selling First",
+      "subhead": "Who is still deleveraging after the circuit breaker?",
       "visual_direction": "Original timeline, no copied screenshots.",
       "asset_ids": [
         "media_asset_chart"
@@ -136,8 +136,8 @@
       {
         "index": 1,
         "role": "context",
-        "headline": "发生了什么",
-        "body": "市场触发熔断，先把时间和来源摆清楚。",
+        "headline": "What happened",
+        "body": "The market hit a circuit breaker; establish the timing and sources first.",
         "visual_direction": "Event marker.",
         "fact_ids": [
           "F1"
@@ -149,8 +149,8 @@
       {
         "index": 2,
         "role": "next_observable",
-        "headline": "接下来还要看",
-        "body": "杠杆资金是否继续收缩，决定这轮波动还有多少惯性；下一组成交与融资数据是关键。",
+        "headline": "What to watch next",
+        "body": "Whether leveraged capital keeps contracting will determine how much momentum this volatility retains; the next volume and financing data are critical.",
         "visual_direction": "Next-observable checklist.",
         "fact_ids": [
           "F1",
@@ -161,13 +161,13 @@
         ]
       }
     ],
-    "caption": "先留意被迫去杠杆有没有停。",
+    "caption": "First watch whether forced deleveraging has stopped.",
     "tags": [
-      "韩股",
-      "存储"
+      "Korean equities",
+      "memory"
     ],
     "disclosures": [
-      "仅为公开市场信息整理，不构成个性化投资建议。"
+      "This summarizes public market information and is not personalized investment advice."
     ]
   },
   "watch_items": [

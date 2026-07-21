@@ -18,86 +18,86 @@ const CORE_ENGAGEMENT_ORDER = ["likes", "reposts", "replies", "views", "bookmark
 export const EVENT_PATTERNS = {
   "hard-data-print": [
     /\b(?:cpi|ppi|nfp|gdp|payrolls?|inflation|revenue|earnings|eps|ebitda|guidance|inventory|storage)\b/iu,
-    /(?:财报|业绩|营收|利润|指引|库存|通胀|非农|数据(?:公布|出炉)|同比|环比|采购经理指数)/iu,
+    /(?:\u8d22\u62a5|\u4e1a\u7ee9|\u8425\u6536|\u5229\u6da6|\u6307\u5f15|\u5e93\u5b58|\u901a\u80c0|\u975e\u519c|\u6570\u636e(?:\u516c\u5e03|\u51fa\u7089)|\u540c\u6bd4|\u73af\u6bd4|\u91c7\u8d2d\u7ecf\u7406\u6307\u6570)/iu,
   ],
   "tape-break": [
     /\b(?:break(?:out|down)?|gap|vwap|volume|new high|new low|support|resistance|moving average)\b/iu,
-    /(?:突破|跌破|新高|新低|跳空|放量|缩量|均线|技术位|支撑位|阻力位|成交量|盘中)/iu,
+    /(?:\u7a81\u7834|\u8dcc\u7834|\u65b0\u9ad8|\u65b0\u4f4e|\u8df3\u7a7a|\u653e\u91cf|\u7f29\u91cf|\u5747\u7ebf|\u6280\u672f\u4f4d|\u652f\u6491\u4f4d|\u963b\u529b\u4f4d|\u6210\u4ea4\u91cf|\u76d8\u4e2d)/iu,
   ],
   "prediction-market-shift": [
     /\b(?:polymarket|kalshi|prediction market|odds|probability)\b/iu,
-    /(?:预测市场|赔率|概率|胜率|隐含概率)/iu,
+    /(?:\u9884\u6d4b\u5e02\u573a|\u8d54\u7387|\u6982\u7387|\u80dc\u7387|\u9690\u542b\u6982\u7387)/iu,
   ],
   "crowded-unwind": [
     /\b(?:liquidat(?:e|ed|ion)|crowded|unwind|front[- ]?run|leverage|margin call|trapped)\b/iu,
-    /(?:爆仓|强平|拥挤|去杠杆|平仓|踩踏|被套|挤仓|解除杠杆)/iu,
+    /(?:\u7206\u4ed3|\u5f3a\u5e73|\u62e5\u6324|\u53bb\u6760\u6746|\u5e73\u4ed3|\u8e29\u8e0f|\u88ab\u5957|\u6324\u4ed3|\u89e3\u9664\u6760\u6746)/iu,
   ],
   "macro-risk-premium": [
     /\b(?:fed|rates?|yields?|treasur(?:y|ies)|fx|dollar|crude oil|oil (?:price|futures|market|supply|route)|wti|brent|sanctions?|tariffs?|war|geopolitic)\b/iu,
-    /(?:美联储|利率|收益率|国债|美元|汇率|原油|油价|制裁|关税|战争|地缘|风险溢价|央行)/iu,
+    /(?:\u7f8e\u8054\u50a8|\u5229\u7387|\u6536\u76ca\u7387|\u56fd\u503a|\u7f8e\u5143|\u6c47\u7387|\u539f\u6cb9|\u6cb9\u4ef7|\u5236\u88c1|\u5173\u7a0e|\u6218\u4e89|\u5730\u7f18|\u98ce\u9669\u6ea2\u4ef7|\u592e\u884c)/iu,
   ],
   "estimate-revision": [
     /\b(?:analyst|upgrade|downgrade|estimate revision|price target|consensus estimate)\b/iu,
-    /(?:分析师|上调|下调|目标价|盈利预测|一致预期|预期修正|估值调整)/iu,
+    /(?:\u5206\u6790\u5e08|\u4e0a\u8c03|\u4e0b\u8c03|\u76ee\u6807\u4ef7|\u76c8\u5229\u9884\u6d4b|\u4e00\u81f4\u9884\u671f|\u9884\u671f\u4fee\u6b63|\u4f30\u503c\u8c03\u6574)/iu,
   ],
   "mechanical-flow": [
     /\b(?:etf|index|buyback|issuance|rebalance|unlock|passive flow|options expiry)\b/iu,
-    /(?:指数调仓|被动资金|回购|增发|解禁|再平衡|期权到期|机械性资金|ETF)/iu,
+    /(?:\u6307\u6570\u8c03\u4ed3|\u88ab\u52a8\u8d44\u91d1|\u56de\u8d2d|\u589e\u53d1|\u89e3\u7981|\u518d\u5e73\u8861|\u671f\u6743\u5230\u671f|\u673a\u68b0\u6027\u8d44\u91d1|ETF)/iu,
   ],
   "supply-bottleneck": [
     /\b(?:capacity|bottleneck|supply chain|shortage|semiconductor|gpu|power constraint|logistics)\b/iu,
-    /(?:产能|瓶颈|供应链|短缺|芯片|半导体|算力|电力约束|物流|供给不足)/iu,
+    /(?:\u4ea7\u80fd|\u74f6\u9888|\u4f9b\u5e94\u94fe|\u77ed\u7f3a|\u82af\u7247|\u534a\u5bfc\u4f53|\u7b97\u529b|\u7535\u529b\u7ea6\u675f|\u7269\u6d41|\u4f9b\u7ed9\u4e0d\u8db3)/iu,
   ],
   "credit-cashflow-stress": [
     /\b(?:debt|credit|coupon|refinanc|cash flow|free cash flow|fcf|default|spread widening)\b/iu,
-    /(?:债务|信用|票息|再融资|现金流|自由现金流|违约|利差走阔|偿债)/iu,
+    /(?:\u503a\u52a1|\u4fe1\u7528|\u7968\u606f|\u518d\u878d\u8d44|\u73b0\u91d1\u6d41|\u81ea\u7531\u73b0\u91d1\u6d41|\u8fdd\u7ea6|\u5229\u5dee\u8d70\u9614|\u507f\u503a)/iu,
   ],
   "sentiment-pain": [
     /\b(?:fomo|fear|panic|capitulat|pain|lost money|blew up|retail sentiment)\b/iu,
-    /(?:恐慌|情绪|割肉|亏损|亏掉|爆亏|踏空|追涨|抄底|散户|投降|绝望)/iu,
+    /(?:\u6050\u614c|\u60c5\u7eea|\u5272\u8089|\u4e8f\u635f|\u4e8f\u6389|\u7206\u4e8f|\u8e0f\u7a7a|\u8ffd\u6da8|\u6284\u5e95|\u6563\u6237|\u6295\u964d|\u7edd\u671b)/iu,
   ],
   "valuation-rerating": [
     /\b(?:valuation|multiple|p\/e|price to sales|tam|rerat(?:e|ing)|discounted cash flow)\b/iu,
-    /(?:估值|市盈率|市销率|倍数|重估|估值切换|市场空间|现金流折现)/iu,
+    /(?:\u4f30\u503c|\u5e02\u76c8\u7387|\u5e02\u9500\u7387|\u500d\u6570|\u91cd\u4f30|\u4f30\u503c\u5207\u6362|\u5e02\u573a\u7a7a\u95f4|\u73b0\u91d1\u6d41\u6298\u73b0)/iu,
   ],
 };
 
 export const REASONING_PATTERNS = {
   "source-first": [
     /\b(?:filing|primary source|original document|release says|according to the report|data show)\b/iu,
-    /(?:公告显示|原文|原始文件|一手数据|报告显示|数据表明|根据(?:公告|文件|报告|数据))/iu,
+    /(?:\u516c\u544a\u663e\u793a|\u539f\u6587|\u539f\u59cb\u6587\u4ef6|\u4e00\u624b\u6570\u636e|\u62a5\u544a\u663e\u793a|\u6570\u636e\u8868\u660e|\u6839\u636e(?:\u516c\u544a|\u6587\u4ef6|\u62a5\u544a|\u6570\u636e))/iu,
   ],
   "actor-forced": [
     /\b(?:forced to|must buy|must sell|must hedge|cover shorts?|de[- ]?risk|margin call)\b/iu,
-    /(?:被迫|必须买|必须卖|必须对冲|回补空头|降低风险|追加保证金|强制平仓)/iu,
+    /(?:\u88ab\u8feb|\u5fc5\u987b\u4e70|\u5fc5\u987b\u5356|\u5fc5\u987b\u5bf9\u51b2|\u56de\u8865\u7a7a\u5934|\u964d\u4f4e\u98ce\u9669|\u8ffd\u52a0\u4fdd\u8bc1\u91d1|\u5f3a\u5236\u5e73\u4ed3)/iu,
   ],
   "model-line": [
     /\b(?:revenue|gross margin|operating margin|eps|ebitda|free cash flow|fcf|tam)\b/iu,
-    /(?:营收|收入|毛利率|营业利润率|每股收益|现金流|市场空间|盈利模型)/iu,
+    /(?:\u8425\u6536|\u6536\u5165|\u6bdb\u5229\u7387|\u8425\u4e1a\u5229\u6da6\u7387|\u6bcf\u80a1\u6536\u76ca|\u73b0\u91d1\u6d41|\u5e02\u573a\u7a7a\u95f4|\u76c8\u5229\u6a21\u578b)/iu,
   ],
   "tape-first": [
     /\b(?:price action|the tape|volume confirms|breaks? support|breaks? resistance|vwap)\b/iu,
-    /(?:盘面|走势|价格行为|成交量确认|跌破支撑|突破阻力|量价|均价线)/iu,
+    /(?:\u76d8\u9762|\u8d70\u52bf|\u4ef7\u683c\u884c\u4e3a|\u6210\u4ea4\u91cf\u786e\u8ba4|\u8dcc\u7834\u652f\u6491|\u7a81\u7834\u963b\u529b|\u91cf\u4ef7|\u5747\u4ef7\u7ebf)/iu,
   ],
   "crowding-first": [
     /\b(?:everyone is|consensus trade|crowded|positioning|trapped longs?|trapped shorts?)\b/iu,
-    /(?:所有人都|一致交易|拥挤交易|持仓过度|多头被套|空头被套|共识太强)/iu,
+    /(?:\u6240\u6709\u4eba\u90fd|\u4e00\u81f4\u4ea4\u6613|\u62e5\u6324\u4ea4\u6613|\u6301\u4ed3\u8fc7\u5ea6|\u591a\u5934\u88ab\u5957|\u7a7a\u5934\u88ab\u5957|\u5171\u8bc6\u592a\u5f3a)/iu,
   ],
   "analogy-first": [
     /\b(?:last time|similar to|reminds me of|historical analogue|rhymes with)\b/iu,
-    /(?:上一次|类似于|让我想起|历史上|复刻|类比|如同当年)/iu,
+    /(?:\u4e0a\u4e00\u6b21|\u7c7b\u4f3c\u4e8e|\u8ba9\u6211\u60f3\u8d77|\u5386\u53f2\u4e0a|\u590d\u523b|\u7c7b\u6bd4|\u5982\u540c\u5f53\u5e74)/iu,
   ],
   "pain-first": [
     /\b(?:retail pain|capitulation|lost money|panic selling|fomo became)\b/iu,
-    /(?:散户痛苦|割肉|亏损变成|恐慌抛售|踏空情绪|情绪变成资金流)/iu,
+    /(?:\u6563\u6237\u75db\u82e6|\u5272\u8089|\u4e8f\u635f\u53d8\u6210|\u6050\u614c\u629b\u552e|\u8e0f\u7a7a\u60c5\u7eea|\u60c5\u7eea\u53d8\u6210\u8d44\u91d1\u6d41)/iu,
   ],
   "skepticism-first": [
     /\b(?:too neat|doesn't add up|consensus is wrong|skeptical|the story ignores)\b/iu,
-    /(?:没那么简单|说不通|共识错了|值得怀疑|叙事忽略|故事太顺|不买账)/iu,
+    /(?:\u6ca1\u90a3\u4e48\u7b80\u5355|\u8bf4\u4e0d\u901a|\u5171\u8bc6\u9519\u4e86|\u503c\u5f97\u6000\u7591|\u53d9\u4e8b\u5ffd\u7565|\u6545\u4e8b\u592a\u987a|\u4e0d\u4e70\u8d26)/iu,
   ],
   "falsifier-first": [
     /\b(?:invalidat(?:e|ed|ion)|unless|wrong if|falsif|stop if)\b/iu,
-    /(?:失效条件|证伪|除非|如果.+则错|错在|止损条件|不成立)/iu,
+    /(?:\u5931\u6548\u6761\u4ef6|\u8bc1\u4f2a|\u9664\u975e|\u5982\u679c.+\u5219\u9519|\u9519\u5728|\u6b62\u635f\u6761\u4ef6|\u4e0d\u6210\u7acb)/iu,
   ],
 };
 
@@ -108,16 +108,16 @@ const SOCIAL_DOMAINS = new Set(["x.com", "twitter.com", "t.me", "reddit.com", "y
 
 const HOOK_ORDER = ["thread", "number-first", "question-first", "judgment-first", "anecdote-first"];
 const HOOK_PATTERNS = {
-  thread: /(?:\bthread\b|🧵|线程|长文|^\s*1\/\d*)/iu,
-  "number-first": /^[\s"'“”‘’(\[【（]*(?:[$¥￥€£]\s*)?[+-]?\d[\d,.]*(?:\.\d+)?\s*(?:%|％|x|X|倍|万|亿)?/iu,
-  "question-first": /(?:[?？]\s*$)|^\s*(?:why|how|what|can|will|is|are)\b|^\s*(?:为什么|怎么|如何|是否|能否|会不会|还有多少)/iu,
-  "judgment-first": /^\s*(?:i think|looks like|this is|this isn't|bullish|bearish)\b|^\s*(?:我认为|我觉得|看起来|这不是|这是|先别|看多|看空|重点是|真正的问题)/iu,
-  "anecdote-first": /^(?:.{0,20})(?:someone|a friend|my friend|a colleague|朋友|同事|有人|群里|一位)/iu,
+  thread: /(?:\bthread\b|🧵|\u7ebf\u7a0b|\u957f\u6587|^\s*1\/\d*)/iu,
+  "number-first": /^[\s"'“”‘’(\[\u3010\uff08]*(?:[$¥\uffe5€£]\s*)?[+-]?\d[\d,.]*(?:\.\d+)?\s*(?:%|\uff05|x|X|\u500d|\u4e07|\u4ebf)?/iu,
+  "question-first": /(?:[?\uff1f]\s*$)|^\s*(?:why|how|what|can|will|is|are)\b|^\s*(?:\u4e3a\u4ec0\u4e48|\u600e\u4e48|\u5982\u4f55|\u662f\u5426|\u80fd\u5426|\u4f1a\u4e0d\u4f1a|\u8fd8\u6709\u591a\u5c11)/iu,
+  "judgment-first": /^\s*(?:i think|looks like|this is|this isn't|bullish|bearish)\b|^\s*(?:\u6211\u8ba4\u4e3a|\u6211\u89c9\u5f97|\u770b\u8d77\u6765|\u8fd9\u4e0d\u662f|\u8fd9\u662f|\u5148\u522b|\u770b\u591a|\u770b\u7a7a|\u91cd\u70b9\u662f|\u771f\u6b63\u7684\u95ee\u9898)/iu,
+  "anecdote-first": /^(?:.{0,20})(?:someone|a friend|my friend|a colleague|\u670b\u53cb|\u540c\u4e8b|\u6709\u4eba|\u7fa4\u91cc|\u4e00\u4f4d)/iu,
 };
 
 const PROPRIETARY_PATTERNS = [
   /\b(?:my source|source said|friend said|dm(?:ed)? me|desk color|channel check|off the record)\b/iu,
-  /(?:朋友说|消息人士|私信|群里说|内部渠道|听说|小道消息|渠道调研|不便透露)/iu,
+  /(?:\u670b\u53cb\u8bf4|\u6d88\u606f\u4eba\u58eb|\u79c1\u4fe1|\u7fa4\u91cc\u8bf4|\u5185\u90e8\u6e20\u9053|\u542c\u8bf4|\u5c0f\u9053\u6d88\u606f|\u6e20\u9053\u8c03\u7814|\u4e0d\u4fbf\u900f\u9732)/iu,
 ];
 
 const DATA_HOOKS = {
@@ -227,7 +227,7 @@ export function matchesUnnegated(text, patterns) {
       const fullBefore = text.slice(0, match.index);
       const before = Array.from(fullBefore).slice(-48).join("");
       const englishNegation = /\b(?:no|not|without|never)\b(?:\W+\w+){0,4}\W*$/iu.test(before);
-      const chineseNegation = /(?:没有|并无|不存在|未见|未出现|不含|毫无|无)[\s的任何明显实际所谓]*$/u.test(before);
+      const chineseNegation = /(?:\u6ca1\u6709|\u5e76\u65e0|\u4e0d\u5b58\u5728|\u672a\u89c1|\u672a\u51fa\u73b0|\u4e0d\u542b|\u6beb\u65e0|\u65e0)[\s\u7684\u4efb\u4f55\u660e\u663e\u5b9e\u9645\u6240\u8c13]*$/u.test(before);
       if (!englishNegation && !chineseNegation) return true;
     }
   }
@@ -423,7 +423,7 @@ export function buildWritingMap(items, topEvidence) {
     if (pyLen(text) <= 280) increment(formatCounts, "short");
     if (lineCount > 1) increment(formatCounts, "multiline");
     if (/\d/u.test(text)) increment(formatCounts, "contains-number");
-    if (/[?？]/u.test(text)) increment(formatCounts, "contains-question");
+    if (/[?\uff1f]/u.test(text)) increment(formatCounts, "contains-question");
     if (pyLen(text) >= 1000) increment(formatCounts, "long-form");
   }
   const hookOrder = new Map([...HOOK_ORDER, "statement"].map((name, index) => [name, index]));

@@ -29,7 +29,7 @@ The orchestrator receives only a validated or explicitly conditional recipe. A c
 The resolver always includes intake, selection, recipe composition, projection validation, narrative routing, research, orchestration, and at least one renderer. It adds:
 
 - `plan-market-content-program` for multiple outputs, series, lifecycle, or batch work;
-- `compose-cuebook-trading-thesis` when the user selects `可结算观点` or applies `preset-settleable-thesis`; it runs after research and before planning or rendering;
+- `compose-cuebook-trading-thesis` when the user selects `settleable viewpoint` or applies `preset-settleable-thesis`; it runs after research and before planning or rendering;
 - `render-cuebook-market-post` for X, Telegram, and buy-side notes;
 - `render-cuebook-market-media` for Reddit, Xiaohongshu, Douyin, short video, long-form, and owned-web packages;
 - `render-cuebook-market-figure` when the creator selects a data-led Feed figure; route to event reaction, relative strength, expectation revision, fundamental driver, positioning pressure, or sensitivity according to available sourced data;
@@ -47,9 +47,9 @@ The catalog distinguishes `selectable`, `automatic`, and `internal` skills. Fron
 - Render category tabs from `categories` ordered by `order`; do not hardcode skill IDs into components.
 - Use `visibility`, `user_selectable`, `status`, and `ui.control_type` to decide whether a skill is editable, trace-only, hidden, or unavailable.
 - Treat presets as editable starting recipes. Show each ingredient `min/max`, default outputs, and optional skills before resolving it.
-- Present `可结算观点` as a protocol toggle. Explain its required fields inline: instrument, direction, horizon, cutoff, evidence, countercase, invalidation, resolution window, source, and disclosure. Keep it off for ordinary commentary and keep these protocol fields outside body copy.
+- Present `settleable viewpoint` as a protocol toggle. Explain its required fields inline: instrument, direction, horizon, cutoff, evidence, countercase, invalidation, resolution window, source, and disclosure. Keep it off for ordinary commentary and keep these protocol fields outside body copy.
 - Serialize the first authoring step as `CreatorViewIntentV1`; asset, deadline, outcome, evidence choices, and creator text are product fields rather than separate skills. Show chart and indicator skills as optional evidence plugins in the second step.
-- Present authorship as a segmented control: `创作者主导`, `Cuebook 协作`, `Cuebook 生成`. Store it as `flavor.authorship_mode`. Assistance provenance is internal; expose only `不公开提及` and policy-driven `仅披露` through `flavor.assistance_attribution`.
+- Present authorship as a segmented control: `creator led`, `Cuebook assisted`, `Cuebook generated`. Store it as `flavor.authorship_mode`. Assistance provenance is internal; expose only `do not mention publicly` and policy-driven `disclose only` through `flavor.assistance_attribution`.
 - A policy disclosure stays separate from the content body. The renderer never says what Cuebook added or how the idea changed.
 - Pin `catalog_version` and every resolved skill version when saving. Re-resolve a copied recipe against a newer catalog instead of silently changing the original.
 - Build the maintenance view from `maintenance.owner`, `stability`, `last_verified_at`, `schema_refs`, `validator_refs`, and `test_refs`. Use `replaced_by` to guide migrations for deprecated entries.

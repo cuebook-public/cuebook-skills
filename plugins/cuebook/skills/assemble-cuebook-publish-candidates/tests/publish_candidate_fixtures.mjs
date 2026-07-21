@@ -25,7 +25,7 @@ const wordmark = readFileSync(
 export const FINGERPRINT = `sha256:${"a".repeat(64)}`;
 
 export function launchHtml() {
-  return `<style>main{font-family:"Cuebook Noi","PingFang SC",sans-serif}.cuebook-wordmark{right:41px;bottom:34px;width:136px;height:26px;color:#101411}</style><main data-cuebook-visual-contract="launch-v1" data-entry-role="claim" data-color-system="semantic-v1" data-palette-family="quiet-cobalt" data-palette-strategy="thesis_native" data-palette-preset="quiet-cobalt" data-font-profile="cuebook-noi-v1" data-font-license-mode="production" data-font-manifest-ref="fonts/font-assets-v1.json"><h1 data-role="claim" data-visual-level="1">观点</h1><div data-role="evidence" data-visual-level="2" data-color-role="observed"></div>${wordmark}</main>`;
+  return `<style>main{font-family:"Cuebook Noi","PingFang SC",sans-serif}.cuebook-wordmark{right:41px;bottom:34px;width:136px;height:26px;color:#101411}</style><main data-cuebook-visual-contract="launch-v1" data-entry-role="claim" data-color-system="semantic-v1" data-palette-family="quiet-cobalt" data-palette-strategy="thesis_native" data-palette-preset="quiet-cobalt" data-font-profile="cuebook-noi-v1" data-font-license-mode="production" data-font-manifest-ref="fonts/font-assets-v1.json"><h1 data-role="claim" data-visual-level="1">Viewpoint</h1><div data-role="evidence" data-visual-level="2" data-color-role="observed"></div>${wordmark}</main>`;
 }
 
 export function quality() {
@@ -115,7 +115,7 @@ export function candidate(index, label, angle, headline, body, close) {
     headline,
     body,
     close,
-    tags: ["事件驱动", "预期修正", "直接做多"],
+    tags: ["event", "revision", "long"],
     visible_char_count: 0,
   };
   copy.visible_char_count = visibleCharCount(copy);
@@ -130,7 +130,7 @@ export function candidate(index, label, angle, headline, body, close) {
       direction_ref: `VDIR_HOOD_${index}`,
       html_ref: `candidate-${index}/viewpoint.html`,
       preview_ref: `candidate-${index}/viewpoint.png`,
-      visible_char_count: 2,
+      visible_char_count: 9,
       alt_text: `HOOD candidate ${index}`,
     },
     frame: {
@@ -142,10 +142,10 @@ export function candidate(index, label, angle, headline, body, close) {
     evidence_anchors: [evidenceAnchor()],
     settlement: {
       claim_ref: "SETTLE_HOOD_CHAIN_20260715",
-      one_line: "HOOD 看多｜截至 2026-08-14｜到期价格 > 发布基准｜待确认",
+      one_line: "HOOD bullish | through 2026-08-14 | expiry price > publication baseline | needs confirmation",
       state: "needs_confirmation",
     },
-    public_disclosures: ["由 Cuebook 协助核验公开信息"],
+    public_disclosures: ["Cuebook assisted with verification of public information"],
     quality: quality(),
   };
 }
@@ -215,9 +215,9 @@ export function baseSet() {
       repairs: ["Kept the 7% APY attached to USDG lending."],
     },
     candidates: [
-      candidate(1, "直给版", "conviction", "我先看多 HOOD 30 天", "Robinhood Chain 已经上线。市场接下来会开始重估它手里的全球分发和链上金融入口。", "财报拿不出真实使用，我撤回这次估值换挡。"),
-      candidate(2, "数据版", "evidence", "一条链，带着现成的分发", "Robinhood 已经握有大规模客户和平台资产。链上股票若开始形成交易、抵押和结算闭环，HOOD 的收入边界会被重新打开。", "下一次财报，先看使用，再谈想象。"),
-      candidate(3, "催化版", "catalyst", "主网上线，只完成了第一半", "前半段是产品发布，后半段是交易量、钱包活跃和收入。市场现在交易的是后半段能不能出现。", "我给 HOOD 一个财报前后的多头窗口。"),
+      candidate(1, "Direct", "conviction", "HOOD: a 30-day upside window", "Robinhood Chain is live. The market may begin repricing its global distribution and onchain-finance gateway.", "No usage by earnings breaks this view."),
+      candidate(2, "Evidence", "evidence", "Distribution meets one chain", "Robinhood already has customers and platform assets at scale. If tokenized equities create a loop of trading, collateral, and settlement, HOOD's revenue boundary reopens.", "Watch usage at the next earnings report."),
+      candidate(3, "Catalyst", "catalyst", "Launch is only the first half", "The first half is product launch; the second is trading volume, wallet activity, and revenue. The market is now pricing whether the second half appears.", "Earnings define the bullish window."),
     ],
     selection: {
       selected_candidate_id: null,

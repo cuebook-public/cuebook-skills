@@ -6,8 +6,8 @@
   "queries": [
     {
       "query_id": "latest_stories",
-      "label": "最新故事",
-      "description": "查看某个资产已发布的 Cuebook News Story 与来源。",
+      "label": "Latest stories",
+      "description": "View published Cuebook News Stories and sources for an asset.",
       "skill_refs": [
         "query-cuebook"
       ],
@@ -20,8 +20,8 @@
     },
     {
       "query_id": "story_detail",
-      "label": "故事详情",
-      "description": "读取一条 News Story 的论点、来源和时间线。",
+      "label": "Story details",
+      "description": "Read a News Story's claims, sources, and timeline.",
       "skill_refs": [
         "query-cuebook"
       ],
@@ -32,8 +32,8 @@
     },
     {
       "query_id": "asset_narratives",
-      "label": "资产叙事",
-      "description": "查看与 News Story 分离的 Cuebook 资产叙事库。",
+      "label": "Asset narratives",
+      "description": "View Cuebook's asset narrative library separately from News Stories.",
       "skill_refs": [
         "query-cuebook"
       ],
@@ -45,8 +45,8 @@
     },
     {
       "query_id": "market_state",
-      "label": "市场状态",
-      "description": "查看当前价格、交易时段和快照时间。",
+      "label": "Market state",
+      "description": "View current price, market session, and snapshot time.",
       "skill_refs": [
         "query-cuebook"
       ],
@@ -58,8 +58,8 @@
     },
     {
       "query_id": "market_evidence",
-      "label": "新闻与证据",
-      "description": "查新闻、公司公告、监管文件和独立报道。",
+      "label": "News and evidence",
+      "description": "Search news, company announcements, regulatory filings, and independent reporting.",
       "skill_refs": [
         "query-cuebook",
         "build-market-research-pack"
@@ -71,8 +71,8 @@
     },
     {
       "query_id": "fundamentals",
-      "label": "基本面与估值",
-      "description": "按同一口径查看财务指标和估值比较。",
+      "label": "Fundamentals and valuation",
+      "description": "Compare financial metrics and valuations on a consistent basis.",
       "skill_refs": [
         "query-cuebook",
         "build-market-research-pack"
@@ -84,8 +84,8 @@
     },
     {
       "query_id": "market_series",
-      "label": "价格与成交量",
-      "description": "查看带封盘状态的 OHLCV 和相对表现序列。",
+      "label": "Price and volume",
+      "description": "View OHLCV and relative-performance series with bar-finality status.",
       "skill_refs": [
         "query-cuebook"
       ],
@@ -96,8 +96,8 @@
     },
     {
       "query_id": "derived_metrics",
-      "label": "指标与触发",
-      "description": "从封盘 K 线本地计算可复现的技术、相对表现和触发指标。",
+      "label": "Indicators and triggers",
+      "description": "Compute reproducible technical, relative-performance, and trigger metrics locally from finalized bars.",
       "skill_refs": [
         "query-cuebook",
         "compute-cuebook-market-indicators"
@@ -109,8 +109,8 @@
     },
     {
       "query_id": "settlement_history",
-      "label": "观点结算",
-      "description": "查看冻结观点的观察值、公式分支和结算结果。",
+      "label": "View settlement",
+      "description": "View observations, formula branches, and settlement results for a frozen viewpoint.",
       "skill_refs": [
         "query-cuebook",
         "reconcile-market-content-history"
@@ -122,8 +122,8 @@
     },
     {
       "query_id": "published_frame",
-      "label": "已发布 Frame",
-      "description": "读取一个 release-pinned Frame、配图语义、结算状态和讨论入口。",
+      "label": "Published Frame",
+      "description": "Read a release-pinned Frame, visual semantics, settlement state, and discussion entry point.",
       "skill_refs": [
         "query-cuebook"
       ],
@@ -134,8 +134,8 @@
     },
     {
       "query_id": "commentator_profile",
-      "label": "账号研究",
-      "description": "查看一个公开财经账号的来源、推理和表达模式。",
+      "label": "Commentator research",
+      "description": "Study the sourcing, reasoning, and expression patterns of a public financial account.",
       "skill_refs": [
         "query-cuebook",
         "distill-market-commentator-profile"
@@ -145,8 +145,8 @@
     },
     {
       "query_id": "media_format",
-      "label": "媒介研究",
-      "description": "查看文章、社区、图文和短视频的结构模式。",
+      "label": "Media-format research",
+      "description": "Study structural patterns across articles, communities, visual posts, and short videos.",
       "skill_refs": [
         "query-cuebook",
         "distill-market-media-format"
@@ -158,31 +158,31 @@
   "output_modes": [
     {
       "output_id": "answer",
-      "label": "简明回答"
+      "label": "Concise answer"
     },
     {
       "output_id": "comparison",
-      "label": "对比表"
+      "label": "Comparison table"
     },
     {
       "output_id": "source_bundle",
-      "label": "来源数据包"
+      "label": "Source bundle"
     },
     {
       "output_id": "data_table",
-      "label": "数据表"
+      "label": "Data table"
     },
     {
       "output_id": "factual_chart",
-      "label": "事实图表"
+      "label": "Factual chart"
     },
     {
       "output_id": "history_view",
-      "label": "历史视图"
+      "label": "History view"
     },
     {
       "output_id": "creation_handoff",
-      "label": "交给创作"
+      "label": "Creation handoff"
     }
   ]
 }

@@ -230,7 +230,7 @@ test("Codex install docs authenticate once before the first Cuebook task", () =>
     assert.doesNotMatch(text, /first Cuebook (?:request|call) may open a browser/iu);
     assert.doesNotMatch(text, /normal connector continuation/u);
   }
-  assert.match(docs[0], /Open one new Codex task only after installation and authentication are complete/u);
+  assert.match(docs[0], /After installation and authentication are complete, fully restart the host before testing/u);
   assert.match(docs[2], /Authentication belongs to installation/u);
   assert.equal(marketplace.plugins[0].policy.authentication, "ON_INSTALL");
 });
@@ -514,14 +514,14 @@ test("Frame creator flow never reads back or presents a canonical web link after
   assert.match(combined, /do not parse or validate a receipt/iu);
   assert.match(combined, /Do not restate the copy or settlement, ask “confirm publish\?” again/iu);
   assert.match(combined, /do not run reconciliation/iu);
-  assert.match(combined, /已经替你发布好了，去 Cuebook App 看看吧。/u);
+  assert.match(combined, /idea is published.*Cuebook App/isu);
   assert.match(combined, /Never show a web URL/iu);
-  assert.equal(combined.includes("say exactly “已发布，去 Cuebook App 看。” and stop"), false);
-  assert.equal(combined.includes("Return only “已发布，去 Cuebook App 看。”"), false);
+  assert.equal(combined.includes("say exactly 'Published. Open the Cuebook App.' and stop"), false);
+  assert.equal(combined.includes("Return only 'Published. Open the Cuebook App.'"), false);
   assert.match(combined, /creator-specific/iu);
   assert.match(
     combined,
-    /这是 Cuebook Agent 帮我完善并记录的交易想法，想听听你怎么判断；请用 Cuebook 打开，尚未连接时按提示安装并连接：<Cuebook 分享入口>/u,
+    /Cuebook Agent helped me develop and record this market idea.*your judgment.*Cuebook share entry/isu,
   );
   assert.match(combined, /App owns the just-published Frame binding/iu);
   assert.match(combined, /App, not the Skill or publication flow, owns sharing/iu);

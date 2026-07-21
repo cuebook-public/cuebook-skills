@@ -6,22 +6,22 @@
     "frame_draft": {
       "kind": "market_view",
       "visibility": "public",
-      "title": "USO 30 天偏多：运输风险先入价",
-      "body": "航道规则收紧，绕行与保险成本先动，油价计入运输风险溢价。",
-      "language": "zh-CN",
+      "title": "USO Bullish for 30 Days: Shipping Risk Prices In First",
+      "body": "Tighter channel rules move rerouting and insurance costs first, adding a shipping risk premium to oil prices.",
+      "language": "en-US",
       "disclosures": { "ai_assistance": "assisted", "position": "undisclosed" },
       "media": [
         {
           "rendition_role": "publication",
           "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "alt_text": "USO 偏多观点图"
+          "alt_text": "Bullish USO viewpoint visual"
         }
       ]
     },
     "settlement_intent": {
       "schema_version": "settlement-intent.v1",
       "family": "single_asset_direction",
-      "claim_text": "USO 30 天内跑出正收益",
+      "claim_text": "USO posts a positive return within 30 days",
       "observation_policy_id": "frame-p0-realtime-daily-close-v1",
       "horizon": {
         "kind": "duration",
@@ -47,14 +47,14 @@
     "schema_version": "frame-draft.v1",
     "kind": "market_view",
     "visibility": "public",
-    "title": "USO 30 天偏多：运输风险先入价",
-    "body": "航道规则收紧，绕行与保险成本先动，油价计入运输风险溢价。",
-    "language": "zh-CN",
+    "title": "USO Bullish for 30 Days: Shipping Risk Prices In First",
+    "body": "Tighter channel rules move rerouting and insurance costs first, adding a shipping risk premium to oil prices.",
+    "language": "en-US",
     "media": [
       {
         "media_asset_id": "0198a5b0-2222-7000-8000-000000000002",
         "rendition_role": "publication",
-        "alt_text": "USO 偏多观点图"
+        "alt_text": "Bullish USO viewpoint visual"
       }
     ],
     "visual_manifest_id": "0198a5b0-3333-7000-8000-000000000003",
@@ -64,7 +64,7 @@
     "settlement_intent": {
       "schema_version": "settlement-intent.v1",
       "family": "single_asset_direction",
-      "claim_text": "USO 30 天内跑出正收益",
+      "claim_text": "USO posts a positive return within 30 days",
       "observation_policy_id": "frame-p0-realtime-daily-close-v1",
       "horizon": {
         "kind": "duration",

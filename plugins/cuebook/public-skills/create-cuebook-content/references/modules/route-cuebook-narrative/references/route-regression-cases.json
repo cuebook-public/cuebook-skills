@@ -13,7 +13,7 @@
   {"name":"CPK investment","expected":"capital-investment","cue":{"id":"cpk","title":"Chesapeake Utilities announces $1.2B investment plan."}},
   {"name":"PSKY lawsuit","expected":"legal-regulatory","cue":{"id":"psky","title":"Multiple states sue PSKY."}},
   {"name":"STLA shipments","expected":"operating-data","cue":{"id":"stla","title":"Stellantis shipments rise 10% year over year."}},
-  {"name":"Korean leverage","expected":"crowded-positioning","cue":{"id":"kospi","title":"韩股熔断后五倍杠杆账户爆仓。"}},
+  {"name":"Korean leverage","expected":"crowded-positioning","cue":{"id":"kospi","title":"A 5x leveraged account was liquidated after the Korean market circuit breaker."}},
   {"name":"source_events earnings","expected":"earnings-result","cue":{"id":"source-events","source_events":[{"content":"Company reported EPS and revenue in quarterly results."}]}},
   {"name":"sourceEvents buyback","expected":"mechanical-flow","cue":{"id":"sourceEvents","sourceEvents":[{"text":"Board approved a new $500M share buyback."}]}}
 ]

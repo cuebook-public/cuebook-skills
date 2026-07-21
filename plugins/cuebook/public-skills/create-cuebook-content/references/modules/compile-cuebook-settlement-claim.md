@@ -13,7 +13,7 @@ Keep the post readable. Compile its main forward-looking commitment into a separ
 5. Choose a pattern from `references/modules/compile-cuebook-settlement-claim/references/settlement-patterns.md`: terminal comparison, window barrier, relative return, range, event, spread, probability, fundamental value, trigger-activated horizon, or a compound/sequence of atomic conditions. Use `intent.action_state` to distinguish immediate, trigger-dependent, observe-only, hold, avoid, and exit content.
 6. Build the success condition first. Make failure its deterministic complement at expiry unless a sourced early-failure condition is explicitly declared. `wait_for_trigger` uses an ordered `sequence`: trigger first, outcome second, with the entry-price rule stated explicitly. When price and volume must confirm on the same sealed bar, compile one sourced composite signal event instead of treating them as separate moments.
 7. For every new eligible single-asset `long` or `short` Frame, use the standard exact-deadline observation policy advertised by Frame: the server captures the publication baseline and selects the authoritative completed price observation at or before the exact deadline. Keep source, market state, grace, adjustments, and sealing explicit inside the contract, but never ask the creator to choose regular hours, after hours, trading days, or next eligible close. Retain older session-specific contracts only for backward-compatible reading and resolution.
-8. Render two projections from the same contract: `public_view.settlement_summary` and deterministic `public_view.one_line`. A waiting directional claim renders as `条件看多` or `条件看空`.
+8. Render two projections from the same contract: `public_view.settlement_summary` and deterministic `public_view.one_line`. A waiting directional claim renders as `conditional long` or `conditional short`.
 9. A creator-owned target, pair, asset, direction, or horizon remains `needs_confirmation` until supplied. The standard single-asset zero-threshold rule is policy-derived after explicit publish intent and does not require a second prompt; the same publish action confirms the selected Frame and its exact-deadline contract.
 10. Validate with `references/modules/compile-cuebook-settlement-claim/scripts/validate_settlement_claim.mjs`. For a machine-settleable release, pass the ready or frozen claim to `references/modules/compile-cuebook-settlement-formula.md`; formula blockers propagate back to the claim.
 11. Freeze only after the creator confirms every creator-owned term, the standard policy fills only its deterministic internal fields, the claim hash matches, and the linked settlement formula validates.
@@ -30,7 +30,7 @@ The public footer may show only asset, direction, deadline, and success conditio
 - metric, operator, threshold, and observation mode;
 - authoritative source and ambiguity/adjustment policy.
 
-For `USO 看多，到期高于 117.79`, use a terminal comparison: `official_close > 117.79 USD at expiry`. For `到期前摸到 119.83`, use a window barrier: `any regular-session official_close >= 119.83 USD`. They are different claims.
+For `USO long, above 117.79 at expiry`, use a terminal comparison: `official_close > 117.79 USD at expiry`. For `touches 119.83 before expiry`, use a window barrier: `any regular-session official_close >= 119.83 USD`. They are different claims.
 
 ## Hard Gates
 

@@ -69,7 +69,7 @@ node scripts/validate_media_package.mjs media-package-v1.json
 - Show the source and basis of important numbers. Use a source card, source list, or linked evidence field appropriate to the format.
 - Write voiceover for the ear, on-screen text for a glance, and visual direction for proof. Do not repeat the same sentence across all three tracks.
 - Keep community writing responsive to the actual question and rules. Plan substantive replies to counterevidence, not engagement bait.
-- Avoid stock AI phrases such as `值得关注的是`, `从机制上看`, `核心逻辑在于`, `传导路径`, `验证路径`, and repeated `不是 A，而是 B` framing.
+- Avoid stock AI phrases such as `it is worth noting`, `from a mechanism perspective`, `the core logic is`, `transmission path`, `validation path`, and repeated `not A but B` framing or their locale equivalents.
 - End on the horizon, next catalyst, or observable that would move the thesis forward. Keep invalidation in structured risk metadata unless the creator explicitly selects a dedicated risk-boundary module; when shown, label it neutrally rather than as self-correction.
 
 ## Output Contract

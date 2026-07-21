@@ -6,12 +6,12 @@ Use this path to turn a creator's market language into the smallest evidence job
 
 | Creator language | Required support request |
 | --- | --- |
-| `最新`, `刚刚`, `今天`, `实时` | current observation with explicit freshness window and as-of time |
-| `新闻`, `PR`, `公告`, `催化剂` | linked material event plus official-source classification |
-| `PE`, `估值`, `倍数`, `市值` | exact metric definition, denominator, period, share basis, currency, and as-of time |
-| `比 X 高/低`, `跑赢/跑输 X` | named comparator on the same basis and synchronized window |
-| `突破`, `跌破`, `破发`, `到期` | authoritative level, observation basis, market session, and deadline or horizon |
-| `资金会去`, `被迫卖`, `杠杆造成` | actor, measurable flow or positioning evidence, timing, and countercase |
+| `latest`, `just now`, `today`, `real time` | current observation with explicit freshness window and as-of time |
+| `news`, `PR`, `announcement`, `catalyst` | linked material event plus official-source classification |
+| `P/E`, `valuation`, `multiple`, `market cap` | exact metric definition, denominator, period, share basis, currency, and as-of time |
+| `above/below X`, `outperform/underperform X` | named comparator on the same basis and synchronized window |
+| `breakout`, `breakdown`, `below issue price`, `expiry` | authoritative level, observation basis, market session, and deadline or horizon |
+| `capital will rotate`, `forced selling`, `caused by leverage` | actor, measurable flow or positioning evidence, timing, and countercase |
 
 ## Request Compilation
 
@@ -57,13 +57,13 @@ Resolve meaning before value:
 - Encode an undefined multiple as `value_state: N/M`, `value: null`, `comparability: not_comparable` or `not_applicable`, and a non-empty `not_meaningful_reason`.
 - `P/E = equity value / attributable net income`, or price per share divided by diluted EPS, on a declared trailing or forward basis.
 - Earnings at or below zero make P/E `N/M`. Never display a negative P/E as an ordinary comparable.
-- A broad `估值` request may permit P/S, EV/revenue, EV/EBITDA, FCF yield, or SOTP when the creator's meaning survives. Record the alternative as a Cuebook addition and keep the original unavailable metric visible in the research lineage.
+- A broad `valuation` request may permit P/S, EV/revenue, EV/EBITDA, FCF yield, or SOTP when the creator's meaning survives. Record the alternative as a Cuebook addition and keep the original unavailable metric visible in the research lineage.
 - A specific `PE` request does not authorize silent replacement.
 - Relative performance requires synchronized baselines, return type, currency treatment, and horizon.
 
 ## SpaceX Example
 
-Creator seed: `SpaceX 的 PE 和 NVDA 对不上，最近新闻只是 PR，我空到破发。`
+Creator seed: `SpaceX's P/E does not compare cleanly with NVDA, the recent news looks like PR, and I want to stay short until it trades below the issue price.`
 
 Compile four requests:
 

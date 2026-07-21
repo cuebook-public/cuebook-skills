@@ -9,7 +9,8 @@ const WORDMARK = readFileSync(
   "utf8",
 );
 
-const MUTABLE_PRICE_LABEL = /(?:现价|当前价|最新价|入场价|current\s+price|latest\s+price|entry\s+price)/iu;
+// Keep localized safety matches as escapes so the source remains English-only.
+const MUTABLE_PRICE_LABEL = /(?:\u73b0\u4ef7|\u5f53\u524d\u4ef7|\u6700\u65b0\u4ef7|\u5165\u573a\u4ef7|current\s+price|latest\s+price|entry\s+price)/iu;
 
 export const PALETTES = Object.freeze({
   paper_signal: {
@@ -109,40 +110,40 @@ export function expressionDesignProfile(expression) {
 }
 
 const STATE_LABELS = Object.freeze({
-  observed: ["观察", "OBSERVED"],
-  reported: ["已知事件", "REPORTED"],
-  derived: ["推导", "DERIVED"],
-  creator_view: ["我的判断", "MY VIEW"],
-  conditional: ["待观察", "WATCH"],
+  observed: ["OBSERVED", "OBSERVED"],
+  reported: ["REPORTED", "REPORTED"],
+  derived: ["DERIVED", "DERIVED"],
+  creator_view: ["MY VIEW", "MY VIEW"],
+  conditional: ["WATCH", "WATCH"],
 });
 
 const BEAT_LABELS = Object.freeze({
-  observation: ["发生了什么", "WHAT CHANGED"],
-  mechanism: ["为什么重要", "WHY IT MATTERS"],
-  implication: ["接下来看什么", "WHAT COMES NEXT"],
-  countercase: ["失效条件", "INVALIDATION"],
+  observation: ["WHAT CHANGED", "WHAT CHANGED"],
+  mechanism: ["WHY IT MATTERS", "WHY IT MATTERS"],
+  implication: ["WHAT COMES NEXT", "WHAT COMES NEXT"],
+  countercase: ["INVALIDATION", "INVALIDATION"],
 });
 
 const GRAMMAR_LABELS = Object.freeze({
-  curve_story: ["历史曲线与未来观察", "HISTORICAL CURVE + FORWARD WATCH"],
-  relative_divergence: ["相对强弱分化", "RELATIVE DIVERGENCE"],
-  drawdown_recovery: ["回撤与修复速度", "DRAWDOWN + RECOVERY SPEED"],
-  correlation_shift: ["滚动相关性变化", "ROLLING CORRELATION SHIFT"],
-  event_window: ["事件前后窗口", "EVENT WINDOW"],
-  threshold_regime: ["阈值与状态切换", "THRESHOLD REGIME"],
-  scenario_lanes: ["成立与失效分支", "CONFIRMATION + INVALIDATION BRANCHES"],
-  causal_spine: ["机制推演链", "CAUSAL SPINE"],
-  evidence_balance: ["证据与反例", "EVIDENCE BALANCE"],
+  curve_story: ["HISTORICAL CURVE + FORWARD WATCH", "HISTORICAL CURVE + FORWARD WATCH"],
+  relative_divergence: ["RELATIVE DIVERGENCE", "RELATIVE DIVERGENCE"],
+  drawdown_recovery: ["DRAWDOWN + RECOVERY SPEED", "DRAWDOWN + RECOVERY SPEED"],
+  correlation_shift: ["ROLLING CORRELATION SHIFT", "ROLLING CORRELATION SHIFT"],
+  event_window: ["EVENT WINDOW", "EVENT WINDOW"],
+  threshold_regime: ["THRESHOLD REGIME", "THRESHOLD REGIME"],
+  scenario_lanes: ["CONFIRMATION + INVALIDATION BRANCHES", "CONFIRMATION + INVALIDATION BRANCHES"],
+  causal_spine: ["CAUSAL SPINE", "CAUSAL SPINE"],
+  evidence_balance: ["EVIDENCE BALANCE", "EVIDENCE BALANCE"],
 });
 
 const TRANSFORM_LABELS = Object.freeze({
-  raw_price: ["历史价格", "historical price"],
-  indexed_return: ["起点归一收益", "indexed return"],
-  relative_spread: ["相对收益差（百分点）", "relative return spread (pp)"],
-  drawdown: ["距前高回撤", "drawdown from prior high"],
-  rolling_correlation: ["滚动收益相关性", "rolling return correlation"],
-  volume_ratio: ["成交量/滚动均量", "volume / rolling average"],
-  none: ["无副图", "no support panel"],
+  raw_price: ["historical price", "historical price"],
+  indexed_return: ["indexed return", "indexed return"],
+  relative_spread: ["relative return spread (pp)", "relative return spread (pp)"],
+  drawdown: ["drawdown from prior high", "drawdown from prior high"],
+  rolling_correlation: ["rolling return correlation", "rolling return correlation"],
+  volume_ratio: ["volume / rolling average", "volume / rolling average"],
+  none: ["no support panel", "no support panel"],
 });
 
 function esc(value) {
@@ -497,10 +498,12 @@ function panelDomain(panel, annotations = []) {
 }
 
 function dateLabel(timestamp, locale) {
+  return new Date(timestamp).toLocaleDateString(locale || "en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+}
+
+function shortNumericDate(timestamp) {
   const date = new Date(timestamp);
-  return locale === "zh-CN"
-    ? `${date.getUTCMonth() + 1}月${date.getUTCDate()}日`
-    : date.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+  return `${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
 }
 
 function valueLabel(value, unit) {
@@ -551,7 +554,7 @@ function transformSummary(expression, locale) {
   const index = locale === "zh-CN" ? 0 : 1;
   const labels = [TRANSFORM_LABELS[expression.market.main_transform][index]];
   if (expression.market.support_transform !== "none") labels.push(TRANSFORM_LABELS[expression.market.support_transform][index]);
-  return labels.join(locale === "zh-CN" ? " · 副图：" : " · support: ");
+  return labels.join(" · support: ");
 }
 
 function relativeDayLabel(timestamp, declaredAt, locale) {
@@ -568,15 +571,11 @@ export function generateExpressionAltText(expression, candidate, compiled = comp
   const locale = localeFor(candidate);
   const grammar = GRAMMAR_LABELS[expression.grammar][locale === "zh-CN" ? 0 : 1];
   const future = expression.future_beats
-    .map((beat) => locale === "zh-CN" ? `${beat.label}（${beat.criterion}）` : `${beat.label} (${beat.criterion})`)
-    .join(locale === "zh-CN" ? "、" : ", ");
-  const dataNotice = expression.data_status === "synthetic_fixture"
-    ? (locale === "zh-CN" ? "测试数据，不可发布。" : "Synthetic test data; not publishable. ")
-    : "";
+    .map((beat) => `${beat.label} (${beat.criterion})`)
+    .join(", ");
+  const dataNotice = expression.data_status === "synthetic_fixture" ? "Synthetic test data; not publishable. " : "";
   const transform = transformSummary(expression, locale);
-  const text = locale === "zh-CN"
-    ? `${dataNotice}${expression.subject_label} 的${grammar}：${expression.argument.observation.text}。图形口径为${transform}；观点日后仅保留条件与时间${future ? `，标出${future}` : ""}。`
-    : `${dataNotice}${grammar} for ${expression.subject_label}: ${expression.argument.observation.text}. Geometry uses ${transform}; after the view date there is no forecast price path${future ? `, only ${future}` : ""}.`;
+  const text = `${dataNotice}${grammar} for ${expression.subject_label}: ${expression.argument.observation.text}. Geometry uses ${transform}; after the view date there is no forecast price path${future ? `, only ${future}` : ""}.`;
   // FramePreviewV1 caps alt text at 240 visible characters. Keep the same
   // deterministic description in the SVG and the structured Frame output.
   return clipped(text, 240);
@@ -588,10 +587,8 @@ function renderHeader(expression, candidate, compiled, palette, locale) {
   const label = `${expression.subject_label} · ${expression.horizon_label}`;
   const asOf = expression.data_as_of ? dateLabel(expression.data_as_of, locale) : null;
   const source = expression.data_status === "synthetic_fixture"
-    ? (locale === "zh-CN"
-      ? `测试数据 · 不可发布 · ${expression.source_label}${asOf ? ` · 截至 ${asOf}` : ""}`
-      : `TEST DATA · NOT PUBLISHABLE · ${expression.source_label}${asOf ? ` · as of ${asOf}` : ""}`)
-    : `${expression.source_label}${asOf ? ` · ${locale === "zh-CN" ? "截至" : "as of"} ${asOf}` : ""}`;
+    ? `TEST DATA · NOT PUBLISHABLE · ${expression.source_label}${asOf ? ` · as of ${asOf}` : ""}`
+    : `${expression.source_label}${asOf ? ` · as of ${asOf}` : ""}`;
   const sourceColor = expression.data_status === "synthetic_fixture" ? palette.danger : palette.muted;
   return [
     `<circle cx="53" cy="45" r="4" fill="${palette.signal}"/>`,
@@ -747,7 +744,7 @@ function renderPanel(panel, box, expression, palette, locale, { support = false 
     const noteX = Math.max(box.x + 24, Math.min(primaryEndpoint.x - 260, box.x + historyWidth - 284));
     const below = primaryEndpoint.y < box.y + box.h * 0.42;
     const noteY = Math.max(box.y + 54, Math.min(box.y + box.h - 44, primaryEndpoint.y + (below ? 52 : -42)));
-    parts.push(`<g ${bindingAttr(observation.binding_id, observation.state)} data-role="observation" data-annotation-role="observation" data-layout="chart-attached"><path d="M ${f(primaryEndpoint.x - 7)} ${f(primaryEndpoint.y)} L ${f(noteX + 246)} ${f(primaryEndpoint.y)} L ${f(noteX + 246)} ${f(noteY - 11)}" fill="none" stroke="${color}" stroke-width="1.2" opacity="0.7"/><rect x="${f(noteX - 8)}" y="${f(noteY - 24)}" width="266" height="66" rx="3" fill="${palette.surface}" opacity="0.93"/><line x1="${f(noteX)}" y1="${f(noteY - 11)}" x2="${f(noteX + 42)}" y2="${f(noteY - 11)}" stroke="${color}" stroke-width="3"/><text x="${f(noteX)}" y="${f(noteY + 4)}" fill="${color}" font-size="9" font-weight="800" letter-spacing="0.06em">${esc(locale === "zh-CN" ? "图上的关键点" : "KEY POINT ON THE CHART")}</text>${textBlock({ x: noteX, y: noteY + 24, text: observation.text, size: 12.5, color: palette.ink, weight: 690, maxUnits: 25, maxLines: 2, minSize: 10 })}</g>`);
+    parts.push(`<g ${bindingAttr(observation.binding_id, observation.state)} data-role="observation" data-annotation-role="observation" data-layout="chart-attached"><path d="M ${f(primaryEndpoint.x - 7)} ${f(primaryEndpoint.y)} L ${f(noteX + 246)} ${f(primaryEndpoint.y)} L ${f(noteX + 246)} ${f(noteY - 11)}" fill="none" stroke="${color}" stroke-width="1.2" opacity="0.7"/><rect x="${f(noteX - 8)}" y="${f(noteY - 24)}" width="266" height="66" rx="3" fill="${palette.surface}" opacity="0.93"/><line x1="${f(noteX)}" y1="${f(noteY - 11)}" x2="${f(noteX + 42)}" y2="${f(noteY - 11)}" stroke="${color}" stroke-width="3"/><text x="${f(noteX)}" y="${f(noteY + 4)}" fill="${color}" font-size="9" font-weight="800" letter-spacing="0.06em">${esc("KEY POINT ON THE CHART")}</text>${textBlock({ x: noteX, y: noteY + 24, text: observation.text, size: 12.5, color: palette.ink, weight: 690, maxUnits: 25, maxLines: 2, minSize: 10 })}</g>`);
   }
   if (!support && expression.grammar === "drawdown_recovery") {
     panel.series.forEach((series, index) => {
@@ -758,8 +755,8 @@ function renderPanel(panel, box, expression, palette, locale, { support = false 
       const y = box.y + 22 + index * 20;
       const color = seriesColor(series.role, palette);
       const duration = recovery.recovery_bars === null
-        ? (locale === "zh-CN" ? `${series.label} 尚未修复` : `${series.label} not recovered`)
-        : (locale === "zh-CN" ? `${series.label} ${recovery.recovery_bars} 根K修复` : `${series.label} recovered in ${recovery.recovery_bars} bars`);
+        ? `${series.label} not recovered`
+        : `${series.label} recovered in ${recovery.recovery_bars} bars`;
       parts.push(`<g data-geometry-type="recovery-duration"><line x1="${f(startX)}" y1="${f(y)}" x2="${f(endX)}" y2="${f(y)}" stroke="${color}" stroke-width="1.4" stroke-dasharray="${recovery.recovered_at ? "none" : "4 4"}"/><line x1="${f(startX)}" y1="${f(y - 4)}" x2="${f(startX)}" y2="${f(y + 4)}" stroke="${color}"/><line x1="${f(endX)}" y1="${f(y - 4)}" x2="${f(endX)}" y2="${f(y + 4)}" stroke="${color}"/><text x="${f((startX + endX) / 2)}" y="${f(y - 5)}" text-anchor="middle" fill="${color}" font-size="9.5" font-weight="700">${esc(duration)}</text></g>`);
     });
   }
@@ -795,8 +792,8 @@ function renderTimeAxis(expression, box, palette, locale) {
   return [
     `<g data-time-axis="common">`,
     `<text x="${f(box.x)}" y="${f(y)}" fill="${palette.muted}" font-size="10.5">${esc(dateLabel(start, locale))}</text>`,
-    `<text x="${f(declarationX - 6)}" y="${f(y)}" text-anchor="end" fill="${palette.signal}" font-size="10.5" font-weight="700">${esc(locale === "zh-CN" ? `观点日 · ${dateLabel(declared, locale)}` : `VIEW · ${dateLabel(declared, locale)}`)}</text>`,
-    hasFuture ? `<text x="${f(box.x + box.w)}" y="${f(y)}" text-anchor="end" fill="${palette.conditional}" font-size="10.5" font-weight="700">${esc(locale === "zh-CN" ? `到期 · ${dateLabel(horizon, locale)}` : `HORIZON · ${dateLabel(horizon, locale)}`)}</text>` : "",
+    `<text x="${f(declarationX - 6)}" y="${f(y)}" text-anchor="end" fill="${palette.signal}" font-size="10.5" font-weight="700">${esc(`VIEW · ${dateLabel(declared, locale)}`)}</text>`,
+    hasFuture ? `<text x="${f(box.x + box.w)}" y="${f(y)}" text-anchor="end" fill="${palette.conditional}" font-size="10.5" font-weight="700">${esc(`HORIZON · ${dateLabel(horizon, locale)}`)}</text>` : "",
     `</g>`,
   ].join("");
 }
@@ -808,7 +805,7 @@ function renderInvalidation(expression, plot, palette, locale) {
   const width = Math.min(292, hasFuture ? plot.w * 0.27 - 14 : 292);
   const x = hasFuture ? plot.x + plot.w * 0.72 + 8 : plot.x + plot.w - width;
   const y = plot.y + plot.h - 66;
-  return `<g ${bindingAttr(beat.binding_id, beat.state)} data-role="invalidation"><rect x="${f(x)}" y="${f(y)}" width="${f(width)}" height="58" rx="8" fill="${palette.surface}" stroke="${palette.danger}" stroke-width="1.1"/><text x="${f(x + 12)}" y="${f(y + 16)}" fill="${palette.danger}" font-size="9.5" font-weight="780">${esc(locale === "zh-CN" ? "失效条件" : "INVALIDATION")}</text>${textBlock({ x: x + 12, y: y + 34, text: beat.text, size: 10.5, color: palette.ink, weight: 600, maxUnits: Math.max(12, width / 10.5 * 0.84), maxLines: 2, minSize: 9 })}</g>`;
+  return `<g ${bindingAttr(beat.binding_id, beat.state)} data-role="invalidation"><rect x="${f(x)}" y="${f(y)}" width="${f(width)}" height="58" rx="8" fill="${palette.surface}" stroke="${palette.danger}" stroke-width="1.1"/><text x="${f(x + 12)}" y="${f(y + 16)}" fill="${palette.danger}" font-size="9.5" font-weight="780">${esc("INVALIDATION")}</text>${textBlock({ x: x + 12, y: y + 34, text: beat.text, size: 10.5, color: palette.ink, weight: 600, maxUnits: Math.max(12, width / 10.5 * 0.84), maxLines: 2, minSize: 9 })}</g>`;
 }
 
 function renderFutureRail(expression, x, y, width, palette, locale) {
@@ -819,7 +816,7 @@ function renderFutureRail(expression, x, y, width, palette, locale) {
     const top = y + index * (beatHeight + 6);
     const color = stateColor(beat.state, palette);
     const role = locale === "zh-CN"
-      ? ({ catalyst: "催化", checkpoint: "检查点", confirmation: "确认", invalidation: "失效", settlement: "到期" }[beat.role])
+      ? ({ catalyst: "CATALYST", checkpoint: "CHECKPOINT", confirmation: "CONFIRMATION", invalidation: "INVALIDATION", settlement: "HORIZON" }[beat.role])
       : beat.role.toUpperCase();
     const time = beat.at ? relativeDayLabel(beat.at, expression.time.declared_at, locale) : expression.horizon_label;
     parts.push(`<g ${bindingAttr(beat.binding_id, beat.state)} data-future-role="${beat.role}"><line x1="${f(x)}" y1="${f(top + 9)}" x2="${f(x + 16)}" y2="${f(top + 9)}" stroke="${color}" stroke-width="2" stroke-dasharray="4 3"/><text x="${f(x + 24)}" y="${f(top + 13)}" fill="${color}" font-size="10.5" font-weight="750" letter-spacing="0.06em">${esc(`${role} · ${time}`)}</text>${textBlock({ x: x + 24, y: top + 37, text: `${beat.label} · ${beat.criterion}`, size: 14, color: palette.ink, weight: 610, maxUnits: Math.max(12, width / 14 * 0.82), maxLines: 2 })}</g>`);
@@ -836,14 +833,14 @@ function renderChartNarrative(expression, layout, palette, locale) {
   if (layout.side) {
     const { x, y, w } = layout.side;
     return [
-      `<g ${bindingAttr(mechanism.binding_id, mechanism.state)} data-role="creator-pulse" data-layout="creator-pulse"><line x1="${f(x)}" y1="${f(y)}" x2="${f(x + w)}" y2="${f(y)}" stroke="${palette.grid}"/><line x1="${f(x)}" y1="${f(y)}" x2="${f(x + Math.min(72, w * 0.24))}" y2="${f(y)}" stroke="${mechanismColor}" stroke-width="4"/><text x="${f(x)}" y="${f(y + 24)}" fill="${mechanismColor}" font-size="10.5" font-weight="820" letter-spacing="0.07em">${esc(locale === "zh-CN" ? "我的关键判断" : "MY CREATOR EDGE")}</text>${textBlock({ x, y: y + 63, text: mechanism.text, size: 20, color: palette.ink, weight: 730, maxUnits: Math.max(15, w / 20 * 0.96), maxLines: 3, minSize: 14 })}</g>`,
-      `<g ${bindingAttr(implication.binding_id, implication.state)} data-role="next-watch" data-layout="compact-watch"><line x1="${f(x)}" y1="${f(y + 178)}" x2="${f(x + w)}" y2="${f(y + 178)}" stroke="${palette.grid}"/><line x1="${f(x)}" y1="${f(y + 178)}" x2="${f(x + Math.min(52, w * 0.2))}" y2="${f(y + 178)}" stroke="${implicationColor}" stroke-width="3"/><text x="${f(x)}" y="${f(y + 200)}" fill="${implicationColor}" font-size="10" font-weight="800" letter-spacing="0.06em">${esc(locale === "zh-CN" ? "下一步只看" : "WATCH NEXT")}</text>${textBlock({ x, y: y + 229, text: implication.text, size: 14, color: palette.ink, weight: 650, maxUnits: Math.max(15, w / 14 * 0.92), maxLines: 2, minSize: 11 })}</g>`,
+      `<g ${bindingAttr(mechanism.binding_id, mechanism.state)} data-role="creator-pulse" data-layout="creator-pulse"><line x1="${f(x)}" y1="${f(y)}" x2="${f(x + w)}" y2="${f(y)}" stroke="${palette.grid}"/><line x1="${f(x)}" y1="${f(y)}" x2="${f(x + Math.min(72, w * 0.24))}" y2="${f(y)}" stroke="${mechanismColor}" stroke-width="4"/><text x="${f(x)}" y="${f(y + 24)}" fill="${mechanismColor}" font-size="10.5" font-weight="820" letter-spacing="0.07em">${esc("MY CREATOR EDGE")}</text>${textBlock({ x, y: y + 63, text: mechanism.text, size: 20, color: palette.ink, weight: 730, maxUnits: Math.max(15, w / 20 * 0.96), maxLines: 3, minSize: 14 })}</g>`,
+      `<g ${bindingAttr(implication.binding_id, implication.state)} data-role="next-watch" data-layout="compact-watch"><line x1="${f(x)}" y1="${f(y + 178)}" x2="${f(x + w)}" y2="${f(y + 178)}" stroke="${palette.grid}"/><line x1="${f(x)}" y1="${f(y + 178)}" x2="${f(x + Math.min(52, w * 0.2))}" y2="${f(y + 178)}" stroke="${implicationColor}" stroke-width="3"/><text x="${f(x)}" y="${f(y + 200)}" fill="${implicationColor}" font-size="10" font-weight="800" letter-spacing="0.06em">${esc("WATCH NEXT")}</text>${textBlock({ x, y: y + 229, text: implication.text, size: 14, color: palette.ink, weight: 650, maxUnits: Math.max(15, w / 14 * 0.92), maxLines: 2, minSize: 11 })}</g>`,
     ].join("");
   }
   const y = expression.composition === "timeline_rail" ? 456 : 426;
   return [
-    `<g ${bindingAttr(mechanism.binding_id, mechanism.state)} data-role="creator-pulse" data-layout="creator-pulse"><line x1="52" y1="${y}" x2="786" y2="${y}" stroke="${palette.grid}"/><line x1="52" y1="${y}" x2="128" y2="${y}" stroke="${mechanismColor}" stroke-width="4"/><text x="52" y="${y + 19}" fill="${mechanismColor}" font-size="10" font-weight="820" letter-spacing="0.07em">${esc(locale === "zh-CN" ? "我的关键判断" : "MY CREATOR EDGE")}</text>${textBlock({ x: 52, y: y + 49, text: mechanism.text, size: 18, color: palette.ink, weight: 730, maxUnits: 44, maxLines: 1, minSize: 13 })}</g>`,
-    `<g ${bindingAttr(implication.binding_id, implication.state)} data-role="next-watch" data-layout="compact-watch"><line x1="820" y1="${y}" x2="1070" y2="${y}" stroke="${palette.grid}"/><line x1="820" y1="${y}" x2="868" y2="${y}" stroke="${implicationColor}" stroke-width="3"/><text x="820" y="${y + 19}" fill="${implicationColor}" font-size="9.5" font-weight="800" letter-spacing="0.06em">${esc(locale === "zh-CN" ? "下一步只看" : "WATCH NEXT")}</text>${textBlock({ x: 820, y: y + 45, text: implication.text, size: 12.5, color: palette.ink, weight: 650, maxUnits: 20, maxLines: 1, minSize: 10 })}</g>`,
+    `<g ${bindingAttr(mechanism.binding_id, mechanism.state)} data-role="creator-pulse" data-layout="creator-pulse"><line x1="52" y1="${y}" x2="786" y2="${y}" stroke="${palette.grid}"/><line x1="52" y1="${y}" x2="128" y2="${y}" stroke="${mechanismColor}" stroke-width="4"/><text x="52" y="${y + 19}" fill="${mechanismColor}" font-size="10" font-weight="820" letter-spacing="0.07em">${esc("MY CREATOR EDGE")}</text>${textBlock({ x: 52, y: y + 49, text: mechanism.text, size: 18, color: palette.ink, weight: 730, maxUnits: 44, maxLines: 1, minSize: 13 })}</g>`,
+    `<g ${bindingAttr(implication.binding_id, implication.state)} data-role="next-watch" data-layout="compact-watch"><line x1="820" y1="${y}" x2="1070" y2="${y}" stroke="${palette.grid}"/><line x1="820" y1="${y}" x2="868" y2="${y}" stroke="${implicationColor}" stroke-width="3"/><text x="820" y="${y + 19}" fill="${implicationColor}" font-size="9.5" font-weight="800" letter-spacing="0.06em">${esc("WATCH NEXT")}</text>${textBlock({ x: 820, y: y + 45, text: implication.text, size: 12.5, color: palette.ink, weight: 650, maxUnits: 20, maxLines: 1, minSize: 10 })}</g>`,
   ].join("");
 }
 
@@ -884,7 +881,7 @@ function renderMiniFutureStrip(expression, x, y, width, palette, locale) {
     const left = x + index * segment;
     const color = stateColor(beat.state, palette);
     const role = locale === "zh-CN"
-      ? ({ catalyst: "催化", checkpoint: "检查", confirmation: "确认", invalidation: "失效", settlement: "到期" }[beat.role])
+      ? ({ catalyst: "CATALYST", checkpoint: "CHECK", confirmation: "CONFIRMATION", invalidation: "INVALIDATION", settlement: "HORIZON" }[beat.role])
       : beat.role.toUpperCase();
     const time = beat.at ? relativeDayLabel(beat.at, expression.time.declared_at, locale) : expression.horizon_label;
     return `<g ${bindingAttr(beat.binding_id, beat.state)} data-future-role="${beat.role}" data-geometry-type="future-marker"><circle cx="${f(left + 4)}" cy="${f(y)}" r="3.5" fill="${color}"/><text x="${f(left + 13)}" y="${f(y + 4)}" fill="${color}" font-size="9.5" font-weight="750">${esc(`${role} · ${time}`)}</text>${textBlock({ x: left + 13, y: y + 23, text: `${beat.label} · ${beat.criterion}`, size: 10.5, color: palette.ink, weight: 580, maxUnits: Math.max(8, segment / 10.5 * 0.78), maxLines: 1 })}</g>`;
@@ -914,10 +911,10 @@ function renderCausal(expression, palette, locale) {
     parts.push(beatPanel(beat, role, x, y, nodeWidth, palette, locale));
   });
   parts.push(`<rect x="52" y="392" width="1138" height="58" rx="12" fill="${palette.surfaceAlt}"/>`);
-  parts.push(`<text x="72" y="426" fill="${palette.signal}" font-size="11" font-weight="760" letter-spacing="0.08em">${esc(locale === "zh-CN" ? "未来观察" : "FORWARD WATCH")}</text>`);
+  parts.push(`<text x="72" y="426" fill="${palette.signal}" font-size="11" font-weight="760" letter-spacing="0.08em">${esc("FORWARD WATCH")}</text>`);
   parts.push(`<text x="1170" y="426" text-anchor="end" fill="${palette.conditional}" font-size="12" font-weight="700">${esc(expression.horizon_label)}</text>`);
   if (expression.argument.countercase) {
-    parts.push(`<g ${bindingAttr(expression.argument.countercase.binding_id, expression.argument.countercase.state)} data-role="invalidation"><text x="850" y="414" fill="${palette.danger}" font-size="9.5" font-weight="780">${esc(locale === "zh-CN" ? "失效条件" : "INVALIDATION")}</text>${textBlock({ x: 850, y: 435, text: expression.argument.countercase.text, size: 11.5, color: palette.ink, weight: 620, maxUnits: 25, maxLines: 1 })}</g>`);
+    parts.push(`<g ${bindingAttr(expression.argument.countercase.binding_id, expression.argument.countercase.state)} data-role="invalidation"><text x="850" y="414" fill="${palette.danger}" font-size="9.5" font-weight="780">${esc("INVALIDATION")}</text>${textBlock({ x: 850, y: 435, text: expression.argument.countercase.text, size: 11.5, color: palette.ink, weight: 620, maxUnits: 25, maxLines: 1 })}</g>`);
   }
   parts.push(renderMiniFutureStrip(expression, 52, 466, 780, palette, locale));
   return parts.join("");
@@ -934,13 +931,13 @@ function renderScenario(expression, palette, locale) {
   const laneX = 610;
   const laneWidth = 580;
   const laneHeight = Math.min(76, (282 - Math.max(0, future.length - 1) * 12) / Math.max(future.length, 1));
-  parts.push(`<g data-scenario-origin="true"><circle cx="${originX}" cy="${originY}" r="10" fill="${palette.canvas}" stroke="${palette.signal}" stroke-width="3"/><text x="${originX}" y="${originY - 22}" text-anchor="middle" fill="${palette.signal}" font-size="10.5" font-weight="760">${esc(locale === "zh-CN" ? "观点日" : "VIEW")}</text></g>`);
+  parts.push(`<g data-scenario-origin="true"><circle cx="${originX}" cy="${originY}" r="10" fill="${palette.canvas}" stroke="${palette.signal}" stroke-width="3"/><text x="${originX}" y="${originY - 22}" text-anchor="middle" fill="${palette.signal}" font-size="10.5" font-weight="760">${esc("VIEW")}</text></g>`);
   future.forEach((beat, index) => {
     const y = 178 + index * (laneHeight + 12);
     const centerY = y + laneHeight / 2;
     const color = stateColor(beat.state, palette);
     const branch = locale === "zh-CN"
-      ? (beat.role === "invalidation" ? "失效分支" : beat.role === "settlement" ? "到期检查" : "成立分支")
+      ? (beat.role === "invalidation" ? "INVALIDATION BRANCH" : beat.role === "settlement" ? "HORIZON CHECK" : "CONFIRMATION BRANCH")
       : (beat.role === "invalidation" ? "INVALIDATION BRANCH" : beat.role === "settlement" ? "SETTLEMENT CHECK" : "CONFIRMATION BRANCH");
     const time = relativeDayLabel(beat.at, expression.time.declared_at, locale);
     parts.push(`<g ${bindingAttr(beat.binding_id, beat.state)} data-future-role="${beat.role}" data-geometry-type="conditional-lane">`);
@@ -952,9 +949,9 @@ function renderScenario(expression, palette, locale) {
     parts.push(textBlock({ x: laneX + laneWidth, y: y + 46, text: beat.criterion, size: 11, color, weight: 700, maxUnits: 23, maxLines: 2, anchor: "end", minSize: 9.5 }));
     parts.push(`</g>`);
   });
-  parts.push(`<line x1="${originX}" y1="468" x2="1190" y2="468" stroke="${palette.grid}"/><text x="${originX}" y="491" fill="${palette.signal}" font-size="11" font-weight="700">${esc(locale === "zh-CN" ? `观点日 · ${dateLabel(expression.time.declared_at, locale)}` : `VIEW · ${dateLabel(expression.time.declared_at, locale)}`)}</text><text x="1190" y="491" text-anchor="end" fill="${palette.conditional}" font-size="11" font-weight="700">${esc(locale === "zh-CN" ? `到期 · ${dateLabel(expression.time.horizon_end, locale)}` : `HORIZON · ${dateLabel(expression.time.horizon_end, locale)}`)}</text>`);
+  parts.push(`<line x1="${originX}" y1="468" x2="1190" y2="468" stroke="${palette.grid}"/><text x="${originX}" y="491" fill="${palette.signal}" font-size="11" font-weight="700">${esc(`VIEW · ${dateLabel(expression.time.declared_at, locale)}`)}</text><text x="1190" y="491" text-anchor="end" fill="${palette.conditional}" font-size="11" font-weight="700">${esc(`HORIZON · ${dateLabel(expression.time.horizon_end, locale)}`)}</text>`);
   if (expression.argument.countercase) {
-    parts.push(`<g ${bindingAttr(expression.argument.countercase.binding_id, expression.argument.countercase.state)} data-role="invalidation"><text x="52" y="466" fill="${palette.danger}" font-size="10" font-weight="780">${esc(locale === "zh-CN" ? "失效条件" : "INVALIDATION")}</text>${textBlock({ x: 120, y: 466, text: expression.argument.countercase.text, size: 11.5, color: palette.ink, weight: 620, maxUnits: 25, maxLines: 2, minSize: 9.5 })}</g>`);
+    parts.push(`<g ${bindingAttr(expression.argument.countercase.binding_id, expression.argument.countercase.state)} data-role="invalidation"><text x="52" y="466" fill="${palette.danger}" font-size="10" font-weight="780">${esc("INVALIDATION")}</text>${textBlock({ x: 120, y: 466, text: expression.argument.countercase.text, size: 11.5, color: palette.ink, weight: 620, maxUnits: 25, maxLines: 2, minSize: 9.5 })}</g>`);
   }
   return parts.join("");
 }
@@ -967,13 +964,13 @@ function renderEvidenceBalance(expression, palette, locale) {
   parts.push(`<line x1="622" y1="184" x2="622" y2="404" stroke="${palette.grid}" stroke-width="1.4"/>`);
   parts.push(`<circle cx="622" cy="292" r="10" fill="${palette.canvas}" stroke="${palette.signal}" stroke-width="2.4"/>`);
   parts.push(`<path d="M 572 282 L 622 292 L 672 302" fill="none" stroke="${palette.signal}" stroke-width="2.4"/>`);
-  parts.push(`<text x="76" y="210" fill="${palette.primary}" font-size="12" font-weight="760" letter-spacing="0.08em">${esc(locale === "zh-CN" ? "支撑这条判断" : "SUPPORTING THE VIEW")}</text>`);
+  parts.push(`<text x="76" y="210" fill="${palette.primary}" font-size="12" font-weight="760" letter-spacing="0.08em">${esc("SUPPORTING THE VIEW")}</text>`);
   parts.push(textBlock({ x: 76, y: 268, text: expression.argument.observation.text, size: 25, color: palette.ink, weight: 700, maxUnits: 20, maxLines: 3, minSize: 18, attrs: bindingAttr(expression.argument.observation.binding_id, expression.argument.observation.state) }));
   parts.push(textBlock({ x: 76, y: 374, text: expression.argument.mechanism.text, size: 15.5, color: palette.muted, weight: 590, maxUnits: 30, maxLines: 2, minSize: 12.5, attrs: bindingAttr(expression.argument.mechanism.binding_id, expression.argument.mechanism.state) }));
-  parts.push(`<text x="670" y="210" fill="${palette.danger}" font-size="12" font-weight="760" letter-spacing="0.08em">${esc(locale === "zh-CN" ? "让它失效的另一面" : "WHAT COULD BREAK IT")}</text>`);
+  parts.push(`<text x="670" y="210" fill="${palette.danger}" font-size="12" font-weight="760" letter-spacing="0.08em">${esc("WHAT COULD BREAK IT")}</text>`);
   if (countercase) parts.push(textBlock({ x: 670, y: 278, text: countercase.text, size: 25, color: palette.ink, weight: 700, maxUnits: 20, maxLines: 3, minSize: 18, attrs: bindingAttr(countercase.binding_id, countercase.state) }));
   parts.push(`<line x1="52" y1="438" x2="1190" y2="438" stroke="${palette.grid}" stroke-width="1.4"/>`);
-  parts.push(`<text x="52" y="466" fill="${palette.conditional}" font-size="10.5" font-weight="760">${esc(locale === "zh-CN" ? "下一步只观察一个分歧" : "ONE NEXT DISAGREEMENT")}</text>`);
+  parts.push(`<text x="52" y="466" fill="${palette.conditional}" font-size="10.5" font-weight="760">${esc("ONE NEXT DISAGREEMENT")}</text>`);
   parts.push(textBlock({ x: 246, y: 468, text: expression.argument.implication.text, size: 17, color: palette.ink, weight: 650, maxUnits: 44, maxLines: 1, minSize: 13, attrs: bindingAttr(expression.argument.implication.binding_id, expression.argument.implication.state) }));
   parts.push(renderMiniFutureStrip(expression, 660, 145, 512, palette, locale));
   return parts.join("");
@@ -994,7 +991,7 @@ function compactWordmark(palette) {
 function compactProvenance(expression, palette, locale) {
   const asOf = expression.data_as_of ? dateLabel(expression.data_as_of, locale) : null;
   const source = expression.data_status === "synthetic_fixture"
-    ? (locale === "zh-CN" ? "测试数据 · 不可发布" : "TEST DATA · NOT PUBLISHABLE")
+    ? "TEST DATA · NOT PUBLISHABLE"
     : expression.source_label;
   return [
     `<circle cx="20" cy="22" r="4" fill="${palette.signal}"/>`,
@@ -1096,16 +1093,14 @@ function compactHistoricalContext(expression, compiled, palette, locale, { x, y,
   const first = points[0];
   const last = points.at(-1);
   const change = (last.close / first.close - 1) * 100;
-  const label = locale === "zh-CN"
-    ? `${expression.market.primary.ticker} · ${dateLabel(first.observed_at, locale).replace("月", "/").replace("日", "")} ${compactPriceLabel(first.close)} → ${dateLabel(last.observed_at, locale).replace("月", "/").replace("日", "")} ${compactPriceLabel(last.close)} · ${valueLabel(change, "%")}`
-    : `${expression.market.primary.ticker} · ${dateLabel(first.observed_at, locale)} ${compactPriceLabel(first.close)} → ${dateLabel(last.observed_at, locale)} ${compactPriceLabel(last.close)} · ${valueLabel(change, "%")}`;
+  const label = `${expression.market.primary.ticker} · ${shortNumericDate(first.observed_at)} ${compactPriceLabel(first.close)} → ${shortNumericDate(last.observed_at)} ${compactPriceLabel(last.close)} · ${valueLabel(change, "%")}`;
   return `<text x="${f(x)}" y="${f(y)}" text-anchor="${anchor}" fill="${palette.muted}" font-size="16" font-weight="760" data-role="historical-price-context" data-essential-copy="true" data-essential-tier="secondary" data-essential-copy-group="evidence">${esc(label)}</text>`;
 }
 
 function compactMechanism(expression, { x, y, widthUnits, palette, locale, anchor = "start", lines = 2 }) {
   const mechanism = expression.argument.mechanism;
   return [
-    `<text x="${f(x)}" y="${f(y - 20)}" text-anchor="${anchor}" fill="${palette.signal}" font-size="12" font-weight="820" letter-spacing="0.05em">${esc(locale === "zh-CN" ? "我的推演" : "MY LOGIC")}</text>`,
+    `<text x="${f(x)}" y="${f(y - 20)}" text-anchor="${anchor}" fill="${palette.signal}" font-size="12" font-weight="820" letter-spacing="0.05em">${esc("MY LOGIC")}</text>`,
     compactEssentialText({ x, y, text: mechanism.text, color: palette.ink, widthUnits, lines, anchor, binding: `${bindingAttr(mechanism.binding_id, mechanism.state)} data-role="creator-mechanism"`, group: "logic", tier: "secondary" }),
   ].join("");
 }
@@ -1120,7 +1115,7 @@ function compactFuture(expression, { x, y, widthUnits, palette, locale, group = 
   if (splitTime) {
     return [
       `<g data-role="next-watch">`,
-      `<text x="${f(x)}" y="${f(y - 21)}" text-anchor="${anchor}" fill="${stateColor(beat.state, palette)}" font-size="12" font-weight="820" letter-spacing="0.05em">${esc(locale === "zh-CN" ? "到期观察" : "HORIZON CHECK")}</text>`,
+      `<text x="${f(x)}" y="${f(y - 21)}" text-anchor="${anchor}" fill="${stateColor(beat.state, palette)}" font-size="12" font-weight="820" letter-spacing="0.05em">${esc("HORIZON CHECK")}</text>`,
       `<text x="${f(x)}" y="${f(y)}" text-anchor="${anchor}" fill="${palette.ink}" font-size="16" font-weight="780" data-essential-copy="true" data-essential-tier="secondary" data-essential-copy-group="${group}">${esc(time)}</text>`,
       compactEssentialText({
         x,
@@ -1139,7 +1134,7 @@ function compactFuture(expression, { x, y, widthUnits, palette, locale, group = 
   }
   return [
     `<g data-role="next-watch">`,
-    `<text x="${f(x)}" y="${f(y - 21)}" text-anchor="${anchor}" fill="${stateColor(beat.state, palette)}" font-size="12" font-weight="820" letter-spacing="0.05em">${esc(locale === "zh-CN" ? "到期观察" : "HORIZON CHECK")}</text>`,
+    `<text x="${f(x)}" y="${f(y - 21)}" text-anchor="${anchor}" fill="${stateColor(beat.state, palette)}" font-size="12" font-weight="820" letter-spacing="0.05em">${esc("HORIZON CHECK")}</text>`,
     compactEssentialText({
       x,
       y,
@@ -1220,9 +1215,7 @@ function renderCompactScenario(expression, palette, locale) {
     const y = 56 + index * branchHeight;
     const centerY = y + 28;
     const color = beat.role === "invalidation" ? palette.danger : palette.conditional;
-    const branch = locale === "zh-CN"
-      ? (beat.role === "invalidation" ? "失效分支" : beat.role === "settlement" ? "到期检查" : "成立分支")
-      : (beat.role === "invalidation" ? "INVALIDATION" : beat.role === "settlement" ? "SETTLEMENT" : "CONFIRMATION");
+    const branch = beat.role === "invalidation" ? "INVALIDATION" : beat.role === "settlement" ? "SETTLEMENT" : "CONFIRMATION";
     const time = beat.at ? relativeDayLabel(beat.at, expression.time.declared_at, locale).split(" · ")[0] : expression.horizon_label;
     parts.push(
       `<g ${bindingAttr(beat.binding_id, beat.state)} data-geometry-type="conditional-lane" data-future-role="${beat.role}"><path d="M 231 142 C 270 142, 278 ${f(centerY)}, 310 ${f(centerY)}" fill="none" stroke="${color}" stroke-width="3" stroke-dasharray="7 5"/><circle cx="314" cy="${f(centerY)}" r="5" fill="${palette.canvas}" stroke="${color}" stroke-width="3"/><text x="330" y="${f(y + 11)}" fill="${color}" font-size="12" font-weight="820">${esc(`${time} · ${branch}`)}</text>`,
@@ -1241,11 +1234,11 @@ function renderCompactCausal(expression, palette, locale) {
     ?? expression.future_beats.at(-1);
   return [
     `<g data-role="compact-causal-path"><line x1="80" y1="160" x2="542" y2="160" stroke="${palette.grid}" stroke-width="5" stroke-linecap="round"/><path d="M 205 160 L 219 153 L 219 167 Z M 394 160 L 408 153 L 408 167 Z" fill="${palette.signal}"/><circle cx="80" cy="160" r="10" fill="${palette.primary}"/><circle cx="311" cy="160" r="12" fill="${palette.signal}"/><circle cx="542" cy="160" r="10" fill="${palette.conditional}"/></g>`,
-    `<text x="20" y="58" fill="${palette.primary}" font-size="12" font-weight="820">${esc(locale === "zh-CN" ? "观察起点" : "OBSERVED START")}</text>`,
+    `<text x="20" y="58" fill="${palette.primary}" font-size="12" font-weight="820">${esc("OBSERVED START")}</text>`,
     compactEssentialText({ x: 20, y: 86, text: observation.text, color: palette.ink, widthUnits: 9.2, lines: 3, binding: bindingAttr(observation.binding_id, observation.state, "geometry"), group: "observation", tier: "secondary" }),
-    `<text x="311" y="58" text-anchor="middle" fill="${palette.signal}" font-size="12" font-weight="820">${esc(locale === "zh-CN" ? "我的推演" : "MY LOGIC")}</text>`,
+    `<text x="311" y="58" text-anchor="middle" fill="${palette.signal}" font-size="12" font-weight="820">${esc("MY LOGIC")}</text>`,
     compactEssentialText({ x: 311, y: 86, text: mechanism.text, color: palette.ink, widthUnits: 9.2, lines: 3, anchor: "middle", binding: `${bindingAttr(mechanism.binding_id, mechanism.state)} data-role="creator-mechanism"`, group: "logic" }),
-    `<text x="602" y="58" text-anchor="end" fill="${palette.conditional}" font-size="12" font-weight="820">${esc(locale === "zh-CN" ? "到期观察" : "HORIZON CHECK")}</text>`,
+    `<text x="602" y="58" text-anchor="end" fill="${palette.conditional}" font-size="12" font-weight="820">${esc("HORIZON CHECK")}</text>`,
     future ? compactEssentialText({ x: 602, y: 86, text: `${relativeDayLabel(future.at, expression.time.declared_at, locale)} · ${future.label}`, color: palette.ink, widthUnits: 9.2, lines: 3, anchor: "end", binding: bindingAttr(future.binding_id, future.state), group: "future", tier: "secondary" }) : "",
   ].join("");
 }
@@ -1255,8 +1248,8 @@ function renderCompactEvidence(expression, palette, locale) {
   const counter = expression.argument.countercase ?? expression.argument.implication;
   return [
     `<rect x="20" y="52" width="278" height="146" fill="${palette.primary}" opacity="0.07"/><rect x="324" y="52" width="278" height="146" fill="${palette.danger}" opacity="0.06" data-future-region="unresolved"/>`,
-    `<text x="38" y="82" fill="${palette.primary}" font-size="16" font-weight="820">${esc(locale === "zh-CN" ? "支撑" : "SUPPORT")}</text>`,
-    `<text x="342" y="82" fill="${palette.danger}" font-size="16" font-weight="820">${esc(locale === "zh-CN" ? "失效" : "BREAKS IF")}</text>`,
+    `<text x="38" y="82" fill="${palette.primary}" font-size="16" font-weight="820">${esc("SUPPORT")}</text>`,
+    `<text x="342" y="82" fill="${palette.danger}" font-size="16" font-weight="820">${esc("BREAKS IF")}</text>`,
     compactEssentialText({ x: 38, y: 120, text: support.text, color: palette.ink, widthUnits: 10.4, lines: 3, binding: bindingAttr(support.binding_id, support.state), group: "evidence" }),
     compactEssentialText({ x: 342, y: 120, text: counter.text, color: palette.ink, widthUnits: 10.4, lines: 3, binding: bindingAttr(counter.binding_id, counter.state), group: "evidence" }),
     compactMechanism(expression, { x: 20, y: 232, widthUnits: 18, palette, locale, lines: 1 }),
@@ -1314,7 +1307,7 @@ export function auditExpressionSvg(svg, expression, candidate) {
   if (MUTABLE_PRICE_LABEL.test(svg)) errors.push("SVG cannot print a mutable current or entry price before a backend lock exists.");
   if (/data-text-truncated="true"/u.test(svg)) errors.push("Visible Frame copy must fit without ellipsis or hidden truncation.");
   if (/data-series-state="(?:future|forecast|modelled)"/u.test(svg)) errors.push("Future or modelled market series are forbidden in fast previews.");
-  if (/forecast[_ -]?path|projected candle|预测价格路径/iu.test(svg)) errors.push("SVG leaks a forbidden future-price instruction.");
+  if (/forecast[_ -]?path|projected candle|\u9884\u6d4b\u4ef7\u683c\u8def\u5f84/iu.test(svg)) errors.push("SVG leaks a forbidden future-price instruction.");
   if (expression.market && (svg.match(/data-role="compact-observation-marker"/gu) ?? []).length !== 1) errors.push("A chart expression must attach the tested observation to its evidence geometry exactly once.");
   if (expression.market && !/data-series-state="observed"/u.test(svg)) errors.push("A market master needs one observed evidence curve.");
   if (expression.market && !/data-role="historical-price-context"/u.test(svg)) errors.push("A market master needs one frozen dated price context.");

@@ -49,7 +49,7 @@ export const STATES = new Set(["conditional", "ready", "frozen"]);
 const SHAPES = new Set(["circle", "square", "triangle", "diamond"]);
 const HASH_PATTERN = /^sha256:[a-f0-9]{64}$/;
 const PUBLIC_BACKEND_PATTERN = /\b(?:draft|conditional|ready|frozen|blocked|observed|derived|provisional|unconfirmed|settlement|settle|deadline|source|sources)\b/iu;
-const PUBLIC_BACKEND_CJK = ["草稿", "待确认", "已确认", "已计算", "推演", "形成中", "已冻结", "来源", "结算", "成功条件"];
+const PUBLIC_BACKEND_CJK = ["\u8349\u7a3f", "\u5f85\u786e\u8ba4", "\u5df2\u786e\u8ba4", "\u5df2\u8ba1\u7b97", "\u63a8\u6f14", "\u5f62\u6210\u4e2d", "\u5df2\u51bb\u7ed3", "\u6765\u6e90", "\u7ed3\u7b97", "\u6210\u529f\u6761\u4ef6"];
 
 const here = fileURLToPath(new URL(".", import.meta.url));
 const skillRoot = resolve(here, "..");

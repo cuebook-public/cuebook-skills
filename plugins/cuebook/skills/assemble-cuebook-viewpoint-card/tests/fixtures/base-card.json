@@ -31,17 +31,17 @@
     "instrument_id": "USO:ARCX",
     "ticker": "USO",
     "direction": "outperform",
-    "direction_label": "跑赢 XLE",
+    "direction_label": "Outperform XLE",
     "benchmark_instrument_id": "XLE:ARCX",
     "benchmark_ticker": "XLE",
     "deadline_at": "2026-07-14T20:00:00Z",
-    "deadline_label": "7 月 14 日收盘",
-    "status_label": "待确认"
+    "deadline_label": "July 14 close",
+    "status_label": "Needs confirmation"
   },
   "thesis": {
-    "headline": "油轮遇袭后，USO 会先于 XLE 吸收风险溢价",
-    "body": "袭击已经确认，保险区扩大仍待权威通知。观点用同步基准比较一日相对收益。",
-    "creator_text": "单看反应速度，我选 USO。保险区扩大仍是待验证条件。",
+    "headline": "After the tanker attack, USO will absorb the risk premium before XLE",
+    "body": "The attack is confirmed; expansion of the insurance zone still awaits an authoritative notice. The view compares one-day relative returns on a synchronized baseline.",
+    "creator_text": "On reaction speed alone, I choose USO. Expansion of the insurance zone remains an unverified condition.",
     "creator_text_preserved": true,
     "content_ref": "POST_uso_vs_xle_20260714"
   },
@@ -52,8 +52,8 @@
       "kind": "creator_text",
       "role": "context",
       "state": "ready",
-      "title": "我还想说",
-      "summary": "单看反应速度，我选 USO。保险区扩大仍是待验证条件。",
+      "title": "One more thought",
+      "summary": "On reaction speed alone, I choose USO. Expansion of the insurance zone remains an unverified condition.",
       "artifact_ref": "VIEWINTENT_usovsxle20260714",
       "fact_refs": [],
       "source_refs": [],
@@ -65,8 +65,8 @@
       "kind": "news",
       "role": "supports",
       "state": "ready",
-      "title": "油轮遇袭",
-      "summary": "UKMTO 收到油轮被导弹击中的报告。",
+      "title": "Tanker attack",
+      "summary": "UKMTO received a report that a tanker was struck by a missile.",
       "artifact_ref": "research-pack-v1:uso-tanker",
       "fact_refs": [
         "F1"
@@ -82,8 +82,8 @@
       "kind": "logic_card",
       "role": "supports",
       "state": "conditional",
-      "title": "事件如何变成交易判断",
-      "summary": "事件经过航运、原油期货和资金动作，落到 AAA 相对 BBB 的先后重定价。",
+      "title": "How an event becomes a trading view",
+      "summary": "The event travels through shipping, crude futures, and capital flows into a lead-lag repricing of AAA versus BBB.",
       "artifact_ref": "LOGICCARD_usovsxle20260714",
       "fact_refs": [
         "F1",
@@ -100,8 +100,8 @@
       "kind": "chart",
       "role": "supports",
       "state": "conditional",
-      "title": "USO 相对 XLE",
-      "summary": "当前形成中表现，仅供观察。",
+      "title": "USO relative to XLE",
+      "summary": "The current reading is still forming and is for observation only.",
       "artifact_ref": "CHART_usovsxle20260714",
       "fact_refs": [
         "I2"
@@ -117,8 +117,8 @@
       "kind": "indicator",
       "role": "supports",
       "state": "conditional",
-      "title": "相对强弱",
-      "summary": "形成中超额收益为正。",
+      "title": "Relative strength",
+      "summary": "The forming excess return is positive.",
       "artifact_ref": "INDPACK_usovsxle20260714",
       "fact_refs": [
         "I2"
@@ -134,8 +134,8 @@
       "kind": "settlement",
       "role": "settles",
       "state": "conditional",
-      "title": "如何结算",
-      "summary": "到期比较同步基准后的总收益。",
+      "title": "How it settles",
+      "summary": "Compare total returns from the synchronized baseline at expiry.",
       "artifact_ref": "SETTLE_usovsxle20260714",
       "fact_refs": [],
       "source_refs": [
@@ -147,7 +147,7 @@
   "settlement": {
     "settleable": true,
     "claim_ref": "SETTLE_usovsxle20260714",
-    "one_line": "USO 跑赢｜相对 XLE｜待确认",
+    "one_line": "USO outperforms | relative to XLE | needs confirmation",
     "state": "needs_confirmation"
   },
   "disclosures": {
@@ -156,7 +156,7 @@
     "identity_status": "unknown",
     "ai_assistance_status": "disclosed",
     "public_lines": [
-      "AI 协助补充研究与结构。"
+      "AI assisted with research and structure."
     ]
   },
   "quality_report": {

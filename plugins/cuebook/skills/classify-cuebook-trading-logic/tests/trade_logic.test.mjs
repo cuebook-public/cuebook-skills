@@ -27,12 +27,12 @@ function validProfile() {
       primary_asset: "USO",
       direction: "outperform",
       comparator: "XLE",
-      horizon_label: "1-3 天",
+      horizon_label: "1-3 days",
     },
     public_expression: {
-      action_line: "油轮遇袭，我先做 USO 跑赢 XLE，窗口看 1-3 天。",
-      because_line: "航运风险溢价会先写进原油期货，直接敞口通常比能源股更快。",
-      tags: ["事件驱动", "风险溢价传导", "相对价值"],
+      action_line: "After the tanker attack, I favor USO over XLE over a 1-3 day window.",
+      because_line: "The shipping risk premium enters crude futures first, so direct exposure usually moves faster than energy equities.",
+      tags: ["event-driven", "risk transmission", "relative value"],
     },
     evidence_boundary: {
       observed_claim_refs: ["source:ukmto:hormuz-20260714", "INDPACK_USO_XLE:I3"],
@@ -42,7 +42,7 @@ function validProfile() {
     },
     quality_report: {
       decision: "conditional",
-      warnings: ["资金流向来自因果推断，尚无订单流快照。"],
+      warnings: ["The capital-flow view is a causal inference without an order-flow snapshot."],
       hard_failures: [],
     },
   };
@@ -72,8 +72,8 @@ test("relative_value_requires_comparator_and_relative_direction", () => {
 
 test("public_copy_rejects_backend_workflow_language", () => {
   const payload = validProfile();
-  payload.public_expression.action_line = "USO 等待确认后再做。";
-  payload.public_expression.tags[1] = "已计算";
+  payload.public_expression.action_line = "Wait for confirmation before acting on USO.";
+  payload.public_expression.tags[1] = "calculated";
   const result = validate(payload);
   assert.equal(result.valid, false);
   const count = result.errors.filter((item) => item.code === "PUBLIC_BACKEND_TERM").length;
@@ -82,7 +82,7 @@ test("public_copy_rejects_backend_workflow_language", () => {
 
 test("action_line_names_primary_asset", () => {
   const payload = validProfile();
-  payload.public_expression.action_line = "油轮遇袭，我先做能源股。";
+  payload.public_expression.action_line = "After the tanker attack, I favor energy equities.";
   const result = validate(payload);
   assert.equal(result.valid, false);
   assert.ok(new Set(result.errors.map((item) => item.code)).has("ACTION_ASSET"));

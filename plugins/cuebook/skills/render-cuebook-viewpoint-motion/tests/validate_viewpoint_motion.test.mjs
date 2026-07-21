@@ -30,7 +30,7 @@ function baseManifest() {
       ],
       videos: [],
     },
-    accessibility: { reduced_motion_verified: true, autoplay_audio: false, alt_text: "负面事件增加卖压，但 BTC 跌幅收窄，创作者判断筹码正在被吸收。" },
+    accessibility: { reduced_motion_verified: true, autoplay_audio: false, alt_text: "A negative event increases selling pressure, but BTC's decline narrows; the creator concludes that supply is being absorbed." },
     quality_report: { decision: "ready", first_frame: "pass", decisive_frame: "pass", final_frame: "pass", compact_readability: "pass", data_integrity: "pass", console_errors: 0, hard_failures: [], warnings: [] },
   };
 }

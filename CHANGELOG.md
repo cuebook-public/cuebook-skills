@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.9.6 — 2026-07-21
+
+- Made every tracked repository text surface English-only, including public documentation, Skill instructions, internal modules, fixtures, evaluation cases, tests, renderer copy, and generated bundles.
+- Added a repository-wide English validation gate while preserving multilingual request recognition through explicit Unicode code-point escapes.
+- Refined English mobile visual copy and layout budgets so translated labels remain legible without weakening Cuebook's diverse chart and editorial grammars.
+- Documented the required host restart after a version-changing Codex Plugin refresh so new tasks cannot retain a stale in-memory Plugin or Tool snapshot.
+
 ## 0.9.5 — 2026-07-21
 
 - Made a successful `complete_frame_publish` result the absolute end of the ordinary creator flow: no second confirmation, receipt parsing, ID extraction, reconciliation, sharing setup, Paper Trade call, or post-publication readback.

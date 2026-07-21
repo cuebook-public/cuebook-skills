@@ -50,9 +50,9 @@ function contrastRatio(foreground, background) {
 }
 
 test("trade horizon wraps as one phrase", () => {
-  const lines = wrapText("油轮遇袭，我先做 USO 跑赢 XLE，窗口看 1-3 天", 40, 2);
-  assert.ok(lines.some((line) => line.includes("窗口看 1-3 天")), JSON.stringify(lines));
-  assert.notEqual(lines.at(-1), "天");
+  const lines = wrapText("After the tanker attack, I favor USO over XLE over a 1-3 day window", 40, 2);
+  assert.ok(lines.some((line) => line.includes("1-3 day window")), JSON.stringify(lines));
+  assert.notEqual(lines.at(-1), "day");
 });
 
 test("valid relative spec", () => {
@@ -83,14 +83,14 @@ test("semantic compact renders reasoning and curve", () => {
     const result = render(semanticRelativeSpec(), directory);
     const svg = readFileSync(result.svg_path, "utf8");
     assert.equal(svg.match(/data-argument-node="/g)?.length, 4);
-    for (const term of ["导火索", "为什么先动", "钱先去哪", "我押什么", "事件驱动 · 风险溢价传导 · 相对价值", "07/14 08:30 UTC", "USO"]) assert.ok(svg.includes(term), term);
-    for (const term of ["已发生", "已计算", "推演", "待确认"]) assert.ok(!svg.includes(`>${term}<`), term);
+    for (const term of ["CATALYST", "WHY IT MOVES FIRST", "WHERE CAPITAL MOVES", "THE BET", "event-driven · risk-premium flow · relative value", "07/14 08:30 UTC", "USO"]) assert.ok(svg.includes(term), term);
+    for (const term of ["OCCURRED", "CALCULATED", "INFERENCE", "TO CONFIRM"]) assert.ok(!svg.includes(`>${term}<`), term);
     assert.ok(svg.includes('data-argument-edge="hypothesis"'));
     const manifest = JSON.parse(readFileSync(result.manifest_path, "utf8"));
     assert.deepEqual(manifest.lineage.argument_node_refs, ["N1", "N2", "N3", "N4"]);
     assert.equal(manifest.lineage.trade_logic_ref, "TLOGIC_USO_XLE_HORMUZ_20260714");
     assert.equal(manifest.content.argument_path_labels.length, 4);
-    assert.deepEqual(manifest.content.strategy_tags, ["事件驱动", "风险溢价传导", "相对价值"]);
+    assert.deepEqual(manifest.content.strategy_tags, ["event-driven", "risk-premium flow", "relative value"]);
   });
 });
 
@@ -109,8 +109,8 @@ test("instrument map renders points without a connecting path", () => {
     const result = render(instrumentMapSpec(), directory);
     const svg = readFileSync(result.svg_path, "utf8");
     assert.equal(svg.match(/data-plot-kind="instrument-map"/g)?.length, 4);
-    assert.ok(svg.includes("KORU · 日3×"));
-    assert.ok(svg.includes("20日年化波动"));
+    assert.ok(svg.includes("KORU · 3x daily"));
+    assert.ok(svg.includes("20D annualized volatility"));
   });
 });
 
@@ -121,14 +121,14 @@ test("compact renders horizontal level marker", () => {
     kind: "baseline",
     x: "2026-07-13T20:00:00Z",
     y: 1,
-    label: "参考线",
+    label: "Reference line",
     status: "observed",
     source_ref: "source:baseline:test",
   });
   withTempDirectory((directory) => {
     const svg = readFileSync(render(payload, directory).svg_path, "utf8");
     assert.ok(svg.includes('data-marker-orientation="horizontal"'));
-    assert.ok(svg.includes("参考线"));
+    assert.ok(svg.includes("Reference line"));
   });
 });
 
@@ -200,14 +200,14 @@ test("render writes a valid manifest and SVG", () => {
   withTempDirectory((directory) => {
     const result = render(relativeSpec(), directory);
     const svg = readFileSync(result.svg_path, "utf8");
-    for (const term of ["同一条供应冲击", "油轮在霍尔木兹", "+2.03pp", "07/14 08:30 UTC", 'font-variant-numeric="tabular-nums"']) assert.ok(svg.includes(term), term);
-    for (const term of ["7 月 14 日收盘时", "虚线为形成中", "条数据引用", "font-feature-settings", "Cuebook 补全"]) assert.ok(!svg.includes(term), term);
+    for (const term of ["One supply shock", "Tanker attacked", "+2.03pp", "07/14 08:30 UTC", 'font-variant-numeric="tabular-nums"']) assert.ok(svg.includes(term), term);
+    for (const term of ["At the July 14 close", "dashed means forming", "data references", "font-feature-settings", "Cuebook completion"]) assert.ok(!svg.includes(term), term);
     const weights = new Set([...svg.matchAll(/font-weight="(\d+)"/g)].map((match) => Number(match[1])));
     assert.ok([...weights].every((value) => new Set([400, 500, 600, 700, 800]).has(value)), JSON.stringify([...weights]));
     const manifest = JSON.parse(readFileSync(result.manifest_path, "utf8"));
     assert.equal(manifest.layout, "compact");
     assert.deepEqual(manifest.dimensions, { width: 720, height: 420 });
-    assert.equal(manifest.content.settlement_line, "7 月 14 日收盘时，USO 收益率高于 XLE。");
+    assert.equal(manifest.content.settlement_line, "At the July 14 close, USO's return is higher than XLE's.");
     const validation = validateManifest(manifest, directory);
     assert.equal(validation.valid, true, JSON.stringify(validation.errors, null, 2));
   });
@@ -215,10 +215,10 @@ test("render writes a valid manifest and SVG", () => {
 
 test("renderer stays byte-compatible with migration goldens", () => {
   const goldens = new Map([
-    [relativeSpec, "86874d4911ed3cf93cf7929e047925bd4789b57d747ba13380ff162d3ad5da82"],
-    [instrumentMapSpec, "00f9f24e891ede1a4d6c9a49c4e1ca851336850ffc247cf46f3b018c1e905c32"],
-    [semanticRelativeSpec, "2539769c1287ed1b64f5f3c9a2f8fdc5dafaf4b5911fa3d393db91e5e31570a8"],
-    [sourceChartRedrawSpec, "3ef659086d4bd14ad9457e87da3d759d352f6880665519ce98d3457a196093e9"],
+    [relativeSpec, "7e079cfd56747e677cec5051a7bf12529f4ba57ae4fe4ba3e2e6a80896916aba"],
+    [instrumentMapSpec, "fb8d964f99bc84dd487a2680c58fc9886c71cb4165b4017a80fa7a027f9ab716"],
+    [semanticRelativeSpec, "db17b08c24f7960b94dd2b375c519cf30fd59629a75a8438f8c1dbd1367a2b6e"],
+    [sourceChartRedrawSpec, "f41a2d75e189f072e1cc3a7459a89249c133c98a930f06d36ca168b2bea56a68"],
   ]);
   for (const [factory, expected] of goldens) {
     const observed = createHash("sha256").update(renderSvg(factory()), "utf8").digest("hex");

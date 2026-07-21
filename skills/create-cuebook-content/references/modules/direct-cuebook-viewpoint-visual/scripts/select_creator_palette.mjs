@@ -245,7 +245,7 @@ export function select(brief, registry = null) {
     strategy: "creator_native",
     preset_id: creatorPick.preset_id,
     score: new PyFloat(pyRound2(creatorScore + creatorThesis * 0.25)),
-    reason: "匹配人物语气、能量与信息密度" + (signature === creatorPick.preset_id ? "，并保留其签名色" : ""),
+    reason: "Matches the creator's voice, energy, and information density" + (signature === creatorPick.preset_id ? " while preserving the signature color" : ""),
   });
 
   let remaining = presets.filter((item) => item.preset_id !== creatorPick.preset_id);
@@ -259,7 +259,7 @@ export function select(brief, registry = null) {
     strategy: "thesis_native",
     preset_id: thesisPick.preset_id,
     score: new PyFloat(pyRound2(thesisScore + thesisCreator * 0.25)),
-    reason: `匹配 ${Object.hasOwn(brief, "content_mode") ? brief.content_mode : "mechanism"} 内容与 ${Object.hasOwn(brief, "evidence_mode") ? brief.evidence_mode : "causal_path"} 证据结构`,
+    reason: `Matches ${Object.hasOwn(brief, "content_mode") ? brief.content_mode : "mechanism"} content with the ${Object.hasOwn(brief, "evidence_mode") ? brief.evidence_mode : "causal_path"} evidence structure`,
   });
 
   remaining = remaining.filter((item) => item.preset_id !== thesisPick.preset_id);
@@ -274,7 +274,7 @@ export function select(brief, registry = null) {
     strategy: "contrast_variant",
     preset_id: contrastPick.preset_id,
     score: new PyFloat(pyRound2((contrastCreator + contrastThesis) * 0.75 + _diversity(contrastPick, chosen))),
-    reason: "改变表面、色温或饱和度，提供可信的反差方案",
+    reason: "Changes surface, color temperature, or saturation to provide a credible contrast option",
   });
 
   return {

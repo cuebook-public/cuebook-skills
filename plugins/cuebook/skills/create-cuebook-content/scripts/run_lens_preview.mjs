@@ -27,8 +27,8 @@ const JOB_SCHEMA = JSON.parse(readFileSync(new URL("../references/frame-lens-pre
 const PUBLIC_FRAME_SCHEMA = JSON.parse(readFileSync(new URL("../references/frame.schema.json", import.meta.url), "utf8"));
 const QUALITY_CHECKS = ["creator_ownership", "source_binding", "copy_fit", "image_render"];
 const CANONICAL_FORMULA = "100 + Σ(weight × component return)";
-const CHECKABLE_CRITERION = /(?:\d+\s*(?:D|日|天|周|根|sessions?|bars?)|[<>≤≥]|新高|新低|转正|转负|突破|跌破|发生|落地|确认|失效|holds?|cross(?:es)?|above|below|occurs?|settles?)/iu;
-const OFFICIAL_INDEX_LANGUAGE = /(?:\bindex\b|指数|official\s+benchmark|官方基准)/iu;
+const CHECKABLE_CRITERION = /(?:\d+\s*(?:D|\u65e5|\u5929|\u5468|\u6839|sessions?|bars?)|[<>≤≥]|\u65b0\u9ad8|\u65b0\u4f4e|\u8f6c\u6b63|\u8f6c\u8d1f|\u7a81\u7834|\u8dcc\u7834|\u53d1\u751f|\u843d\u5730|\u786e\u8ba4|\u5931\u6548|holds?|cross(?:es)?|above|below|occurs?|settles?)/iu;
+const OFFICIAL_INDEX_LANGUAGE = /(?:\bindex\b|\u6307\u6570|official\s+benchmark|\u5b98\u65b9\u57fa\u51c6)/iu;
 
 function issue(code, issuePath, message) {
   return { code, path: issuePath, message };
@@ -179,7 +179,7 @@ function validateExpression(expression, candidate, binding, errors) {
     errors.push(issue("UNIVERSE_FREEZE", `${expressionPath}.lens.universe_frozen_at`, "Freeze the component universe no later than the observation start to avoid hindsight selection."));
   }
   if (expression.lens.selection_mode === "retrospective_exploratory"
-      && !expression.lens.limitations.some((limitation) => /(?:回看|事后|选择偏差|retrospective|hindsight|selection)/iu.test(limitation))) {
+      && !expression.lens.limitations.some((limitation) => /(?:\u56de\u770b|\u4e8b\u540e|\u9009\u62e9\u504f\u5dee|retrospective|hindsight|selection)/iu.test(limitation))) {
     errors.push(issue("RETROSPECTIVE_DISCLOSURE", `${expressionPath}.lens.limitations`, "A retrospective exploratory Lens must visibly disclose hindsight or selection bias."));
   }
   if (expression.argument.claim.state !== "creator_view" || expression.argument.mechanism.state !== "creator_view") {

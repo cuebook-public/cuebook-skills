@@ -76,8 +76,8 @@ function queryBinding() {
 }
 
 export function baseMarketJob() {
-  const title = "BTC 正在争夺下一段风险偏好";
-  const body = "同期 BTC 相对 SPY 更强。我的判断不是资金已经完成迁移，而是全天候流动性正在成为边际选择；未来 30 天，先看这种韧性能否延续，再看它会不会转成上冲。";
+  const title = "BTC Is Competing for the Next Risk-On Move";
+  const body = "BTC has outperformed SPY over the same period. My view is not that capital has already rotated, but that around-the-clock liquidity is becoming the marginal choice. Over the next 30 days, watch whether this resilience persists and then turns into upside momentum.";
   return {
     schema_version: "frame-market-preview-job",
     preview: {
@@ -85,14 +85,14 @@ export function baseMarketJob() {
       state: "conditional",
       created_at: "2026-07-17T09:00:00Z",
       creator_view: {
-        original_text: "最近 BTC 跌不下去，我觉得还会冲一波；美股回撤时资金可能回流币圈。",
+        original_text: "BTC has refused to break lower, and I think it has another move up; capital may rotate into crypto when US equities pull back.",
         subject: "BTC",
         direction: "long",
-        observation_window: "2026-06-24 至 2026-07-17",
-        horizon: "未来 30 天",
-        claim: "BTC 的抗跌可能演化为下一轮上冲",
-        mechanism: "美股承压时，边际资金可能寻找全天候流动性资产",
-        next_watch: "先看相对韧性是否延续，再看它能否转成价格上冲",
+        observation_window: "2026-06-24 to 2026-07-17",
+        horizon: "Next 30 days",
+        claim: "BTC's resilience may develop into the next move higher",
+        mechanism: "When US equities are under pressure, marginal capital may seek assets with around-the-clock liquidity",
+        next_watch: "First watch whether relative resilience persists, then whether it turns into upside momentum",
       },
       meaning_lock: {
         lock_id: "MLOCK_BTC_FAST_MARKET_001",
@@ -102,10 +102,10 @@ export function baseMarketJob() {
         body,
         subject: "BTC",
         direction: "long",
-        horizon: "未来 30 天",
-        claim: "BTC 的抗跌可能演化为下一轮上冲",
-        mechanism: "美股承压时，边际资金可能寻找全天候流动性资产",
-        next_watch: "先看相对韧性是否延续，再看它能否转成价格上冲",
+        horizon: "Next 30 days",
+        claim: "BTC's resilience may develop into the next move higher",
+        mechanism: "When US equities are under pressure, marginal capital may seek assets with around-the-clock liquidity",
+        next_watch: "First watch whether relative resilience persists, then whether it turns into upside momentum",
         settlement: {
           mode: "standard_direction",
           family: "single_asset_direction",
@@ -136,7 +136,7 @@ export function baseMarketJob() {
       candidate_id: "FPREV_CAND_BTC_FAST_MARKET_001",
       creator_signal: {
         origin: "heuristic_interview",
-        interview_text: "我更像是在看持续买盘吸收抛压。",
+        interview_text: "I am really watching whether persistent buying absorbs the selling pressure.",
         adoption_state: "adopted",
       },
       text_image_division: {
@@ -153,17 +153,17 @@ export function baseMarketJob() {
       horizon_label: "30D LONG",
       data_status: "synthetic_fixture",
       data_as_of: "2026-07-17T08:58:00Z",
-      source_label: "合成测试序列",
+      source_label: "Synthetic test series",
       argument: {
-        claim: { text: "抗跌不是结论，是轮动的起点", state: "creator_view", binding_id: "BIND_MARKET_CLAIM", source_refs: [] },
-        observation: { text: "同期 BTC 相对 SPY 更强", state: "derived", binding_id: "BIND_MARKET_OBSERVATION", source_refs: ["RES_BTC_CANDLES", "RES_SPY_CANDLES"] },
-        mechanism: { text: "我把它理解为持续承接正在吸收抛压", state: "creator_view", binding_id: "BIND_MARKET_MECHANISM", source_refs: [] },
-        implication: { text: "先看韧性延续，再看它能否转成上冲", state: "conditional", binding_id: "BIND_MARKET_IMPLICATION", source_refs: [] },
-        countercase: { text: "若相对强弱重新走低，这条推演失去支点", state: "conditional", binding_id: "BIND_MARKET_COUNTER", source_refs: [] },
+        claim: { text: "Resilience may be early rotation", state: "creator_view", binding_id: "BIND_MARKET_CLAIM", source_refs: [] },
+        observation: { text: "BTC has outperformed SPY over the same period", state: "derived", binding_id: "BIND_MARKET_OBSERVATION", source_refs: ["RES_BTC_CANDLES", "RES_SPY_CANDLES"] },
+        mechanism: { text: "Demand absorbs supply", state: "creator_view", binding_id: "BIND_MARKET_MECHANISM", source_refs: [] },
+        implication: { text: "First watch resilience persist, then see whether it turns into upside momentum", state: "conditional", binding_id: "BIND_MARKET_IMPLICATION", source_refs: [] },
+        countercase: { text: "If relative strength rolls over again, this thesis loses its footing", state: "conditional", binding_id: "BIND_MARKET_COUNTER", source_refs: [] },
       },
       observation_test: {
         kind: "primary_outperformed_benchmark",
-        statement: "同期 BTC 相对 SPY 更强",
+        statement: "BTC has outperformed SPY over the same period",
         threshold: 0,
         supports_binding_ids: ["BIND_MARKET_OBSERVATION", "BIND_MARKET_RELATIVE_CURVE"],
         source_refs: ["RES_BTC_CANDLES", "RES_SPY_CANDLES"],
@@ -188,7 +188,7 @@ export function baseMarketJob() {
       },
       annotations: [{
         kind: "regime_start",
-        label: "相对韧性开始扩大",
+        label: "Relative resilience begins to widen",
         occurred_at: "2026-07-08T00:00:00Z",
         value: null,
         state: "derived",
@@ -196,8 +196,8 @@ export function baseMarketJob() {
         source_refs: ["RES_BTC_CANDLES", "RES_SPY_CANDLES"],
       }],
       future_beats: [
-        { role: "checkpoint", label: "相对韧性继续保持", criterion: "5D 相对 SPY 强弱 > 0", at: "2026-07-31T09:00:00Z", state: "conditional", binding_id: "BIND_MARKET_CHECKPOINT", source_refs: [] },
-        { role: "confirmation", label: "韧性转成价格上冲", criterion: "BTC 创 20D 新高", at: "2026-08-16T09:00:00Z", state: "conditional", binding_id: "BIND_MARKET_CONFIRM", source_refs: [] },
+        { role: "checkpoint", label: "Relative strength holds", criterion: "5D relative strength versus SPY > 0", at: "2026-07-31T09:00:00Z", state: "conditional", binding_id: "BIND_MARKET_CHECKPOINT", source_refs: [] },
+        { role: "confirmation", label: "Upside momentum follows", criterion: "BTC makes a new 20D high", at: "2026-08-16T09:00:00Z", state: "conditional", binding_id: "BIND_MARKET_CONFIRM", source_refs: [] },
       ],
     }],
   };
@@ -214,8 +214,9 @@ function setObservationTest(job, {
   const expression = job.expressions[0];
   expression.argument.observation.text = statement;
   expression.argument.observation.source_refs = [...sources];
-  const bodyTail = candidate.frame.body.split("。").slice(1).join("。").trim();
-  candidate.frame.body = `${statement}。${bodyTail}`;
+  const firstStop = candidate.frame.body.indexOf(".");
+  const bodyTail = firstStop === -1 ? "" : candidate.frame.body.slice(firstStop + 1).trim();
+  candidate.frame.body = bodyTail ? `${statement}. ${bodyTail}` : `${statement}.`;
   job.preview.meaning_lock.body = candidate.frame.body;
   expression.observation_test = {
     kind,
@@ -234,7 +235,7 @@ function makeCreatorOnly(job, observation) {
   const expression = job.expressions[0];
   expression.data_status = "creator_only";
   expression.data_as_of = null;
-  expression.source_label = "创作者推演";
+  expression.source_label = "Creator scenario";
   expression.observation_test = null;
   expression.argument.observation = {
     text: observation,
@@ -279,7 +280,7 @@ test("MARKET compiles one sourced curve, a derived support panel, and an honest 
     assert.equal(report.renders[0].audit.secondary_font_floor, 16);
     assert.equal(preview.state, "conditional");
     assert.equal(report.release_eligible, false);
-    assert.match(preview.candidates[0].frame.alt_text, /历史曲线与未来观察/u);
+    assert.match(preview.candidates[0].frame.alt_text, /historical price.*after the view date/iu);
     assert.equal(preview.candidates[0].image_sha256, `sha256:${createHash("sha256").update(fakePng()).digest("hex")}`);
     assert.equal(preview.candidates[0].image_byte_size, fakePng().length);
     assert.equal(Object.hasOwn(report.renders[0], "compact_image_ref"), false);
@@ -313,7 +314,7 @@ test("MARKET routes a drawdown argument to observed drawdown geometry", async ()
     expression.market.chart_style = "line";
     setObservationTest(job, {
       kind: "primary_drawdown_shallower",
-      statement: "同期 BTC 的最大回撤浅于 SPY",
+      statement: "BTC's maximum drawdown was shallower than SPY's over the same period",
       supports: ["BIND_MARKET_OBSERVATION", "BIND_MARKET_BTC_DRAWDOWN", "BIND_MARKET_SPY_DRAWDOWN"],
     });
     const { preview } = await runFastPreviewJob(job, output, { rasterize: fakeRasterize });
@@ -321,7 +322,7 @@ test("MARKET routes a drawdown argument to observed drawdown geometry", async ()
     assert.match(svg, /data-chart-transform="drawdown"/u);
     assert.match(svg, /data-binding-ref="BIND_MARKET_BTC_DRAWDOWN"/u);
     assert.match(svg, /data-binding-ref="BIND_MARKET_SPY_DRAWDOWN"/u);
-    assert.match(preview.candidates[0].frame.alt_text, /回撤与修复速度/u);
+    assert.match(preview.candidates[0].frame.alt_text, /drawdown.*recovery speed/iu);
   } finally {
     rmSync(output, { recursive: true, force: true });
   }
@@ -338,18 +339,18 @@ test("MARKET can express conditional futures without inventing a market curve", 
     expression.composition = "scenario_field";
     expression.surface = "midnight";
     expression.text_image_division.image_job = "scenario_and_time";
-    makeCreatorOnly(job, "BTC 的抗跌是我这次判断的起点");
+    makeCreatorOnly(job, "BTC's resilience is the starting point for this view");
     expression.future_beats.push({
-      role: "invalidation", label: "相对韧性消失", criterion: "5D 相对 SPY 强弱 < 0",
+      role: "invalidation", label: "Relative strength fades", criterion: "5D relative strength versus SPY < 0",
       at: "2026-08-08T09:00:00Z", state: "conditional", binding_id: "BIND_MARKET_INVALIDATION", source_refs: [],
     });
     const { preview } = await runFastPreviewJob(job, output, { rasterize: fakeRasterize });
     const svg = readFileSync(path.join(output, preview.candidates[0].candidate_id, "frame-preview.svg"), "utf8");
     assert.match(svg, /data-grammar="scenario_lanes"/u);
     assert.match(svg, /data-geometry-type="conditional-lane"/u);
-    assert.match(svg, /失效分支/u);
+    assert.match(svg, /INVALIDATION/u);
     assert.match(svg, /D\+22/u);
-    assert.match(preview.candidates[0].frame.alt_text, /成立与失效分支/u);
+    assert.match(preview.candidates[0].frame.alt_text, /confirmation.*invalidation/iu);
     assert.doesNotMatch(svg, /data-chart-transform=/u);
   } finally {
     rmSync(output, { recursive: true, force: true });
@@ -368,7 +369,7 @@ test("MARKET rejects an observed sentence when the frozen curves contradict it",
   const job = baseMarketJob();
   setObservationTest(job, {
     kind: "benchmark_declined",
-    statement: "同期 SPY 明显下跌",
+      statement: "SPY declined materially over the same period",
     threshold: 0,
     supports: ["BIND_MARKET_OBSERVATION", "BIND_MARKET_RELATIVE_CURVE"],
     sources: ["RES_SPY_CANDLES"],
@@ -436,12 +437,12 @@ test("MARKET renders a sourced event window and keeps its event marker before de
     expression.market.benchmark = null;
     expression.market.chart_style = "line";
     expression.annotations = [{
-      kind: "event", label: "风险资产集中回撤", occurred_at: "2026-07-08T00:00:00Z", value: null,
+      kind: "event", label: "Broad risk-asset drawdown", occurred_at: "2026-07-08T00:00:00Z", value: null,
       state: "reported", binding_id: "BIND_MARKET_EVENT", source_refs: ["RES_SPY_CANDLES"],
     }];
     setObservationTest(job, {
       kind: "primary_positive_after_event",
-      statement: "事件发生后 BTC 仍保持正收益",
+      statement: "BTC remained positive after the event",
       supports: ["BIND_MARKET_OBSERVATION", "BIND_MARKET_BTC_CURVE", "BIND_MARKET_EVENT"],
       sources: ["RES_BTC_CANDLES", "RES_SPY_CANDLES"],
     });
@@ -467,12 +468,12 @@ test("MARKET renders an explicit threshold as state-changing geometry", async ()
     expression.market.support_binding_ids = [];
     expression.market.benchmark = null;
     expression.annotations = [{
-      kind: "threshold", label: "上冲确认线", occurred_at: null, value: 70000,
+      kind: "threshold", label: "Upside confirmation line", occurred_at: null, value: 70000,
       state: "creator_view", binding_id: "BIND_MARKET_THRESHOLD", source_refs: [],
     }];
     setObservationTest(job, {
       kind: "latest_above_threshold",
-      statement: "BTC 最新一根日线仍在确认线之上",
+      statement: "BTC's latest daily bar remains above the confirmation line",
       threshold: 70000,
       supports: ["BIND_MARKET_OBSERVATION", "BIND_MARKET_BTC_CURVE", "BIND_MARKET_THRESHOLD"],
       sources: ["RES_BTC_CANDLES"],
@@ -503,7 +504,7 @@ test("MARKET compiles rolling correlation from synchronized returns without caus
     expression.market.chart_style = "line";
     setObservationTest(job, {
       kind: "correlation_above",
-      statement: "BTC 与 SPY 的滚动相关性仍为正",
+      statement: "BTC's rolling correlation with SPY remains positive",
       threshold: 0,
       supports: ["BIND_MARKET_OBSERVATION", "BIND_MARKET_CORRELATION"],
     });
@@ -526,7 +527,7 @@ test("MARKET renders a creator-owned causal spine without manufacturing a curve"
     expression.grammar = "causal_spine";
     expression.composition = "causal_spine";
     expression.text_image_division.image_job = "mechanism_and_time";
-    makeCreatorOnly(job, "风险偏好正在重新寻找出口");
+    makeCreatorOnly(job, "Risk appetite is looking for a new outlet");
     const { preview } = await runFastPreviewJob(job, output, { rasterize: fakeRasterize });
     const svg = readFileSync(path.join(output, preview.candidates[0].candidate_id, "frame-preview.svg"), "utf8");
     assert.match(svg, /data-grammar="causal_spine"/u);
@@ -543,7 +544,7 @@ test("MARKET renders one confirmed expression at a time", () => {
   const secondCandidate = structuredClone(firstCandidate);
   secondCandidate.candidate_id = "FPREV_CAND_BTC_FAST_MARKET_002";
   secondCandidate.angle = "evidence";
-  secondCandidate.frame.title = "谁在回撤里保住了结构";
+  secondCandidate.frame.title = "Who Preserved Structure Through the Drawdown?";
   const secondExpression = structuredClone(firstExpression);
   secondExpression.candidate_id = secondCandidate.candidate_id;
   secondExpression.reader_job = "comparison";
@@ -552,7 +553,7 @@ test("MARKET renders one confirmed expression at a time", () => {
   secondExpression.composition = "divergence_field";
   secondExpression.surface = "midnight";
   secondExpression.text_image_division.image_job = "comparison_and_time";
-  secondExpression.argument.claim.text = "压力测试里，修复速度比跌幅更重要";
+  secondExpression.argument.claim.text = "In a stress test, repair speed matters more than drawdown size";
   secondExpression.market.main_transform = "drawdown";
   secondExpression.market.support_transform = "none";
   secondExpression.market.main_binding_ids = ["BIND_MARKET_002_BTC", "BIND_MARKET_002_SPY"];
@@ -561,11 +562,11 @@ test("MARKET renders one confirmed expression at a time", () => {
   for (const beat of Object.values(secondExpression.argument)) if (beat) beat.binding_id += "_002";
   secondExpression.annotations[0].binding_id += "_002";
   for (const beat of secondExpression.future_beats) beat.binding_id += "_002";
-  secondExpression.argument.observation.text = "同期 BTC 的最大回撤浅于 SPY";
-  secondCandidate.frame.body = `同期 BTC 的最大回撤浅于 SPY。${secondCandidate.frame.body.split("。").slice(1).join("。").trim()}`;
+  secondExpression.argument.observation.text = "BTC's maximum drawdown was shallower than SPY's over the same period";
+  secondCandidate.frame.body = `BTC's maximum drawdown was shallower than SPY's over the same period. ${secondCandidate.frame.body.split(".").slice(1).join(".").trim()}`;
   secondExpression.observation_test = {
     kind: "primary_drawdown_shallower",
-    statement: "同期 BTC 的最大回撤浅于 SPY",
+    statement: "BTC's maximum drawdown was shallower than SPY's over the same period",
     threshold: 0,
     supports_binding_ids: [secondExpression.argument.observation.binding_id, ...secondExpression.market.main_binding_ids],
     source_refs: ["RES_BTC_CANDLES", "RES_SPY_CANDLES"],
@@ -574,7 +575,7 @@ test("MARKET renders one confirmed expression at a time", () => {
   const thirdCandidate = structuredClone(firstCandidate);
   thirdCandidate.candidate_id = "FPREV_CAND_BTC_FAST_MARKET_003";
   thirdCandidate.angle = "mechanism";
-  thirdCandidate.frame.title = "相关性变化，比同步涨跌更重要";
+  thirdCandidate.frame.title = "Changing Correlation Matters More Than Moving Together";
   const thirdExpression = structuredClone(firstExpression);
   thirdExpression.candidate_id = thirdCandidate.candidate_id;
   thirdExpression.reader_job = "comparison";
@@ -583,7 +584,7 @@ test("MARKET renders one confirmed expression at a time", () => {
   thirdExpression.composition = "editorial_split";
   thirdExpression.surface = "cool_mono";
   thirdExpression.text_image_division.image_job = "comparison_and_time";
-  thirdExpression.argument.claim.text = "同步涨跌正在让位于关系变化";
+  thirdExpression.argument.claim.text = "Co-movement is giving way to a changing relationship";
   thirdExpression.market.main_transform = "rolling_correlation";
   thirdExpression.market.support_transform = "none";
   thirdExpression.market.main_binding_ids = ["BIND_MARKET_003_CORRELATION"];
@@ -592,11 +593,11 @@ test("MARKET renders one confirmed expression at a time", () => {
   for (const beat of Object.values(thirdExpression.argument)) if (beat) beat.binding_id += "_003";
   thirdExpression.annotations[0].binding_id += "_003";
   for (const beat of thirdExpression.future_beats) beat.binding_id += "_003";
-  thirdExpression.argument.observation.text = "BTC 与 SPY 的滚动相关性仍为正";
-  thirdCandidate.frame.body = `BTC 与 SPY 的滚动相关性仍为正。${thirdCandidate.frame.body.split("。").slice(1).join("。").trim()}`;
+  thirdExpression.argument.observation.text = "BTC's rolling correlation with SPY remains positive";
+  thirdCandidate.frame.body = `BTC's rolling correlation with SPY remains positive. ${thirdCandidate.frame.body.split(".").slice(1).join(".").trim()}`;
   thirdExpression.observation_test = {
     kind: "correlation_above",
-    statement: "BTC 与 SPY 的滚动相关性仍为正",
+    statement: "BTC's rolling correlation with SPY remains positive",
     threshold: 0,
     supports_binding_ids: [thirdExpression.argument.observation.binding_id, ...thirdExpression.market.main_binding_ids],
     source_refs: ["RES_BTC_CANDLES", "RES_SPY_CANDLES"],
@@ -611,7 +612,7 @@ test("MARKET renders one confirmed expression at a time", () => {
 
 test("MARKET rejects copy or settlement changed after creator confirmation", () => {
   const copyChanged = baseMarketJob();
-  copyChanged.preview.candidates[0].frame.body += " 新增一句。";
+  copyChanged.preview.candidates[0].frame.body += " One more sentence.";
   assert.ok(validateMarketPreviewJob(copyChanged).errors.some((error) => error.code === "MEANING_LOCK_BODY"));
 
   const deadlineChanged = baseMarketJob();

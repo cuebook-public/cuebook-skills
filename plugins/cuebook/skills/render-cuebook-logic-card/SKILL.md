@@ -29,7 +29,7 @@ Turn one validated visual argument into one compact Cuebook opinion graphic. The
 - `price_timeline` routes to `$render-cuebook-thesis-chart`; do not fake a market chart with decorative lines.
 - Observed and derived nodes must remain visually distinguishable from conditional or unresolved nodes.
 - A countercase cannot be hidden because it weakens the headline.
-- `frame.cuebook_contribution` is internal provenance metadata. Never render a “Cuebook 补全” block or other production commentary inside the public graphic.
+- `frame.cuebook_contribution` is internal provenance metadata. Never render a “Cuebook addition” block or other production commentary inside the public graphic.
 - Metric cards preserve as-of and provisional status. Do not turn estimates into verified numbers.
 - Comparison needs a named benchmark and shared dimensions.
 - A settleable argument keeps the exact claim ref, deadline, and success condition.

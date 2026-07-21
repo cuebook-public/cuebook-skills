@@ -124,14 +124,14 @@ test("heuristic interview covers each missing-link route without a generic check
     const payload = JSON.parse(fs.readFileSync(builtEval, "utf-8"));
     const routes = [...new Set(payload.cases.map((item) => item.expected_heuristic))].sort();
     assert.deepEqual(routes, ["anomaly", "blind_spot", "causal_bridge", "next_footprint", "voice_lock", "why_now"]);
-    assert.ok(payload.cases.every((item) => item.example_interview.includes("没有更多就按这个做")));
+    assert.ok(payload.cases.every((item) => item.example_interview.toLowerCase().includes("if there is nothing more")));
     const cueCases = payload.cases.filter((item) => Array.isArray(item.cue_scaffolds));
     assert.ok(cueCases.length >= 2);
     for (const item of cueCases) {
       assert.ok(item.cue_scaffolds.length > 0 && item.cue_scaffolds.length <= 2);
       assert.ok(item.cue_scaffolds.some((cue) => cue.relation === "aligned"));
       assert.ok(item.cue_scaffolds.some((cue) => ["contrasting", "adjacent"].includes(cue.relation)));
-      assert.match(item.example_completion_check, /不加/u);
+      assert.match(item.example_completion_check, /keep|current version/iu);
     }
 
     const skillPath = path.join(tmpPath, "release", "create-cuebook-content", "SKILL.md");

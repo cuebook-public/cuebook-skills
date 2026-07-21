@@ -23,7 +23,7 @@ Do not transfer: FT pink paper, Economist red and Milo, Datawrapper product chro
 ## Text discipline (Datawrapper)
 
 - **Direct labels beat legends** — already contract; restated here because it is the single highest-leverage habit.
-- **Values carry units at the mark**: `54.8 万桶/日`, `+12.2%`, `$66.84` — never a bare number with the unit parked in another group.
+- **Values carry units at the mark**: `548 thousand barrels/day`, `+12.2%`, `$66.84` — never a bare number with the unit parked in another group.
 - **Display numbers are simplified**: at display scale, one decimal place unless the extra digit is the claim (a settlement threshold keeps its exact form). Exact long-form values live in data payloads, not on the canvas.
 - **Two text hierarchy levels per zone**: within any one role group, use at most two size/weight steps. The canvas-wide four-size budget still applies; this rule stops micro-hierarchies inside a group.
 - **Text stays horizontal by default; body copy left-aligns.** Rotated or right-aligned type is a declared poster device (see exception clause), never a way to fit an oversized label.
@@ -32,7 +32,7 @@ Do not transfer: FT pink paper, Economist red and Milo, Datawrapper product chro
 ## One-message discipline (The Economist)
 
 - One chart, one message: the direction's `form_from_content` sentence is the message; anything on the canvas that serves a second message is reverse-deletion material.
-- The claim states the takeaway, not the topic: 「三季度油价难站稳 $75」, never 「WTI 价格走势」. Topic-titling is an automatic critique failure under `three_second`.
+- The claim states the takeaway, not the topic: “Oil may struggle to hold $75 in Q3,” never “WTI price trend.” Topic-titling is an automatic critique failure under `three_second`.
 - Horizontal gridlines only, few, and quieter than the data; no vertical grid. At 2.36:1 most evidence fields need zero to three gridlines — prefer a labeled threshold line over a grid.
 - One accent carries the primary series or verdict; support data takes neutrals or muted steps of the same hue before any second hue appears. This is the same 70-85% neutral rule as the palette system, stated from the ink side.
 

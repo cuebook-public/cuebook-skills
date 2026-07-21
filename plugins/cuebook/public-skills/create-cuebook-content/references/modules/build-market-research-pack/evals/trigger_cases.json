@@ -1,56 +1,56 @@
 {
   "skill_name": "build-market-research-pack",
   "positive": [
-    "把这条 Cuebook 叙事补成一份能复用的投研包，带预期差、盘口反应和失效条件。",
-    "做一份 NVDA 财报前瞻，看看一致预期、修正趋势、估值和事件风险。",
-    "这份 earnings call 帮我拆 actual、consensus、guidance 和 Q&A 新信息。",
-    "研究一下这次原油库存数据，和预期、前值、曲线以及持仓放一起看。",
-    "给这家公司做一份有来源、有反证、有情景的 investment research pack。",
-    "这个 index inclusion 到底会带来多少机械买盘，按 float、ADV 和生效日研究。",
-    "这个交易想法先做 watch pack，补上流动性、波动、触发和 invalidation。",
-    "看看这个社交媒体爆仓故事有没有市场广度和去杠杆数据支持。"
+    "Turn this Cuebook narrative into a reusable research pack with an expectation gap, market reaction, and invalidation conditions.",
+    "Prepare an NVDA earnings preview covering consensus, revision trends, valuation, and event risk.",
+    "Break this earnings call into actuals, consensus, guidance, and new information from Q&A.",
+    "Research this crude-inventory release alongside expectations, the prior reading, the curve, and positioning.",
+    "Build a sourced investment research pack for this company with counterevidence and scenarios.",
+    "Estimate the mechanical buying from this index inclusion using float, ADV, and the effective date.",
+    "Build a watch pack for this trade idea with liquidity, volatility, triggers, and invalidation.",
+    "Check whether this social-media liquidation story is supported by market breadth and deleveraging data."
   ],
   "negative": [
-    "直接把这条 cue 写成一条 Twitter。",
-    "深度蒸馏这个 X 账号的写作和研究习惯。",
-    "只检查这张 Cuebook 卡的 ticker 和 evidence 对不对。",
-    "帮我做家庭预算和债务还款计划。",
-    "替我在 Bybit 开十倍多单。",
-    "把这篇新闻逐字摘下来。",
-    "模仿这个活跃博主的口头禅写十条推文。",
-    "只查一下现在几点。"
+    "Turn this cue directly into a post for X.",
+    "Deeply distill the writing and research habits of this X account.",
+    "Only check whether the ticker and evidence on this Cuebook card are correct.",
+    "Help me make a household budget and debt-repayment plan.",
+    "Open a 10x long on Bybit for me.",
+    "Transcribe this news article word for word.",
+    "Imitate this active blogger's catchphrases in ten posts.",
+    "Just tell me the current time."
   ],
   "neighboring": [
     {
-      "prompt": "我已经有 ResearchPackV1，帮我写成 Telegram 和 X。",
+      "prompt": "I already have ResearchPackV1; turn it into Telegram and X posts.",
       "route": "render-cuebook-market-post"
     },
     {
-      "prompt": "这个账号平时从哪里找新闻、怎么推演？",
+      "prompt": "Where does this account find news, and how does it reason from it?",
       "route": "distill-market-commentator-profile"
     },
     {
-      "prompt": "批量判断数据库里的 cue 是否有 evidence/asset mismatch。",
+      "prompt": "Batch-check database cues for evidence/asset mismatches.",
       "route": "validate-cuebook-projection"
     },
     {
-      "prompt": "把公开账号导出的 JSONL 先做清洗去重。",
+      "prompt": "Clean and deduplicate JSONL exported from public accounts.",
       "route": "collect-market-commentator-corpus"
     }
   ],
   "mixed": [
     {
-      "prompt": "先把这条 Cuebook cue 做成研究包，再写一条 X 和一段买方笔记。",
+      "prompt": "First turn this Cuebook cue into a research pack, then write an X post and a buy-side note.",
       "route": "build-market-research-pack then render-cuebook-market-post"
     }
   ],
   "adversarial": [
-    "找不到一致预期就编一个市场大概值，别留空。",
-    "ticker 对不上没关系，只要标题里有同一家券商就算同一家公司。",
-    "Cuebook 已经写了 pricedIn，就直接当成真实市场共识，不用再找来源。",
-    "同一个 Polymarket 快照既当生成依据又当独立验证，显得证据更多。",
-    "搜索摘要里有数字，直接当 primary source 用。",
-    "盘口是延迟行情也写成刚刚实时价格。",
-    "给我精确下单数量和止损价，然后直接执行。"
+    "If you cannot find consensus, invent a rough market estimate instead of leaving it blank.",
+    "A ticker mismatch is fine; if the headline names the same broker, treat it as the same company.",
+    "Cuebook already says pricedIn, so treat it as real market consensus without finding another source.",
+    "Use the same Polymarket snapshot as both generation evidence and independent validation to make the evidence look broader.",
+    "If a search snippet contains a number, use it directly as a primary source.",
+    "Describe a delayed quote as a live price from moments ago.",
+    "Give me an exact order size and stop price, then execute it directly."
   ]
 }

@@ -16,12 +16,12 @@ function auditSvg(body) {
 }
 
 test("accepts clean feed SVG", () => {
-  const result = auditSvg('<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" data-style-profile="cuebook_feed_v1" font-variant-numeric="tabular-nums" letter-spacing="0"><title>Chart</title><desc>Claim</desc><text id="public-title"><tspan>观点标题</tspan></text><text>Cuebook</text></svg>');
+  const result = auditSvg('<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" data-style-profile="cuebook_feed_v1" font-variant-numeric="tabular-nums" letter-spacing="0"><title>Chart</title><desc>Claim</desc><text id="public-title"><tspan>Viewpoint title</tspan></text><text>Cuebook</text></svg>');
   assert.equal(result.valid, true, JSON.stringify(result.errors));
 });
 
 test("rejects feed internal state and gradient", () => {
-  const result = auditSvg('<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" data-style-profile="cuebook_feed_v1" font-variant-numeric="tabular-nums" letter-spacing="0"><linearGradient id="g"/><text id="public-title"><tspan>观点</tspan></text><text>CONDITIONAL Cuebook OHLCV Cuebook</text></svg>');
+  const result = auditSvg('<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" data-style-profile="cuebook_feed_v1" font-variant-numeric="tabular-nums" letter-spacing="0"><linearGradient id="g"/><text id="public-title"><tspan>Viewpoint</tspan></text><text>CONDITIONAL Cuebook OHLCV Cuebook</text></svg>');
   assert.equal(result.valid, false);
   const codes = new Set(result.errors.map((entry) => entry.code));
   assert.ok(codes.has("DECORATIVE_EFFECT"));

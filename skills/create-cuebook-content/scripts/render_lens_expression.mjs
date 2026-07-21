@@ -11,7 +11,8 @@ const WORDMARK = readFileSync(
   "utf8",
 );
 
-const MUTABLE_PRICE_LABEL = /(?:现价|当前价|最新价|入场价|current\s+price|latest\s+price|entry\s+price)/iu;
+// Keep localized safety terms as escapes so the source remains English-only.
+const MUTABLE_PRICE_LABEL = /(?:\u73b0\u4ef7|\u5f53\u524d\u4ef7|\u6700\u65b0\u4ef7|\u5165\u573a\u4ef7|current\s+price|latest\s+price|entry\s+price)/iu;
 
 const LENS_DESIGN_PROFILES = Object.freeze({
   lens_anatomy: { design_family: "lens_ledger", narrative_placement: "ledger_plus_footer" },
@@ -212,9 +213,7 @@ export function compileLensExpression(expression) {
 
 function dateLabel(timestamp, locale) {
   const date = new Date(timestamp);
-  return locale === "zh-CN"
-    ? `${date.getUTCMonth() + 1}月${date.getUTCDate()}日`
-    : date.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+  return date.toLocaleDateString(locale || "en-US", { month: "short", day: "numeric", timeZone: "UTC" });
 }
 
 function signed(value, digits = 1, suffix = "") {
@@ -226,29 +225,27 @@ function clipped(value, maximum) {
   return [...text].length <= maximum ? text : `${[...text].slice(0, maximum - 1).join("")}…`;
 }
 
-function lensKindLabel(expression, locale) {
-  if (expression.grammar === "long_short_lens") return locale === "zh-CN" ? "创作者多空观察 LENS" : "CREATOR LONG / SHORT LENS";
-  return locale === "zh-CN" ? "创作者观察 LENS" : "CREATOR OBSERVATION LENS";
+function lensKindLabel(expression) {
+  if (expression.grammar === "long_short_lens") return "CREATOR LONG / SHORT LENS";
+  return "CREATOR OBSERVATION LENS";
 }
 
-function selectionModeLabel(expression, locale) {
+function selectionModeLabel(expression) {
   if (expression.lens.selection_mode === "retrospective_exploratory") {
-    return locale === "zh-CN" ? "回看探索 · 含选择偏差" : "RETROSPECTIVE · SELECTION BIAS";
+    return "RETROSPECTIVE · SELECTION BIAS";
   }
-  return locale === "zh-CN" ? "事前冻结成分" : "PRE-REGISTERED UNIVERSE";
+  return "PRE-REGISTERED UNIVERSE";
 }
 
 export function generateLensAltText(expression, candidate, compiled = compileLensExpression(expression)) {
   const locale = localeFor(candidate);
   const members = compiled.components
     .map((component) => `${component.leg.ticker} ${signed(component.weight * 100, 0, "%")}`)
-    .join(locale === "zh-CN" ? "、" : ", ");
+    .join(", ");
   const testNotice = expression.data_status === "synthetic_fixture"
-    ? (locale === "zh-CN" ? "测试数据，不可发布。" : "Synthetic test data; not publishable. ")
+    ? "Synthetic test data; not publishable. "
     : "";
-  const text = locale === "zh-CN"
-    ? `${testNotice}${expression.lens.name} 是创作者观察 Lens，不是官方指数；${selectionModeLabel(expression, locale)}。由 ${members} 按冻结时间窗从 100 归一计算，当前相对基准${signed(compiled.change_from_base, 1, "点")}；观点日后不画预测路径，只标确认与失效条件。`
-    : `${testNotice}${expression.lens.name} is a creator-owned lens, not an official index; ${selectionModeLabel(expression, locale)}. ${members} are rebased to 100 over one frozen window; the latest change is ${signed(compiled.change_from_base, 1, " points")}. After the view date, only conditions are shown.`;
+  const text = `${testNotice}${expression.lens.name} is a creator-owned lens, not an official index; ${selectionModeLabel(expression)}. ${members} are rebased to 100 over one frozen window; the latest change is ${signed(compiled.change_from_base, 1, " points")}. After the view date, only conditions are shown.`;
   return clipped(text, 240);
 }
 
@@ -267,12 +264,12 @@ function renderWordmark(palette) {
 function renderHeader(expression, candidate, compiled, palette, locale) {
   const surfaceSystem = FRAME_SURFACE_SYSTEMS[expression.surface];
   const source = expression.data_status === "synthetic_fixture"
-    ? (locale === "zh-CN" ? `测试数据 · 不可发布 · ${expression.source_label}` : `TEST DATA · NOT PUBLISHABLE · ${expression.source_label}`)
+    ? `TEST DATA · NOT PUBLISHABLE · ${expression.source_label}`
     : expression.source_label;
   return [
     `<circle cx="53" cy="45" r="4" fill="${palette.signal}"/>`,
     `<text x="65" y="51" fill="${palette.muted}" font-size="14" font-weight="720" letter-spacing="0.04em">${esc(`${expression.subject_label} · ${expression.horizon_label}`)}</text>`,
-    `<g data-data-status="${esc(expression.data_status)}"><text x="1191" y="43" text-anchor="end" fill="${expression.data_status === "synthetic_fixture" ? palette.danger : palette.muted}" font-size="12" font-weight="700">${esc(source)}</text><text x="1191" y="61" text-anchor="end" fill="${palette.muted}" font-size="10.5">${esc(`${locale === "zh-CN" ? "截至" : "as of"} ${dateLabel(expression.data_as_of, locale)} · ${compiled.synchronized_count} synchronized bars`)}</text></g>`,
+    `<g data-data-status="${esc(expression.data_status)}"><text x="1191" y="43" text-anchor="end" fill="${expression.data_status === "synthetic_fixture" ? palette.danger : palette.muted}" font-size="12" font-weight="700">${esc(source)}</text><text x="1191" y="61" text-anchor="end" fill="${palette.muted}" font-size="10.5">${esc(`as of ${dateLabel(expression.data_as_of, locale)} · ${compiled.synchronized_count} synchronized bars`)}</text></g>`,
     textBlock({
       x: 52,
       y: 116,
@@ -311,7 +308,7 @@ function renderLensChart(expression, compiled, palette, locale) {
   const parts = [
     `<g data-lens-stage="true">`,
     `<rect x="${f(futureX)}" y="${box.y}" width="${f(box.w - historyWidth)}" height="${box.h}" rx="${surfaceSystem.plotRadius}" fill="${palette.future}" opacity="${surfaceSystem.futureOpacity}" data-future-region="unresolved"/>`,
-    `<text x="${f(futureX + 14)}" y="${f(box.y + 22)}" fill="${palette.conditional}" font-size="10" font-weight="760" letter-spacing="0.07em">${esc(locale === "zh-CN" ? "未来不画价格路径" : "NO FUTURE PRICE PATH")}</text>`,
+    `<text x="${f(futureX + 14)}" y="${f(box.y + 22)}" fill="${palette.conditional}" font-size="10" font-weight="760" letter-spacing="0.07em">${esc("NO FUTURE PRICE PATH")}</text>`,
   ];
   for (let index = 0; index < 4; index += 1) {
     const value = low + ((high - low) * index) / 3;
@@ -326,7 +323,7 @@ function renderLensChart(expression, compiled, palette, locale) {
     `<text x="${f(futureX - 10)}" y="${f(latestY - 12)}" text-anchor="end" fill="${palette.signal}" font-size="15" font-weight="800">${esc(signed(compiled.change_from_base, 1, " pts"))}</text>`,
     `<line x1="${f(futureX)}" y1="${box.y}" x2="${f(futureX)}" y2="${f(box.y + box.h)}" stroke="${palette.signal}" stroke-width="1.5" stroke-dasharray="4 5"/>`,
     `<text x="${box.x}" y="${f(box.y + box.h + 18)}" fill="${palette.muted}" font-size="10">${esc(dateLabel(compiled.observation_start, locale))}</text>`,
-    `<text x="${f(futureX - 8)}" y="${f(box.y + box.h + 18)}" text-anchor="end" fill="${palette.signal}" font-size="10" font-weight="720">${esc(`${locale === "zh-CN" ? "观点日" : "VIEW"} · ${dateLabel(expression.time.declared_at, locale)}`)}</text>`,
+    `<text x="${f(futureX - 8)}" y="${f(box.y + box.h + 18)}" text-anchor="end" fill="${palette.signal}" font-size="10" font-weight="720">${esc(`VIEW · ${dateLabel(expression.time.declared_at, locale)}`)}</text>`,
     `<text x="${f(box.x)}" y="${f(box.y - 12)}" fill="${palette.muted}" font-size="10.5" font-weight="720" letter-spacing="0.04em">${esc(`${lensKindLabel(expression, locale)} · rebased 100`)}</text>`,
   );
 
@@ -335,16 +332,14 @@ function renderLensChart(expression, compiled, palette, locale) {
   const observationY = latestY < box.y + box.h * 0.4 ? latestY + 52 : latestY - 42;
   const observationColor = stateColor(observation.state, palette);
   parts.push(
-    `<g ${bindingAttr(observation.binding_id, observation.state)} data-role="observation" data-annotation-role="observation" data-layout="chart-attached"><path d="M ${f(futureX - 9)} ${f(latestY)} L ${f(observationX + 270)} ${f(latestY)} L ${f(observationX + 270)} ${f(observationY - 11)}" fill="none" stroke="${observationColor}" stroke-width="1.2" opacity="0.72"/><rect x="${f(observationX - 8)}" y="${f(observationY - 24)}" width="286" height="66" rx="3" fill="${palette.canvas}" opacity="0.93"/><line x1="${f(observationX)}" y1="${f(observationY - 11)}" x2="${f(observationX + 42)}" y2="${f(observationY - 11)}" stroke="${observationColor}" stroke-width="3"/><text x="${f(observationX)}" y="${f(observationY + 4)}" fill="${observationColor}" font-size="9" font-weight="800" letter-spacing="0.06em">${esc(locale === "zh-CN" ? "图上的证据" : "EVIDENCE ON THE CURVE")}</text>${textBlock({ x: observationX, y: observationY + 24, text: observation.text, size: 12.5, color: palette.ink, weight: 690, maxUnits: 27, maxLines: 2, minSize: 10 })}</g>`,
+    `<g ${bindingAttr(observation.binding_id, observation.state)} data-role="observation" data-annotation-role="observation" data-layout="chart-attached"><path d="M ${f(futureX - 9)} ${f(latestY)} L ${f(observationX + 270)} ${f(latestY)} L ${f(observationX + 270)} ${f(observationY - 11)}" fill="none" stroke="${observationColor}" stroke-width="1.2" opacity="0.72"/><rect x="${f(observationX - 8)}" y="${f(observationY - 24)}" width="286" height="66" rx="3" fill="${palette.canvas}" opacity="0.93"/><line x1="${f(observationX)}" y1="${f(observationY - 11)}" x2="${f(observationX + 42)}" y2="${f(observationY - 11)}" stroke="${observationColor}" stroke-width="3"/><text x="${f(observationX)}" y="${f(observationY + 4)}" fill="${observationColor}" font-size="9" font-weight="800" letter-spacing="0.06em">${esc("EVIDENCE ON THE CURVE")}</text>${textBlock({ x: observationX, y: observationY + 24, text: observation.text, size: 12.5, color: palette.ink, weight: 690, maxUnits: 27, maxLines: 2, minSize: 10 })}</g>`,
   );
 
   const futureTop = box.y + 60;
   expression.future_beats.forEach((beat, index) => {
     const top = futureTop + index * 64;
     const days = Math.max(1, Math.round((Date.parse(beat.at) - Date.parse(expression.time.declared_at)) / 86_400_000));
-    const role = locale === "zh-CN"
-      ? ({ checkpoint: "检查", confirmation: "确认", invalidation: "失效", settlement: "到期" }[beat.role])
-      : beat.role.toUpperCase();
+    const role = beat.role.toUpperCase();
     const color = beat.role === "invalidation" ? palette.danger : palette.conditional;
     parts.push(
       `<g ${bindingAttr(beat.binding_id, beat.state)} data-future-role="${esc(beat.role)}"><line x1="${f(futureX + 16)}" y1="${f(top)}" x2="${f(futureX + 34)}" y2="${f(top)}" stroke="${color}" stroke-width="2"/><text x="${f(futureX + 42)}" y="${f(top + 4)}" fill="${color}" font-size="9.5" font-weight="780">${esc(`${role} · D+${days}`)}</text>${textBlock({ x: futureX + 16, y: top + 25, text: beat.criterion, size: 11.5, color: palette.ink, maxUnits: 20, maxLines: 2, minSize: 9.5 })}</g>`,
@@ -353,7 +348,7 @@ function renderLensChart(expression, compiled, palette, locale) {
   if (expression.argument.countercase) {
     const beat = expression.argument.countercase;
     parts.push(
-      `<g ${bindingAttr(beat.binding_id, beat.state)} data-role="countercase"><text x="${f(futureX + 16)}" y="${f(box.y + box.h - 30)}" fill="${palette.danger}" font-size="9" font-weight="800" letter-spacing="0.05em">${esc(locale === "zh-CN" ? "我的止损判断" : "MY STOP")}</text>${textBlock({ x: futureX + 16, y: box.y + box.h - 12, text: beat.text, size: 9.5, color: palette.ink, weight: 620, maxUnits: 24, maxLines: 1, minSize: 8 })}</g>`,
+      `<g ${bindingAttr(beat.binding_id, beat.state)} data-role="countercase"><text x="${f(futureX + 16)}" y="${f(box.y + box.h - 30)}" fill="${palette.danger}" font-size="9" font-weight="800" letter-spacing="0.05em">${esc("MY STOP")}</text>${textBlock({ x: futureX + 16, y: box.y + box.h - 12, text: beat.text, size: 9.5, color: palette.ink, weight: 620, maxUnits: 24, maxLines: 1, minSize: 8 })}</g>`,
     );
   }
   parts.push("</g>");
@@ -367,15 +362,15 @@ function renderAnatomy(expression, compiled, palette, locale) {
   const rowHeight = Math.min(25, 154 / compiled.components.length);
   const maxContribution = Math.max(0.1, ...compiled.components.map((component) => Math.abs(component.latest_contribution_pp)));
   const originLabel = {
-    creator_named: locale === "zh-CN" ? "用户" : "YOU",
+    creator_named: "YOU",
     cuebook_discovered: "CUEBOOK",
-    assistant_proxy: locale === "zh-CN" ? "代理" : "PROXY",
+    assistant_proxy: "PROXY",
   };
   const parts = [
     `<g data-lens-anatomy="true" ${bindingAttr(expression.lens.contribution_binding_id, "derived", "contribution-bars")}>`,
     `<text x="${x}" y="${y}" fill="${palette.signal}" font-size="10.5" font-weight="800" letter-spacing="0.08em">${esc(lensKindLabel(expression, locale))}</text>`,
     textBlock({ x, y: y + 31, text: expression.lens.name, size: 21, color: palette.ink, weight: 770, maxUnits: 25, maxLines: 1, minSize: 15 }),
-    `<text x="${x + width}" y="${y + 31}" text-anchor="end" fill="${palette.muted}" font-size="9.5" font-weight="700">${esc(locale === "zh-CN" ? "不是官方指数" : "NOT AN OFFICIAL INDEX")}</text>`,
+    `<text x="${x + width}" y="${y + 31}" text-anchor="end" fill="${palette.muted}" font-size="9.5" font-weight="700">${esc("NOT AN OFFICIAL INDEX")}</text>`,
     `<line x1="${x}" y1="${y + 44}" x2="${x + width}" y2="${y + 44}" stroke="${palette.grid}"/>`,
     `<text x="${x}" y="${y + 60}" fill="${palette.muted}" font-size="9">MEMBER / WHY</text><text x="${x + 266}" y="${y + 60}" text-anchor="end" fill="${palette.muted}" font-size="9">WEIGHT</text><text x="${x + width}" y="${y + 60}" text-anchor="end" fill="${palette.muted}" font-size="9">CONTRIB.</text>`,
   ];
@@ -399,7 +394,7 @@ function renderAnatomy(expression, compiled, palette, locale) {
     `<line x1="${x}" y1="${f(footerY)}" x2="${x + width}" y2="${f(footerY)}" stroke="${palette.grid}"/>`,
     textBlock({ x, y: footerY + 18, text: `${selectionModeLabel(expression, locale)} · ${expression.lens.weighting.toUpperCase()} · ${expression.lens.rebalance.toUpperCase()} · ${compiled.synchronized_count} BARS`, size: 9.5, color: expression.lens.selection_mode === "retrospective_exploratory" ? palette.danger : palette.muted, weight: 720, maxUnits: 58, maxLines: 1, minSize: 7.5 }),
     textBlock({ x, y: footerY + 36, text: expression.lens.formula, size: 10.5, color: palette.ink, maxUnits: 55, maxLines: 1, minSize: 8.5 }),
-    textBlock({ x, y: footerY + 53, text: `${locale === "zh-CN" ? "限制" : "LIMIT"}: ${expression.lens.limitations.join(locale === "zh-CN" ? "；" : "; ")}`, size: 9.5, color: palette.muted, weight: 580, maxUnits: 62, maxLines: 2, minSize: 8 }),
+    textBlock({ x, y: footerY + 53, text: `LIMIT: ${expression.lens.limitations.join("; ")}`, size: 9.5, color: palette.muted, weight: 580, maxUnits: 62, maxLines: 2, minSize: 8 }),
     "</g>",
   );
   return parts.join("");
@@ -439,9 +434,9 @@ function renderContributionStage(expression, compiled, palette, locale) {
     `<g data-lens-contribution-stage="true" ${bindingAttr(expression.lens.contribution_binding_id, "derived", "two-sided-contribution")}>`,
     `<text x="${x}" y="${y}" fill="${palette.signal}" font-size="10.5" font-weight="800" letter-spacing="0.08em">${esc(lensKindLabel(expression, locale))}</text>`,
     textBlock({ x, y: y + 31, text: expression.lens.name, size: 21, color: palette.ink, weight: 770, maxUnits: 25, maxLines: 1, minSize: 15 }),
-    `<text x="${x + width}" y="${y + 31}" text-anchor="end" fill="${palette.muted}" font-size="9.5" font-weight="700">${esc(locale === "zh-CN" ? "不是官方指数" : "NOT AN OFFICIAL INDEX")}</text>`,
+    `<text x="${x + width}" y="${y + 31}" text-anchor="end" fill="${palette.muted}" font-size="9.5" font-weight="700">${esc("NOT AN OFFICIAL INDEX")}</text>`,
     `<line x1="${x}" y1="${y + 44}" x2="${x + width}" y2="${y + 44}" stroke="${palette.grid}"/>`,
-    `<text x="${x}" y="226" fill="${palette.muted}" font-size="9.5" font-weight="750">${esc(locale === "zh-CN" ? "两侧共同形成的观察差" : "NET OBSERVATION SPREAD")}</text>`,
+    `<text x="${x}" y="226" fill="${palette.muted}" font-size="9.5" font-weight="750">${esc("NET OBSERVATION SPREAD")}</text>`,
     `<text x="${x + width}" y="228" text-anchor="end" fill="${palette.signal}" font-size="22" font-weight="840">${esc(signed(compiled.change_from_base, 1, " pts"))}</text>`,
     `<line x1="1005" y1="245" x2="1005" y2="${f(footerY - 7)}" stroke="${palette.grid}"/>`,
     sleeve(longs, "long", 820),
@@ -449,7 +444,7 @@ function renderContributionStage(expression, compiled, palette, locale) {
     `<line x1="${x}" y1="${f(footerY)}" x2="${x + width}" y2="${f(footerY)}" stroke="${palette.grid}"/>`,
     textBlock({ x, y: footerY + 17, text: `${selectionModeLabel(expression, locale)} · ${expression.lens.weighting.toUpperCase()} · ${expression.lens.rebalance.toUpperCase()} · ${compiled.synchronized_count} BARS`, size: 9.2, color: expression.lens.selection_mode === "retrospective_exploratory" ? palette.danger : palette.muted, weight: 720, maxUnits: 58, maxLines: 1, minSize: 7.5 }),
     textBlock({ x, y: footerY + 34, text: expression.lens.formula, size: 10, color: palette.ink, maxUnits: 58, maxLines: 1, minSize: 8.5 }),
-    textBlock({ x, y: footerY + 50, text: `${locale === "zh-CN" ? "限制" : "LIMIT"}: ${expression.lens.limitations.join(locale === "zh-CN" ? "；" : "; ")}`, size: 9.2, color: palette.muted, weight: 580, maxUnits: 62, maxLines: 2, minSize: 7.8 }),
+    textBlock({ x, y: footerY + 50, text: `LIMIT: ${expression.lens.limitations.join("; ")}`, size: 9.2, color: palette.muted, weight: 580, maxUnits: 62, maxLines: 2, minSize: 7.8 }),
     "</g>",
   ].join("");
 }
@@ -466,8 +461,8 @@ function renderBottomArgument(expression, palette, locale) {
   const mechanismColor = stateColor(mechanism.state, palette);
   const implicationColor = stateColor(implication.state, palette);
   return [
-    `<g ${bindingAttr(mechanism.binding_id, mechanism.state)} data-role="creator-pulse" data-layout="creator-pulse"><line x1="52" y1="439" x2="806" y2="439" stroke="${palette.grid}"/><line x1="52" y1="439" x2="132" y2="439" stroke="${mechanismColor}" stroke-width="4"/><text x="52" y="459" fill="${mechanismColor}" font-size="10" font-weight="820" letter-spacing="0.07em">${esc(locale === "zh-CN" ? "我的关键判断" : "MY CREATOR EDGE")}</text>${textBlock({ x: 52, y: 489, text: mechanism.text, size: 19, color: palette.ink, weight: 730, maxUnits: 48, maxLines: 1, minSize: 14 })}</g>`,
-    `<g ${bindingAttr(implication.binding_id, implication.state)} data-role="next-watch" data-layout="compact-watch"><line x1="840" y1="439" x2="1072" y2="439" stroke="${palette.grid}"/><line x1="840" y1="439" x2="888" y2="439" stroke="${implicationColor}" stroke-width="3"/><text x="840" y="459" fill="${implicationColor}" font-size="9.5" font-weight="800" letter-spacing="0.06em">${esc(locale === "zh-CN" ? "下一步只看" : "WATCH NEXT")}</text>${textBlock({ x: 840, y: 482, text: implication.text, size: 12.5, color: palette.ink, weight: 650, maxUnits: 19, maxLines: 2, minSize: 10 })}</g>`,
+    `<g ${bindingAttr(mechanism.binding_id, mechanism.state)} data-role="creator-pulse" data-layout="creator-pulse"><line x1="52" y1="439" x2="806" y2="439" stroke="${palette.grid}"/><line x1="52" y1="439" x2="132" y2="439" stroke="${mechanismColor}" stroke-width="4"/><text x="52" y="459" fill="${mechanismColor}" font-size="10" font-weight="820" letter-spacing="0.07em">${esc("MY CREATOR EDGE")}</text>${textBlock({ x: 52, y: 489, text: mechanism.text, size: 19, color: palette.ink, weight: 730, maxUnits: 48, maxLines: 1, minSize: 14 })}</g>`,
+    `<g ${bindingAttr(implication.binding_id, implication.state)} data-role="next-watch" data-layout="compact-watch"><line x1="840" y1="439" x2="1072" y2="439" stroke="${palette.grid}"/><line x1="840" y1="439" x2="888" y2="439" stroke="${implicationColor}" stroke-width="3"/><text x="840" y="459" fill="${implicationColor}" font-size="9.5" font-weight="800" letter-spacing="0.06em">${esc("WATCH NEXT")}</text>${textBlock({ x: 840, y: 482, text: implication.text, size: 12.5, color: palette.ink, weight: 650, maxUnits: 19, maxLines: 2, minSize: 10 })}</g>`,
   ].join("");
 }
 
@@ -503,7 +498,7 @@ function compactLensEssentialText({ x, y, text, color, widthUnits, lines = 2, an
 function compactLensProvenance(expression, palette, locale) {
   const asOf = dateLabel(expression.data_as_of, locale);
   const source = expression.data_status === "synthetic_fixture"
-    ? (locale === "zh-CN" ? "测试数据 · 不可发布" : "TEST DATA · NOT PUBLISHABLE")
+    ? "TEST DATA · NOT PUBLISHABLE"
     : clipped(expression.source_label, 18);
   return [
     `<circle cx="20" cy="22" r="4" fill="${palette.signal}"/>`,
@@ -547,7 +542,7 @@ function compactLensFuture(expression, palette, locale) {
   const days = Math.max(1, Math.round((Date.parse(beat.at) - Date.parse(expression.time.declared_at)) / 86_400_000));
   return [
     `<line x1="20" y1="222" x2="514" y2="222" stroke="${palette.grid}" stroke-width="1.5"/>`,
-    `<text x="20" y="244" fill="${palette.conditional}" font-size="12" font-weight="820">${esc(locale === "zh-CN" ? "到期观察" : "HORIZON CHECK")}</text>`,
+    `<text x="20" y="244" fill="${palette.conditional}" font-size="12" font-weight="820">${esc("HORIZON CHECK")}</text>`,
     compactLensEssentialText({ x: 112, y: 247, text: `D+${days} · ${dateLabel(beat.at, locale)} · ${beat.label}`, color: palette.ink, widthUnits: 23, lines: 1, binding: bindingAttr(beat.binding_id, beat.state), group: "future", tier: "secondary" }),
   ].join("");
 }
@@ -560,7 +555,7 @@ function renderCompactLensAnatomy(expression, compiled, palette, locale) {
     compactLensCurve(expression, compiled, palette, { x: 20, y: 58, w: 346, h: 108 }),
     `<g ${bindingAttr(expression.argument.observation.binding_id, expression.argument.observation.state, "annotation")} data-annotation-role="observation"/>`,
     `<line x1="386" y1="52" x2="386" y2="204" stroke="${palette.grid}" stroke-width="1.5"/>`,
-    `<text x="406" y="62" fill="${palette.signal}" font-size="14" font-weight="820">${esc(locale === "zh-CN" ? "创作者 LENS · 非官方指数" : "CREATOR LENS · NOT AN OFFICIAL INDEX")}</text>`,
+    `<text x="406" y="62" fill="${palette.signal}" font-size="14" font-weight="820">${esc("CREATOR LENS · NOT AN OFFICIAL INDEX")}</text>`,
     textBlock({ x: 406, y: 90, text: expression.lens.name, size: 19, color: palette.ink, weight: 800, maxUnits: 10.8, maxLines: 2, minSize: 16 }),
     `<g data-role="compact-contributions" ${bindingAttr(expression.lens.contribution_binding_id, "derived", "contribution-bars")}>`,
   ];
@@ -573,7 +568,7 @@ function renderCompactLensAnatomy(expression, compiled, palette, locale) {
   });
   parts.push(
     "</g>",
-    `<text x="20" y="186" fill="${palette.signal}" font-size="12" font-weight="820">${esc(locale === "zh-CN" ? "我的推演" : "MY LOGIC")}</text>`,
+    `<text x="20" y="186" fill="${palette.signal}" font-size="12" font-weight="820">${esc("MY LOGIC")}</text>`,
     compactLensEssentialText({ x: 20, y: 208, text: expression.argument.mechanism.text, color: palette.ink, widthUnits: 20, lines: 1, binding: `${bindingAttr(expression.argument.mechanism.binding_id, expression.argument.mechanism.state)} data-role="creator-mechanism"`, group: "logic", tier: "secondary" }),
     compactLensFuture(expression, palette, locale),
   );
@@ -588,7 +583,7 @@ function renderCompactSpreadArena(expression, compiled, palette, locale) {
   const longTotal = compiled.components.filter((component) => component.side === "long").reduce((sum, component) => sum + component.latest_contribution_pp, 0);
   const shortTotal = compiled.components.filter((component) => component.side === "short").reduce((sum, component) => sum + component.latest_contribution_pp, 0);
   const parts = [
-    `<text x="311" y="47" text-anchor="middle" fill="${palette.signal}" font-size="12" font-weight="820">${esc(locale === "zh-CN" ? "创作者 LENS · 非官方指数" : "CREATOR LENS · NOT AN OFFICIAL INDEX")}</text>`,
+    `<text x="311" y="47" text-anchor="middle" fill="${palette.signal}" font-size="12" font-weight="820">${esc("CREATOR LENS · NOT AN OFFICIAL INDEX")}</text>`,
     `<rect x="20" y="52" width="276" height="144" fill="${palette.primary}" opacity="0.07"/><rect x="326" y="52" width="276" height="144" fill="${palette.danger}" opacity="0.06"/>`,
     `<line x1="311" y1="52" x2="311" y2="196" stroke="${palette.signal}" stroke-width="3"/>`,
     compactLensCurve(expression, compiled, palette, { x: 210, y: 56, w: 202, h: 54 }, { arena: true, showDelta: false }),
@@ -599,9 +594,9 @@ function renderCompactSpreadArena(expression, compiled, palette, locale) {
     compactLensEssentialText({ x: 40, y: 148, text: long ? long.leg.ticker : "—", color: palette.ink, widthUnits: 8, lines: 1, binding: long ? bindingAttr(long.binding_id, "derived", "component-row") : "", group: "evidence" }),
     compactLensEssentialText({ x: 582, y: 148, text: short ? short.leg.ticker : "—", color: palette.ink, widthUnits: 8, lines: 1, anchor: "end", binding: short ? bindingAttr(short.binding_id, "derived", "component-row") : "", group: "evidence" }),
     `<text x="40" y="181" fill="${palette.primary}" font-size="20" font-weight="820">${esc(signed(longTotal, 1, "pp"))}</text><text x="582" y="181" text-anchor="end" fill="${palette.danger}" font-size="20" font-weight="820">${esc(signed(shortTotal, 1, "pp"))}</text>`,
-    `<text x="311" y="183" text-anchor="middle" fill="${palette.muted}" font-size="14" font-weight="820">${esc(locale === "zh-CN" ? "净观察差" : "NET SPREAD")}</text>`,
+    `<text x="311" y="183" text-anchor="middle" fill="${palette.muted}" font-size="14" font-weight="820">${esc("NET SPREAD")}</text>`,
     `</g>`,
-    `<text x="20" y="212" fill="${palette.signal}" font-size="12" font-weight="820">${esc(locale === "zh-CN" ? "我的推演" : "MY LOGIC")}</text>`,
+    `<text x="20" y="212" fill="${palette.signal}" font-size="12" font-weight="820">${esc("MY LOGIC")}</text>`,
     compactLensEssentialText({ x: 110, y: 215, text: expression.argument.mechanism.text, color: palette.ink, widthUnits: 27, lines: 1, binding: `${bindingAttr(expression.argument.mechanism.binding_id, expression.argument.mechanism.state)} data-role="creator-mechanism"`, group: "logic", tier: "secondary" }),
     compactLensFuture(expression, palette, locale),
   ];
@@ -652,7 +647,7 @@ export function auditLensSvg(svg, expression, candidate) {
   if (/data-text-truncated="true"/u.test(svg)) errors.push("Visible Frame copy must fit without hidden truncation.");
   if (/data-series-state="(?:future|forecast|modelled)"/u.test(svg)) errors.push("A Creator Lens cannot draw a future or modelled series.");
   if (!/data-future-region="unresolved"/u.test(svg)) errors.push("A dated Creator Lens needs an unresolved future region.");
-  if (!/NOT AN OFFICIAL INDEX|非官方指数/u.test(svg)) errors.push("Creator Lens identity must be explicit in the visual.");
+  if (!/NOT AN OFFICIAL INDEX|\u975e\u5b98\u65b9\u6307\u6570/u.test(svg)) errors.push("Creator Lens identity must be explicit in the visual.");
   if ((svg.match(/data-annotation-role="observation"/gu) ?? []).length !== 1) errors.push("The tested observation must appear once as chart-attached evidence.");
   if (!svg.includes(`data-binding-ref="${expression.lens.curve_binding_id}"`)) errors.push("The observed Lens curve binding is missing from the visual.");
   if (!svg.includes(`data-binding-ref="${expression.lens.contribution_binding_id}"`)) errors.push("The visible Lens contribution binding is missing from the visual.");

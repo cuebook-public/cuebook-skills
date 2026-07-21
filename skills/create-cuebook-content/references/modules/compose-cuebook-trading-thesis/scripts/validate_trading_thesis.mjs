@@ -54,8 +54,8 @@ const INSTRUCTION_PATTERNS = [
   `${WB_START}(?:place|submit)\\s+(?:a\\s+)?(?:market|limit|stop)?\\s*order${WB_END}`,
   `${WB_START}(?:all[ -]?in|api key|password|seed phrase)${WB_END}`,
   `${WB_START}[2-9][0-9]*x\\s+leverage${WB_END}`,
-  "(?:立即买入|立即卖出|直接下单|梭哈|满仓|助记词|API\\s*密钥|账户密码)",
-  "(?:加|使用)\\s*[2-9][0-9]*\\s*倍杠杆",
+  "(?:\u7acb\u5373\u4e70\u5165|\u7acb\u5373\u5356\u51fa|\u76f4\u63a5\u4e0b\u5355|\u68ad\u54c8|\u6ee1\u4ed3|\u52a9\u8bb0\u8bcd|API\\s*\u5bc6\u94a5|\u8d26\u6237\u5bc6\u7801)",
+  "(?:\u52a0|\u4f7f\u7528)\\s*[2-9][0-9]*\\s*\u500d\u6760\u6746",
 ].map((pattern) => new RegExp(pattern, "iu"));
 
 export function issue(code, path, message) {

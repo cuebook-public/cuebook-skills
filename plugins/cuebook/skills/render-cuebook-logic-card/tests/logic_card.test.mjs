@@ -39,20 +39,20 @@ function baseArgument() {
       horizon_end: "2026-07-15T20:00:00Z",
     },
     frame: {
-      headline: "事件冲击后，AAA 可能先于 BBB 重定价",
-      thesis: "风险先进入直接敞口，随后才传到权益定价。",
-      creator_text: "我先看 AAA 的反应。",
+      headline: "After the event shock, AAA may reprice before BBB",
+      thesis: "Risk enters direct exposure first and reaches equity pricing later.",
+      creator_text: "I am watching AAA's reaction first.",
       creator_text_preserved: true,
-      cuebook_contribution: "Cuebook 补上机制、反例与统一结算窗口。",
+      cuebook_contribution: "Cuebook adds the mechanism, countercase, and a unified settlement window.",
       visual_job: "explain_cause",
     },
     graph: {
       nodes: [
-        { id: "N1", kind: "event", label: "事件已经发生", detail: null, status: "observed", fact_refs: ["F1"], source_refs: ["SRC1"], metric_ref: null },
-        { id: "N2", kind: "mechanism", label: "风险先进入直接敞口", detail: null, status: "derived", fact_refs: ["F1"], source_refs: ["SRC1"], metric_ref: null },
-        { id: "N3", kind: "market_effect", label: "AAA 先于 BBB 重定价", detail: null, status: "conditional", fact_refs: ["F2"], source_refs: ["SRC2"], metric_ref: null },
-        { id: "N4", kind: "countercase", label: "风险没有继续扩大", detail: null, status: "unresolved", fact_refs: ["F3"], source_refs: ["SRC3"], metric_ref: null },
-        { id: "N5", kind: "settlement", label: "比较到期收益", detail: null, status: "conditional", fact_refs: [], source_refs: ["SETTLE_testlogic20260714"], metric_ref: null },
+        { id: "N1", kind: "event", label: "The event has occurred", detail: null, status: "observed", fact_refs: ["F1"], source_refs: ["SRC1"], metric_ref: null },
+        { id: "N2", kind: "mechanism", label: "Risk enters direct exposure first", detail: null, status: "derived", fact_refs: ["F1"], source_refs: ["SRC1"], metric_ref: null },
+        { id: "N3", kind: "market_effect", label: "AAA reprices before BBB", detail: null, status: "conditional", fact_refs: ["F2"], source_refs: ["SRC2"], metric_ref: null },
+        { id: "N4", kind: "countercase", label: "Risk does not continue to expand", detail: null, status: "unresolved", fact_refs: ["F3"], source_refs: ["SRC3"], metric_ref: null },
+        { id: "N5", kind: "settlement", label: "Compare returns at expiry", detail: null, status: "conditional", fact_refs: [], source_refs: ["SETTLE_testlogic20260714"], metric_ref: null },
       ],
       edges: [
         { id: "E1", from: "N1", to: "N2", relation: "causes", certainty: "inferred", label: null },
@@ -74,19 +74,19 @@ function baseArgument() {
     visual: {
       recommended_grammar: "causal_chain",
       alternative_grammars: ["evidence_balance", "comparison"],
-      rationale: "事件、机制和市场结果构成短因果链。",
+      rationale: "The event, mechanism, and market effect form a short causal chain.",
       theme: "cuebook_light",
     },
-    quality_report: { decision: "conditional", warnings: ["结果仍待验证。"], hard_failures: [] },
+    quality_report: { decision: "conditional", warnings: ["The result still needs verification."], hard_failures: [] },
   };
 }
 
 function addMetrics(argument) {
   argument.metrics = [
-    { id: "M1", subject_ref: "primary", label: "直接敞口", display_value: "82%", numeric_value: 82, unit: "%", as_of: "2026-07-14T07:50:00Z", source_ref: "SRC1", status: "verified" },
-    { id: "M2", subject_ref: "benchmark", label: "直接敞口", display_value: "47%", numeric_value: 47, unit: "%", as_of: "2026-07-14T07:50:00Z", source_ref: "SRC2", status: "verified" },
-    { id: "M3", subject_ref: "primary", label: "一日弹性", display_value: "1.8x", numeric_value: 1.8, unit: "x", as_of: "2026-07-14T07:50:00Z", source_ref: "SRC1", status: "estimated" },
-    { id: "M4", subject_ref: "benchmark", label: "一日弹性", display_value: "1.1x", numeric_value: 1.1, unit: "x", as_of: "2026-07-14T07:50:00Z", source_ref: "SRC2", status: "estimated" },
+    { id: "M1", subject_ref: "primary", label: "Direct exposure", display_value: "82%", numeric_value: 82, unit: "%", as_of: "2026-07-14T07:50:00Z", source_ref: "SRC1", status: "verified" },
+    { id: "M2", subject_ref: "benchmark", label: "Direct exposure", display_value: "47%", numeric_value: 47, unit: "%", as_of: "2026-07-14T07:50:00Z", source_ref: "SRC2", status: "verified" },
+    { id: "M3", subject_ref: "primary", label: "One-day sensitivity", display_value: "1.8x", numeric_value: 1.8, unit: "x", as_of: "2026-07-14T07:50:00Z", source_ref: "SRC1", status: "estimated" },
+    { id: "M4", subject_ref: "benchmark", label: "One-day sensitivity", display_value: "1.1x", numeric_value: 1.1, unit: "x", as_of: "2026-07-14T07:50:00Z", source_ref: "SRC2", status: "estimated" },
   ];
 }
 
@@ -103,12 +103,12 @@ test("renders and validates causal card", () => withTemp((directory) => {
   const argument = baseArgument();
   const result = render(argument, directory);
   const svg = readFileSync(result.svgPath, "utf8");
-  assert.match(svg, /Cuebook 观点逻辑/);
-  assert.match(svg, /事件冲击后/);
-  assert.match(svg, /反例 \/ 失效条件/);
-  assert.match(svg, /可结算观点/);
-  assert.doesNotMatch(svg, /Cuebook 补全/);
-  assert.doesNotMatch(svg, /Cuebook 推演/);
+  assert.match(svg, /Cuebook View Logic/);
+  assert.match(svg, /After the event shock/);
+  assert.match(svg, /COUNTERCASE \/ INVALIDATION/);
+  assert.match(svg, /SETTLEABLE VIEW/);
+  assert.doesNotMatch(svg, /Cuebook completion/iu);
+  assert.doesNotMatch(svg, /Cuebook inference/iu);
   assert.equal(svg.includes(argument.frame.cuebook_contribution), false);
   const validation = validate(result.manifest, argument, directory);
   assert.equal(validation.valid, true, JSON.stringify(validation.errors));
@@ -147,8 +147,8 @@ test("renders all five logic grammars", () => {
       if (new Set(["metric_thesis", "comparison"]).has(grammar)) addMetrics(argument);
       if (grammar === "scenario_tree") {
         argument.scenarios = [
-          { id: "SC1", label: "风险扩大", condition: "保险费率继续上调", outcome: "AAA 继续跑赢", stance: "bull", fact_refs: ["F1"] },
-          { id: "SC2", label: "风险回落", condition: "通行与保险恢复", outcome: "相对溢价回吐", stance: "risk", fact_refs: ["F3"] },
+          { id: "SC1", label: "Risk expands", condition: "Insurance rates keep rising", outcome: "AAA continues to outperform", stance: "bull", fact_refs: ["F1"] },
+          { id: "SC2", label: "Risk recedes", condition: "Transit and insurance normalize", outcome: "The relative premium unwinds", stance: "risk", fact_refs: ["F3"] },
         ];
       }
       if (grammar === "comparison") argument.graph.edges[1].relation = "compares";

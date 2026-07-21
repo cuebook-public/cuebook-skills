@@ -16,18 +16,18 @@ function assembly() {
     frame_draft: {
       kind: "market_view",
       visibility: "public",
-      title: "USO 30 天偏多：霍尔木兹运输风险先入价",
-      body: "航道规则收紧，绕行与保险成本先动。\n\n油价计入运输风险溢价。",
-      language: "zh",
+      title: "USO Bullish for 30 Days: Hormuz Shipping Risk Prices In First",
+      body: "Tighter channel rules move rerouting and insurance costs first.\n\nOil prices absorb a shipping risk premium.",
+      language: "en",
       disclosures: { ai_assistance: "assisted" },
       media: [
-        { rendition_role: "publication", sha256: "sha256:" + "a".repeat(64), alt_text: "USO 偏多观点图" },
+        { rendition_role: "publication", sha256: "sha256:" + "a".repeat(64), alt_text: "Bullish USO viewpoint visual" },
       ],
     },
     settlement_intent: {
       schema_version: "settlement-intent.v1",
       family: "single_asset_direction",
-      claim_text: "USO 30 天内跑出正收益",
+      claim_text: "USO posts a positive return within 30 days",
       observation_policy_id: "launch-us-equity-v1",
       horizon: { kind: "duration", value: 30, unit: "calendar_day", creator_timezone: "Asia/Shanghai", session_policy: "at_instant" },
       leg: { asset_ref: "asset:uso", direction: "long", threshold_bps: "0" },
@@ -90,8 +90,8 @@ function handoffFor(payload) {
       meaning_fingerprint: fingerprint,
       copy: {
         headline: payload.frame_draft.title,
-        body: "航道规则收紧，绕行与保险成本先动。",
-        close: "油价计入运输风险溢价。",
+        body: "Tighter channel rules move rerouting and insurance costs first.",
+        close: "Oil prices absorb a shipping risk premium.",
       },
       visual: {
         direction_ref: selectedDirectionId,

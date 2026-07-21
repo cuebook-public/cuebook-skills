@@ -26,10 +26,10 @@ const EDITORIAL_TEMPLATES = new Set([
   "threshold_regime", "scenario_lanes", "causal_spine", "evidence_balance", "creator_lens", "long_short_lens",
 ]);
 const PUBLIC_PROCESS_TERMS = [
-  "小红书", "Reddit", "reddit", "Telegram", "telegram", "Twitter", "twitter", "推文", "thread", "caption",
-  "工作流", "候选集", "质量评分", "证据账本", "query bundle", "research pack", "settlement object",
+  "\u5c0f\u7ea2\u4e66", "Reddit", "reddit", "Telegram", "telegram", "Twitter", "twitter", "\u63a8\u6587", "thread", "caption",
+  "\u5de5\u4f5c\u6d41", "\u5019\u9009\u96c6", "\u8d28\u91cf\u8bc4\u5206", "\u8bc1\u636e\u8d26\u672c", "query bundle", "research pack", "settlement object",
 ];
-const CORRECTION_FIRST_TERMS = ["我认错", "哪里认错", "错了怎么办"];
+const CORRECTION_FIRST_TERMS = ["\u6211\u8ba4\u9519", "\u54ea\u91cc\u8ba4\u9519", "\u9519\u4e86\u600e\u4e48\u529e"];
 
 function issue(code, issuePath, message) {
   return { code, path: issuePath, message };

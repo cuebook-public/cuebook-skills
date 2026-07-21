@@ -27,18 +27,20 @@ const HORIZONS = new Set(["intraday", "one_to_three_days", "one_to_four_weeks", 
 const EDGES = new Set(["information", "causal", "structural", "behavioral", "mechanical", "valuation", "timing"]);
 const DIRECTIONS = new Set(["long", "short", "outperform", "underperform", "long_vol", "short_vol", "steepener", "flattener", "neutral"]);
 const BACKEND_TERMS = new Set([
-  "已确认",
-  "已计算",
-  "推演",
-  "待确认",
-  "形成中",
-  "交给市场验证",
-  "等待确认",
+  "\u5df2\u786e\u8ba4",
+  "\u5df2\u8ba1\u7b97",
+  "\u63a8\u6f14",
+  "\u5f85\u786e\u8ba4",
+  "\u5f62\u6210\u4e2d",
+  "\u4ea4\u7ed9\u5e02\u573a\u9a8c\u8bc1",
+  "\u7b49\u5f85\u786e\u8ba4",
   "observed",
   "derived",
   "provisional",
   "conditional",
   "confirmed",
+  "confirmation",
+  "calculated",
   "pending",
 ]);
 const FACTOR_MECHANISMS = new Set(["valuation_mean_reversion", "fundamental_compounding", "momentum_continuation"]);

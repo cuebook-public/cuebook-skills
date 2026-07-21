@@ -51,9 +51,9 @@ export function audit(file) {
   if (profile === "cuebook_feed_v1") {
     const bannedPhrases = new Map([
       ["CONDITIONAL", "internal artifact state"], ["DRAFT", "internal artifact state"], ["Cuebook OHLCV", "provenance footer"],
-      ["结算条件", "settlement prose panel"], ["Settlement ·", "settlement prose panel"], ["Solid candle", "rendering guide"],
-      ["hollow/dashed", "rendering guide"], ["实体/实线", "rendering guide"], ["从观点描述中提取", "workflow narration"],
-      ["Cuebook 从观点", "workflow narration"], ["schema_version", "schema metadata"],
+      ["\u7ed3\u7b97\u6761\u4ef6", "settlement prose panel"], ["Settlement ·", "settlement prose panel"], ["Solid candle", "rendering guide"],
+      ["hollow/dashed", "rendering guide"], ["\u5b9e\u4f53/\u5b9e\u7ebf", "rendering guide"], ["\u4ece\u89c2\u70b9\u63cf\u8ff0\u4e2d\u63d0\u53d6", "workflow narration"],
+      ["Cuebook \u4ece\u89c2\u70b9", "workflow narration"], ["schema_version", "schema metadata"],
     ]);
     for (const [phrase, meaning] of bannedPhrases) {
       if (allText.toLowerCase().includes(phrase.toLowerCase())) errors.push(finding("FEED_LEAKAGE", `Feed SVG exposes ${meaning}: ${phrase}.`));
