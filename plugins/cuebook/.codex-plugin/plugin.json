@@ -1,9 +1,10 @@
 {
   "name": "cuebook",
-  "version": "0.7.0+codex.20260721002005",
+  "version": "0.8.0+codex.20260721014253",
   "description": "Use Cuebook memory and market data to sharpen a creator-owned idea and express it as one editorial Frame.",
   "author": {
     "name": "Cuebook",
+    "email": "info@cuebook.app",
     "url": "https://github.com/cuebook-public"
   },
   "homepage": "https://cuebook.xyz",
@@ -19,11 +20,12 @@
   "interface": {
     "displayName": "Cuebook",
     "shortDescription": "Sharpen a market idea and make its logic visible",
-    "longDescription": "Cuebook has two public skills. Query searches, reads, compares, and explains source-linked market intelligence without writing. Create gives a market intuition a five-beat Cuebook experience: recognize the creator's non-obvious edge, expand it with the smallest useful Cue or data relationship, lock the exact thought once, reveal one relationship visually, and preserve it with a future checkpoint. The creator remains the author. The public Frame contains only a title, reasoned body, image reference, and alt text. Its mobile-first visual can express price or indexed curves, relative strength, drawdown and recovery, rolling correlation, event windows, thresholds, causal paths, evidence tension, conditional scenarios, transparent Creator Lenses, or long-short contributions. Observed history and unresolved future time remain visibly separate; causal hypotheses stay creator-owned, retrospective selection bias is disclosed, and no future price path is fabricated. Workflow, providers, evidence lineage, hashes, upload, consent, and authorization state remain backstage. Publication happens only after explicit intent; withdrawal alone requires separate consent.",
+    "longDescription": "Cuebook has two public skills. Query recognizes twelve request families and can combine Cues with persisted market state, sealed candles, news, filings, disclosures, positioning, events, calendars, prediction markets, themes, briefings, settlements, and published Frames without writing. Create gives a market intuition a five-beat Cuebook experience: recognize the creator's non-obvious edge, expand it with the smallest useful Cue or data relationship, lock the exact thought once, reveal one relationship visually, and preserve it with a future checkpoint. The creator remains the author. The public Frame contains only a title, reasoned body, image reference, and alt text. Its mobile-first visual can express price or indexed curves, relative strength, drawdown and recovery, rolling correlation, event windows, thresholds, causal paths, evidence tension, conditional scenarios, transparent Creator Lenses, or long-short contributions. Observed history and unresolved future time remain visibly separate; causal hypotheses stay creator-owned, retrospective selection bias is disclosed, and no future price path is fabricated. Workflow, providers, evidence lineage, hashes, upload, consent, and authorization state remain backstage. Publication happens only after explicit intent; withdrawal alone requires separate consent.",
     "developerName": "Cuebook",
     "category": "Finance",
     "capabilities": [
       "Market Query",
+      "Simulated Paper Trades",
       "Frame Creation",
       "Editorial Curve Graphics",
       "Transparent Creator Lenses",
@@ -33,13 +35,15 @@
       "Release Preparation"
     ],
     "websiteURL": "https://cuebook.xyz",
+    "privacyPolicyURL": "https://cuebook.xyz/privacy",
+    "termsOfServiceURL": "https://cuebook.xyz/terms",
     "brandColor": "#FFD21C",
     "composerIcon": "./assets/icon.png",
     "logo": "./assets/icon.png",
     "defaultPrompt": [
-      "查询 USO 最新叙事、市场状态和来源",
-      "比较 HOOD 与 COIN 的最新估值口径和市场表现",
-      "我觉得 BTC 未来 30 天会比现在高，帮我做成标题、正文和配图完整的 Frame"
+      "Show me Cuebook's latest BTC Cues, market state, and source-linked context.",
+      "Compare COIN and HOOD using Cuebook's latest sourced context.",
+      "Turn my 30-day BTC view into a Frame, then offer a simulated Paper Trade."
     ]
   },
   "mcpServers": "./.mcp.json"

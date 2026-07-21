@@ -1,0 +1,48 @@
+{
+  "name": "Cuebook",
+  "category": "Finance",
+  "short_description": "Sharpen a market idea, make its logic visible, and revisit it later.",
+  "long_description": "Cuebook is a pre-trade cognition and expression layer for AI agents. Through one natural-language query surface, it can combine Cuebook Cues with persisted market snapshots, sealed candles, news, filings, disclosures, positioning, events, calendars, prediction markets, themes, briefings, settlements, and published Frames. It helps a creator preserve and improve their own thesis, express the result as one title, one reasoned body, and one mobile-first editorial image, and record an exact future checkpoint. Cuebook also supports explicitly confirmed simulated Paper Trades. It never places real-money orders and does not provide investment advice.",
+  "developer": {
+    "name": "Cuebook",
+    "email": "info@cuebook.app"
+  },
+  "urls": {
+    "website": "https://cuebook.xyz",
+    "support": "https://cuebook.xyz/support",
+    "privacy_policy": "https://cuebook.xyz/privacy",
+    "terms_of_service": "https://cuebook.xyz/terms",
+    "source_repository": "https://github.com/cuebook-public/cuebook-skills"
+  },
+  "integration": {
+    "production_mcp_url": "https://cuebook.xyz/mcp",
+    "authentication": "OAuth 2.1 with PKCE and dynamic client registration",
+    "public_skills": [
+      "query-cuebook",
+      "create-cuebook-content"
+    ],
+    "has_embedded_chatgpt_ui": false,
+    "real_money_trading": false,
+    "paper_trading": "simulated only; preview and explicit placement intent required"
+  },
+  "starter_prompts": [
+    "Show me Cuebook's latest BTC Cues, market state, and source-linked context.",
+    "Compare COIN and HOOD using Cuebook's latest sourced context.",
+    "Turn my 30-day BTC view into a Frame, then offer a simulated Paper Trade."
+  ],
+  "assets": {
+    "logo": "plugins/cuebook/assets/icon.png",
+    "screenshots": []
+  },
+  "review": {
+    "domain_challenge_path": "/.well-known/openai-apps-challenge",
+    "demo_credentials_delivery": "portal only",
+    "mfa_required_for_demo_account": false,
+    "private_network_required": false
+  },
+  "availability": {
+    "initial_countries": [
+      "United States"
+    ]
+  }
+}

@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.7.0"><img alt="Release v0.7.0" src="https://img.shields.io/badge/release-v0.7.0-F6C500?style=flat-square&labelColor=111111"></a>
+  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.8.0"><img alt="Release v0.8.0" src="https://img.shields.io/badge/release-v0.8.0-F6C500?style=flat-square&labelColor=111111"></a>
   <a href="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml"><img alt="Quality" src="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml/badge.svg?branch=main"></a>
   <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/Node.js-%E2%89%A522-3C873A?style=flat-square&labelColor=111111">
   <img alt="Two public skills" src="https://img.shields.io/badge/public_skills-2-4C6FFF?style=flat-square&labelColor=111111">
@@ -37,6 +37,7 @@
 
 <p align="center">
   <a href="#cuebook-surfaces">Surfaces</a> ·
+  <a href="#one-query-surface-many-intents">Data</a> ·
   <a href="#the-cuebook-experience">Experience</a> ·
   <a href="#platform-support">Platforms</a> ·
   <a href="#quick-start">Quick Start</a> ·
@@ -77,6 +78,14 @@ Internal Tool calls, providers, retries, hashes, and publication mechanics remai
 
 Both surfaces connect to Cuebook MCP. The server remains authoritative for available Tools, source-linked data, authorization, idempotency, and publication policy; neither client maintains a second catalog of product truth.
 
+## One Query Surface, Many Intents
+
+`query-cuebook` recognizes twelve top-level request families without making an agent load twelve separate Skills: latest Cues, Cue detail, asset narratives, market state, market evidence, fundamentals, market series, derived metrics, settlement history, published Frames, commentator profiles, and media formats. Mixed questions can compose several families in one plan.
+
+Behind that one natural-language surface, Cuebook can combine published Cues and their timelines with persisted market snapshots, sealed OHLCV, news clusters, filings, disclosures, positioning, asset events, market calendars, prediction markets, market briefings, themes, reasoning graphs, settlements, and published Frames. Seven output modes cover concise answers, comparisons, source bundles, data tables, factual charts, history views, and handoff into Frame creation.
+
+The two public Skills are a context-efficiency boundary, not a capability limit. Specialized routing, research, metrics, visual design, and publication modules remain available on demand without competing in the host's first-turn Skill discovery budget.
+
 ## Platform Support
 
 Cuebook has one remote MCP endpoint and two optional Agent Skills. Hosts that load both layers can run the complete creator workflow; MCP-only hosts can connect to Cuebook Tools, but do not automatically inherit the interview, evidence-selection, rendering, and publication orchestration encoded in the Skills.
@@ -110,6 +119,8 @@ codex mcp list --json
 
 Cuebook uses install-time authentication. Find the `cuebook` entry in the JSON output. If it reports `auth_status: "not_logged_in"` and no Cuebook authentication is already in progress, run `codex mcp login cuebook` once and complete the browser flow. Then run `codex mcp list --json` again. Do not start a second login after the first command succeeds.
 
+One creator consent covers Cuebook's six explicit authorization domains: public research, private simulated-account reads, simulated Paper Trade actions, and private Frame read, draft, and publication actions. They remain separate server-enforced scopes, and authorization never creates a Frame or simulated order by itself. A Paper Trade still requires terms, a preview, and explicit placement intent; Cuebook never places a real-money order.
+
 The installing task may complete that one host-owned login, but it must not create a background test task, invent a placeholder idea, or publish anything. Installation is ready for use only after Cuebook is enabled and no longer reports `not_logged_in`.
 
 Open one new Codex task only after installation and authentication are complete. That task loads the two Skills and the authenticated Cuebook connector; it should receive your real request immediately instead of repeating setup.
@@ -128,7 +139,7 @@ Turn that idea into a Frame.
 > [!NOTE]
 > Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly two public entrypoints; internal modules load only when needed.
 
-For a reproducible, intentionally frozen install, add `--ref v0.7.0` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
+For a reproducible, intentionally frozen install, add `--ref v0.8.0` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
 
 ## Updating
 
@@ -150,6 +161,8 @@ codex mcp list --json
 `codex plugin marketplace upgrade cuebook` intentionally rejects a local checkout because it is not a Git marketplace managed by Codex.
 
 Do not uninstall the Plugin, duplicate its MCP entry, or repeat OAuth during a normal update. Existing connector credentials remain host-owned. Log in again only when the connector explicitly reports `not_logged_in`, returns an authorization challenge that requires step-up, or the stored grant has been revoked. Open one new Codex task after the refresh so it loads the new Skill bundle; the current task keeps the version it started with.
+
+Connections created before the complete creator consent was introduced keep their original immutable scope snapshot. The first Paper Trade or Frame write may therefore request one transparent OAuth step-up; after approval, the same connection covers the complete Cuebook workflow. This is a one-time permission update, not a reinstall.
 
 ## Install-Time Connection
 
@@ -280,7 +293,7 @@ Validation checks the two-entrypoint boundary, referenced-resource closure, mobi
 Release preparation has one version source and updates every pinned install ref, Plugin manifest, changelog section, and generated Skill bundle together:
 
 ```bash
-npm run release:prepare -- 0.7.0 \
+npm run release:prepare -- 0.8.0 \
   --date 2026-07-21 \
   --codex-build 20260721103045
 

@@ -1,6 +1,6 @@
 {
   "name": "cuebook-skills",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
   "description": "Validation and release tooling for the Cuebook Agent Skills distribution.",
   "engines": {
@@ -14,10 +14,12 @@
     "test": "node --test 'plugins/cuebook/skills/**/*.test.mjs' 'plugins/cuebook/tests/**/*.test.mjs'",
     "test:ci": "node --test --test-concurrency=1 'plugins/cuebook/skills/**/*.test.mjs' 'plugins/cuebook/tests/**/*.test.mjs'",
     "verify:release-bundles": "node plugins/cuebook/scripts/verify_release_bundles.mjs",
+    "submission:check": "node plugins/cuebook/scripts/prepare_openai_submission.mjs --check",
+    "submission:prepare": "node plugins/cuebook/scripts/prepare_openai_submission.mjs",
     "release:check": "node plugins/cuebook/scripts/prepare_release.mjs --check",
     "release:prepare": "node plugins/cuebook/scripts/prepare_release.mjs",
     "release:verify": "npm run release:check && npm run check",
-    "check": "npm run validate && npm run test:ci && npm run verify:release-bundles"
+    "check": "npm run validate && npm run test:ci && npm run verify:release-bundles && npm run submission:check"
   },
   "devDependencies": {
     "playwright": "1.61.1"

@@ -1,0 +1,50 @@
+{
+  "policy": "Every tool returned by tools/list declares readOnlyHint, openWorldHint, destructiveHint, and idempotentHint. The live server is authoritative.",
+  "classes": [
+    {
+      "name": "persisted-market-and-cue-reads",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true
+      },
+      "rationale": "Reads Cuebook's persisted snapshots and public interpretations without modifying user or external state."
+    },
+    {
+      "name": "private-paper-account-bootstrap",
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true
+      },
+      "rationale": "The first portfolio read may initialize a private simulated account; it never places a real order."
+    },
+    {
+      "name": "simulated-paper-order",
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true
+      },
+      "rationale": "Creates an idempotent virtual fill inside Cuebook only."
+    },
+    {
+      "name": "simulated-paper-close",
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true
+      },
+      "rationale": "Irreversibly records a virtual close while never touching real funds or an exchange."
+    },
+    {
+      "name": "frame-draft-and-publication",
+      "annotations_source": "The frozen Frame MCP tool contract",
+      "rationale": "Read, draft, upload, publish, correction, and withdrawal hints are declared per tool; public publication and signed upload are open-world actions, and withdrawal is destructive."
+    }
+  ]
+}

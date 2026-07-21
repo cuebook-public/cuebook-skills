@@ -2,7 +2,12 @@
 
 ## Unreleased
 
+## 0.8.0 — 2026-07-21
+
 - Clarified the in-place Codex update path for local-checkout marketplaces, which refresh with `codex plugin add` and do not support `marketplace upgrade`.
+- Added OpenAI Plugins Directory submission metadata, deterministic reviewer fixtures, and a two-entrypoint upload bundle gate.
+- Replaced non-English catalog prompts with concise English starters and added public privacy, terms, and support metadata.
+- Documented one transparent creator authorization covering research, simulated Paper Trade, and Frame scopes while preserving explicit action confirmation.
 
 ## 0.7.0 — 2026-07-21
 
