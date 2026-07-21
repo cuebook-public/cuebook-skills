@@ -214,6 +214,22 @@ test("Codex install docs authenticate once before the first Cuebook task", () =>
   assert.equal(marketplace.plugins[0].policy.authentication, "ON_INSTALL");
 });
 
+test("Codex update docs distinguish Git marketplaces from local checkouts", () => {
+  const repositoryRoot = path.resolve(PLUGIN_ROOT, "..", "..");
+  const docs = [
+    fs.readFileSync(path.join(repositoryRoot, "README.md"), "utf-8"),
+    fs.readFileSync(path.join(PLUGIN_ROOT, "README.md"), "utf-8"),
+    fs.readFileSync(path.join(PLUGIN_ROOT, "platforms", "codex.md"), "utf-8"),
+  ];
+  for (const text of docs) {
+    assert.match(text, /Git-backed marketplace/u);
+    assert.match(text, /local checkout/u);
+    assert.match(text, /skip .*marketplace upgrade/isu);
+    assert.match(text, /codex plugin add cuebook@cuebook/u);
+    assert.match(text, /codex mcp list --json/u);
+  }
+});
+
 test("plugin discovery points only at the two generated public Skills", () => {
   const manifest = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, ".codex-plugin", "plugin.json"), "utf-8"),

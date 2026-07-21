@@ -52,6 +52,8 @@ codex plugin add cuebook@cuebook
 codex mcp list --json
 ```
 
+The marketplace upgrade command is for a Git-backed marketplace. When `codex plugin marketplace list` points `cuebook` at a local checkout, update that checkout yourself, skip `marketplace upgrade`, and run only `codex plugin add cuebook@cuebook` plus `codex mcp list --json`. Codex intentionally rejects `marketplace upgrade` for a local checkout because Codex does not own that repository's Git state.
+
 A normal update needs no uninstall, duplicate MCP configuration, or repeated OAuth. Open one new Codex task after the refresh so it loads the updated Skills. Authenticate again only when the connector explicitly reports `not_logged_in`, requires scope step-up, or its grant has been revoked.
 
 ## Platforms

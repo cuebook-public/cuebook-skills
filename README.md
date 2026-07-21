@@ -140,6 +140,15 @@ codex plugin add cuebook@cuebook
 codex mcp list --json
 ```
 
+That first command applies only to a Git-backed marketplace created by `codex plugin marketplace add`. If `codex plugin marketplace list` points `cuebook` at a local checkout, skip the marketplace upgrade command, update that checkout yourself, and run only:
+
+```bash
+codex plugin add cuebook@cuebook
+codex mcp list --json
+```
+
+`codex plugin marketplace upgrade cuebook` intentionally rejects a local checkout because it is not a Git marketplace managed by Codex.
+
 Do not uninstall the Plugin, duplicate its MCP entry, or repeat OAuth during a normal update. Existing connector credentials remain host-owned. Log in again only when the connector explicitly reports `not_logged_in`, returns an authorization challenge that requires step-up, or the stored grant has been revoked. Open one new Codex task after the refresh so it loads the new Skill bundle; the current task keeps the version it started with.
 
 ## Install-Time Connection

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Clarified the in-place Codex update path for local-checkout marketplaces, which refresh with `codex plugin add` and do not support `marketplace upgrade`.
+
 ## 0.7.0 — 2026-07-21
 
 - Reframed creation as one Cuebook experience: recognize the creator's edge, expand it with the smallest useful Cue or market relationship, lock the meaning once, reveal one relationship visually, and preserve it with a future checkpoint.
