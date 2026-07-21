@@ -25,7 +25,7 @@ Codex reads exactly two `SKILL.md` files at startup. Internal capabilities are
 vendored as non-discoverable `references/modules/*.md` resources behind
 `query-cuebook` and `create-cuebook-content`.
 
-The default marketplace follows stable releases from `main`. Add `--ref v0.9.2`
+The default marketplace follows stable releases from `main`. Add `--ref v0.9.3`
 only for an intentionally frozen install.
 
 ## Update
@@ -48,6 +48,11 @@ The connector owns its existing credential. Open one new task after refresh so
 Codex loads the new Skill bundle; reauthenticate only when the connector
 explicitly reports `not_logged_in`, requires scope step-up, or the grant was
 revoked.
+
+Treat an HTTP, DNS, TLS, proxy, socket, or timeout failure as connectivity, not
+as proof that OAuth was lost. If the `cuebook` entry remains authenticated,
+restore that network path and retry the same request without reinstalling or
+starting another login.
 
 The marketplace policy is `ON_INSTALL`, but `codex plugin add` does not
 guarantee that the CLI will open a browser. On a first-time installation, run

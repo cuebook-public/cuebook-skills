@@ -396,25 +396,13 @@
   ],
   "write_actions": [
     {
-      "action_id": "create_frame_draft",
-      "label": "创建 Frame 草稿",
-      "mcp_tool": "create_frame_draft",
-      "availability": "backend_required",
-      "required_gates": [
-        "explicit_user_intent",
-        "registered_visual_binding",
-        "idempotency_key"
-      ]
-    },
-    {
-      "action_id": "publish_frame",
+      "action_id": "complete_frame_publish",
       "label": "发布 Frame",
-      "mcp_tool": "publish_frame",
+      "mcp_tool": "complete_frame_publish",
       "availability": "backend_required",
       "required_gates": [
         "explicit_user_approval",
-        "prepared_hash",
-        "publish_token",
+        "uploaded_publication_master",
         "idempotency_key"
       ]
     },

@@ -164,7 +164,7 @@ test("frontmatter descriptions with YAML mapping punctuation are quoted", () => 
   }
 });
 
-test("public entrypoints check readiness quietly and never expose connector internals", () => {
+test("public entrypoints distinguish authentication, discovery, and transport failures", () => {
   const create = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
     "utf-8",
@@ -176,9 +176,17 @@ test("public entrypoints check readiness quietly and never expose connector inte
   for (const [name, text] of [["create", create], ["query", query]]) {
     assert.ok(text.indexOf("## Quiet Readiness Check") >= 0, name);
     assert.match(text, /normal MCP result is the only runtime readiness proof/u, name);
-    assert.match(text, /Do not run a CLI login/u, name);
+    assert.match(text, /Only an explicit host authentication signal/u, name);
+    assert.match(text, /not_logged_in/u, name);
+    assert.match(text, /do not infer an account problem/u, name);
+    assert.match(text, /do not infer authentication/u, name);
+    assert.match(text, /transport-send, DNS, TLS, proxy, socket, or timeout/u, name);
+    assert.match(text, /reinstalling or logging in again is unnecessary/u, name);
+    assert.match(text, /Any normal Cuebook result already returned in the task is decisive evidence/u, name);
+    assert.match(text, /Do not run a CLI login from this Skill/u, name);
     assert.match(text, /Never mention the README, missing actions, Tool names/u, name);
     assert.match(text, /at most two short sentences/u, name);
+    assert.doesNotMatch(text, /returns a token, reconnect, or transport failure/u, name);
     assert.doesNotMatch(text, /## Connection Gate/u, name);
     assert.doesNotMatch(text, /host pauses for OAuth/u, name);
     assert.doesNotMatch(text, /normal connector continuation/u, name);
@@ -455,6 +463,21 @@ test("initial and correction publish skip separate consent while withdrawal reta
   assert.equal(flow.automatic_post_publish_readback, false);
   assert.ok(!flow.initial_publish_sequence.includes("get_frame"));
   assert.ok(!flow.correction_publish_sequence.includes("get_frame"));
+});
+
+test("creation menu exposes atomic initial publication without the legacy draft lane", () => {
+  const menu = JSON.parse(
+    fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "creation-menu-v1.json"), "utf-8"),
+  );
+  assert.deepEqual(
+    menu.write_actions.map((action) => action.mcp_tool),
+    ["complete_frame_publish", "withdraw_frame"],
+  );
+  assert.deepEqual(menu.write_actions[0].required_gates, [
+    "explicit_user_approval",
+    "uploaded_publication_master",
+    "idempotency_key",
+  ]);
 });
 
 test("Frame creator flow never reads back or presents a canonical web link after publish", () => {

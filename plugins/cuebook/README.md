@@ -46,7 +46,7 @@ The creator consent presents all six Cuebook scopes once: public research, priva
 
 The installing task owns installation and that one necessary host login. It must not create a background test task, publish a placeholder, or diagnose this local marketplace through a public ChatGPT plugin manager. Open one new Codex task only after Cuebook is enabled and no longer reports `not_logged_in`, then enter the real query or market idea. The final readiness proof is a normal MCP result in that task, not a browser approval screen or connector status alone. If authentication fails, stop instead of retrying, reinstalling, or opening more tasks. OAuth credentials stay in the connector, never in a Skill or generated artifact.
 
-Use `--ref v0.9.2` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
+Use `--ref v0.9.3` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
 
 ## Update
 
@@ -59,6 +59,8 @@ codex mcp list --json
 The marketplace upgrade command is for a Git-backed marketplace. When `codex plugin marketplace list` points `cuebook` at a local checkout, update that checkout yourself, skip `marketplace upgrade`, and run only `codex plugin add cuebook@cuebook` plus `codex mcp list --json`. Codex intentionally rejects `marketplace upgrade` for a local checkout because Codex does not own that repository's Git state.
 
 A normal update needs no uninstall, duplicate MCP configuration, or repeated OAuth. Open one new Codex task after the refresh so it loads the updated Skills. Authenticate again only when the connector explicitly reports `not_logged_in`, requires scope step-up, or its grant has been revoked.
+
+An HTTP, DNS, TLS, proxy, socket, or timeout failure is a connectivity problem, not evidence that authentication was lost. When Cuebook still reports an authenticated connection, restore the network path and retry the same request without reinstalling or starting another OAuth flow.
 
 Older connections retain their original immutable scopes. If one lacks Paper or Frame permissions, approve the single step-up challenge once; do not uninstall or create a duplicate connector.
 

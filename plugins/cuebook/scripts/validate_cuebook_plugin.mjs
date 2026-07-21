@@ -687,12 +687,11 @@ export function validate(pluginRoot) {
   });
 
   const expectedWriteGates = new Map([
-    ["create_frame_draft", new Set(["explicit_user_intent", "registered_visual_binding", "idempotency_key"])],
-    ["publish_frame", new Set(["explicit_user_approval", "prepared_hash", "publish_token", "idempotency_key"])],
+    ["complete_frame_publish", new Set(["explicit_user_approval", "uploaded_publication_master", "idempotency_key"])],
     ["withdraw_frame", new Set(["explicit_user_approval", "first_party_consent", "prepared_hash", "idempotency_key"])],
   ]);
   const writeActions = creationMenu.write_actions ?? [];
-  check(writeActions.length === expectedWriteGates.size, "WRITE_ACTION_COUNT", "creation-menu-v1.json.write_actions", "Creation menu must expose only the high-level Frame draft, publish, and withdrawal actions.");
+  check(writeActions.length === expectedWriteGates.size, "WRITE_ACTION_COUNT", "creation-menu-v1.json.write_actions", "Creation menu must expose only atomic initial publication and withdrawal actions.");
   writeActions.forEach((action, actionIndex) => {
     const base = `creation-menu-v1.json.write_actions[${actionIndex}]`;
     const toolName = action.mcp_tool;

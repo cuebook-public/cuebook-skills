@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.9.3 — 2026-07-21
+
+- Separated explicit authentication, missing-plugin discovery, and network or proxy failures so an authenticated creator is never sent through duplicate OAuth after a transport error.
+- Removed the legacy draft-and-prepare actions from the creator menu; ordinary initial publication now exposes only the uploaded-master `complete_frame_publish` action, while correction and withdrawal keep their dedicated paths.
+
 ## 0.9.2 — 2026-07-21
 
 - Unified Frame publication with Cuebook's displayed price snapshot: a fresh realtime observation when available, otherwise the latest completed close or sole stored observation.
