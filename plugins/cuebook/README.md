@@ -46,7 +46,7 @@ The creator consent presents all six Cuebook scopes once: public research, priva
 
 The installing task owns installation and that one necessary host login. It must not create a background test task, publish a placeholder, or diagnose this local marketplace through a public ChatGPT plugin manager. Open one new Codex task only after Cuebook is enabled and no longer reports `not_logged_in`, then enter the real query or market idea. The final readiness proof is a normal MCP result in that task, not a browser approval screen or connector status alone. If authentication fails, stop instead of retrying, reinstalling, or opening more tasks. OAuth credentials stay in the connector, never in a Skill or generated artifact.
 
-Use `--ref v0.9.1` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
+Use `--ref v0.9.2` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
 
 ## Update
 
@@ -96,7 +96,7 @@ A creator-facing Frame contains exactly four fields:
 
 There is no public workflow state on the Frame. Preview blockers use plain language. After an action succeeds, Cuebook confirms only the meaningful result, such as “Published” or “Withdrawn.” Schema versions, selection IDs, source bundles, hashes, scores, scopes, upload state, receipts, consent, and credentials stay backstage.
 
-Eligible single-asset long and short Frames share one deadline rule across crypto, equities, ETFs, and indexes: Cuebook fixes the exact creator-owned deadline and compares the latest completed provider-official price observation at or before it with the publication baseline. Creators never choose sessions, trading days, or next close. Before rendering, Cuebook naturally recaps the exact copy, direction, deadline, human zero-threshold rule, and visual idea for confirmation. “Publish this” later authorizes only the external write; only a creator-requested price target or pair needs additional terms.
+Eligible single-asset long and short Frames share one deadline rule across crypto, equities, ETFs, and indexes: Cuebook freezes the same persisted price snapshot it can already display at publication, fixes the exact creator-owned deadline, and compares that starting point with the latest completed provider-official observation at or before the deadline. Creators never choose sessions, trading days, or next close. Before rendering, Cuebook naturally recaps the exact copy, direction, deadline, human zero-threshold rule, and visual idea for confirmation. “Publish this” later authorizes only the external write; only a creator-requested price target or pair needs additional terms.
 
 ## Creation Model
 

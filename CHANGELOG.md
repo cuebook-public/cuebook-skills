@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.9.2 — 2026-07-21
+
+- Unified Frame publication with Cuebook's displayed price snapshot: a fresh realtime observation when available, otherwise the latest completed close or sole stored observation.
+- Removed the duplicate freshness and provider-period publication gate, and kept a missing price creator-facing only when Cuebook has no stored display price for the asset.
+
 ## 0.9.1 — 2026-07-21
 
 - Made Frame publication explicitly independent of market hours: creators can publish equities, ETFs, and indexes before open, after close, on weekends, and on exchange holidays using the latest eligible persisted observation.

@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.1"><img alt="Release v0.9.1" src="https://img.shields.io/badge/release-v0.9.1-F6C500?style=flat-square&labelColor=111111"></a>
+  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.2"><img alt="Release v0.9.2" src="https://img.shields.io/badge/release-v0.9.2-F6C500?style=flat-square&labelColor=111111"></a>
   <a href="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml"><img alt="Quality" src="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml/badge.svg?branch=main"></a>
   <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/Node.js-%E2%89%A522-3C873A?style=flat-square&labelColor=111111">
   <img alt="Two public skills" src="https://img.shields.io/badge/public_skills-2-4C6FFF?style=flat-square&labelColor=111111">
@@ -141,7 +141,7 @@ Turn that idea into a Frame.
 > [!NOTE]
 > Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly two public entrypoints; internal modules load only when needed.
 
-For a reproducible, intentionally frozen install, add `--ref v0.9.1` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
+For a reproducible, intentionally frozen install, add `--ref v0.9.2` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
 
 ## Updating
 
@@ -209,7 +209,7 @@ The complete public artifact is deliberately small:
 
 Workflow state, schema versions, candidate IDs, evidence bundles, hashes, scopes, upload progress, receipts, consent fields, and backend enums stay backstage.
 
-Eligible single-asset long and short Frames use one creator-facing settlement model across crypto, equities, ETFs, and indexes: the exact chosen deadline is fixed, then Cuebook compares the latest completed provider-official price observation at or before that deadline with the publication baseline. The creator never chooses regular hours, after hours, trading days, or next close. Before any image is rendered, Cuebook naturally recaps the exact copy, direction, deadline, settlement meaning, and visual idea for confirmation. A later “publish this” authorizes only the external write; target-price and pair overrides are the only cases that need more terms.
+Eligible single-asset long and short Frames use one creator-facing settlement model across crypto, equities, ETFs, and indexes: Cuebook freezes the same persisted price snapshot it can already display at publication, fixes the exact chosen deadline, then compares that starting point with the latest completed provider-official observation at or before the deadline. The creator never chooses regular hours, after hours, trading days, or next close. Before any image is rendered, Cuebook naturally recaps the exact copy, direction, deadline, settlement meaning, and visual idea for confirmation. A later “publish this” authorizes only the external write; target-price and pair overrides are the only cases that need more terms.
 
 ## From Intuition To Expression
 
@@ -295,7 +295,7 @@ Validation checks the two-entrypoint boundary, referenced-resource closure, mobi
 Release preparation has one version source and updates every pinned install ref, Plugin manifest, changelog section, and generated Skill bundle together:
 
 ```bash
-npm run release:prepare -- 0.9.1 \
+npm run release:prepare -- 0.9.2 \
   --date 2026-07-21 \
   --codex-build 20260721103045
 
