@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.9.5 — 2026-07-21
+
+- Made a successful `complete_frame_publish` result the absolute end of the ordinary creator flow: no second confirmation, receipt parsing, ID extraction, reconciliation, sharing setup, Paper Trade call, or post-publication readback.
+
 ## 0.9.4 — 2026-07-21
 
 - Curated the Claude Code marketplace to exactly two self-contained public Skills, preventing its conventional `skills/` scan from also loading the 38 internal source modules.

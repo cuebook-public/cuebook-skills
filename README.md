@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.4"><img alt="Release v0.9.4" src="https://img.shields.io/badge/release-v0.9.4-F6C500?style=flat-square&labelColor=111111"></a>
+  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.5"><img alt="Release v0.9.5" src="https://img.shields.io/badge/release-v0.9.5-F6C500?style=flat-square&labelColor=111111"></a>
   <a href="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml"><img alt="Quality" src="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml/badge.svg?branch=main"></a>
   <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/Node.js-%E2%89%A522-3C873A?style=flat-square&labelColor=111111">
   <img alt="Two public skills" src="https://img.shields.io/badge/public_skills-2-4C6FFF?style=flat-square&labelColor=111111">
@@ -141,7 +141,7 @@ Turn that idea into a Frame.
 > [!NOTE]
 > Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly two public entrypoints; internal modules load only when needed.
 
-For a reproducible, intentionally frozen install, add `--ref v0.9.4` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
+For a reproducible, intentionally frozen install, add `--ref v0.9.5` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
 
 ## Updating
 
@@ -219,7 +219,7 @@ Eligible single-asset long and short Frames use one creator-facing settlement mo
 2. **Expand the thought.** Start the smallest Cuebook read batch and, when material current claims require it, one bounded authoritative Web batch from the same evidence plan. Prefer the one relationship, prior viewpoint, comparator, or next footprint that materially improves the thought or its visual expression. Cues remain published viewpoints rather than proof; factual sentences use evidence, while clearly framed creator inference may remain inference.
 3. **Lock the meaning.** Show the exact title, body, asset, direction, deadline, human settlement rule, and visual intent as text. Do not render until the creator confirms them.
 4. **Reveal one relationship.** Render one publication image from the confirmed idea and copy. A request for another version changes only expression, not the claim, evidence, or settlement.
-5. **Remember the idea.** Publication happens only after explicit intent and writes the already confirmed Frame. A validated receipt ends the network flow; Cuebook Agent recognizes the specific idea that was preserved and returns the creator to Cuebook App without a web link or browser readback. One optional continuation may invite the creator to share that exact release with another AI, share another signal, or explicitly opt into a simulated Paper Trade for later review.
+5. **Remember the idea.** Publication happens only after explicit intent and writes the already confirmed Frame. The successful atomic publish result ends the network flow—no second confirmation, receipt parsing, reconciliation, web link, or browser readback. Cuebook Agent recognizes the specific idea that was preserved and returns the creator to Cuebook App. One optional continuation may invite the creator to share it with another AI, share another signal, or explicitly opt into a later simulated Paper Trade.
 
 The goal is not to lecture the creator or flatten the idea into generic research. Cuebook improves the expression while keeping authorship visible.
 
@@ -297,7 +297,7 @@ Validation checks the two-entrypoint boundary, referenced-resource closure, mobi
 Release preparation has one version source and updates every pinned install ref, Plugin manifest, changelog section, and generated Skill bundle together:
 
 ```bash
-npm run release:prepare -- 0.9.4 \
+npm run release:prepare -- 0.9.5 \
   --date 2026-07-21 \
   --codex-build 20260721103045
 

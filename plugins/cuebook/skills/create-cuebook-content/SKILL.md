@@ -71,7 +71,7 @@ node scripts/run_fast_preview.mjs frame-preview-job.json ./preview-output
 
 Do not add a public `state`, version, candidate id, evidence bundle, hash, score, source count, scope, upload status, receipt, consent field, backend enum, or canonical web link. During preview, explain any blocker in ordinary language rather than leaking internal status. Outside the four-field Frame, add one short reveal sentence that names the creator's original edge and the useful connection Cuebook made visible—for example, “你原来抓的是 BTC 的抗跌；Cuebook 把它和相对强弱、资金承接以及 30 天检查点接成了一条可观察的判断。” Mention only additions actually present in the evidence, copy, or image. Never use generic praise or promotional claims.
 
-After a valid publication receipt, follow the **Public Surface** section in [Frame Publish Workflow](references/frame-publish-workflow.md). Stop the network flow there: no `get_frame`, web-page readback, `canonical_url`, or extra verification.
+After `complete_frame_publish` returns success, follow the **Public Surface** section in [Frame Publish Workflow](references/frame-publish-workflow.md). Stop immediately: no receipt parsing, reconciliation, `get_frame`, web-page readback, `canonical_url`, or extra verification.
 
 ## Conversation Heuristics
 
@@ -132,7 +132,7 @@ The runner must verify creator ownership, numerical source support, text-image d
 
 - Warm target: 30–60 seconds from a ready connector to one complete Frame; a cold connector or browser start may take up to 120 seconds. Treat these as an engineering budget, never a promise or a reason to narrate waiting.
 - Use one asset-resolution step, one shared evidence plan, one batched Cuebook lane plus one bounded authoritative Web lane when material, one reconciliation pass, one natural text confirmation, and one runner invocation.
-- After selection, publish through exactly three remote steps: reserve the frozen image upload, perform one signed PUT, then call the high-level completion Tool once. The preview runner already emitted the PNG hash and byte size; do not run another local command, image audit, manifest build, draft build, prepare call, status poll, or readback after the creator confirms publication. An uncertain mutation transport may be replayed once with the same key and identical payload; never retry a domain rejection or probe with alternate payloads.
+- After selection, publish through exactly three remote steps: reserve the frozen image upload, perform one signed PUT, then call the high-level completion Tool once. The preview runner already emitted the PNG hash and byte size; do not ask for a second confirmation or run another local command, image audit, manifest build, draft build, prepare call, status poll, receipt validator, reconciliation, or readback after the creator requests publication. An uncertain mutation transport may be replayed once with the same key and identical payload; never retry a domain rejection or probe with alternate payloads.
 - Do not reread the whole repository, inspect renderer source, rebuild valid stages, create a local OAuth client, or run release packaging before selection.
 - When a valid title, body, and image exist, show the complete Frame and ask only for publication or a visual/copy change. A changed title, body, asset, direction, horizon, settlement meaning, or material premise invalidates the old confirmation and any dependent pixels.
 

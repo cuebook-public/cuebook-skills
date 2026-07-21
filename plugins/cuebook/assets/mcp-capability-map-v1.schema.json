@@ -205,7 +205,7 @@
           "const": false
         },
         "publish_success_source": {
-          "const": "validated_publish_receipt"
+          "const": "successful_complete_frame_publish_result"
         },
         "creator_link_policy": {
           "const": "never_present_canonical_url"
@@ -232,7 +232,6 @@
         },
         "initial_publish_sequence": {
           "const": [
-            "get_frame_capabilities",
             "begin_frame_media_upload",
             "https_put_publication_master",
             "complete_frame_publish"

@@ -451,7 +451,6 @@ test("initial and correction publish skip separate consent while withdrawal reta
   );
   const flow = payload.frame_publication_flow;
   assert.deepEqual(flow.initial_publish_sequence, [
-    "get_frame_capabilities",
     "begin_frame_media_upload",
     "https_put_publication_master",
     "complete_frame_publish",
@@ -467,7 +466,7 @@ test("initial and correction publish skip separate consent while withdrawal reta
     "withdraw_frame",
   ]);
   assert.equal(flow.action_consent_usage, "withdrawal_only");
-  assert.equal(flow.publish_success_source, "validated_publish_receipt");
+  assert.equal(flow.publish_success_source, "successful_complete_frame_publish_result");
   assert.equal(flow.creator_link_policy, "never_present_canonical_url");
   assert.equal(flow.explicit_frame_query_tool, "get_frame");
   assert.equal(flow.automatic_post_publish_readback, false);
@@ -508,6 +507,13 @@ test("Frame creator flow never reads back or presents a canonical web link after
   assert.equal(combined.includes("verify through `get_frame`"), false);
   assert.equal(combined.includes("On successful readback"), false);
   assert.equal(combined.includes("unless the creator explicitly requests technical diagnostics"), false);
+  assert.doesNotMatch(combined, /structurally valid `FramePublicationReceiptV1`/u);
+  assert.doesNotMatch(combined, /validate the publish receipt/iu);
+  assert.doesNotMatch(combined, /receipt's exact `frame_id \+ release_id`/u);
+  assert.match(combined, /successful `complete_frame_publish` result is final success/u);
+  assert.match(combined, /do not parse or validate a receipt/iu);
+  assert.match(combined, /Do not restate the copy or settlement, ask “confirm publish\?” again/iu);
+  assert.match(combined, /do not run reconciliation/iu);
   assert.match(combined, /已经替你发布好了，去 Cuebook App 看看吧。/u);
   assert.match(combined, /Never show a web URL/iu);
   assert.equal(combined.includes("say exactly “已发布，去 Cuebook App 看。” and stop"), false);
@@ -517,7 +523,7 @@ test("Frame creator flow never reads back or presents a canonical web link after
     combined,
     /这是 Cuebook Agent 帮我完善并记录的交易想法，想听听你怎么判断；请用 Cuebook 打开，尚未连接时按提示安装并连接：<Cuebook 分享入口>/u,
   );
-  assert.match(combined, /exact `frame_id \+ release_id`/u);
+  assert.match(combined, /App owns the just-published Frame binding/iu);
   assert.match(combined, /App, not the Skill or publication flow, owns sharing/iu);
   assert.match(combined, /another AI/iu);
   assert.match(combined, /simulated Paper Trade/iu);

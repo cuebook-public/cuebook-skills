@@ -28,7 +28,7 @@ claude mcp list
 
 The plugin inventory must report exactly **2 Skills**, and the MCP list must contain `plugin:cuebook:cuebook`. A larger Skill count means an older marketplace snapshot is still installed; update the marketplace and reinstall the plugin once, then reload Claude Code. This refresh does not require a second OAuth grant.
 
-For a reproducible frozen install, use `cuebook-public/cuebook-skills@v0.9.4` in the marketplace command. A tag-pinned marketplace stays on that release until its source is changed.
+For a reproducible frozen install, use `cuebook-public/cuebook-skills@v0.9.5` in the marketplace command. A tag-pinned marketplace stays on that release until its source is changed.
 
 ## Update
 

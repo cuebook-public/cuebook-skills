@@ -2,6 +2,8 @@
 
 Read this reference only after the creator has seen one complete Frame and explicitly asks to publish, correct, or withdraw it. Keep every transport field and server state backstage.
 
+An explicit “publish,” “发吧,” “就这版,” or equivalent is the one publication authorization for the already confirmed Frame. Do not restate the copy or settlement, ask “confirm publish?” again, or add a release checklist.
+
 ## Initial Publish: Three Steps
 
 The selected Fast Preview is already the publication artifact. Its title, body, alt text, evidence refs, settlement meaning, PNG bytes, encoded SHA-256, and byte size are frozen before the creator says “publish.” Do not reread design references, inspect renderer source, rerender, re-audit pixels, recompute hashes, generate HTML, create local JSON contracts, or manually assemble a manifest or draft after that confirmation.
@@ -16,7 +18,7 @@ Publish immediately whenever the creator confirms, including before market open,
 
 `complete_frame_publish` owns media completion and processing, raster manifest registration, draft assembly, the standard deadline contract, prepare, and the atomic publish transaction. Do not call `complete_frame_media_upload`, `get_frame_media_status`, `register_frame_visual_manifest`, `create_frame_draft`, `prepare_frame_publish`, `publish_frame`, or `get_frame` in the normal initial-publish lane.
 
-A structurally valid `FramePublicationReceiptV1` from `complete_frame_publish` is final success. Stop all network work immediately: no readback, web page, canonical URL, HTML inspection, metadata probe, or receipt verification.
+A successful `complete_frame_publish` result is final success. Trust the typed MCP result and stop all network work immediately: do not parse or validate a receipt, extract Frame or release IDs, read back the Frame, open a web page, inspect HTML or metadata, probe a canonical URL, or call any follow-up Tool.
 
 ## Corrections And Withdrawals
 
@@ -28,6 +30,7 @@ The high-level Tool is for a new initial publication. An explicit correction con
 - If a mutation may have reached the server but its transport result is unknown, replay it at most once with the same idempotency key and byte-identical payload.
 - A domain, policy, authorization, hash, or changed-payload rejection stops the flow. Preserve the frozen Frame and explain the useful next step in ordinary language; do not expose Tool names or internal states.
 - Do not manually poll processing in the initial fast lane. The server owns its bounded wait.
+- After a successful result, do not run reconciliation, history updates, analytics, sharing setup, or Paper Trade Tools. Those are separate later actions and each requires its own explicit user request.
 
 OAuth, scopes, idempotency, server decoding, malware checks, canonical-pixel hashing, prepared-hash recomputation, publish-token validation, and transaction locking remain authoritative server protections. The shorter Skill path does not weaken them.
 
@@ -37,4 +40,4 @@ After success, respond warmly in two or three short sentences. Say that the idea
 
 Ask at most one optional next step: share the finished idea from Cuebook App with another AI for a fresh judgment, share another signal or intuition, or—when Paper tools are available—offer to record a separate simulated Paper Trade. An offer is not authorization; after explicit opt-in, call `preview_paper_order` and still require explicit placement intent.
 
-The App, not the Skill or publication flow, owns sharing. Its one-sentence share copy is: “这是 Cuebook Agent 帮我完善并记录的交易想法，想听听你怎么判断；请用 Cuebook 打开，尚未连接时按提示安装并连接：<Cuebook 分享入口>”. The App binds that entry to the exact published release or an opaque equivalent; the Skill never fabricates one from a web URL.
+The App, not the Skill or publication flow, owns sharing. Its one-sentence share copy is: “这是 Cuebook Agent 帮我完善并记录的交易想法，想听听你怎么判断；请用 Cuebook 打开，尚未连接时按提示安装并连接：<Cuebook 分享入口>”. The App binds that entry to the just-published Frame; the Skill never extracts IDs or fabricates an entry from a web URL.

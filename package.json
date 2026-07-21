@@ -1,6 +1,6 @@
 {
   "name": "cuebook-skills",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "private": true,
   "description": "Validation and release tooling for the Cuebook Agent Skills distribution.",
   "engines": {

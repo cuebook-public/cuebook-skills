@@ -159,7 +159,7 @@ const FRAME_PUBLICATION_FLOW = {
   status_returns: "processing_and_hash_receipts_only",
   explicit_frame_query_tool: "get_frame",
   automatic_post_publish_readback: false,
-  publish_success_source: "validated_publish_receipt",
+  publish_success_source: "successful_complete_frame_publish_result",
   creator_link_policy: "never_present_canonical_url",
   published_visual_semantics: "one_visual_attached_to_frame_release",
   client_upload_roles: ["publication"],
@@ -167,7 +167,6 @@ const FRAME_PUBLICATION_FLOW = {
   delivery_resize_policy: "frontend_or_edge_transformation_only",
   forbidden_tools: [...FORBIDDEN_FRAME_MEDIA_TOOLS],
   initial_publish_sequence: [
-    "get_frame_capabilities",
     "begin_frame_media_upload",
     "https_put_publication_master",
     "complete_frame_publish",

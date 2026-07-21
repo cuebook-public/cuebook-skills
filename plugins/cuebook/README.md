@@ -46,7 +46,7 @@ The creator consent presents all six Cuebook scopes once: public research, priva
 
 The installing task owns installation and that one necessary host login. It must not create a background test task, publish a placeholder, or diagnose this local marketplace through a public ChatGPT plugin manager. Open one new Codex task only after Cuebook is enabled and no longer reports `not_logged_in`, then enter the real query or market idea. The final readiness proof is a normal MCP result in that task, not a browser approval screen or connector status alone. If authentication fails, stop instead of retrying, reinstalling, or opening more tasks. OAuth credentials stay in the connector, never in a Skill or generated artifact.
 
-Use `--ref v0.9.4` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
+Use `--ref v0.9.5` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
 
 ## Update
 
@@ -107,7 +107,7 @@ The Skill behaves like an attentive editor rather than exposing a sequence: it r
 1. **Creator meaning** — the claim, mechanism, time horizon, and next observable remain creator-owned. After asset resolution, at most one aligned and one contrasting or adjacent Cue may be offered as optional thought anchors; only adopted additions enter the viewpoint.
 2. **Frozen evidence** — one shared plan starts the smallest typed Cuebook batch and, when material current claims require it, one bounded authoritative Web batch. Cues remain published viewpoints rather than proof; factual sentences use evidence, while clearly framed creator inference may remain inference. The Skill reconciles the plan once and keeps source routing and coverage gaps backstage.
 3. **Expression** — a deterministic renderer chooses a curve, comparison, drawdown, event, threshold, scenario, causal path, evidence tension, transparent Creator Lens, or long/short contribution structure.
-4. **Publication** — upload, manifest registration, draft, prepare, and publish happen only after explicit intent. A validated publish receipt ends the network flow; the creator receives a specific acknowledgment of the idea that was preserved and returns to the Cuebook App without a generated web page or canonical link. One optional continuation may invite the creator to share that exact release from the App with another AI, share another signal, or explicitly opt into a simulated Paper Trade for later review.
+4. **Publication** — after explicit intent, the client reserves one upload, PUTs the frozen PNG, and makes one atomic publish call. Its successful typed result ends the network flow; there is no second confirmation, receipt parsing, reconciliation, generated web page, canonical link, or readback. The creator receives a specific acknowledgment of the idea that was preserved and returns to Cuebook App. One optional continuation may invite the creator to share it from the App with another AI, share another signal, or explicitly opt into a later simulated Paper Trade.
 
 Facts and interpretation never blur. A source reference is not enough: the factual sentence must pass a numerical or typed observation test. Causal language remains the creator's hypothesis unless a source establishes it.
 

@@ -49,7 +49,7 @@ Run this gate only after the target Cuebook server release is confirmed healthy:
 3. Require a normal `get_frame_capabilities` result. Browser approval or an “enabled” badge is not enough.
 4. Run one smallest useful read and retain source-linked output.
 5. On a Skill host, create one preview from a real user idea and inspect the sole publication master at its 622 × 264 mobile display size. Preview must not publish.
-6. With explicit user intent, publish one clearly identified test Frame. Treat the structurally valid publish receipt as terminal; do not add a web-page or `get_frame` readback to the creator path.
+6. With explicit user intent, publish one clearly identified test Frame. Treat the successful `complete_frame_publish` result as terminal; do not parse a receipt or add a web-page, reconciliation, or `get_frame` readback to the creator path.
 7. Record the host version and which gates passed before changing “pending” to “verified.”
 
 The Frame publication contract remains the same on every host. Initial and correction publication use prepare then publish; withdrawal alone has separate action consent. Image bytes travel to signed upload URLs and are never downloaded back through an MCP media Tool.
