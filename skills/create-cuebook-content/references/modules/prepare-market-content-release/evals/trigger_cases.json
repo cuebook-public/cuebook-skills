@@ -1,7 +1,0 @@
-[
-  {"prompt": "Package these final drafts for release without actually publishing", "should_trigger": true},
-  {"prompt": "Check whether these X and Telegram drafts are ready for scheduled publication", "should_trigger": true},
-  {"prompt": "Create a manual publication handoff checklist for Xiaohongshu", "should_trigger": true},
-  {"prompt": "Log into my account and publish it directly", "should_trigger": false},
-  {"prompt": "Research this company before writing", "should_trigger": false}
-]

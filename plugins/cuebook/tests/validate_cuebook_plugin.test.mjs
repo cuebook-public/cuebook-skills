@@ -610,7 +610,11 @@ test("ordinary one-preview publish does not reconstruct the advanced release gra
   assert.match(create, /let `complete_frame_publish` finish the server-owned work/u);
   assert.match(publish, /## Initial Publish: Three Steps/u);
   assert.match(publish, /Do not reread design references/u);
-  assert.match(publish, /Do not call `complete_frame_media_upload`/u);
+  assert.match(publish, /only completion call for a new Frame/u);
+  assert.doesNotMatch(
+    publish,
+    /`(?:complete_frame_media_upload|get_frame_media_status|register_frame_visual_manifest|create_frame_draft|get_frame_draft|update_frame_draft|prepare_frame_publish|publish_frame)`/u,
+  );
   assert.match(publish, /including before market open, after market close, on weekends/u);
   assert.match(publish, /never waits for a trading session/u);
   assert.match(publish, /Never tell the creator to return when the market opens/u);

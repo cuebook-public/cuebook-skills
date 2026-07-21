@@ -28,7 +28,7 @@ claude mcp list
 
 The plugin inventory must report exactly **2 Skills**, and the MCP list must contain `plugin:cuebook:cuebook`. A larger Skill count means an older marketplace snapshot is still installed; update the marketplace and reinstall the plugin once, then reload Claude Code. This refresh does not require a second OAuth grant.
 
-For a reproducible frozen install, use `cuebook-public/cuebook-skills@v0.9.7` in the marketplace command. A tag-pinned marketplace stays on that release until its source is changed.
+For a reproducible frozen install, use `cuebook-public/cuebook-skills@v0.9.8` in the marketplace command. A tag-pinned marketplace stays on that release until its source is changed.
 
 ## Update
 
@@ -68,6 +68,29 @@ authorization. Ordinary initial publication uses one upload reservation, one
 signed PUT, and `complete_frame_publish`; correction keeps its prepare/publish
 path, withdrawal retains separate first-party consent, and query is
 structurally read-only.
+
+### Claude Code permission modes
+
+Cuebook OAuth and Claude Code's local Tool permission mode are independent.
+In Auto mode, Claude Code may stop an external mutation before the request
+reaches Cuebook. A classifier denial is therefore not an OAuth, scope, market
+calendar, or Cuebook server error.
+
+For an ordinary initial publication, the only Cuebook mutation calls the host
+should see are `begin_frame_media_upload` and `complete_frame_publish`, with the
+signed image PUT between them. If Auto mode denies the correct completion call,
+open `/permissions`, review the recently denied action, and retry it with manual
+approval. A creator who wants a persistent rule should allow only the exact
+Tool names Claude Code displays for those two actions. Never allow a whole
+`mcp__<cuebook-server>__*` wildcard: it also covers Paper Trade, correction, and
+withdrawal actions.
+
+Do not approve or retry `create_frame_draft`, `prepare_frame_publish`, or
+`publish_frame` for an ordinary new Frame. Seeing one of those actions means the
+session retained an older Plugin or Tool snapshot; update Cuebook, run
+`/reload-plugins` or restart Claude Code, and begin one fresh session. Do not
+backfill a market calendar, duplicate the MCP server, or repeat OAuth to work
+around a host permission denial.
 
 ## Current verification boundary
 

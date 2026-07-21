@@ -1,7 +1,0 @@
-[
-  {"prompt": "Split one research piece into a program for X, Xiaohongshu, and Douyin; provide the program only, not drafts", "should_trigger": true},
-  {"prompt": "Plan a four-stage content sequence around an earnings release", "should_trigger": true},
-  {"prompt": "Publish this post directly for me", "should_trigger": false},
-  {"prompt": "Research whether this company is worth buying", "should_trigger": false},
-  {"prompt": "Write ten posts using a specific blogger's catchphrases", "should_trigger": false}
-]

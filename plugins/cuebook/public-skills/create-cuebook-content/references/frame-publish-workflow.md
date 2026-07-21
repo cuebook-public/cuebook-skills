@@ -8,7 +8,7 @@ An explicit “publish,” “send this version,” or equivalent instruction in
 
 The selected Fast Preview is already the publication artifact. Its title, body, alt text, evidence refs, settlement meaning, PNG bytes, encoded SHA-256, and byte size are frozen before the creator says “publish.” Do not reread design references, inspect renderer source, rerender, re-audit pixels, recompute hashes, generate HTML, create local JSON contracts, or manually assemble a manifest or draft after that confirmation.
 
-Reuse the cached `get_frame_capabilities` result from task readiness. It must advertise `begin_frame_media_upload` and `complete_frame_publish`. If either is absent, explain briefly that Cuebook publishing needs an update and stop; never fall back to the legacy multi-call authoring sequence.
+Reuse the cached `get_frame_capabilities` result from task readiness. It must advertise `begin_frame_media_upload` and `complete_frame_publish`. If either is absent, explain briefly that Cuebook publishing needs an update and stop; never substitute a lower-level compatibility path.
 
 Publish immediately whenever the creator confirms, including before market open, after market close, on weekends, and on exchange holidays. Frame publication is not order execution and never waits for a trading session. The server freezes the same persisted price snapshot Cuebook can already show for that asset—a fresh realtime observation when available, otherwise the latest completed close or sole stored observation—while keeping the creator's exact future deadline. Never add a second freshness or provider-period gate. Never tell the creator to return when the market opens. If Cuebook truly has no stored price for the resolved asset, stop once and describe only the useful next step; never expose an internal eligibility code.
 
@@ -16,7 +16,7 @@ Publish immediately whenever the creator confirms, including before market open,
 2. Upload the exact selected PNG once to the returned signed HTTPS PUT target. Never send image bytes through MCP, base64, or a display URL.
 3. Call `complete_frame_publish` once with the upload id, a separate fresh lowercase UUIDv7, and the already confirmed title, body, language, alt text, asset, direction, exact deadline, creator timezone, claim, and evidence refs. Map each frozen preview ref to its known `news`, `event`, `filing`, `fact`, or `user_source` kind without refetching it; use `fact` for an ordinary frozen Cuebook result whose narrower kind is not already known.
 
-`complete_frame_publish` owns media completion and processing, raster manifest registration, draft assembly, the standard deadline contract, prepare, and the atomic publish transaction. Do not call `complete_frame_media_upload`, `get_frame_media_status`, `register_frame_visual_manifest`, `create_frame_draft`, `prepare_frame_publish`, `publish_frame`, or `get_frame` in the normal initial-publish lane.
+`complete_frame_publish` owns every server-side step after the signed upload, including validation, baseline capture, and atomic publication. Treat it as the only completion call for a new Frame; do not reproduce its work through lower-level compatibility actions or read the Frame back.
 
 A successful `complete_frame_publish` result is final success. Trust the typed MCP result and stop all network work immediately: do not parse or validate a receipt, extract Frame or release IDs, read back the Frame, open a web page, inspect HTML or metadata, probe a canonical URL, or call any follow-up Tool.
 

@@ -1,5 +1,0 @@
-{
-  "schema_version": "release-bundle.v1",
-  "required_sections": ["operation", "items", "quality_report", "release_state"],
-  "hard_boundaries": ["prepare only", "no credentials", "frozen hashes", "separate approvals", "official capability", "policy snapshot", "idempotency", "no fake publication receipt"]
-}

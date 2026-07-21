@@ -34,6 +34,14 @@ const MODULE_EXCLUDED_DIR_NAMES = new Set([...EXCLUDED_DIR_NAMES, "agents"]);
 const EXCLUDED_RUNTIME_FILE_NAMES = new Set([
   "run_expression_lab.mjs",
   "skill-assembly-golden.json",
+  "validate_frame_draft_assembly.mjs",
+]);
+const ENTRYPOINT_RUNTIME_RESOURCES = new Map([
+  ["create-cuebook-content", [
+    ["direct-cuebook-viewpoint-visual", "assets/cuebook-wordmark.svg"],
+    ["direct-cuebook-viewpoint-visual", "scripts/capture_html_viewpoint.cjs"],
+    ["render-cuebook-thesis-chart", "scripts/rasterize_thesis_chart.cjs"],
+  ]],
 ]);
 const MODULE_RESOURCE_DIRS = "references|scripts|templates|assets|evals|tests";
 const PUBLIC_SKILL_LIMIT = 2;
@@ -54,7 +62,6 @@ const FAST_PREVIEW_FILES = [
 ];
 const PUBLISH_LANE_FILES = [
   "references/frame-publish-workflow.md",
-  "assets/plugin/mcp-capability-map-v1.json",
 ];
 
 export function issue(code, issuePath, message) {
@@ -487,6 +494,14 @@ export function build(pluginRootArg, outputDirArg) {
         member,
       );
     }
+    const runtimeResources = [];
+    for (const [member, resource] of ENTRYPOINT_RUNTIME_RESOURCES.get(entry) ?? []) {
+      const source = path.join(pluginRoot, "skills", member, resource);
+      const target = path.join(bundleRoot, "references", "modules", member, resource);
+      fs.mkdirSync(path.dirname(target), { recursive: true });
+      fs.copyFileSync(source, target);
+      runtimeResources.push(`${member}/${resource}`);
+    }
 
     const usedAssets = new Set();
     for (const md of rglob(bundleRoot, ".md")) {
@@ -512,6 +527,7 @@ export function build(pluginRootArg, outputDirArg) {
       skill: entry,
       closure,
       bundled_internal_modules: closure.length - 1,
+      bundled_runtime_resources: runtimeResources,
       plugin_assets: [...usedAssets].sort(),
       vendored_shared_validators: vendored,
       valid: !bundleErrors.length,

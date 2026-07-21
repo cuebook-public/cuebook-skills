@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.9.8 — 2026-07-21
+
+- Removed the advanced workflow closure, draft-assembly validator, and lower-level initial-publication compatibility actions from generated runtime Skill bundles; ordinary creation now exposes only the atomic Frame publication route while source compatibility tests remain intact.
+- Documented Claude Code Auto-mode recovery without weakening host safety: approve only the exact atomic publication actions, never the entire Cuebook MCP server, and treat legacy draft calls as a stale-session signal rather than a reason to repair market-calendar data.
+
 ## 0.9.7 — 2026-07-21
 
 - Removed every implicit creator-horizon default: explicit user timing now has absolute priority, while Cuebook may offer at most two Cue- or catalyst-informed proposals only when requested and only after creator acceptance.

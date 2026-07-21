@@ -50,7 +50,7 @@ test("builds every public entrypoint as valid bundle", () => {
     assert.ok(manifest.frame_publish_input_budget.within_budget);
     assert.ok(manifest.frame_publish_input_budget.cumulative_bytes < 40_000);
     assert.ok(!manifest.frame_fast_preview_budget.files.includes("assets/plugin/mcp-capability-map-v1.json"));
-    assert.ok(manifest.frame_publish_input_budget.files.includes("assets/plugin/mcp-capability-map-v1.json"));
+    assert.ok(!manifest.frame_publish_input_budget.files.includes("assets/plugin/mcp-capability-map-v1.json"));
   });
 });
 
@@ -81,12 +81,14 @@ test("release discovery exposes exactly two root Skills and ordinary internal mo
   });
 });
 
-test("create bundle closure keeps the fast front door and query without mandatory intake", () => {
+test("create bundle closure keeps only the fast front door and query dependencies", () => {
   withTmpPath((tmpPath) => {
     const manifest = buildRelease(tmpPath);
     const create = manifest.bundles.find((bundle) => bundle.skill === "create-cuebook-content");
     assert.ok(create.closure.includes("query-cuebook"));
-    assert.ok(create.closure.includes("direct-cuebook-viewpoint-visual"));
+    assert.ok(!create.closure.includes("orchestrate-cuebook-creator-workflow"));
+    assert.ok(!create.closure.includes("compile-cuebook-settlement-formula"));
+    assert.ok(!create.closure.includes("direct-cuebook-viewpoint-visual"));
     assert.ok(!create.closure.includes("intake-cuebook-viewpoint"));
   });
 });
@@ -113,6 +115,45 @@ test("release bundles exclude cross-repository compatibility goldens from runtim
         "run_expression_lab.mjs",
       )),
       false,
+    );
+    assert.equal(
+      fs.existsSync(path.join(
+        tmpPath,
+        "release",
+        "create-cuebook-content",
+        "scripts",
+        "validate_frame_draft_assembly.mjs",
+      )),
+      false,
+    );
+  });
+});
+
+test("runtime bundles omit the development capability catalog and old initial-publish route", () => {
+  withTmpPath((tmpPath) => {
+    buildRelease(tmpPath);
+    for (const skill of ["query-cuebook", "create-cuebook-content"]) {
+      assert.equal(fs.existsSync(path.join(
+        tmpPath,
+        "release",
+        skill,
+        "assets",
+        "plugin",
+        "mcp-capability-map-v1.json",
+      )), false);
+    }
+    const workflow = fs.readFileSync(path.join(
+      tmpPath,
+      "release",
+      "create-cuebook-content",
+      "references",
+      "frame-publish-workflow.md",
+    ), "utf-8");
+    assert.match(workflow, /Initial Publish: Three Steps/u);
+    assert.match(workflow, /only completion call for a new Frame/u);
+    assert.doesNotMatch(
+      workflow,
+      /`(?:complete_frame_media_upload|get_frame_media_status|register_frame_visual_manifest|create_frame_draft|get_frame_draft|update_frame_draft|prepare_frame_publish|publish_frame)`/u,
     );
   });
 });
@@ -193,27 +234,56 @@ test("bundles contain no plugin-level references", () => {
   });
 });
 
-test("cross-skill resource references resolve inside bundled skill directories", () => {
+test("minimal visual runtime resources resolve without their legacy module docs", () => {
   withTmpPath((tmpPath) => {
     buildRelease(tmpPath);
-    const skillMd = path.join(
+    const renderScript = path.join(
       tmpPath,
       "release",
       "create-cuebook-content",
-      "references",
-      "modules",
-      "render-cuebook-viewpoint-visual.md",
+      "scripts",
+      "render_market_expression.mjs",
     );
-    const text = fs.readFileSync(skillMd, "utf8");
-    assert.match(text, /references\/modules\/direct-cuebook-viewpoint-visual\/assets\/cuebook-wordmark\.svg/u);
-    assert.doesNotMatch(text, /SKILL\.md\/(?:assets|references|scripts)\//u);
-    const resource = path.resolve(
+    const validateScript = path.join(
       tmpPath,
       "release",
       "create-cuebook-content",
-      "references/modules/direct-cuebook-viewpoint-visual/assets/cuebook-wordmark.svg",
+      "scripts",
+      "validate_frame_preview.mjs",
     );
-    assert.ok(fs.existsSync(resource), resource);
+    assert.match(
+      fs.readFileSync(renderScript, "utf8"),
+      /references\/modules\/direct-cuebook-viewpoint-visual\/assets\/cuebook-wordmark\.svg/u,
+    );
+    assert.match(
+      fs.readFileSync(validateScript, "utf8"),
+      /references\/modules\/direct-cuebook-viewpoint-visual\/scripts\/capture_html_viewpoint\.cjs/u,
+    );
+    for (const resource of [
+      "assets/cuebook-wordmark.svg",
+      "scripts/capture_html_viewpoint.cjs",
+    ]) {
+      const target = path.resolve(
+        tmpPath,
+        "release",
+        "create-cuebook-content",
+        "references/modules/direct-cuebook-viewpoint-visual",
+        resource,
+      );
+      assert.ok(fs.existsSync(target), target);
+    }
+    assert.ok(fs.existsSync(path.resolve(
+      tmpPath,
+      "release",
+      "create-cuebook-content",
+      "references/modules/render-cuebook-thesis-chart/scripts/rasterize_thesis_chart.cjs",
+    )));
+    assert.equal(fs.existsSync(path.join(
+      tmpPath,
+      "release",
+      "create-cuebook-content",
+      "references/modules/direct-cuebook-viewpoint-visual.md",
+    )), false);
   });
 });
 
@@ -249,7 +319,7 @@ test("vendored validators import without plugin tree", () => {
   });
 });
 
-test("every bundled relative script import resolves, including the creator workflow example", () => {
+test("advanced creator workflow scripts stay outside the runtime bundle", () => {
   withTmpPath((tmpPath) => {
     const manifest = buildRelease(tmpPath);
     assert.ok(!manifest.errors.some((error) => error.code === "BROKEN_SCRIPT_IMPORT"), JSON.stringify(manifest.errors));
@@ -263,14 +333,7 @@ test("every bundled relative script import resolves, including the creator workf
       "scripts",
       "build_example_bundle.mjs",
     );
-    const completed = spawnSync(process.execPath, ["-e", `import(${JSON.stringify(new URL(`file://${script}`).href)})`], {
-      encoding: "utf-8",
-      env: {
-        ...process.env,
-        NODE_PATH: path.resolve(PLUGIN_ROOT, "..", "..", "node_modules"),
-      },
-    });
-    assert.equal(completed.status, 0, completed.stderr);
+    assert.equal(fs.existsSync(script), false);
   });
 });
 

@@ -1,7 +1,7 @@
 {
   "schema_version": "cuebook-release-skills-manifest-v2",
   "catalog_version": "1.28.0",
-  "plugin_version": "0.9.7",
+  "plugin_version": "0.9.8",
   "discovery_budget": {
     "legacy_skill_count": 38,
     "public_skill_count": 2,
@@ -23,16 +23,15 @@
       "references/modules/query-cuebook/references/cuebook-query-request-v1.schema.json",
       "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json"
     ],
-    "cumulative_bytes": 108359,
+    "cumulative_bytes": 108474,
     "maximum_bytes_exclusive": 110000,
     "within_budget": true
   },
   "frame_publish_input_budget": {
     "files": [
-      "references/frame-publish-workflow.md",
-      "assets/plugin/mcp-capability-map-v1.json"
+      "references/frame-publish-workflow.md"
     ],
-    "cumulative_bytes": 31514,
+    "cumulative_bytes": 6031,
     "maximum_bytes_exclusive": 40000,
     "within_budget": true
   },
@@ -48,9 +47,9 @@
         "route-cuebook-narrative"
       ],
       "bundled_internal_modules": 5,
+      "bundled_runtime_resources": [],
       "plugin_assets": [
         "cuebook-modules-v1.json",
-        "mcp-capability-map-v1.json",
         "query-menu-v1.json"
       ],
       "vendored_shared_validators": [
@@ -65,45 +64,21 @@
       "skill": "create-cuebook-content",
       "closure": [
         "create-cuebook-content",
-        "orchestrate-cuebook-creator-workflow",
         "query-cuebook",
-        "normalize-cuebook-creator-feed",
-        "compose-cuebook-content-recipe",
-        "validate-cuebook-projection",
-        "route-cuebook-narrative",
-        "compile-cuebook-market-view-semantics",
-        "classify-cuebook-trading-logic",
-        "compose-cuebook-trading-thesis",
-        "plan-cuebook-creator-expression",
-        "plan-market-content-program",
-        "render-cuebook-market-post",
-        "assemble-cuebook-viewpoint-data",
-        "render-cuebook-thesis-chart",
-        "assemble-cuebook-publish-candidates",
-        "reconcile-market-content-history",
-        "select-cuebook-content-opportunities",
         "build-market-research-pack",
         "compute-cuebook-market-indicators",
-        "render-cuebook-market-media",
-        "assemble-cuebook-viewpoint-card",
-        "prepare-market-content-release",
-        "compile-cuebook-settlement-claim",
-        "compile-cuebook-visual-argument",
-        "render-cuebook-market-signal",
-        "direct-cuebook-viewpoint-visual",
-        "render-cuebook-viewpoint-visual",
-        "render-cuebook-logic-card",
-        "render-cuebook-market-figure",
-        "compile-cuebook-settlement-formula",
-        "collect-market-commentator-corpus",
-        "distill-market-commentator-profile"
+        "reconcile-market-content-history",
+        "validate-cuebook-projection",
+        "route-cuebook-narrative"
       ],
-      "bundled_internal_modules": 32,
+      "bundled_internal_modules": 6,
+      "bundled_runtime_resources": [
+        "direct-cuebook-viewpoint-visual/assets/cuebook-wordmark.svg",
+        "direct-cuebook-viewpoint-visual/scripts/capture_html_viewpoint.cjs",
+        "render-cuebook-thesis-chart/scripts/rasterize_thesis_chart.cjs"
+      ],
       "plugin_assets": [
-        "creation-menu-v1.json",
         "cuebook-modules-v1.json",
-        "mcp-capability-map-v1.json",
-        "plugin-index-v1.json",
         "query-menu-v1.json"
       ],
       "vendored_shared_validators": [
@@ -111,7 +86,6 @@
         "references/modules/query-cuebook/scripts/validate_query_bundle.mjs",
         "references/modules/query-cuebook/scripts/validate_query_request.mjs",
         "references/modules/reconcile-market-content-history/scripts/validate_content_history.mjs",
-        "references/modules/select-cuebook-content-opportunities/scripts/validate_content_opportunities.mjs",
         "scripts/run_lens_preview.mjs",
         "scripts/run_market_preview.mjs",
         "scripts/validate_creation_bundle.mjs",

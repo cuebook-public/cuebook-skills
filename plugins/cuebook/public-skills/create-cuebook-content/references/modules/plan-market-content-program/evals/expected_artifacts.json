@@ -1,5 +1,0 @@
-{
-  "schema_version": "content-program.v1",
-  "required_sections": ["brief", "topology", "items", "release_strategy", "measurement_plan", "quality_report"],
-  "hard_boundaries": ["source references only", "one editorial job per item", "no final copy", "no exact release operations", "no external publishing"]
-}

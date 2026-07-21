@@ -24,7 +24,7 @@ Assume the plugin's host authentication is complete. Silently run the smallest r
 
 1. Classify the request as `latest_stories`, `story_detail`, `asset_narratives`, `market_state`, `market_evidence`, `fundamentals`, `market_series`, `derived_metrics`, `settlement_history`, `published_frame`, `commentator_profile`, `media_format`, or `mixed`.
 2. Resolve named assets with Cuebook `search_assets` before requesting asset-bound data. Never guess a canonical asset from a display ticker.
-3. Use only read tools declared as `module: query` in `../../assets/mcp-capability-map-v1.json`.
+3. Use only read-only Cuebook tools exposed in this task. The live connector Tool list is runtime truth; never call a write or mutation action from Query.
 4. Select the smallest query path that answers the request:
    - latest story: `list_asset_cues`, then `get_cues` only for selected details;
    - narrative library: `list_asset_cues`; use `list_themes`, `get_cues_detail`, or `get_reasoning_graph` only for an explicit focused/deep request, never for a fast creator preview;
