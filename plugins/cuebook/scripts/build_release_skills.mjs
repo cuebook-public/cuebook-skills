@@ -32,7 +32,8 @@ const MODULE_EXCLUDED_DIR_NAMES = new Set([...EXCLUDED_DIR_NAMES, "agents"]);
 const MODULE_RESOURCE_DIRS = "references|scripts|templates|assets|evals|tests";
 const PUBLIC_SKILL_LIMIT = 2;
 const MIN_DISCOVERY_REDUCTION_PERCENT = 60;
-const FAST_PREVIEW_BYTE_LIMIT = 150_000;
+const FAST_PREVIEW_BYTE_LIMIT = 110_000;
+const PUBLISH_LANE_BYTE_LIMIT = 40_000;
 const FAST_PREVIEW_FILES = [
   "SKILL.md",
   "references/frame.schema.json",
@@ -44,6 +45,9 @@ const FAST_PREVIEW_FILES = [
   "references/modules/query-cuebook.md",
   "references/modules/query-cuebook/references/cuebook-query-request-v1.schema.json",
   "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json",
+];
+const PUBLISH_LANE_FILES = [
+  "references/frame-publish-workflow.md",
   "assets/plugin/mcp-capability-map-v1.json",
 ];
 
@@ -392,34 +396,52 @@ function buildDiscoveryBudget(pluginRoot, outputDir, entrypoints, errors) {
   };
 }
 
-function buildFastPreviewBudget(outputDir, errors) {
+function buildInputBudget(outputDir, errors, { files, limit, code, label }) {
   const bundleRoot = path.join(outputDir, "create-cuebook-content");
   let cumulativeBytes = 0;
-  for (const relativePath of FAST_PREVIEW_FILES) {
+  for (const relativePath of files) {
     const target = path.join(bundleRoot, relativePath);
     if (!fs.existsSync(target)) {
       errors.push(issue(
-        "FAST_PREVIEW_BUDGET_FILE",
+        `${code}_FILE`,
         `create-cuebook-content/${relativePath}`,
-        "Fast-preview instruction or contract file is missing.",
+        `${label} instruction or contract file is missing.`,
       ));
       continue;
     }
     cumulativeBytes += fs.statSync(target).size;
   }
-  if (cumulativeBytes >= FAST_PREVIEW_BYTE_LIMIT) {
+  if (cumulativeBytes >= limit) {
     errors.push(issue(
-      "FAST_PREVIEW_INPUT_BUDGET",
+      code,
       "create-cuebook-content",
-      `Fast-preview instruction and contract set must remain below ${FAST_PREVIEW_BYTE_LIMIT} bytes.`,
+      `${label} instruction and contract set must remain below ${limit} bytes.`,
     ));
   }
   return {
-    files: FAST_PREVIEW_FILES,
+    files,
     cumulative_bytes: cumulativeBytes,
-    maximum_bytes_exclusive: FAST_PREVIEW_BYTE_LIMIT,
-    within_budget: cumulativeBytes < FAST_PREVIEW_BYTE_LIMIT,
+    maximum_bytes_exclusive: limit,
+    within_budget: cumulativeBytes < limit,
   };
+}
+
+function buildFastPreviewBudget(outputDir, errors) {
+  return buildInputBudget(outputDir, errors, {
+    files: FAST_PREVIEW_FILES,
+    limit: FAST_PREVIEW_BYTE_LIMIT,
+    code: "FAST_PREVIEW_INPUT_BUDGET",
+    label: "Fast-preview",
+  });
+}
+
+function buildPublishLaneBudget(outputDir, errors) {
+  return buildInputBudget(outputDir, errors, {
+    files: PUBLISH_LANE_FILES,
+    limit: PUBLISH_LANE_BYTE_LIMIT,
+    code: "PUBLISH_LANE_INPUT_BUDGET",
+    label: "On-demand publish-lane",
+  });
 }
 
 export function build(pluginRootArg, outputDirArg) {
@@ -490,6 +512,7 @@ export function build(pluginRootArg, outputDirArg) {
 
   const discoveryBudget = buildDiscoveryBudget(pluginRoot, outputDir, entrypoints, errors);
   const fastPreviewBudget = buildFastPreviewBudget(outputDir, errors);
+  const publishLaneBudget = buildPublishLaneBudget(outputDir, errors);
 
   const manifest = {
     schema_version: "cuebook-release-skills-manifest-v2",
@@ -497,6 +520,7 @@ export function build(pluginRootArg, outputDirArg) {
     plugin_version: index.plugin_version ?? null,
     discovery_budget: discoveryBudget,
     frame_fast_preview_budget: fastPreviewBudget,
+    frame_publish_input_budget: publishLaneBudget,
     bundles,
     valid: !errors.length,
     errors,

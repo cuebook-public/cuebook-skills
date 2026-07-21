@@ -40,7 +40,8 @@ test("valid plugin package", () => {
   assert.deepEqual(result.stats.module_skill_counts, { create: 27, query: 11 });
   assert.equal(result.stats.public_skill_count, 2);
   assert.ok(result.stats.discovery_reduction_percent >= 60);
-  assert.ok(result.stats.frame_fast_preview_bytes < 150_000);
+  assert.ok(result.stats.frame_fast_preview_bytes < 110_000);
+  assert.ok(result.stats.frame_publish_input_bytes < 40_000);
   assert.equal(result.stats.platform_guide_count, 10);
   const modules = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "cuebook-modules-v1.json"), "utf-8"),
@@ -63,8 +64,11 @@ test("Claude Code marketplace reuses the two public Skills and canonical MCP con
   const manifest = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, ".claude-plugin", "plugin.json"), "utf-8"),
   );
+  const expectedVersion = JSON.parse(
+    fs.readFileSync(path.resolve(PLUGIN_ROOT, "..", "..", "package.json"), "utf-8"),
+  ).version;
   assert.equal(manifest.name, "cuebook");
-  assert.equal(manifest.version.split("+")[0], "0.6.0");
+  assert.equal(manifest.version.split("+")[0], expectedVersion);
   assert.equal(manifest.skills, "./public-skills/");
   assert.equal(manifest.mcpServers, "./.mcp.json");
 });
@@ -466,6 +470,30 @@ test("Frame creator flow never reads back or presents a canonical web link after
   assert.match(combined, /explicit opt-in/iu);
   assert.match(combined, /preview_paper_order/iu);
   assert.match(combined, /explicit placement intent/iu);
+});
+
+test("creator journey preserves the five-beat Cuebook experience without workflow theater", () => {
+  const repositoryRoot = path.resolve(PLUGIN_ROOT, "..", "..");
+  const create = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const readme = fs.readFileSync(path.join(repositoryRoot, "README.md"), "utf-8");
+  const beats = ["Recognize", "Expand", "Lock", "Reveal", "Remember"];
+  let cursor = create.indexOf("## Cuebook Experience");
+  assert.ok(cursor >= 0);
+  for (const beat of beats) {
+    const next = create.indexOf(`**${beat}.**`, cursor);
+    assert.ok(next > cursor, beat);
+    cursor = next;
+  }
+  assert.match(create, /one continuous lift/u);
+  assert.match(create, /smallest useful Cuebook memory/u);
+  assert.match(create, /connection Cuebook made visible/u);
+  assert.match(create, /Do not narrate internal stages, providers, retries, schema work/u);
+  assert.match(readme, /The Cuebook Experience/u);
+  assert.match(readme, /without taking authorship away/u);
+  assert.match(readme, /Internal Tool calls, providers, retries, hashes, and publication mechanics remain backstage/u);
 });
 
 test("ordinary one-preview publish does not reconstruct the advanced release graph", () => {

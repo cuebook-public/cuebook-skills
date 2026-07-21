@@ -48,10 +48,11 @@ jobs:
       - name: Validate plugin and skill closure
         run: npm run validate
 
+      - name: Verify release metadata
+        run: npm run release:check
+
       - name: Run test suite
         run: npm run test:ci
 
       - name: Verify generated release bundles are current
-        run: |
-          npm run build:release
-          git diff --exit-code -- skills plugins/cuebook/public-skills
+        run: npm run verify:release-bundles

@@ -10,14 +10,14 @@
 
 <h1 align="center">Cuebook Skills — market expression for AI agents</h1>
 
-<p align="center"><strong>Turn a market intuition into a sourced, mobile-first Frame.</strong></p>
+<p align="center"><strong>Give a market intuition structure, evidence, and a future checkpoint—without taking authorship away.</strong></p>
 
 <p align="center">
-  Two public entrypoints. On-demand research. One title, one body, and one editorial image.
+  Cuebook Agent finds the smallest useful data and Cues, then expresses the creator's edge as one mobile-first Frame.
 </p>
 
 <p align="center">
-  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.6.0"><img alt="Release v0.6.0" src="https://img.shields.io/badge/release-v0.6.0-F6C500?style=flat-square&labelColor=111111"></a>
+  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.7.0"><img alt="Release v0.7.0" src="https://img.shields.io/badge/release-v0.7.0-F6C500?style=flat-square&labelColor=111111"></a>
   <a href="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml"><img alt="Quality" src="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml/badge.svg?branch=main"></a>
   <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/Node.js-%E2%89%A522-3C873A?style=flat-square&labelColor=111111">
   <img alt="Two public skills" src="https://img.shields.io/badge/public_skills-2-4C6FFF?style=flat-square&labelColor=111111">
@@ -37,6 +37,7 @@
 
 <p align="center">
   <a href="#cuebook-surfaces">Surfaces</a> ·
+  <a href="#the-cuebook-experience">Experience</a> ·
   <a href="#platform-support">Platforms</a> ·
   <a href="#quick-start">Quick Start</a> ·
   <a href="#updating">Updating</a> ·
@@ -51,7 +52,21 @@
 
 ---
 
-Cuebook is an expression layer for pre-trade thinking. It helps a creator sharpen an intuition, find the smallest useful body of evidence, and publish the idea in a form that is easy to understand, remember, and revisit.
+Cuebook is memory and expression infrastructure for pre-trade thinking. It helps a creator sharpen an intuition, connect it to the smallest useful body of market data and prior viewpoints, and publish it in a form that is easy to understand, remember, and revisit.
+
+## The Cuebook Experience
+
+Cuebook Agent is not a research wrapper that replaces the creator's judgment. It makes the creator's judgment more legible and more useful.
+
+| Beat | What the creator should feel | What Cuebook does |
+| --- | --- | --- |
+| **Recognized** | “That is the part I was actually noticing.” | Reflects the non-obvious kernel without claiming it as the agent's idea |
+| **Expanded** | “That connection gives me a better way to think.” | Adds one relevant Cue, dated relationship, comparator, mechanism, or next footprint |
+| **In control** | “This is exactly the idea I want to put my name on.” | Locks the title, reasoning, horizon, settlement rule, and visual intent once |
+| **Revealed** | “Now I can see the relationship.” | Uses one truthful curve, comparison, mechanism, scenario, or Creator Lens instead of decorating the prose |
+| **Remembered** | “I can come back and judge this later.” | Preserves the unchanged Frame with a future checkpoint, then returns the creator to Cuebook App |
+
+Internal Tool calls, providers, retries, hashes, and publication mechanics remain backstage. The visible value is the sharper thought, the useful connection, and the image that makes it memorable.
 
 ## Cuebook Surfaces
 
@@ -113,7 +128,7 @@ Turn that idea into a Frame.
 > [!NOTE]
 > Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly two public entrypoints; internal modules load only when needed.
 
-For a reproducible, intentionally frozen install, add `--ref v0.6.0` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
+For a reproducible, intentionally frozen install, add `--ref v0.7.0` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
 
 ## Updating
 
@@ -174,11 +189,11 @@ Eligible single-asset long and short Frames use one creator-facing settlement mo
 
 ## From Intuition To Expression
 
-1. **Capture the edge.** Preserve the creator's claim, mechanism, horizon, and next observable. Once the asset is known, at most one aligned and one contrasting or adjacent Cue may become optional thinking anchors for one high-leverage question; skipping them never blocks creation.
-2. **Find support.** Start the smallest Cuebook read batch and, when material current claims require it, one bounded authoritative Web batch from the same evidence plan. Cues remain published viewpoints rather than proof; factual sentences use evidence, while clearly framed creator inference may remain inference. Reconcile the result once; provider coverage and retry narration stay backstage.
+1. **Recognize the edge.** Preserve the creator's claim, mechanism, horizon, and next observable. Once the asset is known, at most one aligned and one contrasting or adjacent Cue may become optional thinking anchors for one high-leverage question; skipping them never blocks creation.
+2. **Expand the thought.** Start the smallest Cuebook read batch and, when material current claims require it, one bounded authoritative Web batch from the same evidence plan. Prefer the one relationship, prior viewpoint, comparator, or next footprint that materially improves the thought or its visual expression. Cues remain published viewpoints rather than proof; factual sentences use evidence, while clearly framed creator inference may remain inference.
 3. **Lock the meaning.** Show the exact title, body, asset, direction, deadline, human settlement rule, and visual intent as text. Do not render until the creator confirms them.
-4. **Compose one Frame.** Render one publication image from the frozen Meaning Lock. A request for another version changes only expression, not the claim, evidence, or settlement.
-5. **Preview, then publish.** Publication happens only after explicit intent and writes the already confirmed Frame. The ordinary one-preview path binds that frozen preview directly—no reconstructed release DAG, candidate family, or HTML page. A validated publish receipt ends the network flow; the creator gets a specific acknowledgment of the idea that was preserved and returns to the Cuebook App without a web link or browser readback. One optional continuation may invite the creator to share that exact release from the App with another AI, share another signal, or explicitly opt into a simulated Paper Trade for later review.
+4. **Reveal one relationship.** Render one publication image from the frozen Meaning Lock. A request for another version changes only expression, not the claim, evidence, or settlement.
+5. **Remember the idea.** Publication happens only after explicit intent and writes the already confirmed Frame. A validated receipt ends the network flow; Cuebook Agent recognizes the specific idea that was preserved and returns the creator to Cuebook App without a web link or browser readback. One optional continuation may invite the creator to share that exact release with another AI, share another signal, or explicitly opt into a simulated Paper Trade for later review.
 
 The goal is not to lecture the creator or flatten the idea into generic research. Cuebook improves the expression while keeping authorship visible.
 
@@ -243,12 +258,29 @@ Generated bundles come from the canonical plugin sources. Do not edit `skills/` 
 ```bash
 npm ci
 npm run build:release
-npm run validate
-npm run test:ci
-git diff --exit-code -- skills plugins/cuebook/public-skills
+npm run check
 ```
 
-Validation checks the two-entrypoint boundary, referenced-resource closure, mobile preview context budget, schema correctness, rendering gates, and generated bundle parity. CI also rejects tracked Python runtime files.
+Validation checks the two-entrypoint boundary, referenced-resource closure, mobile preview and publication context budgets, schema correctness, rendering gates, and byte-for-byte generated bundle parity against an isolated rebuild. CI also rejects tracked Python runtime files.
+
+</details>
+
+<details>
+<summary><strong>Prepare a release</strong></summary>
+
+Release preparation has one version source and updates every pinned install ref, Plugin manifest, changelog section, and generated Skill bundle together:
+
+```bash
+npm run release:prepare -- 0.7.0 \
+  --date 2026-07-21 \
+  --codex-build 20260721103045
+
+npm run release:verify
+```
+
+`release:prepare` is intentionally reviewable: it never commits, tags, pushes, publishes a GitHub Release, deploys, or touches MCP/OAuth state. Review the diff and pass CI before creating a tag. `release:check` is the lightweight consistency gate used by CI.
+
+The public package version and internal Skill catalog version are separate. A behavioral release does not silently rewrite frozen catalog or wire schema versions.
 
 </details>
 

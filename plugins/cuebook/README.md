@@ -4,7 +4,7 @@
 
 <h1 align="center">Cuebook Plugin</h1>
 
-<p align="center"><strong>Research a market idea. Express it as a mobile-first Frame.</strong></p>
+<p align="center"><strong>Make a market intuition clearer, more visible, and easier to revisit.</strong></p>
 
 <p align="center">
   <img alt="Two public skills" src="https://img.shields.io/badge/public_skills-2-4C6FFF?style=flat-square&labelColor=111111">
@@ -24,7 +24,7 @@
 
 ---
 
-The Cuebook plugin reads source-linked market intelligence and turns a creator's trading idea into one title, one reasoned body, and one editorial image.
+The Cuebook Plugin gives AI agents a memory and expression layer for pre-trade thinking. Cuebook Agent recognizes the creator's edge, adds the smallest useful Cue or market relationship, locks the exact meaning once, and turns it into one title, one reasoned body, and one editorial image.
 
 ## Install
 
@@ -42,7 +42,7 @@ Cuebook's marketplace policy is `ON_INSTALL`. If the `cuebook` entry reports `au
 
 The installing task owns installation and that one necessary host login. It must not create a background test task, publish a placeholder, or diagnose this local marketplace through a public ChatGPT plugin manager. Open one new Codex task only after Cuebook is enabled and no longer reports `not_logged_in`, then enter the real query or market idea. The final readiness proof is a normal MCP result in that task, not a browser approval screen or connector status alone. If authentication fails, stop instead of retrying, reinstalling, or opening more tasks. OAuth credentials stay in the connector, never in a Skill or generated artifact.
 
-Use `--ref v0.6.0` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
+Use `--ref v0.7.0` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
 
 ## Update
 
@@ -92,7 +92,7 @@ Eligible single-asset long and short Frames share one deadline rule across crypt
 
 ## Creation Model
 
-The Skill keeps four layers separate:
+The Skill makes five beats feel like one continuous lift: recognize the creator's non-obvious kernel, expand it with one useful Cuebook connection, lock the exact thought once, reveal one relationship visually, and preserve it with a future checkpoint. The implementation keeps four layers separate:
 
 1. **Creator meaning** — the claim, mechanism, time horizon, and next observable remain creator-owned. After asset resolution, at most one aligned and one contrasting or adjacent Cue may be offered as optional thought anchors; only adopted additions enter the viewpoint.
 2. **Frozen evidence** — one shared plan starts the smallest typed Cuebook batch and, when material current claims require it, one bounded authoritative Web batch. Cues remain published viewpoints rather than proof; factual sentences use evidence, while clearly framed creator inference may remain inference. The Skill reconciles the plan once and keeps source routing and coverage gaps backstage.
@@ -128,9 +128,7 @@ MCP never returns image bytes to the Skill after upload. The first-party app may
 ```bash
 npm ci
 npm run build:release
-npm run validate
-npm run test:ci
-git diff --exit-code -- skills plugins/cuebook/public-skills
+npm run check
 ```
 
-Only the two public entrypoints are discoverable. Internal modules are packaged as on-demand references, and generated bundles remain byte-aligned with their canonical sources.
+Only the two public entrypoints are discoverable. Internal modules are packaged as on-demand references, and `npm run verify:release-bundles` compares generated bundles byte-for-byte with an isolated rebuild instead of relying on Git state.

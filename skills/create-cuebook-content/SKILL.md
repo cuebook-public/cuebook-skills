@@ -7,7 +7,19 @@ compatibility: Uses the connected Cuebook MCP server plus one bounded authorized
 
 # Create Cuebook Content
 
-Make the creator feel that their idea was understood, sharpened, and expressed beyond what they could have assembled alone. A visible Frame is always one title, one body, and one paired image. Evidence lineage, hashes, scopes, upload progress, receipts, consent, and workflow state stay backstage.
+Cuebook Agent turns a raw market intuition into a thought the creator can see, share, and revisit without taking authorship away. A visible Frame is always one title, one body, and one paired image. Evidence lineage, hashes, scopes, upload progress, receipts, consent, and workflow state stay backstage.
+
+## Cuebook Experience
+
+The creator should feel one continuous lift, not a research pipeline or publishing form:
+
+1. **Recognize.** Reflect the non-obvious kernel more clearly than the creator first phrased it, tentatively enough to correct.
+2. **Expand.** Add the smallest useful Cuebook memory—one dated relationship, relevant Cue, comparator, mechanism, or next footprint—and only when it genuinely gives the creator another foothold.
+3. **Lock.** Return the exact title, reasoning, horizon, settlement rule, and visual idea in one compact decision. The creator remains in control.
+4. **Reveal.** Make one relationship visible that prose alone would hide. The image is the visual payoff, not a decorated summary.
+5. **Remember.** Publish the unchanged thought with a future checkpoint, then return the creator warmly to Cuebook App, where the idea can be shared or revisited.
+
+Every beat must earn its place. Do not narrate internal stages, providers, retries, schema work, or “AI magic.” The satisfying moment is specific recognition plus a useful connection the creator did not have to assemble alone.
 
 ## Connection Gate
 
@@ -30,8 +42,8 @@ Run this gate before the interview, research, or rendering. Assume the plugin's 
 
 1. Extract the subject, direction, observation window, future horizon, claim, proposed mechanism, and next observable. Keep the observation window (“what behavior was noticed?”) separate from the horizon (“when should the view be revisited?”). Treat the creator's view as material to strengthen, not a claim to debunk before helping.
 2. Resolve each named asset once through the connected Cuebook MCP server. If the asset is missing or ambiguous, ask only the minimum rigid question needed to resolve it; do not begin an open-ended interview first.
-3. Once the asset is known, start one shared read plan. Include `list_asset_cues`, and use `get_cues` only for at most two selected details in the single allowed dependency follow-up. Start the smallest market-state, candle, news, event, filing, or positioning reads needed by the creator's actual premise in the same phase. When material current public facts are involved, start one bounded authoritative Web batch without waiting for either lane to fail first. Execute independent reads concurrently when the host permits. Use at most three Web searches and three primary or authoritative sources; never loop between lanes.
-4. Run the Cue-assisted interview below from that read set. If the creator skips it, continue immediately and do not reduce the result. A relevant Cue may deepen the creator's mechanism, reveal a contrasting world, suggest a comparator or next footprint, or introduce a new index/Lens idea; it never chooses the creator's asset, direction, horizon, or conviction.
+3. Once the asset is known, start one shared read plan. Include `list_asset_cues`, and use `get_cues` only for at most two selected details in the single allowed dependency follow-up. Start the smallest market-state, candle, news, event, filing, or positioning reads needed by the creator's actual premise in the same phase. When material current public facts are involved, start one bounded authoritative Web batch at the same time rather than waiting for either lane to fail. Execute independent reads concurrently when the host permits. Use at most three Web searches and three primary or authoritative sources; never loop between lanes.
+4. Run the Cue-assisted interview below from that read set. If the creator skips it, continue immediately and do not reduce the result. Prefer one addition that changes how the idea can be understood or drawn: a dated relationship, relevant prior viewpoint, comparator, missing actor, next footprint, or transparent Creator Lens. A Cue never chooses the creator's asset, direction, horizon, or conviction.
 5. For price, trend, relative strength, or dated horizons, retrieve candles and current market state together. Label any assistant-chosen comparator explicitly. For a custom basket or long/short expression, resolve 3–8 transparent components and retrieve their smallest compatible candle window in parallel. Do not request a public basket, DAG, or metric Tool; local deterministic code calculates the Creator Lens. `get_reasoning_graph` is not a default creator read.
 6. Keep source routing backstage. Never narrate a failed search, retry, provider coverage gap, “Cuebook did not have this,” “Web had to supplement it,” or which lane found a fact. Present the reconciled logic and supported result. If a material factual sentence remains unresolved across all authorized evidence, say only that reliable support is not yet sufficient and ask whether to omit it or restate it as the creator's inference. Preserve missing capability classes internally for later data-source coverage work.
 7. Type meaning honestly without forcing every useful thought through a proof gate. A price path or measured relationship is observed or derived; a reported event is reported; another creator's Cue is a published viewpoint; the current creator's causal bridge, analogy, scenario, intuition, or expectation may remain a creator-owned hypothesis; future conditions remain conditional. Evidence is required for a factual sentence, not for the creator to own a clearly framed inference. An executable observation test must support the exact factual sentence in the body and bind to the exact visible geometry. A source ref or popular Cue is not proof. If objective evidence materially contradicts a factual premise, show the conflict and let the creator choose; do not turn an unproven mechanism into a correction lesson or silently rewrite the idea.
@@ -54,14 +66,9 @@ node scripts/run_fast_preview.mjs frame-preview-job.json ./preview-output
 }
 ```
 
-Do not add a public `state`, version, candidate id, evidence bundle, hash, score, source count, scope, upload status, receipt, consent field, backend enum, or canonical web link. During preview, explain any blocker in ordinary language rather than leaking internal status. After a valid publication receipt, stop the publication network flow: do not call `get_frame`, open or curl a web page, inspect page HTML or metadata, or present `canonical_url`. Give the creator a warm handoff instead:
+Do not add a public `state`, version, candidate id, evidence bundle, hash, score, source count, scope, upload status, receipt, consent field, backend enum, or canonical web link. During preview, explain any blocker in ordinary language rather than leaking internal status. Outside the four-field Frame, add one short reveal sentence that names the creator's original edge and the useful connection Cuebook made visible—for example, “你原来抓的是 BTC 的抗跌；Cuebook 把它和相对强弱、资金承接以及 30 天检查点接成了一条可观察的判断。” Mention only additions actually present in the evidence, copy, or image. Never use generic praise or promotional claims.
 
-- Start with a natural success line such as “已经替你发布好了，去 Cuebook App 看看吧。” Do not expose receipt language. Then add one short, creator-specific sentence naming the non-obvious kernel, mechanism, or why-now preserved from the confirmed Meaning Lock. Make the recognition concrete; never use generic praise, hype, certainty, or engagement bait.
-- End with at most one optional question. Prefer inviting the creator to share the finished idea from the Cuebook App with another AI for a fresh judgment. Depending on context, the single invitation may instead ask for another signal or intuition, or—only for an eligible directional single-asset idea when the Paper tools are available—offer to record the idea as a **simulated Paper Trade** for later review. Omit the Paper option for non-directional or non-settleable content.
-- The App owns the share action and share entry; ordinary publication never does. When the creator chooses the App share UI, use this one-sentence copy: “这是 Cuebook Agent 帮我完善并记录的交易想法，想听听你怎么判断；请用 Cuebook 打开，尚未连接时按提示安装并连接：<Cuebook 分享入口>” Generate the entry from the exact versioned Frame ref in the validated publication receipt, binding both `frame_id` and `release_id` (or one opaque token that resolves to that exact pair), never `frame_id` alone or a later-current release. Do not expose raw identifiers, fabricate an entry, or repurpose `canonical_url`; if the App share UI is unavailable, omit the share invitation.
-- The offer is not authorization. Do not call `preview_paper_order` or `place_paper_order`, infer size, price, or order type, or create a simulated position until the creator explicitly opts in. After opt-in, gather any required order terms, show the Paper order preview, and obtain explicit placement intent before `place_paper_order`.
-
-Keep the handoff to two or three short sentences. For example: “已经替你发布好了，去 Cuebook App 看看吧。你这条观点最有辨识度的是「___」，这条判断已经完整保留下来了。要不要在 App 里把它分享给另一个 AI，听听一个不同判断？” After a withdrawal say “已撤回.” Audit details remain internal unless the creator asks.
+After a valid publication receipt, follow the **Public Surface** section in [Frame Publish Workflow](references/frame-publish-workflow.md). Stop the network flow there: no `get_frame`, web-page readback, `canonical_url`, or extra verification.
 
 ## Cue-Assisted One-Round Interview
 
@@ -120,13 +127,13 @@ Present one compact text-only decision before spending time on pixels:
 
 The runner must verify creator ownership, numerical source support, text-image division, future-time integrity, stable bindings, accessible SVG, exact dimensions, decodable and materially painted PNGs, copy fit, and collision-free mobile rendering. Retry only the failed query, copy, or raster stage.
 
-- Warm target: 30–60 seconds for one complete Frame. A cold connector or browser start may take up to 120 seconds.
+- Warm target: 30–60 seconds from a ready connector to one complete Frame; a cold connector or browser start may take up to 120 seconds. Treat these as an engineering budget, never a promise or a reason to narrate waiting.
 - Use one asset-resolution step, one shared evidence plan, one batched Cuebook lane plus one bounded authoritative Web lane when material, one reconciliation pass, one Meaning Lock confirmation, and one runner invocation.
 - After selection, use the direct Fast Publish lane: one call per required mutation, one signed PUT, and only the declared media-status polling. An uncertain mutation transport may be replayed once with the same key and identical payload; never retry a domain rejection or probe with alternate payloads.
 - Do not reread the whole repository, inspect renderer source, rebuild valid stages, create a local OAuth client, or run release packaging before selection.
 - When a valid title, body, and image exist, show the complete Frame and ask only for publication or a visual/copy change. A changed title, body, asset, direction, horizon, settlement meaning, or material premise invalidates the old Meaning Lock and any dependent pixels.
 
-After the Frame, add one short handoff outside the creative: name a specific strength in the creator's idea, say how Cuebook combined market data, disclosures, and public evidence into a clearer structure, and suggest one useful next observation. Do not provide provider-by-provider coverage accounting. Keep it specific, not promotional.
+After the Frame, use the one-sentence reveal described above. It should let the creator feel exactly what became clearer: the edge Cuebook preserved, the relationship or Cue it added, and the future observation now worth watching. Do not provide provider-by-provider coverage accounting or claim value that is not visible in the result.
 
 ## Controlled Variation
 

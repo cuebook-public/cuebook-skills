@@ -1,7 +1,7 @@
 {
   "name": "cuebook",
-  "version": "0.6.0+codex.20260720133237",
-  "description": "Query Cuebook market intelligence or compile a creator-owned market viewpoint into a sourced editorial Frame.",
+  "version": "0.7.0+codex.20260721002005",
+  "description": "Use Cuebook memory and market data to sharpen a creator-owned idea and express it as one editorial Frame.",
   "author": {
     "name": "Cuebook",
     "url": "https://github.com/cuebook-public"
@@ -18,8 +18,8 @@
   "skills": "./public-skills/",
   "interface": {
     "displayName": "Cuebook",
-    "shortDescription": "Query Cuebook or create a sourced editorial Frame",
-    "longDescription": "Cuebook has two public skills. Query searches, reads, compares, and explains source-linked market intelligence without writing. Create preserves and sharpens the user's viewpoint, asks at most one optional high-leverage question, and runs one bounded Cuebook-first evidence pass before returning one recommended Frame. The public Frame contains only a title, concise body, image reference, and alt text. Its mobile-first visual can express price or indexed curves, relative strength, drawdown and recovery, rolling correlation, event windows, thresholds, causal paths, evidence tension, conditional scenarios, transparent Creator Lenses, or long-short contributions. Observed history and unresolved future time remain visibly separate; causal hypotheses stay creator-owned, retrospective selection bias is disclosed, and no future price path is fabricated. Alternatives differ structurally, not merely by color. Workflow, evidence, hashes, upload, consent, and authorization state remain backstage. Publication happens only after explicit intent; withdrawal alone requires separate consent.",
+    "shortDescription": "Sharpen a market idea and make its logic visible",
+    "longDescription": "Cuebook has two public skills. Query searches, reads, compares, and explains source-linked market intelligence without writing. Create gives a market intuition a five-beat Cuebook experience: recognize the creator's non-obvious edge, expand it with the smallest useful Cue or data relationship, lock the exact thought once, reveal one relationship visually, and preserve it with a future checkpoint. The creator remains the author. The public Frame contains only a title, reasoned body, image reference, and alt text. Its mobile-first visual can express price or indexed curves, relative strength, drawdown and recovery, rolling correlation, event windows, thresholds, causal paths, evidence tension, conditional scenarios, transparent Creator Lenses, or long-short contributions. Observed history and unresolved future time remain visibly separate; causal hypotheses stay creator-owned, retrospective selection bias is disclosed, and no future price path is fabricated. Workflow, providers, evidence lineage, hashes, upload, consent, and authorization state remain backstage. Publication happens only after explicit intent; withdrawal alone requires separate consent.",
     "developerName": "Cuebook",
     "category": "Finance",
     "capabilities": [
@@ -37,9 +37,9 @@
     "composerIcon": "./assets/icon.png",
     "logo": "./assets/icon.png",
     "defaultPrompt": [
-      "\u67e5\u8be2 USO \u6700\u65b0\u53d9\u4e8b\u3001\u5e02\u573a\u72b6\u6001\u548c\u6765\u6e90",
-      "\u6bd4\u8f83 HOOD \u4e0e COIN \u7684\u6700\u65b0\u4f30\u503c\u53e3\u5f84\u548c\u5e02\u573a\u8868\u73b0",
-      "\u6211\u89c9\u5f97 BTC \u672a\u6765 30 \u5929\u4f1a\u6bd4\u73b0\u5728\u9ad8\uff0c\u5e2e\u6211\u505a\u6210\u6807\u9898\u3001\u6b63\u6587\u548c\u914d\u56fe\u5b8c\u6574\u7684 Frame"
+      "查询 USO 最新叙事、市场状态和来源",
+      "比较 HOOD 与 COIN 的最新估值口径和市场表现",
+      "我觉得 BTC 未来 30 天会比现在高，帮我做成标题、正文和配图完整的 Frame"
     ]
   },
   "mcpServers": "./.mcp.json"
