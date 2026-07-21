@@ -11,7 +11,7 @@ The repository also publishes exactly two self-contained Agent Skills:
 - `query-cuebook`
 - `create-cuebook-content`
 
-Those layers are related but not interchangeable. MCP provides typed Cuebook data and authorized Frame operations. The Skills provide the creator interview, reconciled evidence plan, pre-render Meaning Lock, mobile visual composition, and safe publication workflow.
+Those layers are related but not interchangeable. MCP provides typed Cuebook data and authorized Frame operations. The Skills provide natural creator conversation, a reconciled evidence plan, confirmation before rendering, mobile visual composition, and safe publication behavior.
 
 ## Support matrix
 

@@ -164,7 +164,7 @@ test("frontmatter descriptions with YAML mapping punctuation are quoted", () => 
   }
 });
 
-test("public entrypoints require an install-time authenticated host connector", () => {
+test("public entrypoints check readiness quietly and never expose connector internals", () => {
   const create = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
     "utf-8",
@@ -174,19 +174,21 @@ test("public entrypoints require an install-time authenticated host connector", 
     "utf-8",
   );
   for (const [name, text] of [["create", create], ["query", query]]) {
-    assert.ok(text.indexOf("## Connection Gate") >= 0, name);
-    assert.match(text, /install-time host authentication/u, name);
+    assert.ok(text.indexOf("## Quiet Readiness Check") >= 0, name);
     assert.match(text, /normal MCP result is the only runtime readiness proof/u, name);
-    assert.match(text, /run a CLI login/u, name);
-    assert.match(text, /public plugin management/u, name);
+    assert.match(text, /Do not run a CLI login/u, name);
+    assert.match(text, /Never mention the README, missing actions, Tool names/u, name);
+    assert.match(text, /at most two short sentences/u, name);
+    assert.doesNotMatch(text, /## Connection Gate/u, name);
     assert.doesNotMatch(text, /host pauses for OAuth/u, name);
     assert.doesNotMatch(text, /normal connector continuation/u, name);
     assert.doesNotMatch(text, /host OAuth initiation per user action/u, name);
   }
-  assert.ok(create.indexOf("## Connection Gate") < create.indexOf("## Fast Preview"));
-  assert.match(create, /call `get_frame_capabilities` once/u);
-  assert.ok(query.indexOf("## Connection Gate") < query.indexOf("## Routing"));
-  assert.match(query, /Run the smallest required Cuebook read as the connection check/u);
+  assert.ok(create.indexOf("## Quiet Readiness Check") < create.indexOf("## Fast Preview"));
+  assert.match(create, /silently call `get_frame_capabilities` once/u);
+  assert.ok(query.indexOf("## Quiet Readiness Check") < query.indexOf("## Routing"));
+  assert.match(query, /Silently run the smallest required Cuebook read/u);
+  assert.doesNotMatch(create, /## Meaning Lock|## Selection Freeze/u);
 });
 
 test("Codex install docs authenticate once before the first Cuebook task", () => {
@@ -205,6 +207,7 @@ test("Codex install docs authenticate once before the first Cuebook task", () =>
     assert.match(text, /codex mcp login cuebook/u);
     assert.match(text, /not_logged_in/u);
     assert.match(text, /browser approval/iu);
+    assert.match(text, /does not\s+guarantee.*browser/isu);
     assert.match(text, /normal MCP result/u);
     assert.doesNotMatch(text, /first Cuebook (?:request|call) may open a browser/iu);
     assert.doesNotMatch(text, /normal connector continuation/u);
@@ -304,13 +307,13 @@ test("creator guidance uses Cues as optional thought anchors rather than proof",
     "utf-8",
   );
   const combined = `${create}\n${query}\n${intake}`;
-  assert.match(create, /## Cue-Assisted One-Round Interview/u);
-  assert.match(create, /## Optional Idea Completion Check/u);
+  assert.match(create, /## Conversation Heuristics/u);
+  assert.match(create, /## Optional New Angle/u);
   assert.match(combined, /one `aligned` Cue/iu);
   assert.match(combined, /contrasting.*adjacent/iu);
   assert.match(combined, /not proof/iu);
   assert.match(combined, /creator-owned hypothesis/iu);
-  assert.match(combined, /Only adopted additions enter the Meaning Lock/iu);
+  assert.match(create, /Only adopted additions enter the confirmed draft/iu);
   assert.match(combined, /never treats another published view as proof, consensus, or creator adoption/iu);
 });
 
@@ -488,25 +491,23 @@ test("Frame creator flow never reads back or presents a canonical web link after
   assert.match(combined, /explicit placement intent/iu);
 });
 
-test("creator journey preserves the five-beat Cuebook experience without workflow theater", () => {
+test("creator journey feels editorial without exposing a fixed flow", () => {
   const repositoryRoot = path.resolve(PLUGIN_ROOT, "..", "..");
   const create = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
     "utf-8",
   );
   const readme = fs.readFileSync(path.join(repositoryRoot, "README.md"), "utf-8");
-  const beats = ["Recognize", "Expand", "Lock", "Reveal", "Remember"];
-  let cursor = create.indexOf("## Cuebook Experience");
-  assert.ok(cursor >= 0);
-  for (const beat of beats) {
-    const next = create.indexOf(`**${beat}.**`, cursor);
-    assert.ok(next > cursor, beat);
-    cursor = next;
-  }
+  assert.match(create, /## Creator Experience/u);
+  assert.match(create, /Behave like an attentive editor/iu);
   assert.match(create, /one continuous lift/u);
   assert.match(create, /smallest useful Cuebook memory/u);
+  assert.match(create, /Ask no question when the idea is already sufficient/u);
+  assert.match(create, /one high-leverage question at a time/u);
+  assert.match(create, /Do not present a form/u);
   assert.match(create, /connection Cuebook made visible/u);
-  assert.match(create, /Do not narrate internal stages, providers, retries, schema work/u);
+  assert.match(create, /Never announce a gate, stage, lock, workflow/iu);
+  assert.doesNotMatch(create, /\*\*Lock\.\*\*|## Meaning Lock|## Selection Freeze/u);
   assert.match(readme, /The Cuebook Experience/u);
   assert.match(readme, /without taking authorship away/u);
   assert.match(readme, /Internal Tool calls, providers, retries, hashes, and publication mechanics remain backstage/u);

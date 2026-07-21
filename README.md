@@ -59,11 +59,11 @@ Cuebook is memory and expression infrastructure for pre-trade thinking. It helps
 
 Cuebook Agent is not a research wrapper that replaces the creator's judgment. It makes the creator's judgment more legible and more useful.
 
-| Beat | What the creator should feel | What Cuebook does |
+| Experience | What the creator should feel | What Cuebook does |
 | --- | --- | --- |
 | **Recognized** | “That is the part I was actually noticing.” | Reflects the non-obvious kernel without claiming it as the agent's idea |
 | **Expanded** | “That connection gives me a better way to think.” | Adds one relevant Cue, dated relationship, comparator, mechanism, or next footprint |
-| **In control** | “This is exactly the idea I want to put my name on.” | Locks the title, reasoning, horizon, settlement rule, and visual intent once |
+| **In control** | “This is exactly the idea I want to put my name on.” | Confirms the title, reasoning, horizon, settlement meaning, and visual intent in ordinary conversation before drawing |
 | **Revealed** | “Now I can see the relationship.” | Uses one truthful curve, comparison, mechanism, scenario, or Creator Lens instead of decorating the prose |
 | **Remembered** | “I can come back and judge this later.” | Preserves the unchanged Frame with a future checkpoint, then returns the creator to Cuebook App |
 
@@ -114,10 +114,12 @@ codex plugin marketplace add cuebook-public/cuebook-skills \
 
 codex plugin add cuebook@cuebook
 
+codex mcp login cuebook
+
 codex mcp list --json
 ```
 
-Cuebook uses install-time authentication. Find the `cuebook` entry in the JSON output. If it reports `auth_status: "not_logged_in"` and no Cuebook authentication is already in progress, run `codex mcp login cuebook` once and complete the browser flow. Then run `codex mcp list --json` again. Do not start a second login after the first command succeeds.
+For a first-time installation, `codex plugin add` installs Cuebook but does not guarantee that the CLI will open a browser. Run `codex mcp login cuebook` once, complete the browser flow, and then inspect the `cuebook` entry in `codex mcp list --json`. If it is already authenticated, skip the login; after the first command succeeds, do not start a second one.
 
 One creator consent covers Cuebook's six explicit authorization domains: public research, private simulated-account reads, simulated Paper Trade actions, and private Frame read, draft, and publication actions. They remain separate server-enforced scopes, and authorization never creates a Frame or simulated order by itself. A Paper Trade still requires terms, a preview, and explicit placement intent; Cuebook never places a real-money order.
 
@@ -168,9 +170,9 @@ Connections created before the complete creator consent was introduced keep thei
 
 Keep authentication in the installation flow:
 
-1. Install the plugin. Its marketplace policy is `ON_INSTALL`.
+1. Install the plugin. Its marketplace policy is `ON_INSTALL`, but the CLI install command does not promise a browser popup.
 2. Check `codex mcp list --json`. If Cuebook is already authenticated or the host has an active authentication flow, do not start another one.
-3. Only when Cuebook reports `not_logged_in` and no flow is active, run `codex mcp login cuebook` once. Complete the browser approval and wait for the command to finish.
+3. On a fresh installation that reports `not_logged_in`, run `codex mcp login cuebook` once. Complete the browser approval and wait for the command to finish.
 4. Check the JSON status again. A browser approval page, an enabled connector, or a public plugin-manager result is not connection proof.
 5. Open one new task and make a real Cuebook request. A normal MCP result is the final end-to-end proof that Tool discovery and token exchange succeeded.
 
@@ -207,19 +209,19 @@ The complete public artifact is deliberately small:
 
 Workflow state, schema versions, candidate IDs, evidence bundles, hashes, scopes, upload progress, receipts, consent fields, and backend enums stay backstage.
 
-Eligible single-asset long and short Frames use one creator-facing settlement model across crypto, equities, ETFs, and indexes: the exact chosen deadline is fixed, then Cuebook compares the latest completed provider-official price observation at or before that deadline with the publication baseline. The creator never chooses regular hours, after hours, trading days, or next close. Before any image is rendered, one text-only Meaning Lock shows the exact copy, direction, deadline, and human settlement rule. A later “publish this” authorizes only the external write; target-price and pair overrides are the only cases that need more terms.
+Eligible single-asset long and short Frames use one creator-facing settlement model across crypto, equities, ETFs, and indexes: the exact chosen deadline is fixed, then Cuebook compares the latest completed provider-official price observation at or before that deadline with the publication baseline. The creator never chooses regular hours, after hours, trading days, or next close. Before any image is rendered, Cuebook naturally recaps the exact copy, direction, deadline, settlement meaning, and visual idea for confirmation. A later “publish this” authorizes only the external write; target-price and pair overrides are the only cases that need more terms.
 
 ## From Intuition To Expression
 
 1. **Recognize the edge.** Preserve the creator's claim, mechanism, horizon, and next observable. Once the asset is known, at most one aligned and one contrasting or adjacent Cue may become optional thinking anchors for one high-leverage question; skipping them never blocks creation.
 2. **Expand the thought.** Start the smallest Cuebook read batch and, when material current claims require it, one bounded authoritative Web batch from the same evidence plan. Prefer the one relationship, prior viewpoint, comparator, or next footprint that materially improves the thought or its visual expression. Cues remain published viewpoints rather than proof; factual sentences use evidence, while clearly framed creator inference may remain inference.
 3. **Lock the meaning.** Show the exact title, body, asset, direction, deadline, human settlement rule, and visual intent as text. Do not render until the creator confirms them.
-4. **Reveal one relationship.** Render one publication image from the frozen Meaning Lock. A request for another version changes only expression, not the claim, evidence, or settlement.
+4. **Reveal one relationship.** Render one publication image from the confirmed idea and copy. A request for another version changes only expression, not the claim, evidence, or settlement.
 5. **Remember the idea.** Publication happens only after explicit intent and writes the already confirmed Frame. A validated receipt ends the network flow; Cuebook Agent recognizes the specific idea that was preserved and returns the creator to Cuebook App without a web link or browser readback. One optional continuation may invite the creator to share that exact release with another AI, share another signal, or explicitly opt into a simulated Paper Trade for later review.
 
 The goal is not to lecture the creator or flatten the idea into generic research. Cuebook improves the expression while keeping authorship visible.
 
-Before the Meaning Lock, Cuebook may surface one or two genuinely new reasoning points from the already retrieved Cues—a missing actor, mechanism, comparator, next footprint, regime condition, or countercase. They are optional additions, never a test the creator must pass. Only what the creator adopts enters the final viewpoint.
+Before the creator confirms the copy, Cuebook may naturally surface one or two genuinely new reasoning points from the already retrieved Cues—a missing actor, mechanism, comparator, next footprint, regime condition, or countercase. They are optional additions, never a separate checkpoint or a test the creator must pass. Only what the creator adopts enters the final viewpoint.
 
 ## Designed For The Feed
 

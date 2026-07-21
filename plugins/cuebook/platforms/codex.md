@@ -15,6 +15,8 @@ codex plugin marketplace add cuebook-public/cuebook-skills \
 
 codex plugin add cuebook@cuebook
 
+codex mcp login cuebook
+
 codex mcp list --json
 ```
 
@@ -47,11 +49,11 @@ Codex loads the new Skill bundle; reauthenticate only when the connector
 explicitly reports `not_logged_in`, requires scope step-up, or the grant was
 revoked.
 
-The marketplace policy is `ON_INSTALL`. After `codex plugin add`, inspect the
-`cuebook` entry from `codex mcp list --json`. If it reports
-`auth_status: "not_logged_in"` and no authentication is already active, run
-`codex mcp login cuebook` once and complete that browser flow. Check the JSON
-status again; do not start a second login after the first succeeds.
+The marketplace policy is `ON_INSTALL`, but `codex plugin add` does not
+guarantee that the CLI will open a browser. On a first-time installation, run
+`codex mcp login cuebook` once and complete that browser flow, then inspect the
+`cuebook` entry from `codex mcp list --json`. Skip login when it is already
+authenticated; do not start a second login after the first succeeds.
 
 The installing task owns installation and that one necessary host login. It
 must not create a background test task, publish a placeholder idea, or use a

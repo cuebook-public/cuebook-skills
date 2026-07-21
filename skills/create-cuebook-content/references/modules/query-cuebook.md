@@ -4,13 +4,14 @@
 
 Provide one read-only entrance for everything the user wants to see in Cuebook. Keep retrieval and interpretation separate from creation so the same frozen query result can be inspected directly or handed to create-cuebook-content later without Query invoking it.
 
-## Connection Gate
+## Quiet Readiness Check
 
-Assume the plugin's install-time host authentication is complete. Run the smallest required Cuebook read as the connection check: `search_assets` for a named asset, `get_frame` for a release-pinned Frame, or the first read that directly answers a request without an asset. A normal MCP result is the only runtime readiness proof.
+Assume the plugin's host authentication is complete. Silently run the smallest required Cuebook read: `search_assets` for a named asset, `get_frame` for a release-pinned Frame, or the first read that directly answers a request without an asset. A normal MCP result is the only runtime readiness proof.
 
-- If the Tool is absent, cannot be called, interrupts for authentication, or returns a token, reconnect, or transport failure, preserve the request and stop. Say that the Cuebook install-time connection is not ready and ask the user to complete the plugin README setup, then retry the preserved request in one later task.
-- Use only the host-installed `cuebook` MCP connector. Do not enumerate generic MCP resources, inspect connector internals, run a CLI login, implement OAuth discovery or DCR, exchange tokens, create a custom client, store credentials in task files, open another task, or retry automatically. Do not diagnose a local marketplace plugin through ChatGPT or public plugin management.
-- If the plugin was installed in the current task, finish its install-time authentication and open one new task before querying. Do not reinstall from inside Query.
+- If the connector is absent, cannot be called, interrupts for authentication, or returns a token, reconnect, or transport failure, stop. In the user's language, say only: “Cuebook 还差一次账号连接。请完成 Cuebook 登录（Codex 可在终端运行 `codex mcp login cuebook`），然后新开一个对话，把刚才这句话原样发回来；我会直接接着查。” Adapt naturally, but keep it to at most two short sentences.
+- Never mention the README, missing actions, Tool names, MCP internals, market-data fabrication, preserved intent, or an internal process name in this response. Do not enumerate resources or diagnose the connector in the user conversation.
+- Use only the host-installed `cuebook` MCP connector. Do not run a CLI login, implement OAuth discovery or DCR, exchange tokens, create a custom client, store credentials in task files, open another task, or retry automatically.
+- If the plugin was installed in the current task, finish its host authentication and open one new task before querying. Do not reinstall from inside Query.
 
 ## Routing
 
@@ -33,7 +34,7 @@ Assume the plugin's install-time host authentication is complete. Run the smalle
 
 ## Connection and Latency
 
-- Reuse the connector's persisted OAuth session after the Connection Gate. Never repeat a login merely to refresh unchanged data or expose more Tools.
+- Reuse the connector's persisted OAuth session after the readiness check. Never repeat a login merely to refresh unchanged data or expose more Tools.
 - Resolve a named asset once. After resolution, run independent reads such as market state, candles, positioning, and cue detail concurrently when the runtime supports parallel calls.
 - Keep an observed-series window separate from any future thesis horizon. `get_candles` covers what happened; a creator's horizon remains a distinct declared field and never changes the historical baseline silently.
 - For a creator handoff involving trend, price path, volume, or relative strength, preserve the exact `get_candles` and selected `get_market_state` result envelopes plus their result refs. Do not make the model transcribe OHLCV into a second ad hoc shape.
@@ -52,7 +53,7 @@ Assume the plugin's install-time host authentication is complete. Run the smalle
 ## Query Boundary
 
 - Query may summarize and compare retrieved material and may show a factual table, curve, or report for inspection. It does not turn that material into a publish-ready voice, market post, creator viewpoint graphic, settlement claim, or release bundle.
-- A Cue-assisted `creation_handoff` may provide optional thought anchors, but it never assigns them to the creator. Adoption or rejection belongs to Create and must be explicit before any Cue-derived connection, countercase, or rule enters the creator's Meaning Lock.
+- A Cue-assisted `creation_handoff` may provide optional thought anchors, but it never assigns them to the creator. Adoption or rejection belongs to Create and must be explicit before any Cue-derived connection, countercase, or rule enters the creator's confirmed draft.
 - Query never calls any write, Paper trade, Frame mutation, correction, withdrawal, or publication tool.
 - An ambiguous request defaults to query. Choose creation only when the requested deliverable is explicitly a market post, creator viewpoint graphic, settlement protocol, release bundle, or publishing candidate. A request to generate a data table or factual chart remains Query.
 - A `creation_handoff` is data lineage, not an implicit creation request. It names reusable result refs and warnings without drafting anything.

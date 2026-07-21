@@ -24,7 +24,7 @@
 
 ---
 
-The Cuebook Plugin gives AI agents a memory and expression layer for pre-trade thinking. Cuebook Agent recognizes the creator's edge, adds the smallest useful Cue or market relationship, locks the exact meaning once, and turns it into one title, one reasoned body, and one editorial image.
+The Cuebook Plugin gives AI agents a memory and expression layer for pre-trade thinking. Cuebook Agent recognizes the creator's edge, adds the smallest useful Cue or market relationship, confirms the intended expression naturally, and turns it into one title, one reasoned body, and one editorial image.
 
 ## Install
 
@@ -35,10 +35,12 @@ codex plugin marketplace add cuebook-public/cuebook-skills \
 
 codex plugin add cuebook@cuebook
 
+codex mcp login cuebook
+
 codex mcp list --json
 ```
 
-Cuebook's marketplace policy is `ON_INSTALL`. If the `cuebook` entry reports `auth_status: "not_logged_in"` and no authentication is already in progress, run `codex mcp login cuebook` once, complete the browser flow, and check `codex mcp list --json` again. Do not start another login after the first succeeds.
+Cuebook's marketplace policy is `ON_INSTALL`, but `codex plugin add` does not guarantee that the CLI will open a browser. On a first-time installation, run `codex mcp login cuebook` once, complete the browser flow, and check `codex mcp list --json`. Skip login when Cuebook is already authenticated, and never start a second login after the first succeeds.
 
 The creator consent presents all six Cuebook scopes once: public research, private simulated-account reads, simulated Paper Trade actions, and private Frame read, draft, and publication actions. These remain independent server-enforced permissions. Granting them never publishes or trades automatically; every Paper Trade is simulated and still requires a preview plus explicit placement intent.
 
@@ -94,11 +96,11 @@ A creator-facing Frame contains exactly four fields:
 
 There is no public workflow state on the Frame. Preview blockers use plain language. After an action succeeds, Cuebook confirms only the meaningful result, such as “Published” or “Withdrawn.” Schema versions, selection IDs, source bundles, hashes, scores, scopes, upload state, receipts, consent, and credentials stay backstage.
 
-Eligible single-asset long and short Frames share one deadline rule across crypto, equities, ETFs, and indexes: Cuebook fixes the exact creator-owned deadline and compares the latest completed provider-official price observation at or before it with the publication baseline. Creators never choose sessions, trading days, or next close. Before rendering, one text-only Meaning Lock confirms the exact copy, direction, deadline, and human zero-threshold rule. “Publish this” later authorizes only the external write; only a creator-requested price target or pair needs additional terms.
+Eligible single-asset long and short Frames share one deadline rule across crypto, equities, ETFs, and indexes: Cuebook fixes the exact creator-owned deadline and compares the latest completed provider-official price observation at or before it with the publication baseline. Creators never choose sessions, trading days, or next close. Before rendering, Cuebook naturally recaps the exact copy, direction, deadline, human zero-threshold rule, and visual idea for confirmation. “Publish this” later authorizes only the external write; only a creator-requested price target or pair needs additional terms.
 
 ## Creation Model
 
-The Skill makes five beats feel like one continuous lift: recognize the creator's non-obvious kernel, expand it with one useful Cuebook connection, lock the exact thought once, reveal one relationship visually, and preserve it with a future checkpoint. The implementation keeps four layers separate:
+The Skill behaves like an attentive editor rather than exposing a sequence: it recognizes the creator's non-obvious kernel, adds one useful Cuebook connection when helpful, confirms the intended expression in ordinary conversation, reveals one relationship visually, and preserves it with a future checkpoint. The implementation keeps four layers separate:
 
 1. **Creator meaning** — the claim, mechanism, time horizon, and next observable remain creator-owned. After asset resolution, at most one aligned and one contrasting or adjacent Cue may be offered as optional thought anchors; only adopted additions enter the viewpoint.
 2. **Frozen evidence** — one shared plan starts the smallest typed Cuebook batch and, when material current claims require it, one bounded authoritative Web batch. Cues remain published viewpoints rather than proof; factual sentences use evidence, while clearly framed creator inference may remain inference. The Skill reconciles the plan once and keeps source routing and coverage gaps backstage.
@@ -111,7 +113,7 @@ If an upstream system supplies a frozen commitment and evidence set, Create chan
 
 ## Mobile-First Visuals
 
-Each preview renders one **2488 × 1056** publication PNG from the meaning lock. Cuebook uploads and binds it once. Phone and Feed surfaces show that same master in the equivalent **622 × 264** aspect-ratio box; the Skill does not create separate compact, web, thumbnail, or OG assets.
+Each preview renders one **2488 × 1056** publication PNG from the creator-confirmed draft. Cuebook uploads and binds it once. Phone and Feed surfaces show that same master in the equivalent **622 × 264** aspect-ratio box; the Skill does not create separate compact, web, thumbnail, or OG assets.
 
 The master is authored against its 622 × 264 phone display box and rasterized at 4x: one dominant geometry, at most three reader-essential groups, a 20 px primary and 16 px secondary essential type floor, minimal provenance, one material dated value when price matters, and one visible future check. Delivery-layer resizing may be introduced later without changing the authoring or MCP contract.
 
