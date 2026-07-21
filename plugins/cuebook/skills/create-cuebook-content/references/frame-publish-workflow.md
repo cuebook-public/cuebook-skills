@@ -1,61 +1,38 @@
 # Cuebook Frame Publish Workflow
 
-Read this reference only after the creator selects a Frame and explicitly asks to publish, correct, or withdraw it. These are internal transport and audit instructions. Never expose their fields as part of the public Frame.
+Read this reference only after the creator has seen one complete Frame and explicitly asks to publish, correct, or withdraw it. Keep every transport field and server state backstage.
 
-## Freeze And Render
+## Initial Publish: Three Steps
 
-Freeze the selected title, body, image, creator meaning, evidence refs, and encoded image bytes. Use one honest renderer mode:
+The selected Fast Preview is already the publication artifact. Its title, body, alt text, evidence refs, settlement meaning, PNG bytes, encoded SHA-256, and byte size are frozen before the creator says “publish.” Do not reread design references, inspect renderer source, rerender, re-audit pixels, recompute hashes, generate HTML, create local JSON contracts, or manually assemble a manifest or draft after that confirmation.
 
-- `cuebook_template`: retain optional HTML and licensed-font provenance; run DOM typography, collision, binding, capture, alt-text, byte-hash, canonical-pixel-hash, and manifest checks.
-- `finished_bitmap`: use for external or already approved pixels and by default for a selected Fast Preview. Original HTML and production font files are not required. Audit valid PNG, exact role dimensions, legibility, clipping/collision, external imagery policy, encoded-byte hash, and canonical RGBA8 pixel hash. Record the generic raster and embedded-pixel profiles without claiming a font was verified from pixels.
+Reuse the cached `get_frame_capabilities` result from task readiness. It must advertise `begin_frame_media_upload` and `complete_frame_publish`. If either is absent, explain briefly that Cuebook publishing needs an update and stop; never fall back to the legacy multi-call authoring sequence.
 
-Backend malware, decoding, EXIF/metadata, and upload-hash checks remain authoritative. Do not duplicate them as an HTML or font gate.
+1. Call `begin_frame_media_upload` once for the frozen `publication` PNG. Reuse the runner-emitted `image_sha256` and `image_byte_size`; declare PNG, 2488 × 1056, and a fresh lowercase UUIDv7.
+2. Upload the exact selected PNG once to the returned signed HTTPS PUT target. Never send image bytes through MCP, base64, or a display URL.
+3. Call `complete_frame_publish` once with the upload id, a separate fresh lowercase UUIDv7, and the already confirmed title, body, language, alt text, asset, direction, exact deadline, creator timezone, claim, and evidence refs. Map each frozen preview ref to its known `news`, `event`, `filing`, `fact`, or `user_source` kind without refetching it; use `fact` for an ordinary frozen Cuebook result whose narrower kind is not already known.
 
-Before beginning the upload, build and locally validate the immutable assembly skeleton, including the required settlement intent, title, body, encoded media hash, alt text, evidence refs, and lineage. Do not upload a market-view image while settlement is null or unsupported. Add the server-issued media and manifest binding only after registration, then validate the complete assembly once. The assembly media hash uses the encoded PNG bytes; the visual manifest's `publication` role hash uses canonical RGBA8 pixels. The manifest's publication alt text is authoritative, and any assembly duplicate must match. Do not create compact, web, thumbnail, or OG authoring roles.
+`complete_frame_publish` owns media completion and processing, raster manifest registration, draft assembly, the standard deadline contract, prepare, and the atomic publish transaction. Do not call `complete_frame_media_upload`, `get_frame_media_status`, `register_frame_visual_manifest`, `create_frame_draft`, `prepare_frame_publish`, `publish_frame`, or `get_frame` in the normal initial-publish lane.
 
-### Direct Fast Publish
+A structurally valid `FramePublicationReceiptV1` from `complete_frame_publish` is final success. Stop all network work immediately: no readback, web page, canonical URL, HTML inspection, metadata probe, or receipt verification.
 
-Use this lane for the normal case: one passed `FramePreviewV1` candidate has been selected and the creator asks to publish it.
+## Corrections And Withdrawals
 
-1. Revalidate the selected preview and its existing PNG; do not regenerate valid copy or pixels.
-2. Run the `finished_bitmap` raster audit once, compute the encoded PNG hash and canonical RGBA8 pixel hash once, and retain the preview's exact alt text.
-3. Bind the manifest directly to the selected preview candidate. A stable `preview_id#candidate_id` reference plus the canonical hash of that frozen candidate is sufficient source lineage; do not synthesize a `VisualDirectionSetV1` solely to obtain a binding id.
-4. Build and validate the `FrameDraftAssemblyV1` skeleton directly from the selected Frame projection, its existing evidence refs, and the standard settlement intent before upload. After media and manifest registration, add `FrameDraftAssemblyBindingV1` and validate the pair once. The legacy-named `intake_ref` and `direction_set_ref` lineage fields may carry stable refs to the preview and selected candidate. Do not add the optional local generation handoff.
-5. Do not create a workflow DAG, `PostV1`, `VisualDirectionSetV1`, `PublishCandidateSetV1`, release bundle, HTML page, font package, sibling candidate, or release rendition in this lane.
+The high-level Tool is for a new initial publication. An explicit correction continues through its correction draft and `prepare_frame_correction_publish` → `publish_frame_correction`. Withdrawal continues through `prepare_frame_withdraw` → first-party consent → `get_frame_action_consent` → `withdraw_frame`. Only withdrawal uses separate action consent.
 
-Use the full orchestrated artifact path only for a correction, reproducibility audit, or another internal advanced deliverable that actually consumes those artifacts. It never authorizes a public multi-image gallery; creator-facing generation remains one publication image at a time.
+## Failure Budget
 
-## Publish Sequence
+- Correct a local input error once before another call. Do not probe alternate payload shapes.
+- If a mutation may have reached the server but its transport result is unknown, replay it at most once with the same idempotency key and byte-identical payload.
+- A domain, policy, authorization, hash, or changed-payload rejection stops the flow. Preserve the frozen Frame and explain the useful next step in ordinary language; do not expose Tool names or internal states.
+- Do not manually poll processing in the initial fast lane. The server owns its bounded wait.
 
-Use the capability map in `../../assets/mcp-capability-map-v1.json` and follow this order exactly. Reuse the normal Create preflight's cached `get_frame_capabilities` result when still valid; do not call it twice merely because the creator moved from preview to publication.
-
-`get_frame_capabilities` → begin the publication upload → one signed HTTPS PUT → complete the publication upload → poll owner-only `get_frame_media_status` → `register_frame_visual_manifest` → create or update the draft with assembly plus registered binding → `prepare_frame_publish` → `publish_frame` with the returned `prepared_hash` and `publish_token`.
-
-- Never pull image bytes back through MCP, browse a display URL, use a standalone media retrieval operation, or fall back to base64.
-- Upload exactly one 2488 × 1056 PNG under the `publication` role. Feed and detail surfaces reuse it. Any future CDN resize is transparent delivery infrastructure, not a Skill-generated rendition or Frame wire role.
-- Give every mutation a fresh lowercase UUIDv7. Replay a key only with the identical payload.
-- Keep the normal remote critical path to one call per mutation: begin, complete, register, draft, prepare, and publish, plus the required owner-only status poll and one signed PUT. Do not probe the same operation with alternate payload shapes.
-- Ordinary initial publication goes directly from prepare to publish under the active publish grant and first-party publish action. It does not request or poll separate action consent.
-- Correction uses `prepare_frame_correction_publish` → `publish_frame_correction`, also without separate consent.
-- Withdrawal alone uses `prepare_frame_withdraw` → first-party consent → `get_frame_action_consent` polling → `withdraw_frame`.
-- If a required capability is absent, stop at the latest completed phase. Never use a legacy write fallback.
-- A structurally valid `publish_frame` or `publish_frame_correction` receipt is the terminal success signal. Do not call `get_frame` as a post-publish check, open or curl a Frame web page, inspect generated page HTML or metadata, or perform another network verification step.
-
-### Failure Budget
-
-- A local schema or Tool-input error is not retryable. Correct the payload locally once before making another call; never send the same invalid shape repeatedly.
-- For an uncertain transport failure after a mutation may have reached the server, replay at most once with the exact same idempotency key and byte-identical payload. Never mint a new key to recover an uncertain write.
-- A domain rejection, policy rejection, authorization error, hash conflict, changed-payload conflict, or second transport failure stops the flow at the last receipt. Explain the blocker plainly and preserve the frozen Frame; do not loop, probe adjacent Tools, or use `get_frame`, `get_frame_draft`, capabilities refresh, or browser requests as recovery polling.
-- Poll `get_frame_media_status` only for server-declared processing, with the server-provided retry timing when available. Do not turn other mutations into polling loops.
-
-The server recomputes the prepared hash and revalidates the credential, grant, client, user, scopes, policy, and token inside the publish transaction. Treat client allowlists as routing optimization, not authorization.
+OAuth, scopes, idempotency, server decoding, malware checks, canonical-pixel hashing, prepared-hash recomputation, publish-token validation, and transaction locking remain authoritative server protections. The shorter Skill path does not weaken them.
 
 ## Public Surface
 
-The creator sees only the selected Frame's `title`, `body`, `image_ref`, and `alt_text`. After a valid publish receipt, stop the publication network flow and use a natural success line such as “已经替你发布好了，去 Cuebook App 看看吧。” Follow it with one creator-specific recognition drawn from the confirmed Meaning Lock: name the non-obvious kernel Cuebook Agent preserved and, when useful, the future checkpoint that now makes the idea revisitable. This is the emotional payoff; never replace it with generic praise, certainty, engagement bait, or receipt language.
+After success, respond warmly in two or three short sentences. Say that the idea is published and invite the creator to see it in Cuebook App; name the distinctive insight Cuebook Agent helped make clear and, when useful, its future checkpoint. Never show a web URL, Frame or release id, receipt, baseline-engine detail, source eligibility, scope, upload state, or other backend language.
 
-Ask at most one optional next-step question. Prefer an invitation to share the finished idea from the Cuebook App with another AI for a fresh judgment; depending on context, ask instead for another signal or intuition, or offer to record an eligible directional idea as a simulated Paper Trade for later review. Keep the handoff to two or three short sentences. Never present `canonical_url`, a Cuebook web link, release or Frame identifiers, receipt fields, or a browser fallback.
+Ask at most one optional next step: share the finished idea from Cuebook App with another AI for a fresh judgment, share another signal or intuition, or—when Paper tools are available—offer to record a separate simulated Paper Trade. An offer is not authorization; after explicit opt-in, call `preview_paper_order` and still require explicit placement intent.
 
-The App, not the Skill or publication flow, owns sharing. Its one-sentence share copy is: “这是 Cuebook Agent 帮我完善并记录的交易想法，想听听你怎么判断；请用 Cuebook 打开，尚未连接时按提示安装并连接：<Cuebook 分享入口>” Bind the App-generated entry to the validated receipt's exact `frame_id + release_id`, or to one opaque token that resolves to that exact pair. Never bind only the mutable Frame head, expose raw identifiers, fabricate an entry from `canonical_url`, or invoke a `share_frame_to_agent` Tool. If App sharing is unavailable, omit the invitation.
-
-A Paper Trade offer is not authorization. Offer it only when the relevant Paper tools are available; do not call `preview_paper_order` or `place_paper_order`, infer order terms, or create a simulated position before explicit opt-in. After opt-in, preview the order and require explicit placement intent. On successful withdrawal say “已撤回.” Do not expose preparation, upload, draft, processing, consent, hash, scope, or credential state.
+The App, not the Skill or publication flow, owns sharing. Its one-sentence share copy is: “这是 Cuebook Agent 帮我完善并记录的交易想法，想听听你怎么判断；请用 Cuebook 打开，尚未连接时按提示安装并连接：<Cuebook 分享入口>”. The App binds that entry to the exact published release or an opaque equivalent; the Skill never fabricates one from a web URL.

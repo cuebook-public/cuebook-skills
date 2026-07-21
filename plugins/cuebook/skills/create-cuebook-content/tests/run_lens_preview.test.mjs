@@ -223,7 +223,8 @@ test("LENS computes and renders a transparent four-component Creator Lens", asyn
     assert.deepEqual(Object.keys(frame), ["title", "body", "image_ref", "alt_text"]);
     assert.equal(frame.image_ref, `${preview.candidates[0].candidate_id}/viewpoint-2488.png`);
     assert.deepEqual(JSON.parse(readFileSync(path.join(output, "frame.json"), "utf8")), frame);
-    for (const privateField of ["state", "schema_version", "candidate_id", "query_binding", "image_sha256", "receipt", "scope"]) {
+    assert.equal(preview.candidates[0].image_byte_size, validPaintedPng().length);
+    for (const privateField of ["state", "schema_version", "candidate_id", "query_binding", "image_sha256", "image_byte_size", "receipt", "scope"]) {
       assert.equal(Object.hasOwn(frame, privateField), false);
     }
   } finally {

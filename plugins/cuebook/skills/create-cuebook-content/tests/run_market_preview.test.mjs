@@ -281,6 +281,7 @@ test("MARKET compiles one sourced curve, a derived support panel, and an honest 
     assert.equal(report.release_eligible, false);
     assert.match(preview.candidates[0].frame.alt_text, /历史曲线与未来观察/u);
     assert.equal(preview.candidates[0].image_sha256, `sha256:${createHash("sha256").update(fakePng()).digest("hex")}`);
+    assert.equal(preview.candidates[0].image_byte_size, fakePng().length);
     assert.equal(Object.hasOwn(report.renders[0], "compact_image_ref"), false);
     assert.equal(Object.hasOwn(report.renders[0], "compact_audit"), false);
     assert.equal(existsSync(path.join(output, preview.candidates[0].candidate_id, "frame-feed-622.svg")), false);
@@ -288,7 +289,7 @@ test("MARKET compiles one sourced curve, a derived support panel, and an honest 
     assert.deepEqual(Object.keys(frame), ["title", "body", "image_ref", "alt_text"]);
     assert.equal(frame.image_ref, `${preview.candidates[0].candidate_id}/viewpoint-2488.png`);
     assert.deepEqual(JSON.parse(readFileSync(path.join(output, "frame.json"), "utf8")), frame);
-    for (const privateField of ["state", "schema_version", "candidate_id", "query_binding", "image_sha256", "receipt", "scope"]) {
+    for (const privateField of ["state", "schema_version", "candidate_id", "query_binding", "image_sha256", "image_byte_size", "receipt", "scope"]) {
       assert.equal(Object.hasOwn(frame, privateField), false);
     }
   } finally {

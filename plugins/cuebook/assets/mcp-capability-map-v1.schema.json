@@ -235,12 +235,7 @@
             "get_frame_capabilities",
             "begin_frame_media_upload",
             "https_put_publication_master",
-            "complete_frame_media_upload",
-            "get_frame_media_status",
-            "register_frame_visual_manifest",
-            "create_or_update_frame_draft",
-            "prepare_frame_publish",
-            "publish_frame"
+            "complete_frame_publish"
           ]
         },
         "correction_publish_sequence": {
@@ -302,10 +297,10 @@
           ],
           "properties": {
             "tool_manifest_sha256": {
-              "const": "bf4464c25623d9d44dd16f08dbb51a9cbb91e3062c813ed1c3941403d65289a2"
+              "const": "107f0c7753a89b9185152f0f4707f632c9f22101ae33ce3bedccd36eed55a0b5"
             },
             "schema_catalog_sha256": {
-              "const": "0f654cce42c03e23eab005eb76e092db6a872f5da5377e9af0e05bf126bde299"
+              "const": "100b2db0917a06874f719bf636ef75fcdfc07b8a0816d981fce46e5a6dd522c3"
             }
           }
         },

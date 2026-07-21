@@ -259,7 +259,7 @@ test("active, planned, and superseded tool surfaces stay separate", () => {
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
   );
   const active = new Set([...payload.available_tools, ...payload.required_tools].map((item) => item.tool));
-  assert.equal(payload.required_tools.length, 17);
+  assert.equal(payload.required_tools.length, 18);
   assert.deepEqual(new Set(payload.planned_tools.map((item) => item.tool)), new Set([
     "get_creator_feed",
     "compute_market_metrics",
@@ -432,9 +432,11 @@ test("initial and correction publish skip separate consent while withdrawal reta
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
   );
   const flow = payload.frame_publication_flow;
-  assert.deepEqual(flow.initial_publish_sequence.slice(-2), [
-    "prepare_frame_publish",
-    "publish_frame",
+  assert.deepEqual(flow.initial_publish_sequence, [
+    "get_frame_capabilities",
+    "begin_frame_media_upload",
+    "https_put_publication_master",
+    "complete_frame_publish",
   ]);
   assert.deepEqual(flow.correction_publish_sequence, [
     "prepare_frame_correction_publish",
@@ -474,7 +476,7 @@ test("Frame creator flow never reads back or presents a canonical web link after
   assert.equal(combined.includes("On successful readback"), false);
   assert.equal(combined.includes("unless the creator explicitly requests technical diagnostics"), false);
   assert.match(combined, /已经替你发布好了，去 Cuebook App 看看吧。/u);
-  assert.match(combined, /Never present .*canonical_url/iu);
+  assert.match(combined, /Never show a web URL/iu);
   assert.equal(combined.includes("say exactly “已发布，去 Cuebook App 看。” and stop"), false);
   assert.equal(combined.includes("Return only “已发布，去 Cuebook App 看。”"), false);
   assert.match(combined, /creator-specific/iu);
@@ -522,12 +524,12 @@ test("ordinary one-preview publish does not reconstruct the advanced release gra
     path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "references", "frame-publish-workflow.md"),
     "utf-8",
   );
-  assert.match(create, /Do not reconstruct `PostV1`, `VisualDirectionSetV1`, `PublishCandidateSetV1`/u);
-  assert.match(publish, /Direct Fast Publish/u);
-  assert.match(publish, /do not synthesize a `VisualDirectionSetV1`/u);
-  assert.match(publish, /Do not add the optional local generation handoff/u);
-  assert.match(publish, /replay at most once with the exact same idempotency key/u);
-  assert.match(publish, /never send the same invalid shape repeatedly/u);
+  assert.match(create, /let `complete_frame_publish` finish the server-owned work/u);
+  assert.match(publish, /## Initial Publish: Three Steps/u);
+  assert.match(publish, /Do not reread design references/u);
+  assert.match(publish, /Do not call `complete_frame_media_upload`/u);
+  assert.match(publish, /replay it at most once with the same idempotency key/u);
+  assert.match(publish, /Do not probe alternate payload shapes/u);
 });
 
 test("Frame publish contract pins consentless prepared and input fields", () => {
@@ -562,8 +564,8 @@ test("Frame capability map pins the current backend wire goldens", () => {
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
   );
   assert.deepEqual(payload.frame_publication_flow.wire_golden, {
-    tool_manifest_sha256: "bf4464c25623d9d44dd16f08dbb51a9cbb91e3062c813ed1c3941403d65289a2",
-    schema_catalog_sha256: "0f654cce42c03e23eab005eb76e092db6a872f5da5377e9af0e05bf126bde299",
+    tool_manifest_sha256: "107f0c7753a89b9185152f0f4707f632c9f22101ae33ce3bedccd36eed55a0b5",
+    schema_catalog_sha256: "100b2db0917a06874f719bf636ef75fcdfc07b8a0816d981fce46e5a6dd522c3",
   });
 });
 
@@ -573,7 +575,7 @@ test("Frame flow rejects reintroduced publish consent", () => {
     const filePath = path.join(root, "assets", "mcp-capability-map-v1.json");
     rewrite(filePath, (payload) => {
       const sequence = payload.frame_publication_flow.initial_publish_sequence;
-      sequence.splice(sequence.indexOf("publish_frame"), 0, "get_frame_action_consent");
+      sequence.splice(sequence.indexOf("complete_frame_publish"), 0, "get_frame_action_consent");
     });
     assert.ok(codes(validate(root)).has("FRAME_FLOW_CONTRACT"));
   });
@@ -602,9 +604,9 @@ test("Frame entry skills describe consentless publish and withdrawal-only consen
     path.join(PLUGIN_ROOT, "skills", "orchestrate-cuebook-creator-workflow", "SKILL.md"),
     "utf-8",
   );
-  assert.match(create, /prepare_frame_publish.*publish_frame/u);
+  assert.match(create, /Ordinary initial publication uses `complete_frame_publish`/u);
   assert.match(create, /Withdrawals alone retain/u);
-  assert.match(orchestrate, /Do not request or poll separate action consent for initial publication/u);
+  assert.match(orchestrate, /complete_frame_publish/u);
   assert.match(orchestrate, /Withdrawal still requires approved first-party consent/u);
   assert.doesNotMatch(create, /prepare → first-party consent bound to `prepared_hash` → publish/u);
 });

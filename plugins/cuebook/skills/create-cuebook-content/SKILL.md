@@ -130,7 +130,7 @@ The runner must verify creator ownership, numerical source support, text-image d
 
 - Warm target: 30–60 seconds from a ready connector to one complete Frame; a cold connector or browser start may take up to 120 seconds. Treat these as an engineering budget, never a promise or a reason to narrate waiting.
 - Use one asset-resolution step, one shared evidence plan, one batched Cuebook lane plus one bounded authoritative Web lane when material, one reconciliation pass, one natural text confirmation, and one runner invocation.
-- After selection, use the direct Fast Publish lane: one call per required mutation, one signed PUT, and only the declared media-status polling. An uncertain mutation transport may be replayed once with the same key and identical payload; never retry a domain rejection or probe with alternate payloads.
+- After selection, publish through exactly three remote steps: reserve the frozen image upload, perform one signed PUT, then call the high-level completion Tool once. The preview runner already emitted the PNG hash and byte size; do not run another local command, image audit, manifest build, draft build, prepare call, status poll, or readback after the creator confirms publication. An uncertain mutation transport may be replayed once with the same key and identical payload; never retry a domain rejection or probe with alternate payloads.
 - Do not reread the whole repository, inspect renderer source, rebuild valid stages, create a local OAuth client, or run release packaging before selection.
 - When a valid title, body, and image exist, show the complete Frame and ask only for publication or a visual/copy change. A changed title, body, asset, direction, horizon, settlement meaning, or material premise invalidates the old confirmation and any dependent pixels.
 
@@ -144,13 +144,13 @@ Change one truthful expressive route and avoid the last two design or attention 
 
 ## After The Creator Chooses
 
-After selection, freeze the exact title, body, image, creator meaning, evidence refs, and image bytes. Never silently rewrite them. An ordinary one-preview publication uses the direct Fast Publish lane in [Frame Publish Workflow](references/frame-publish-workflow.md): reuse the validated `FramePreviewV1` candidate and its frozen 2488 × 1056 PNG, then create only the raster audit, hashes, visual manifest, settlement intent, assembly, and binding required by Frame. Do not reconstruct `PostV1`, `VisualDirectionSetV1`, `PublishCandidateSetV1`, a workflow DAG, a release bundle, or an HTML page merely to publish an already selected preview.
+After selection, freeze the exact title, body, image, creator meaning, evidence refs, and image bytes. Never silently rewrite them. An ordinary one-preview publication uses the three-step lane in [Frame Publish Workflow](references/frame-publish-workflow.md): reuse the validated `FramePreviewV1` candidate, its sole 2488 × 1056 PNG, and the hash and byte size the runner already emitted. Reserve the upload, PUT those bytes once, and let `complete_frame_publish` finish the server-owned work. Do not reconstruct a post, direction set, candidate set, workflow graph, release bundle, HTML page, raster audit, manifest, settlement contract, draft assembly, or prepare payload merely to publish an already selected preview.
 
-Invoke `$orchestrate-cuebook-creator-workflow` only for a correction, reproducibility audit, or another internal advanced deliverable that genuinely consumes those contracts. It must not create a public multi-image gallery. In the ordinary lane, treat the selected PNG as `finished_bitmap`; HTML and font files are unnecessary and must not become a publication dependency. Reuse the frozen PNG as the sole publication master and do not produce release derivatives.
+Invoke `$orchestrate-cuebook-creator-workflow` only for a correction, reproducibility audit, or another internal advanced deliverable that genuinely consumes those contracts. It must not create a public multi-image gallery. In the ordinary lane, the selected PNG is already the sole finished publication master; HTML, font files, and release derivatives are neither required nor generated.
 
 Read [Frame Publish Workflow](references/frame-publish-workflow.md) before upload or publication. Keep internal wire type names, hashes, mutation keys, and server states inside that workflow—not in the creator-facing Frame.
 
-Ordinary publication uses `prepare_frame_publish` → `publish_frame`; correction follows its matching prepare → publish pair without separate action consent. Withdrawals alone retain first-party consent and consent-status polling.
+Ordinary initial publication uses `complete_frame_publish`. Correction follows its matching prepare → publish pair without separate action consent. Withdrawals alone retain first-party consent and consent-status polling.
 
 ### Standard Deadline Settlement
 

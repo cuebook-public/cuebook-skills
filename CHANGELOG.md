@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.9.0 — 2026-07-21
+
+- Reduced ordinary Frame publication after approval to one upload reservation, one signed image PUT, and one high-level publish call; media processing, manifest registration, draft assembly, preparation, and baseline capture now stay server-side.
+- Reused the preview runner's frozen PNG hash and byte size so publication no longer rereads design references, reruns image audits, rebuilds release contracts, polls media, or performs post-publish readback.
+- Added the fast initial-publish MCP contract and the deadline observation policy that can seal a persisted realtime price or provider-official completed close already shown by Cuebook.
+
 ## 0.8.0 — 2026-07-21
 
 - Clarified the in-place Codex update path for local-checkout marketplaces, which refresh with `codex plugin add` and do not support `marketplace upgrade`.

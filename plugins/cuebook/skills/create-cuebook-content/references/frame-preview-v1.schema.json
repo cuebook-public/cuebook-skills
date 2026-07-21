@@ -56,7 +56,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["candidate_id", "angle", "visual_kind", "template_id", "frame", "image_sha256", "evidence_refs", "quality_checks"],
+        "required": ["candidate_id", "angle", "visual_kind", "template_id", "frame", "image_sha256", "image_byte_size", "evidence_refs", "quality_checks"],
         "properties": {
           "candidate_id": {"type": "string", "pattern": "^FPREV_CAND_[A-Za-z0-9_:-]{4,}$"},
           "angle": {"enum": ["conviction", "evidence", "mechanism"]},
@@ -74,6 +74,7 @@
             }
           },
           "image_sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+          "image_byte_size": {"type": "integer", "minimum": 1, "maximum": 26214400},
           "evidence_refs": {"$ref": "#/$defs/stringSet"},
           "quality_checks": {
             "type": "array",

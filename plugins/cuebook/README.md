@@ -46,7 +46,7 @@ The creator consent presents all six Cuebook scopes once: public research, priva
 
 The installing task owns installation and that one necessary host login. It must not create a background test task, publish a placeholder, or diagnose this local marketplace through a public ChatGPT plugin manager. Open one new Codex task only after Cuebook is enabled and no longer reports `not_logged_in`, then enter the real query or market idea. The final readiness proof is a normal MCP result in that task, not a browser approval screen or connector status alone. If authentication fails, stop instead of retrying, reinstalling, or opening more tasks. OAuth credentials stay in the connector, never in a Skill or generated artifact.
 
-Use `--ref v0.8.0` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
+Use `--ref v0.9.0` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
 
 ## Update
 

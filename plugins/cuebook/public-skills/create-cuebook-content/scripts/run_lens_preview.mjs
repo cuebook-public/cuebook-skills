@@ -2,7 +2,7 @@
 // Validate and run Cuebook's transparent Creator Lens preview path.
 
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, realpathSync, statSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -343,6 +343,7 @@ async function renderCandidate(expression, candidate, outputRoot, dependencies) 
     template_id: expression.grammar,
     image_ref: path.relative(outputRoot, pngPath).split(path.sep).join("/"),
     image_sha256: sha256(pngPath),
+    image_byte_size: statSync(pngPath).size,
     duration_ms: Date.now() - startedAt,
     expression_ref: path.relative(outputRoot, expressionPath).split(path.sep).join("/"),
     svg_ref: path.relative(outputRoot, svgPath).split(path.sep).join("/"),
@@ -398,6 +399,7 @@ export async function runLensPreviewJob(job, outputDir, dependencies = {}) {
       template_id: rendered.template_id,
       frame: { ...candidate.frame, image_ref: rendered.image_ref, alt_text: rendered.alt_text },
       image_sha256: rendered.image_sha256,
+      image_byte_size: rendered.image_byte_size,
       evidence_refs: candidate.evidence_refs,
       quality_checks: QUALITY_CHECKS,
     }],

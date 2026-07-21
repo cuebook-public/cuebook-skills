@@ -79,6 +79,7 @@ const isSubset = (a, b) => [...a].every((item) => b.has(item));
 const FRAME_TOOL_SCOPES = new Map([
   ["get_frame_capabilities", "read:public"],
   ["begin_frame_media_upload", "cuebook.frame.write"],
+  ["complete_frame_publish", "cuebook.frame.publish"],
   ["complete_frame_media_upload", "cuebook.frame.write"],
   ["get_frame_media_status", "cuebook.frame.write"],
   ["register_frame_visual_manifest", "cuebook.frame.write"],
@@ -169,12 +170,7 @@ const FRAME_PUBLICATION_FLOW = {
     "get_frame_capabilities",
     "begin_frame_media_upload",
     "https_put_publication_master",
-    "complete_frame_media_upload",
-    "get_frame_media_status",
-    "register_frame_visual_manifest",
-    "create_or_update_frame_draft",
-    "prepare_frame_publish",
-    "publish_frame",
+    "complete_frame_publish",
   ],
   correction_publish_sequence: [
     "prepare_frame_correction_publish",
@@ -209,8 +205,8 @@ const FRAME_PUBLICATION_FLOW = {
   ],
   publish_input_omitted_fields: ["consent_request_id"],
   wire_golden: {
-    tool_manifest_sha256: "bf4464c25623d9d44dd16f08dbb51a9cbb91e3062c813ed1c3941403d65289a2",
-    schema_catalog_sha256: "0f654cce42c03e23eab005eb76e092db6a872f5da5377e9af0e05bf126bde299",
+    tool_manifest_sha256: "107f0c7753a89b9185152f0f4707f632c9f22101ae33ce3bedccd36eed55a0b5",
+    schema_catalog_sha256: "100b2db0917a06874f719bf636ef75fcdfc07b8a0816d981fce46e5a6dd522c3",
   },
   mutation_idempotency: "distinct_lowercase_uuidv7_per_command",
   replay_policy: "same_key_same_payload_returns_receipt_changed_payload_conflict",
@@ -384,13 +380,13 @@ export function validate(pluginRoot) {
     setEq(frameTools, new Set(FRAME_TOOL_SCOPES.keys())),
     "FRAME_TOOL_SET",
     "mcp-capability-map-v1.json.required_tools",
-    "Frame Phase B must expose exactly the frozen upload, draft, publish, correction, withdrawal-consent, and full-Frame read operations.",
+    "Frame MCP must expose the fast initial publication Tool plus the compatible upload, draft, correction, withdrawal-consent, and full-Frame operations.",
   );
   check(
     setEq(requiredTools, frameTools),
     "REQUIRED_TOOL_SET",
     "mcp-capability-map-v1.json.required_tools",
-    "Active required tools must contain only the frozen 17-Tool Frame family.",
+    "Active required tools must contain only the current 18-Tool Frame family.",
   );
   check(
     setEq(plannedTools, PLANNED_TOOLS),

@@ -19,6 +19,7 @@ function candidate(index = 1, angle = "conviction", template = "verdict") {
       alt_text: `BTC 相对强势、资金迁移假设与 30 天观察窗口的观点图，版本 ${index}`,
     },
     image_sha256: HASH,
+    image_byte_size: 1,
     evidence_refs: ["RES_MARKET_STATE"],
     quality_checks: [...CHECKS],
   };

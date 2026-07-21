@@ -150,6 +150,7 @@ export function validate(payload, assetRoot = null) {
           errors.push(issue("IMAGE_DECODE", `${candidatePath}.frame.image_ref`, `Fast preview must be a fully decodable PNG: ${error.message}`));
         }
         if (candidate.image_sha256 !== sha256(file)) errors.push(issue("IMAGE_HASH", `${candidatePath}.image_sha256`, "Preview PNG hash does not match the paired image."));
+        if (candidate.image_byte_size !== statSync(file).size) errors.push(issue("IMAGE_SIZE", `${candidatePath}.image_byte_size`, "Preview PNG byte size does not match the paired image."));
       }
     }
   });
