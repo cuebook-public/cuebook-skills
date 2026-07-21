@@ -29,6 +29,12 @@ const MJS_SHIM_IMPORT = "../../../scripts/validate_json_schema.mjs";
 const MJS_SHIM_LOCAL = "./validate_json_schema.mjs";
 const EXCLUDED_DIR_NAMES = new Set(["__pycache__", ".pytest_cache", "tests"]);
 const MODULE_EXCLUDED_DIR_NAMES = new Set([...EXCLUDED_DIR_NAMES, "agents"]);
+// Cross-repository compatibility fixtures remain in source control for tests,
+// but are not runtime instructions and must not anchor creator behavior.
+const EXCLUDED_RUNTIME_FILE_NAMES = new Set([
+  "run_expression_lab.mjs",
+  "skill-assembly-golden.json",
+]);
 const MODULE_RESOURCE_DIRS = "references|scripts|templates|assets|evals|tests";
 const PUBLIC_SKILL_LIMIT = 2;
 const MIN_DISCOVERY_REDUCTION_PERCENT = 60;
@@ -90,6 +96,7 @@ export function copySkillDir(source, target) {
     dereference: true,
     filter: (src) => (
       !EXCLUDED_DIR_NAMES.has(path.basename(src))
+      && !EXCLUDED_RUNTIME_FILE_NAMES.has(path.basename(src))
       && !/\.test\.(?:mjs|cjs)$/u.test(path.basename(src))
     ),
   });
@@ -103,6 +110,7 @@ export function copyModuleResources(source, target) {
     filter: (src) => (
       path.resolve(src) !== sourceSkill
       && !MODULE_EXCLUDED_DIR_NAMES.has(path.basename(src))
+      && !EXCLUDED_RUNTIME_FILE_NAMES.has(path.basename(src))
       && !/\.test\.(?:mjs|cjs)$/u.test(path.basename(src))
     ),
   });

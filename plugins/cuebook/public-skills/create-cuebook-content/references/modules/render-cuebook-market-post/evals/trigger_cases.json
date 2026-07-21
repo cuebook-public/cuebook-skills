@@ -31,7 +31,7 @@
   },
   {
     "case_id": "creator-view-not-correction",
-    "input": "I think BTC will be higher in 30 days. Strengthen this view into a Frame without beginning by lecturing me about what is wrong.",
+    "input": "I think BTC will be higher in three weeks. Strengthen this view into a Frame without beginning by lecturing me about what is wrong.",
     "should_trigger": true,
     "expected_reason": "The creator wants their own view strengthened and expressed as a Frame while evidence remains supportive rather than correction-first."
   },

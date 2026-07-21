@@ -5,7 +5,7 @@
     "Turn this HOOD trade intuition into a naturally voiced Frame and show a five-day observation window in the visual.",
     "After checking MU's latest data, create a Frame body and a core curve visual.",
     "Turn my selected news, narrative, and trade idea into a Frame publish candidate.",
-    "BTC has refused to break lower, and I think it will be higher in 30 days. Turn my thesis about capital rotating from US equities into BTC into a publishable Frame.",
+    "BTC has refused to break lower, and I think it will be higher in two weeks. Turn my thesis about capital rotating from US equities into BTC into a publishable Frame.",
     "Do not use only Nvidia as a proxy for AI. Find three to eight transparent proxies and build my own observation Lens and Frame.",
     "I want to express that the market is rewarding cash-flow quality and punishing leverage; show both sleeves, weights, and contributions in the Frame."
   ],
@@ -26,10 +26,10 @@
     },
     {
       "prompt": "I think oil prices will rise.",
-      "route": "create-cuebook-content completes and resolves the rigid asset, horizon, and direction, then uses at most one aligned and one contrasting or adjacent Cue as optional footholds for one highest-leverage question"
+      "route": "create-cuebook-content resolves the asset and direction, then asks the creator to state a horizon or request one or two Cue-informed proposals; it never supplies a default duration"
     },
     {
-      "prompt": "I am bullish on BTC for the next 30 days. Do it now and do not ask more questions.",
+      "prompt": "I am bullish on BTC for the next ten days. Do it now and do not ask more questions.",
       "route": "create-cuebook-content skips both Cue interviewing and the optional completion check, starts the shared read plus one-preview path immediately, and does not ask for a price"
     },
     {

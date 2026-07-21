@@ -2,7 +2,15 @@
 
 The formula Skill compiles semantics. Cuebook MCP owns registration, observations, state transitions, and outcome receipts.
 
-## Freeze and publish
+## Ordinary initial publication
+
+Do not use this advanced formula-binding protocol for an ordinary new single-asset `long` or `short` Frame. The creator-facing path freezes the creator-owned exact deadline and calls `complete_frame_publish` after one image upload. That high-level Tool owns media completion, the standard zero-threshold deadline contract, preparation, and atomic publication. Never fall back to `create_frame_draft` → `prepare_frame_publish` → `publish_frame` because the high-level call is unavailable or rejects an input; stop and report the useful next step instead.
+
+No duration is supplied by settlement policy. The Skill passes only a horizon the creator stated or explicitly accepted after requesting Cue-informed timing help.
+
+## Advanced formula binding
+
+The remainder applies only when an explicit advanced deliverable genuinely requires a nonstandard formula family or reproducibility contract. It is not the normal initial-publication recipe.
 
 There is no standalone settlement-registration Tool. Put the frozen settlement intent, claim hash, and formula hash inside `FrameDraftAssemblyV1`; then use the registered visual binding to create or update the Frame draft. `prepare_frame_publish` validates the draft and returns a prepared hash, short-lived publish token, and preview. `publish_frame` atomically freezes the Frame release, visual binding, and Settlement Contract.
 

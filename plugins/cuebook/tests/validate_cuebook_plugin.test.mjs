@@ -554,6 +554,50 @@ test("creator journey feels editorial without exposing a fixed flow", () => {
   assert.match(readme, /Internal Tool calls, providers, retries, hashes, and publication mechanics remain backstage/u);
 });
 
+test("creator owns the horizon and Cuebook timing help remains opt-in", () => {
+  const create = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const intake = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "intake-cuebook-viewpoint", "SKILL.md"),
+    "utf-8",
+  );
+  const schema = JSON.parse(fs.readFileSync(
+    path.join(
+      PLUGIN_ROOT,
+      "skills",
+      "intake-cuebook-viewpoint",
+      "references",
+      "viewpoint-intake-v1.schema.json",
+    ),
+    "utf-8",
+  ));
+  const combined = `${create}\n${intake}`;
+  assert.match(combined, /There is no default duration/iu);
+  assert.match(combined, /creator-stated horizon always outranks Cuebook inference/iu);
+  assert.match(combined, /How long should this view be tested.*Cuebook to suggest a horizon/isu);
+  assert.match(combined, /one or two.*proposals/isu);
+  assert.match(combined, /must accept or edit/iu);
+  assert.match(combined, /Never copy another thesis's expiry/iu);
+  assert.match(combined, /before copy, pixels, settlement, or publication/iu);
+  assert.doesNotMatch(combined, /48H \/ 30D \/ 90D/u);
+  assert.doesNotMatch(create, /Prefer `BTC · 30D LONG`/u);
+
+  const duration = schema.properties.fields.properties.horizon.properties.intent.oneOf[0];
+  const instant = schema.properties.fields.properties.horizon.properties.intent.oneOf[1];
+  assert.deepEqual(duration.properties.unit.enum, ["hour", "calendar_day"]);
+  assert.equal(duration.properties.session_policy.const, "at_instant");
+  assert.equal(instant.properties.session_policy.const, "at_instant");
+
+  const codex = JSON.parse(fs.readFileSync(
+    path.join(PLUGIN_ROOT, ".codex-plugin", "plugin.json"),
+    "utf-8",
+  ));
+  assert.ok(codex.interface.defaultPrompt.some((prompt) => /ask for my horizon|help me choose/iu.test(prompt)));
+  assert.ok(codex.interface.defaultPrompt.every((prompt) => !/\b30[- ]day|\b30D\b/iu.test(prompt)));
+});
+
 test("ordinary one-preview publish does not reconstruct the advanced release graph", () => {
   const create = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),

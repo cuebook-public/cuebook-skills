@@ -115,7 +115,7 @@ Write one sentence for `form_from_content`. If it could describe an unrelated st
 - Use creator-adaptive color through registered presets. Calm research, urgent calls, technical setups, personal stories, and macro conflict should not share one default visual voice.
 - Use public language. Hide workflow state, evidence counts, database field names, and settlement machinery.
 - Show settlement text outside the image unless its level or deadline is itself the argument.
-- Do not print a mutable current/entry price before publication unless a real backend quote/entry lock ref is bound. Prefer `BTC · 30D LONG` or equivalent asset/horizon/direction wording; do not confuse a changing quote with a frozen target or settlement level.
+- Do not print a mutable current/entry price before publication unless a real backend quote/entry lock ref is bound. Use the actual creator-owned clock, for example `BTC · TO AUG 14 · LONG`, or equivalent asset/horizon/direction wording; do not confuse a changing quote with a frozen target or settlement level.
 - When horizon, observation window, or settlement timing matters, make it legible as a separate marker from the solid observed series.
 - Bind every displayed market fact or number. Factual and derived bindings must resolve to a declared fact or data-requirement ref; creator opinions resolve to a declared input ref and use `request_class: creator_judgment`.
 - Observed and reported material uses solid geometry. Conditional or future paths use dashed geometry.

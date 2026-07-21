@@ -18,12 +18,20 @@
       "route": "query-cuebook first, then intake-cuebook-viewpoint offers once to capture the view"
     },
     {
-      "prompt": "Bullish USO for 30 days with entry at 78.5; create the visual and publish.",
+      "prompt": "Bullish USO through month-end with entry at 78.5; create the visual and publish.",
       "route": "create-cuebook-content directly; the minimum view contract is already complete and the volunteered price is preserved without another price prompt"
     },
     {
-      "prompt": "Bullish BTC for 30 days. I have no more signals, so proceed with this.",
+      "prompt": "Bullish BTC for two weeks. I have no more signals, so proceed with this.",
       "route": "record the optional creator interview as skipped and hand off immediately; do not repeat it or ask for a target price"
+    },
+    {
+      "prompt": "I am bullish on TSM, but I do not know what horizon fits. Use relevant Cuebook Cues to help me choose.",
+      "route": "resolve TSM, retrieve the smallest relevant Cue and catalyst context, offer one or two reasoned horizon proposals, and wait for the creator to accept or edit one before rendering"
+    },
+    {
+      "prompt": "I am bullish on NVDA. Make the horizon whatever is standard and publish it.",
+      "route": "explain naturally that Cuebook has no standard duration, propose one reasoned horizon only after treating this as a request for help, and require the creator to accept or edit it before rendering"
     },
     {
       "prompt": "I am only chatting; do not record this.",

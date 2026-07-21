@@ -11,7 +11,7 @@
     {
       "name": "cuebook",
       "source": "./",
-      "version": "0.9.6",
+      "version": "0.9.7",
       "strict": false,
       "description": "Query Cuebook market intelligence or turn a creator-owned market idea into a sourced editorial Frame",
       "category": "Finance",

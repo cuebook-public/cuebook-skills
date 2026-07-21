@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.6"><img alt="Release v0.9.6" src="https://img.shields.io/badge/release-v0.9.6-F6C500?style=flat-square&labelColor=111111"></a>
+  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.7"><img alt="Release v0.9.7" src="https://img.shields.io/badge/release-v0.9.7-F6C500?style=flat-square&labelColor=111111"></a>
   <a href="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml"><img alt="Quality" src="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml/badge.svg?branch=main"></a>
   <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/Node.js-%E2%89%A522-3C873A?style=flat-square&labelColor=111111">
   <img alt="Two public skills" src="https://img.shields.io/badge/public_skills-2-4C6FFF?style=flat-square&labelColor=111111">
@@ -63,7 +63,7 @@ Cuebook Agent is not a research wrapper that replaces the creator's judgment. It
 | --- | --- | --- |
 | **Recognized** | “That is the part I was actually noticing.” | Reflects the non-obvious kernel without claiming it as the agent's idea |
 | **Expanded** | “That connection gives me a better way to think.” | Adds one relevant Cue, dated relationship, comparator, mechanism, or next footprint |
-| **In control** | “This is exactly the idea I want to put my name on.” | Confirms the title, reasoning, horizon, settlement meaning, and visual intent in ordinary conversation before drawing |
+| **In control** | “This is exactly the idea I want to put my name on.” | Preserves the creator's stated horizon—or offers Cue-informed timing only when requested—then confirms the title, reasoning, settlement meaning, and visual intent before drawing |
 | **Revealed** | “Now I can see the relationship.” | Uses one truthful curve, comparison, mechanism, scenario, or Creator Lens instead of decorating the prose |
 | **Remembered** | “I can come back and judge this later.” | Preserves the unchanged Frame with a future checkpoint, then returns the creator to Cuebook App |
 
@@ -134,14 +134,14 @@ What changed in BTC relative to US equities this week?
 ```
 
 ```text
-I think BTC's resilience could lead to another move higher over the next 30 days.
+I think BTC's resilience could lead to another move higher through the end of this month.
 Turn that idea into a Frame.
 ```
 
 > [!NOTE]
 > Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly two public entrypoints; internal modules load only when needed.
 
-For a reproducible, intentionally frozen install, add `--ref v0.9.6` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
+For a reproducible, intentionally frozen install, add `--ref v0.9.7` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
 
 ## Updating
 
@@ -203,7 +203,7 @@ The complete public artifact is deliberately small:
 ```json
 {
   "title": "BTC is holding while risk assets fade",
-  "body": "Relative resilience is the signal. Over the next 30 days, I am watching whether it survives the next equity sell-off and expands into a broader crypto bid.",
+  "body": "Relative resilience is the signal. Through the month-end horizon I chose, I am watching whether it survives the next equity sell-off and expands into a broader crypto bid.",
   "image_ref": "<opaque Cuebook media reference>",
   "alt_text": "An indexed BTC-versus-equities chart with an observation boundary and two future checkpoints."
 }
@@ -211,11 +211,11 @@ The complete public artifact is deliberately small:
 
 Workflow state, schema versions, candidate IDs, evidence bundles, hashes, scopes, upload progress, receipts, consent fields, and backend enums stay backstage.
 
-Eligible single-asset long and short Frames use one creator-facing settlement model across crypto, equities, ETFs, and indexes: Cuebook freezes the same persisted price snapshot it can already display at publication, fixes the exact chosen deadline, then compares that starting point with the latest completed provider-official observation at or before the deadline. The creator never chooses regular hours, after hours, trading days, or next close. Before any image is rendered, Cuebook naturally recaps the exact copy, direction, deadline, settlement meaning, and visual idea for confirmation. A later “publish this” authorizes only the external write; target-price and pair overrides are the only cases that need more terms.
+Eligible single-asset long and short Frames use one creator-facing settlement model across crypto, equities, ETFs, and indexes: Cuebook freezes the same persisted price snapshot it can already display at publication, fixes the exact chosen deadline, then compares that starting point with the latest completed provider-official observation at or before the deadline. There is no default horizon. A creator-stated duration or date always wins; when time is missing, Cuebook asks for it and may offer one or two Cue- or catalyst-informed proposals only after the creator requests help. A proposal must be accepted or edited before rendering. The creator never chooses regular hours, after hours, trading days, or next close. Before any image is rendered, Cuebook naturally recaps the exact copy, direction, deadline, settlement meaning, and visual idea for confirmation. A later “publish this” authorizes only the external write; target-price and pair overrides are the only cases that need more terms.
 
 ## From Intuition To Expression
 
-1. **Recognize the edge.** Preserve the creator's claim, mechanism, horizon, and next observable. Once the asset is known, at most one aligned and one contrasting or adjacent Cue may become optional thinking anchors for one high-leverage question; skipping them never blocks creation.
+1. **Recognize the edge.** Preserve the creator's claim, mechanism, horizon, and next observable. Never fill time from a preset. If the creator asks for timing help, relevant Cues and catalysts may support one or two reasoned proposals, but only the creator selects the horizon. Once the asset is known, at most one aligned and one contrasting or adjacent Cue may become optional thinking anchors for one high-leverage question; skipping them never blocks creation.
 2. **Expand the thought.** Start the smallest Cuebook read batch and, when material current claims require it, one bounded authoritative Web batch from the same evidence plan. Prefer the one relationship, prior viewpoint, comparator, or next footprint that materially improves the thought or its visual expression. Cues remain published viewpoints rather than proof; factual sentences use evidence, while clearly framed creator inference may remain inference.
 3. **Lock the meaning.** Show the exact title, body, asset, direction, deadline, human settlement rule, and visual intent as text. Do not render until the creator confirms them.
 4. **Reveal one relationship.** Render one publication image from the confirmed idea and copy. A request for another version changes only expression, not the claim, evidence, or settlement.
@@ -297,7 +297,7 @@ Validation checks the repository-wide English-only policy, two-entrypoint bounda
 Release preparation has one version source and updates every pinned install ref, Plugin manifest, changelog section, and generated Skill bundle together:
 
 ```bash
-npm run release:prepare -- 0.9.6 \
+npm run release:prepare -- 0.9.7 \
   --date 2026-07-21 \
   --codex-build 20260721103045
 

@@ -4,7 +4,7 @@
   "cases": [
     {
       "case_id": "btc-relative-resilience",
-      "input": "BTC has refused to break lower, and I think it will rally again over the next 30 days. US equities have fallen sharply, and capital may be rotating back into crypto.",
+      "input": "BTC has refused to break lower, and I think it will rally again over the next two weeks. US equities have fallen sharply, and capital may be rotating back into crypto.",
       "expected_heuristic": "anomaly",
       "cue_scaffolds": [
         {"relation": "aligned", "summary": "Persistent demand may make relative resilience appear before the broader trend expands"},
@@ -32,21 +32,21 @@
     },
     {
       "case_id": "oil-risk-premium",
-      "input": "I am bullish on oil over the next 30 days. Hormuz is unstable, and insurance and rerouting costs may move before any supply interruption.",
+      "input": "I am bullish on oil through month-end. Hormuz is unstable, and insurance and rerouting costs may move before any supply interruption.",
       "expected_heuristic": "next_footprint",
       "example_interview": "You are seeing the risk premium move through the cost chain before supply is actually interrupted. If this begins to play out, will you first watch freight rates, the futures curve, or relative strength across energy assets? If there is nothing more, I will proceed with this."
     },
     {
       "case_id": "mu-margin-edge",
-      "input": "The market is focused on AI capex, but I think MU's real catalyst over the next 30 days is gross-margin recovery.",
+      "input": "The market is focused on AI capex, but I think MU's real catalyst through its next earnings update is gross-margin recovery.",
       "expected_heuristic": "blind_spot",
       "example_interview": "Your edge is not simply watching AI; it is believing the market is focused on the wrong transmission outcome. Is the market most likely to underestimate the size of the margin recovery, its duration, or its valuation impact? If there is nothing more, I will proceed with this."
     },
     {
       "case_id": "complete-viewpoint",
-      "input": "I am bullish on BTC over the next 30 days. It stayed relatively strong while US equities fell, spot demand held firm, and marginal capital may be rotating early. I want to watch BTC's relative strength versus Nasdaq.",
+      "input": "I am bullish on BTC over the next 45 days. It stayed relatively strong while US equities fell, spot demand held firm, and marginal capital may be rotating early. I want to watch BTC's relative strength versus Nasdaq.",
       "expected_heuristic": "voice_lock",
-      "example_interview": "This view is already complete: it has an anomaly, a mechanism, and a next signal. In the final expression, what must not be diluted: BTC's resilience, the cross-asset capital rotation, or the explicit 30-day call? If there is nothing more, I will proceed with this."
+      "example_interview": "This view is already complete: it has an anomaly, a mechanism, and a next signal. In the final expression, what must not be diluted: BTC's resilience, the cross-asset capital rotation, or the explicit 45-day call? If there is nothing more, I will proceed with this."
     }
   ],
   "forbidden_moves": [

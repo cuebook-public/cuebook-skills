@@ -28,7 +28,7 @@
   "starter_prompts": [
     "Show me Cuebook's latest BTC Cues, market state, and source-linked context.",
     "Compare COIN and HOOD using Cuebook's latest sourced context.",
-    "Turn my 30-day BTC view into a Frame, then offer a simulated Paper Trade."
+    "Turn my BTC view into a Frame; ask for my horizon or help me choose one from relevant Cues."
   ],
   "assets": {
     "logo": "plugins/cuebook/assets/icon.png",

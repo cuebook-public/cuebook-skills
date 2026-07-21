@@ -1,6 +1,6 @@
 {
   "name": "cuebook",
-  "version": "0.9.6+codex.20260721083933",
+  "version": "0.9.7+codex.20260721092650",
   "description": "Use Cuebook memory and market data to sharpen a creator-owned idea and express it as one editorial Frame.",
   "author": {
     "name": "Cuebook",
@@ -43,7 +43,7 @@
     "defaultPrompt": [
       "Show me Cuebook's latest BTC Cues, market state, and source-linked context.",
       "Compare COIN and HOOD using Cuebook's latest sourced context.",
-      "Turn my 30-day BTC view into a Frame, then offer a simulated Paper Trade."
+      "Turn my BTC view into a Frame; ask for my horizon or help me choose one from relevant Cues."
     ]
   },
   "mcpServers": "./.mcp.json"

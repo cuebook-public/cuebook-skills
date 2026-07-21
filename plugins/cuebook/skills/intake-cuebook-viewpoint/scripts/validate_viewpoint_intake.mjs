@@ -21,7 +21,7 @@ const TARGET_FAMILIES = ["single_asset_price_target", "pair_asset_price_targets"
 const DIRECTION_FAMILIES = ["single_asset_direction", "pair_asset_direction"];
 const HORIZON_MIN_HOURS = 1;
 const HORIZON_MAX_HOURS = 24 * 183; // six months
-const HORIZON_UNIT_MAX = { hour: HORIZON_MAX_HOURS, calendar_day: 183, market_session: 130 };
+const HORIZON_UNIT_MAX = { hour: HORIZON_MAX_HOURS, calendar_day: 183 };
 
 function isDict(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -295,6 +295,9 @@ export function validate(payload) {
       const boundsError = horizon_bounds_error(intent, receivedAt);
       if (truthy(boundsError)) {
         errors.push(issue("HORIZON_BOUNDS", "$.fields.horizon.intent", boundsError));
+      }
+      if (get(intent, "session_policy") !== "at_instant" || (get(intent, "kind") === "duration" && get(intent, "unit") === "market_session")) {
+        errors.push(issue("HORIZON_CREATOR_CLOCK", "$.fields.horizon.intent", "New creator horizons use the creator's exact clock. Market-session counts and next-close policies are not valid creator choices."));
       }
     }
     const settlementProvenance = get(settlement, "provenance");

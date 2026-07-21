@@ -2,7 +2,7 @@
 // Keep every tracked, human-readable repository file English-only.
 
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -50,7 +50,11 @@ export function validateEnglishRepo(repoRoot = DEFAULT_REPO_ROOT) {
   let textFileCount = 0;
 
   for (const relativePath of tracked) {
-    const buffer = readFileSync(path.join(repoRoot, relativePath));
+    const absolutePath = path.join(repoRoot, relativePath);
+    // `git ls-files` keeps staged or unstaged deletions in the index until the
+    // next commit. Release preparation must still validate the remaining tree.
+    if (!existsSync(absolutePath)) continue;
+    const buffer = readFileSync(absolutePath);
     if (isBinary(buffer)) continue;
     textFileCount += 1;
     errors.push(...findDisallowedCjkCharacters(buffer.toString("utf8"), relativePath));

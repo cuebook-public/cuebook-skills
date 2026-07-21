@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.9.7 — 2026-07-21
+
+- Removed every implicit creator-horizon default: explicit user timing now has absolute priority, while Cuebook may offer at most two Cue- or catalyst-informed proposals only when requested and only after creator acceptance.
+- Excluded the legacy cross-repository assembly golden from runtime Skill bundles and clarified that ordinary initial Frame publication uses the atomic completion Tool rather than the draft-and-prepare compatibility path.
+
 ## 0.9.6 — 2026-07-21
 
 - Made every tracked repository text surface English-only, including public documentation, Skill instructions, internal modules, fixtures, evaluation cases, tests, renderer copy, and generated bundles.

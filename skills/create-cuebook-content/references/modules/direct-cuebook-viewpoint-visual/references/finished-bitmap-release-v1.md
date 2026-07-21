@@ -33,7 +33,7 @@ Both modes retain exactly one 2488 x 1056 `publication` PNG. Feed and detail sur
 
 The reviewer inspects the master at full size and at a 622 x 264 phone display size without creating a second file. A `legibility: pass` includes the same attention budget as a template render: 2–3 reader-essential prose groups and at least 18 px effective type for those groups at the phone display scale. Axis labels, direct data labels, and minimal provenance do not count as extra argument groups. `imagery_policy: no_external_untrusted` means no obvious external/untrusted image is visible, or every visible external image has an approved source/right. Use `not_required` only when that policy truly does not apply.
 
-`mutable_price` is `absent` unless the displayed current/entry value is bound to a real backend `quote-lock:` or `entry-lock:` ref. A model-authored ref is invalid. Until such a backend lock exists, use relative copy such as `BTC · 30D LONG`. Historical axes and frozen target/settlement levels are different and remain allowed when source-bound.
+`mutable_price` is `absent` unless the displayed current/entry value is bound to a real backend `quote-lock:` or `entry-lock:` ref. A model-authored ref is invalid. Until such a backend lock exists, use the actual creator-owned clock in relative copy, such as `BTC · TO AUG 14 · LONG`. Historical axes and frozen target/settlement levels are different and remain allowed when source-bound.
 
 Run:
 

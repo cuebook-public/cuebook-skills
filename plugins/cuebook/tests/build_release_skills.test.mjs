@@ -91,6 +91,32 @@ test("create bundle closure keeps the fast front door and query without mandator
   });
 });
 
+test("release bundles exclude cross-repository compatibility goldens from runtime context", () => {
+  withTmpPath((tmpPath) => {
+    buildRelease(tmpPath);
+    assert.equal(
+      fs.existsSync(path.join(
+        tmpPath,
+        "release",
+        "create-cuebook-content",
+        "references",
+        "skill-assembly-golden.json",
+      )),
+      false,
+    );
+    assert.equal(
+      fs.existsSync(path.join(
+        tmpPath,
+        "release",
+        "create-cuebook-content",
+        "scripts",
+        "run_expression_lab.mjs",
+      )),
+      false,
+    );
+  });
+});
+
 test("create bundle keeps optional conversation heuristics before any price override", () => {
   withTmpPath((tmpPath) => {
     buildRelease(tmpPath);

@@ -15,25 +15,25 @@ function intake() {
       pair_asset: null,
       direction: { value: "long", provenance: "stated" },
       horizon: {
-        value: "30D",
-        intent: { kind: "duration", value: 30, unit: "calendar_day", creator_timezone: "Asia/Shanghai", session_policy: "at_instant" },
+        value: "14D",
+        intent: { kind: "duration", value: 14, unit: "calendar_day", creator_timezone: "Asia/Shanghai", session_policy: "at_instant" },
         provenance: "elicited",
       },
       price_anchor: { value: null, currency: null, kind: null, operator: null, provenance: "missing" },
       settlement: { family: "single_asset_direction", threshold_bps: "0", provenance: "policy_default" },
     },
     elicitation_log: [
-      { round: 1, asked: ["asset", "horizon"], prompt_text: "Which asset should carry the view (USO / CL / XLE), and for how long (48H / 30D / 90D)?", answered_verbatim: "USO, about one month" },
+      { round: 1, asked: ["asset", "horizon"], prompt_text: "Which asset should carry the view (USO / CL / XLE), and how long should it be tested—or should Cuebook suggest a horizon?", answered_verbatim: "USO, for two weeks" },
       { round: 2, asked: ["intuition"], prompt_text: "You mentioned Hormuz; which intuition matters most? If there is nothing more, say proceed with this.", answered_verbatim: "The risk premium will move before an actual supply interruption" },
     ],
     verification: {
       asset_resolution: { status: "pass", method: "search_assets", resolved_ref: "asset:uso", note: null },
-      horizon_validity: { status: "pass", note: "30 calendar days within 1h-6mo bounds." },
+      horizon_validity: { status: "pass", note: "14 calendar days within 1h-6mo bounds." },
       direction_consistency: { status: "pass", note: "Will rise matches long." },
       price_sanity: { status: "skipped", reference_price: null, deviation_pct: null, note: "No anchor requested." },
       target_direction: { status: "skipped", reference_price: null, note: "No target price." },
     },
-    confirmation: { card_text: "USO · 30D · Bullish · Basis: Hormuz shipping risk", confirmed: true, confirmed_at: "2026-07-16T10:02:00+08:00" },
+    confirmation: { card_text: "USO · 14D · Bullish · Basis: Hormuz shipping risk", confirmed: true, confirmed_at: "2026-07-16T10:02:00+08:00" },
     handback: {
       target: "compile-cuebook-market-view-semantics",
       eligible: true,
@@ -43,7 +43,7 @@ function intake() {
         asset_ref: "asset:uso",
         pair_asset_ref: null,
         direction: "long",
-        horizon_intent: { kind: "duration", value: 30, unit: "calendar_day", creator_timezone: "Asia/Shanghai", session_policy: "at_instant" },
+        horizon_intent: { kind: "duration", value: 14, unit: "calendar_day", creator_timezone: "Asia/Shanghai", session_policy: "at_instant" },
         settlement_family: "single_asset_direction",
         threshold_bps: "0",
         target_price: null,
@@ -188,6 +188,43 @@ test("horizon bounds one hour to six months", () => {
   payload = intake();
   payload.fields.horizon.intent = { kind: "duration", value: 48, unit: "hour", creator_timezone: "Asia/Shanghai", session_policy: "at_instant" };
   assert.ok(!codes(payload).has("HORIZON_BOUNDS"));
+});
+
+test("Cue-informed horizon remains a proposal until the creator accepts it", () => {
+  const payload = intake();
+  payload.fields.horizon = {
+    value: "through the August CPI release",
+    intent: { kind: "instant", requested_settle_at: "2026-08-12T20:30:00+08:00", creator_timezone: "Asia/Shanghai", session_policy: "at_instant" },
+    provenance: "inferred_confirmed",
+  };
+  payload.handback.seed.horizon_intent = payload.fields.horizon.intent;
+  payload.elicitation_log[0] = {
+    round: 1,
+    asked: ["asset", "horizon"],
+    prompt_text: "Which asset carries the view, and should Cuebook suggest a horizon from its Cues and catalysts?",
+    answered_verbatim: "USO. Yes—use the CPI date you proposed.",
+  };
+  let result = VALIDATOR.validate(payload);
+  assert.ok(result.valid, JSON.stringify(result.errors));
+
+  payload.elicitation_log[0].asked = ["asset"];
+  assert.ok(codes(payload).has("ELICITED_WITHOUT_LOG"));
+
+  payload.elicitation_log[0].asked = ["asset", "horizon"];
+  payload.confirmation.confirmed = false;
+  assert.ok(codes(payload).has("HANDBACK_UNCONFIRMED"));
+});
+
+test("new creator horizons reject market-session and next-close clocks", () => {
+  let payload = intake();
+  payload.fields.horizon.intent.session_policy = "next_eligible_close";
+  payload.handback.seed.horizon_intent.session_policy = "next_eligible_close";
+  assert.ok(codes(payload).has("HORIZON_CREATOR_CLOCK"));
+
+  payload = intake();
+  payload.fields.horizon.intent.unit = "market_session";
+  payload.handback.seed.horizon_intent.unit = "market_session";
+  assert.ok(codes(payload).has("HORIZON_CREATOR_CLOCK"));
 });
 
 test("long target below reference is a conflict", () => {

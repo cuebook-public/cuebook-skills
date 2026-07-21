@@ -71,7 +71,7 @@
           "additionalProperties": false,
           "required": ["value", "intent", "provenance"],
           "properties": {
-            "value": {"type": ["string", "null"], "minLength": 1, "maxLength": 40, "description": "Human window such as 48H, 30D, or 'to FOMC'."},
+            "value": {"type": ["string", "null"], "minLength": 1, "maxLength": 40, "description": "Creator-stated or creator-accepted window such as 'five days', 'two weeks', or 'through earnings'. No duration is supplied by default."},
             "intent": {
               "type": ["object", "null"],
               "description": "HorizonIntentV1-compatible shape. Bounds: at least 1 hour, at most 6 months from received_at.",
@@ -83,9 +83,9 @@
                   "properties": {
                     "kind": {"const": "duration"},
                     "value": {"type": "integer", "minimum": 1},
-                    "unit": {"enum": ["hour", "calendar_day", "market_session"]},
+                    "unit": {"enum": ["hour", "calendar_day"]},
                     "creator_timezone": {"type": "string", "minLength": 1, "maxLength": 60},
-                    "session_policy": {"enum": ["at_instant", "next_eligible_close"]}
+                    "session_policy": {"const": "at_instant"}
                   }
                 },
                 {
@@ -96,13 +96,13 @@
                     "kind": {"const": "instant"},
                     "requested_settle_at": {"type": "string", "format": "date-time"},
                     "creator_timezone": {"type": "string", "minLength": 1, "maxLength": 60},
-                    "session_policy": {"enum": ["at_instant", "next_eligible_close"]}
+                    "session_policy": {"const": "at_instant"}
                   }
                 },
                 {"type": "null"}
               ]
             },
-            "provenance": {"enum": ["stated", "elicited", "inferred_confirmed", "missing"]}
+            "provenance": {"enum": ["stated", "elicited", "inferred_confirmed", "missing"], "description": "inferred_confirmed is allowed only after the creator requested help or supplied an ambiguous time and then explicitly accepted the proposed interpretation."}
           }
         },
         "price_anchor": {

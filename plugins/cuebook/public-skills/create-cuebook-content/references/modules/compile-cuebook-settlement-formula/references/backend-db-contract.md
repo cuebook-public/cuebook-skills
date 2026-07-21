@@ -55,9 +55,11 @@ Do not encode those meanings inside `lead_asset`, ticker strings, or generic JSO
 
 ## Required Frame publication binding
 
-There is no standalone settlement-binding Tool. Resolve canonical assets and current observations through the smallest Query reads (`search_assets`, `get_market_state`, and `get_candles` when history is material), compile the formula locally, and place the frozen intent and hashes in `FrameDraftAssemblyV1`.
+Ordinary initial single-asset direction publication does not construct this binding client-side. After the creator accepts the exact horizon and rendered Frame, the Skill uploads one publication PNG and calls `complete_frame_publish`; the server owns the standard zero-threshold deadline contract, preparation, and atomic publication. A missing high-level action or domain rejection is not permission to fall back to the draft-and-prepare path.
 
-`prepare_frame_publish` is the authoritative backend gate. It resolves and validates the draft's asset, observation basis, horizon, supported interval, currency alignment, and sealed-history requirements before returning the prepared hash and publish token. `publish_frame` repeats the economic and authorization checks inside the atomic publication transaction.
+There is no standalone settlement-binding Tool for an explicitly requested advanced formula deliverable. Resolve canonical assets and current observations through the smallest Query reads (`search_assets`, `get_market_state`, and `get_candles` when history is material), compile the formula locally, and place the frozen intent and hashes in `FrameDraftAssemblyV1` only for that advanced compatibility path.
+
+Within that advanced path, `prepare_frame_publish` is the authoritative backend gate. It resolves and validates the draft's asset, observation basis, horizon, supported interval, currency alignment, and sealed-history requirements before returning the prepared hash and publish token. `publish_frame` repeats the economic and authorization checks inside the atomic publication transaction.
 
 These gates validate facts and contract compatibility. They do not choose the creator's direction, target, operator, benchmark, deadline, or risk threshold.
 
