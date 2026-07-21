@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.9.4 — 2026-07-21
+
+- Curated the Claude Code marketplace to exactly two self-contained public Skills, preventing its conventional `skills/` scan from also loading the 38 internal source modules.
+- Added Claude marketplace version pinning, release automation, inventory regression checks, and released-tag installation guidance.
+
 ## 0.9.3 — 2026-07-21
 
 - Separated explicit authentication, missing-plugin discovery, and network or proxy failures so an authenticated creator is never sent through duplicate OAuth after a transport error.

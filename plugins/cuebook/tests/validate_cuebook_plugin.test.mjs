@@ -50,7 +50,7 @@ test("valid plugin package", () => {
   assert.ok(modules.routing_rules.create_deliverables.includes("creator_viewpoint_graphic"));
 });
 
-test("Claude Code marketplace reuses the two public Skills and canonical MCP config", () => {
+test("Claude Code marketplace explicitly exposes only two self-contained Skills", () => {
   const repositoryRoot = path.resolve(PLUGIN_ROOT, "..", "..");
   const marketplace = JSON.parse(
     fs.readFileSync(path.join(repositoryRoot, ".claude-plugin", "marketplace.json"), "utf-8"),
@@ -58,8 +58,17 @@ test("Claude Code marketplace reuses the two public Skills and canonical MCP con
   assert.equal(marketplace.name, "cuebook");
   assert.equal(marketplace.plugins.length, 1);
   assert.equal(marketplace.plugins[0].name, "cuebook");
-  assert.equal(marketplace.plugins[0].source, "./plugins/cuebook");
-  assert.equal(Object.hasOwn(marketplace.plugins[0], "version"), false);
+  assert.equal(marketplace.plugins[0].source, "./");
+  assert.equal(marketplace.plugins[0].strict, false);
+  assert.deepEqual(marketplace.plugins[0].skills, [
+    "./skills/query-cuebook",
+    "./skills/create-cuebook-content",
+  ]);
+  for (const skillRoot of marketplace.plugins[0].skills) {
+    assert.ok(fs.existsSync(path.join(repositoryRoot, skillRoot, "SKILL.md")), skillRoot);
+  }
+  assert.equal(marketplace.plugins[0].mcpServers, "./plugins/cuebook/.mcp.json");
+  assert.ok(fs.existsSync(path.join(repositoryRoot, marketplace.plugins[0].mcpServers)));
 
   const manifest = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, ".claude-plugin", "plugin.json"), "utf-8"),
@@ -67,6 +76,7 @@ test("Claude Code marketplace reuses the two public Skills and canonical MCP con
   const expectedVersion = JSON.parse(
     fs.readFileSync(path.resolve(PLUGIN_ROOT, "..", "..", "package.json"), "utf-8"),
   ).version;
+  assert.equal(marketplace.plugins[0].version, expectedVersion);
   assert.equal(manifest.name, "cuebook");
   assert.equal(manifest.version.split("+")[0], expectedVersion);
   assert.equal(manifest.skills, "./public-skills/");

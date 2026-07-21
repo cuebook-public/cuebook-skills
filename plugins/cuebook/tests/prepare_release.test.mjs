@@ -41,12 +41,20 @@ function fixture(root, { unreleased = "- Added one release feature." } = {}) {
     name: "cuebook",
     version: "0.6.0",
   });
+  json(path.join(root, ".claude-plugin/marketplace.json"), {
+    name: "cuebook",
+    plugins: [{ name: "cuebook", source: "./", version: "0.6.0", strict: false }],
+  });
   text(
     path.join(root, "README.md"),
     "[Release v0.6.0](https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.6.0)\nrelease-v0.6.0\n`--ref v0.6.0`\nnpm run release:prepare -- 0.6.0\n",
   );
   text(path.join(root, "plugins/cuebook/README.md"), "Use `--ref v0.6.0`.\n");
   text(path.join(root, "plugins/cuebook/platforms/codex.md"), "Pin `--ref v0.6.0`.\n");
+  text(
+    path.join(root, "plugins/cuebook/platforms/claude-code.md"),
+    "Install `cuebook-public/cuebook-skills@v0.6.0`.\n",
+  );
   text(
     path.join(root, "CHANGELOG.md"),
     `# Changelog\n\n## Unreleased\n\n${unreleased}\n\n## 0.6.0 — 2026-07-20\n\n- Previous release.\n`,
@@ -83,6 +91,14 @@ test("prepares every public version surface while preserving catalog version", (
     assert.equal(
       JSON.parse(fs.readFileSync(path.join(root, "plugins/cuebook/.claude-plugin/plugin.json"))).version,
       "0.7.0",
+    );
+    assert.equal(
+      JSON.parse(fs.readFileSync(path.join(root, ".claude-plugin/marketplace.json"))).plugins[0].version,
+      "0.7.0",
+    );
+    assert.match(
+      fs.readFileSync(path.join(root, "plugins/cuebook/platforms/claude-code.md"), "utf8"),
+      /cuebook-skills@v0\.7\.0/u,
     );
     const readme = fs.readFileSync(path.join(root, "README.md"), "utf8");
     assert.match(readme, /releases\/tag\/v0\.7\.0/u);
@@ -129,8 +145,13 @@ test("release consistency detects pinned documentation and generated bundle drif
   withFixture({}, (root) => {
     json(path.join(root, "skills/release-manifest.json"), { plugin_version: "0.5.0" });
     text(path.join(root, "plugins/cuebook/README.md"), "Use `--ref v0.5.0`.\n");
+    json(path.join(root, ".claude-plugin/marketplace.json"), {
+      name: "cuebook",
+      plugins: [{ name: "cuebook", source: "./", version: "0.5.0", strict: false }],
+    });
     const issues = collectReleaseIssues(root);
     assert.ok(issues.some((issue) => issue.file === "plugins/cuebook/README.md"));
     assert.ok(issues.some((issue) => issue.file === "skills/release-manifest.json"));
+    assert.ok(issues.some((issue) => issue.file === ".claude-plugin/marketplace.json"));
   });
 });

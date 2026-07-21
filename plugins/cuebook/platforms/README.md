@@ -18,7 +18,7 @@ Those layers are related but not interchangeable. MCP provides typed Cuebook dat
 | Host | Agent Skills | Remote MCP | Distribution | Current evidence |
 | --- | --- | --- | --- | --- |
 | [Codex app and Codex CLI](codex.md) | Yes | Yes | Cuebook Plugin | Package validated; live OAuth recheck pending |
-| [Claude Code](claude-code.md) | Yes | Yes | Native Claude Code marketplace | Static package validation ready; live check pending |
+| [Claude Code](claude-code.md) | Yes | Yes | Native Claude Code marketplace | OAuth, upload, and atomic publication live-verified on 2026-07-21 |
 | [Cursor editor and CLI](cursor.md) | Yes | Yes | Built Skill bundles + Cursor MCP config | Static setup ready; live check pending |
 | [Hermes Agent](hermes.md) | Yes | Yes | Built Skill bundles + Hermes MCP config | Static setup ready; live check pending |
 | [OpenClaw](openclaw.md) | Yes | Yes | Built Skill bundles + OpenClaw MCP registry | Static setup ready; live check pending |

@@ -10,9 +10,16 @@
   "plugins": [
     {
       "name": "cuebook",
-      "source": "./plugins/cuebook",
+      "source": "./",
+      "version": "0.9.4",
+      "strict": false,
       "description": "Query Cuebook market intelligence or turn a creator-owned market idea into a sourced editorial Frame",
       "category": "Finance",
+      "skills": [
+        "./skills/query-cuebook",
+        "./skills/create-cuebook-content"
+      ],
+      "mcpServers": "./plugins/cuebook/.mcp.json",
       "tags": [
         "finance",
         "market-research",

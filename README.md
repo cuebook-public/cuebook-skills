@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.3"><img alt="Release v0.9.3" src="https://img.shields.io/badge/release-v0.9.3-F6C500?style=flat-square&labelColor=111111"></a>
+  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.4"><img alt="Release v0.9.4" src="https://img.shields.io/badge/release-v0.9.4-F6C500?style=flat-square&labelColor=111111"></a>
   <a href="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml"><img alt="Quality" src="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml/badge.svg?branch=main"></a>
   <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/Node.js-%E2%89%A522-3C873A?style=flat-square&labelColor=111111">
   <img alt="Two public skills" src="https://img.shields.io/badge/public_skills-2-4C6FFF?style=flat-square&labelColor=111111">
@@ -93,7 +93,7 @@ Cuebook has one remote MCP endpoint and two optional Agent Skills. Hosts that lo
 | Host | Distribution | Intended surface | Live status |
 | --- | --- | --- | --- |
 | **Codex app and Codex CLI** | Cuebook Plugin | Skills + MCP | OAuth, preview, and publication live-verified on 2026-07-20 |
-| **Claude Code** | Native Claude Code marketplace | Skills + MCP | Static package validation ready; live check pending |
+| **Claude Code** | Native Claude Code marketplace | Skills + MCP | OAuth, upload, and atomic publication live-verified on 2026-07-21 |
 | **Cursor editor and CLI** | Two Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
 | **Hermes Agent** | Two Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
 | **OpenClaw** | Two Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
@@ -141,7 +141,7 @@ Turn that idea into a Frame.
 > [!NOTE]
 > Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly two public entrypoints; internal modules load only when needed.
 
-For a reproducible, intentionally frozen install, add `--ref v0.9.3` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
+For a reproducible, intentionally frozen install, add `--ref v0.9.4` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
 
 ## Updating
 
@@ -297,7 +297,7 @@ Validation checks the two-entrypoint boundary, referenced-resource closure, mobi
 Release preparation has one version source and updates every pinned install ref, Plugin manifest, changelog section, and generated Skill bundle together:
 
 ```bash
-npm run release:prepare -- 0.9.3 \
+npm run release:prepare -- 0.9.4 \
   --date 2026-07-21 \
   --codex-build 20260721103045
 

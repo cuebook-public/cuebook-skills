@@ -21,12 +21,14 @@ const VERSION_FILES = {
   index: "plugins/cuebook/assets/plugin-index-v1.json",
   codex: "plugins/cuebook/.codex-plugin/plugin.json",
   claude: "plugins/cuebook/.claude-plugin/plugin.json",
+  claudeMarketplace: ".claude-plugin/marketplace.json",
 };
 
 const PINNED_INSTALL_DOCS = [
   "README.md",
   "plugins/cuebook/README.md",
   "plugins/cuebook/platforms/codex.md",
+  "plugins/cuebook/platforms/claude-code.md",
 ];
 
 const GENERATED_MANIFESTS = [
@@ -68,7 +70,9 @@ function latestChangelogVersion(text) {
 }
 
 function versionRefs(text) {
-  return [...text.matchAll(/--ref v(\d+\.\d+\.\d+)/gu)].map((match) => match[1]);
+  return [
+    ...text.matchAll(/(?:--ref v|cuebook-public\/cuebook-skills@v)(\d+\.\d+\.\d+)/gu),
+  ].map((match) => match[1]);
 }
 
 export function collectReleaseIssues(rootArg) {
@@ -97,6 +101,10 @@ export function collectReleaseIssues(rootArg) {
     [VERSION_FILES.index, () => readJson(root, VERSION_FILES.index).plugin_version === version, "Plugin index version differs."],
     [VERSION_FILES.codex, () => baseVersion(readJson(root, VERSION_FILES.codex).version) === version, "Codex manifest version differs."],
     [VERSION_FILES.claude, () => baseVersion(readJson(root, VERSION_FILES.claude).version) === version, "Claude manifest version differs."],
+    [VERSION_FILES.claudeMarketplace, () => {
+      const payload = readJson(root, VERSION_FILES.claudeMarketplace);
+      return payload.plugins?.length === 1 && baseVersion(payload.plugins[0].version) === version;
+    }, "Claude marketplace version differs."],
   ];
   for (const [file, check, message] of checks) {
     try {
@@ -181,7 +189,8 @@ function replaceReleaseRefs(text, version) {
     .replaceAll(/Release v\d+\.\d+\.\d+/gu, `Release v${version}`)
     .replaceAll(/release-v\d+\.\d+\.\d+/gu, `release-v${version}`)
     .replaceAll(/npm run release:prepare -- \d+\.\d+\.\d+/gu, `npm run release:prepare -- ${version}`)
-    .replaceAll(/--ref v\d+\.\d+\.\d+/gu, `--ref v${version}`);
+    .replaceAll(/--ref v\d+\.\d+\.\d+/gu, `--ref v${version}`)
+    .replaceAll(/cuebook-public\/cuebook-skills@v\d+\.\d+\.\d+/gu, `cuebook-public/cuebook-skills@v${version}`);
 }
 
 function releaseChangelog(text, version, date) {
@@ -248,10 +257,17 @@ export function prepareRelease(rootArg, options) {
   claude.version = version;
   writes.set(VERSION_FILES.claude, jsonText(claude));
 
+  const claudeMarketplace = readJson(root, VERSION_FILES.claudeMarketplace);
+  if (claudeMarketplace.plugins?.length !== 1 || claudeMarketplace.plugins[0].name !== "cuebook") {
+    throw new ReleasePreparationError("Claude marketplace must contain exactly one Cuebook plugin entry.");
+  }
+  claudeMarketplace.plugins[0].version = version;
+  writes.set(VERSION_FILES.claudeMarketplace, jsonText(claudeMarketplace));
+
   for (const file of PINNED_INSTALL_DOCS) {
     const text = fs.readFileSync(path.join(root, file), "utf8");
     const updated = replaceReleaseRefs(text, version);
-    if (!updated.includes(`--ref v${version}`)) {
+    if (!versionRefs(updated).includes(version)) {
       throw new ReleasePreparationError(`${file} is missing a replaceable pinned install ref.`);
     }
     writes.set(file, updated);
