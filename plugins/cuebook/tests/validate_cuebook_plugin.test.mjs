@@ -568,7 +568,7 @@ test("Frame capability map pins the current backend wire goldens", () => {
   );
   assert.deepEqual(payload.frame_publication_flow.wire_golden, {
     tool_manifest_sha256: "107f0c7753a89b9185152f0f4707f632c9f22101ae33ce3bedccd36eed55a0b5",
-    schema_catalog_sha256: "100b2db0917a06874f719bf636ef75fcdfc07b8a0816d981fce46e5a6dd522c3",
+    schema_catalog_sha256: "611384f05c71338e4f40b373cc37d0ceb396e0797d4a5fe43b2c39299b066718",
   });
 });
 
