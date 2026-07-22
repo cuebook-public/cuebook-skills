@@ -65,7 +65,7 @@ const GRAMMAR_OBSERVATION_TESTS = Object.freeze({
   event_window: new Set(["primary_positive_after_event", "primary_negative_after_event", "primary_outperformed_after_event"]),
   threshold_regime: new Set(["latest_above_threshold", "latest_below_threshold"]),
 });
-const CHECKABLE_CRITERION = /(?:\d+\s*(?:D|\u65e5|\u5929|\u5468|\u6839|sessions?|bars?)|[<>≤≥]|\u65b0\u9ad8|\u65b0\u4f4e|\u8f6c\u6b63|\u8f6c\u8d1f|\u7a81\u7834|\u8dcc\u7834|\u53d1\u751f|\u843d\u5730|\u786e\u8ba4|\u5931\u6548|holds?|cross(?:es)?|above|below|occurs?|settles?)/iu;
+const CHECKABLE_CRITERION = /(?:\d+\s*(?:D|\u65e5|\u5929|\u5468|\u6839|sessions?|bars?)|[<>≤≥±]|\u65b0\u9ad8|\u65b0\u4f4e|\u8f6c\u6b63|\u8f6c\u8d1f|\u7a81\u7834|\u8dcc\u7834|\u53d1\u751f|\u843d\u5730|\u786e\u8ba4|\u5931\u6548|holds?|cross(?:es)?|above|below|within|outside|occurs?|settles?)/iu;
 
 function issue(code, issuePath, message) {
   return { code, path: issuePath, message };
@@ -272,7 +272,7 @@ function validateExpression(expression, expressionPath, candidate, queryBinding,
   expression.future_beats.forEach((beat, index) => {
     validateBeat(beat, `${expressionPath}.future_beats[${index}]`, knownResults, errors);
     if (!CHECKABLE_CRITERION.test(beat.criterion)) {
-      errors.push(issue("FUTURE_CRITERION", `${expressionPath}.future_beats[${index}].criterion`, "Future beats need a checkable time, operator, event, high/low, break, confirmation, or invalidation criterion."));
+      errors.push(issue("FUTURE_CRITERION", `${expressionPath}.future_beats[${index}].criterion`, "Future beats need a checkable time, operator, range, event, break, confirmation, or invalidation criterion."));
     }
   });
 

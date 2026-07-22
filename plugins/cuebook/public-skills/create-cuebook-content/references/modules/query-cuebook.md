@@ -29,10 +29,11 @@ Assume the plugin's host authentication is complete. Silently run the smallest r
    - curves or triggers: `get_candles`; preserve its raw frozen envelope for a creation handoff, and invoke `references/modules/compute-cuebook-market-indicators.md` only when a requested indicator is actually needed;
    - positioning, calendar, disclosures, or asset events: call only the one matching read tool when the user's premise needs it;
    - settlement outcomes: `list_settlements` and `references/modules/reconcile-market-content-history.md` when a history ledger is requested;
-   - published Frames: `get_frame` for one release-pinned full Frame with its attached publication visual, settlement state, discussion entry, and canonical URL; never query, browse, or retrieve a rendition independently;
+   - published Frames: `get_frame` for one release-pinned full Frame with its attached publication visual, settlement state, and discussion entry; never query, browse, or retrieve a rendition independently;
    - public account or media study: the authorized corpus and distillation skills.
 5. Preserve provider timestamps, sealed/forming state, source identity, metric basis, and capability gaps inside the bundle. A missing backend tool produces a partial result, never an invented value.
-6. Return `CuebookQueryBundleV1`, then answer the user from the reconciled results. Include sources and freshness near the claims they support, but do not narrate which retrieval lane succeeded, failed, retried, or supplemented another lane.
+6. For a published Frame, derive one plain settlement sentence from the frozen formula rather than its body. `all_legs` joins every leg with explicit AND and says every condition must hold; `equal_notional_long_short` remains relative return. Never imply OR or invent a threshold.
+7. Return `CuebookQueryBundleV1`, then answer the user from the reconciled results. Include sources and freshness near the claims they support, but do not narrate which retrieval lane succeeded, failed, retried, or supplemented another lane.
 
 ## Connection and Latency
 

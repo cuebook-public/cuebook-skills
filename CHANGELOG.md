@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Added creator-owned compound Frames for ideas such as “TSLA rises while NVDA stays within ±5%”: Cuebook freezes two independent same-session conditions at one creator-owned deadline, makes the AND rule visible in copy and graphics, and publishes both legs through the same atomic path.
+- Added creator-owned relative Frames: natural language such as “NVDA should outperform TSLA” now freezes a two-asset equal-notional return-spread settlement, keeps both legs visible in normalized comparison graphics, and uses the same atomic publication path without implying an executed trade.
+- Made creator-owned Frame bodies first-person by default while keeping facts, reported evidence, and other Cues correctly attributed; public copy now rejects bracketed evidence-taxonomy headings and memo-style verification blocks without inventing positions or personal experience.
+- Added creator-confirmed terminal range Frames for ideas such as “this asset will not move much”: the creator chooses the exact horizon and symmetric ± band, Cuebook settles inclusively on the absolute endpoint return, and whole-window barrier claims remain explicitly unsupported rather than being silently reinterpreted.
+- Deepened the creator interview without turning it into a form: Cuebook now normally opens one compact Cue-backed thought-anchor exchange and may ask one final consequential follow-up, while preserving an immediate skip and reusing the same bounded research read.
+- Added a locale-aware Creator Voice Polish inside the existing drafting pass: it removes clustered AI writing habits while preserving creator meaning, attribution, evidence typing, numbers, timing, and settlement without an external dependency or extra model round.
+
 ## 0.9.8 — 2026-07-21
 
 - Removed the advanced workflow closure, draft-assembly validator, and lower-level initial-publication compatibility actions from generated runtime Skill bundles; ordinary creation now exposes only the atomic Frame publication route while source compatibility tests remain intact.

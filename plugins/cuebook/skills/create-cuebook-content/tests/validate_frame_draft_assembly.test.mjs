@@ -155,6 +155,21 @@ test("valid assembly", () => {
   assert.equal(assembly().settlement_intent.horizon.session_policy, "at_instant");
 });
 
+test("terminal range assembly requires the confirmed symmetric band", () => {
+  const payload = assembly();
+  payload.settlement_intent = {
+    ...payload.settlement_intent,
+    family: "single_asset_range",
+    claim_text: "USO finishes within 5% of its publication baseline at the deadline",
+    leg: { asset_ref: "asset:uso", direction: "range", max_abs_move_bps: "500" },
+  };
+  let result = V.validate(payload);
+  assert.ok(result.valid, JSON.stringify(result.errors));
+
+  delete payload.settlement_intent.leg.max_abs_move_bps;
+  assert.ok(codes(payload).has("RANGE_BAND_REQUIRED"));
+});
+
 test("direct Fast Publish accepts preview and candidate refs without an optional generation handoff", () => {
   const payload = assembly();
   payload.lineage.intake_ref = "FPREV_USO_20260716";

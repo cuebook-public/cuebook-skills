@@ -37,7 +37,7 @@ Proposals remain `needs_confirmation`. Typical proposals include a default horiz
 | `terminal_value` | One observation at expiry | metric, operator, value, deadline | At Jul 17 close, USO > 117.79 |
 | `window_barrier` | Any or every observation in a window | metric, operator, value, observation mode | Before Jul 17, any official close >= 119.83 |
 | `relative_return` | Asset return versus benchmark | benchmark, return window, operator, threshold | AAPL beats SPY by > 3% |
-| `range` | Value finishes or remains inside bounds | lower, upper, observation mode | BTC close between 90k and 100k |
+| `range` | Value finishes inside bounds; whole-window containment is a different barrier test | lower, upper, observation mode | BTC finishes within the confirmed band |
 | `event` | Objective event occurs or does not occur | event definition, deadline, source | SEC approval occurs by date |
 | `spread` | Named spread crosses or ends beyond a level | legs/formula, operator, threshold | Brent-WTI spread > $5 |
 | `probability` | Market-implied probability crosses a level | market/question ID, operator, threshold | Contract probability >= 60% |

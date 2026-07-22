@@ -158,7 +158,7 @@ test("runtime bundles omit the development capability catalog and old initial-pu
   });
 });
 
-test("create bundle keeps optional conversation heuristics before any price override", () => {
+test("create bundle keeps bounded conversation heuristics before any price override", () => {
   withTmpPath((tmpPath) => {
     buildRelease(tmpPath);
     const skillPath = path.join(tmpPath, "release", "create-cuebook-content", "SKILL.md");
@@ -171,10 +171,61 @@ test("create bundle keeps optional conversation heuristics before any price over
     assert.ok(skip > interview, skillPath);
     assert.ok(price > skip, skillPath);
     assert.ok(completion > price, skillPath);
-    assert.match(text, /Ask for a price only when the creator explicitly requests a price-target override/u);
-    assert.match(text, /requires no separate settlement interview/u);
+    assert.match(text, /Ask for a price only for an explicit price-target override/u);
+    assert.match(text, /Derive zero-bps long\/short and relative rules/u);
     assert.match(text, /Omit the addition when no Cue adds material value/u);
-    assert.match(text, /If the creator's request is already sufficient, continue without asking/u);
+    assert.match(text, /The default interview budget is one thought-anchor question/u);
+    assert.match(text, /Never exceed two interview questions/u);
+    assert.match(text, /does not start another Cuebook or Web read/u);
+  });
+});
+
+test("create bundle polishes creator voice without semantic drift or another pass", () => {
+  withTmpPath((tmpPath) => {
+    buildRelease(tmpPath);
+    const skillPath = path.join(tmpPath, "release", "create-cuebook-content", "SKILL.md");
+    const text = fs.readFileSync(skillPath, "utf-8");
+    const newAngle = text.indexOf("## Optional New Angle");
+    const polish = text.indexOf("## Creator Voice Polish");
+    const confirmation = text.indexOf("## Confirm The Expression Before Rendering");
+    assert.ok(polish > newAngle, skillPath);
+    assert.ok(confirmation > polish, skillPath);
+    assert.match(text, /silently polish.*in the same drafting pass/u);
+    assert.match(text, /never expose an audit or start another Tool, research, or model round/u);
+    assert.match(text, /default the body to first person/u);
+    assert.match(text, /one or two natural ownership markers/u);
+    assert.match(text, /never expose bracketed evidence labels/iu);
+    assert.match(text, /not visible taxonomy/u);
+    assert.match(text, /Rewrite clusters of AI tells, not isolated words or punctuation/u);
+    assert.match(text, /If polish changes meaning or attribution, restore the confirmed meaning/u);
+  });
+});
+
+test("create bundle keeps terminal range creator-owned and visually explicit", () => {
+  withTmpPath((tmpPath) => {
+    buildRelease(tmpPath);
+    const skillPath = path.join(tmpPath, "release", "create-cuebook-content", "SKILL.md");
+    const text = fs.readFileSync(skillPath, "utf-8");
+    assert.match(text, /`range` is distinct from neutral/iu);
+    assert.match(text, /creator-confirmed `max_abs_move_bps`/u);
+    assert.match(text, /never supply 3%, 5%, or any other preset/iu);
+    assert.match(text, /whole-window barrier/iu);
+    assert.match(text, /ASSET · RANGE ±X% · TO DATE/u);
+    assert.match(text, /interim move outside the band followed by a return inside still hits/iu);
+  });
+});
+
+test("create bundle turns relative language into a two-asset outperformance contract", () => {
+  withTmpPath((tmpPath) => {
+    buildRelease(tmpPath);
+    const skillPath = path.join(tmpPath, "release", "create-cuebook-content", "SKILL.md");
+    const text = fs.readFileSync(skillPath, "utf-8");
+    assert.match(text, /Treat “A will beat B” as relative/u);
+    assert.match(text, /equal-notional long A \/ short B/iu);
+    assert.match(text, /return\(A\) - return\(B\)/u);
+    assert.match(text, /Both may rise or fall/u);
+    assert.match(text, /A > B · TO DATE/u);
+    assert.match(text, /not two orders/u);
   });
 });
 
@@ -207,6 +258,8 @@ test("heuristic interview covers each missing-link route without a generic check
     assert.match(text, /Do not dump categories/u);
     assert.match(text, /list_asset_cues/u);
     assert.match(text, /at most two non-duplicative thought anchors/u);
+    assert.match(text, /A second and final question is allowed only when/u);
+    assert.match(text, /never turn the follow-up into another research round/u);
     assert.match(text, /A source ref or popular Cue is not proof/u);
     assert.match(text, /Only adopted additions enter the confirmed draft/u);
   });

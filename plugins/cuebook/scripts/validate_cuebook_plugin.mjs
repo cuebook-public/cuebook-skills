@@ -171,6 +171,14 @@ const FRAME_PUBLICATION_FLOW = {
     "https_put_publication_master",
     "complete_frame_publish",
   ],
+  initial_settlement_modes: {
+    directional: "long_or_short_with_zero_bps_at_exact_deadline",
+    terminal_range: "range_with_creator_confirmed_max_abs_move_bps_at_exact_deadline",
+    relative_outperformance:
+      "two_distinct_same_session_assets_with_equal_notional_return_spread_at_exact_deadline",
+    compound_conditions:
+      "two_distinct_same_session_assets_with_independent_all_legs_conditions_at_exact_deadline",
+  },
   correction_publish_sequence: [
     "prepare_frame_correction_publish",
     "publish_frame_correction",
@@ -205,7 +213,7 @@ const FRAME_PUBLICATION_FLOW = {
   publish_input_omitted_fields: ["consent_request_id"],
   wire_golden: {
     tool_manifest_sha256: "107f0c7753a89b9185152f0f4707f632c9f22101ae33ce3bedccd36eed55a0b5",
-    schema_catalog_sha256: "611384f05c71338e4f40b373cc37d0ceb396e0797d4a5fe43b2c39299b066718",
+    schema_catalog_sha256: "5aba76bf1fcbf4f85105e6423c42565b17a5fb696aa5dd18395bf31570f98b9c",
   },
   mutation_idempotency: "distinct_lowercase_uuidv7_per_command",
   replay_policy: "same_key_same_payload_returns_receipt_changed_payload_conflict",

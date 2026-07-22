@@ -15,13 +15,20 @@ const SETTLED_STATES = ["verified", "handed_back"];
 const CAPTURED_PROVENANCE = ["stated", "elicited", "inferred_confirmed"];
 const PASSING_PRICE_STATUSES = ["pass", "warn", "skipped", "unavailable"];
 const PASSING_TARGET_STATUSES = ["pass", "skipped", "unavailable"];
-const SETTLEABLE_DIRECTIONS = ["long", "short", "relative"];
-const PAIR_FAMILIES = ["pair_asset_direction", "pair_asset_price_targets"];
+const SETTLEABLE_DIRECTIONS = ["long", "short", "range", "relative", "compound"];
+const PAIR_FAMILIES = ["pair_asset_direction", "pair_asset_conditions", "pair_asset_price_targets"];
+const RELATIVE_FAMILIES = ["pair_asset_direction", "pair_asset_price_targets"];
 const TARGET_FAMILIES = ["single_asset_price_target", "pair_asset_price_targets"];
 const DIRECTION_FAMILIES = ["single_asset_direction", "pair_asset_direction"];
+const RANGE_FAMILY = "single_asset_range";
+const COMPOUND_RANGE_FAMILY = "pair_asset_conditions";
 const HORIZON_MIN_HOURS = 1;
 const HORIZON_MAX_HOURS = 24 * 183; // six months
 const HORIZON_UNIT_MAX = { hour: HORIZON_MAX_HOURS, calendar_day: 183 };
+
+function normalizedAssetRef(value) {
+  return typeof value === "string" ? value.trim().toLowerCase().replace(/^asset:/u, "") : null;
+}
 
 function isDict(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -194,7 +201,7 @@ export function validate(payload) {
       for (const item of asked) askedFields.add(item);
     }
   }
-  for (const name of ["asset", "direction", "horizon", "price_anchor"]) {
+  for (const name of ["asset", "pair_asset", "direction", "primary_direction", "pair_direction", "horizon", "price_anchor"]) {
     const field = isDict(get(fields, name)) ? get(fields, name) : {};
     if (["elicited", "inferred_confirmed"].includes(get(field, "provenance")) && !askedFields.has(name)) {
       errors.push(issue("ELICITED_WITHOUT_LOG", `$.fields.${name}`, "An elicited or confirmed-inference field needs a matching elicitation_log entry; never fill a field the user did not address."));
@@ -220,23 +227,102 @@ export function validate(payload) {
   const settlement = isDict(get(fields, "settlement")) ? get(fields, "settlement") : {};
   const family = get(settlement, "family");
   const pairAsset = isDict(get(fields, "pair_asset")) ? get(fields, "pair_asset") : null;
+  const primaryDirection = isDict(get(fields, "primary_direction")) ? get(fields, "primary_direction") : null;
+  const pairDirection = isDict(get(fields, "pair_direction")) ? get(fields, "pair_direction") : null;
+  const primaryDirectionValue = primaryDirection ? get(primaryDirection, "value") : null;
+  const pairDirectionValue = pairDirection ? get(pairDirection, "value") : null;
+  const compoundDirections = [primaryDirectionValue, pairDirectionValue];
+  const compoundHasRange = compoundDirections.includes("range");
   let priceAnchor = isDict(get(fields, "price_anchor")) ? get(fields, "price_anchor") : {};
 
   if (family !== null && !SETTLEABLE_DIRECTIONS.includes(directionValue)) {
     errors.push(issue("NON_SETTLEABLE_DIRECTION", "$.fields.settlement.family", "avoid/watch/explain/neutral views cannot carry a settlement family; they can only be stored."));
   }
-  if (directionValue === "relative" && family !== null && !PAIR_FAMILIES.includes(family)) {
+  if (
+    directionValue === "relative"
+    && (SETTLED_STATES.includes(state) || get(handback, "eligible") === true)
+    && !RELATIVE_FAMILIES.includes(family)
+  ) {
     errors.push(issue("RELATIVE_NEEDS_PAIR", "$.fields.settlement.family", "A relative view settles as a confirmed two-asset pair family."));
+  }
+  if (
+    directionValue === "compound"
+    && (SETTLED_STATES.includes(state) || get(handback, "eligible") === true)
+    && family !== (compoundHasRange ? COMPOUND_RANGE_FAMILY : "pair_asset_direction")
+  ) {
+    errors.push(issue("COMPOUND_FAMILY_MISMATCH", "$.fields.settlement.family", "Independent two-asset conditions use pair_asset_conditions when either leg is a range, otherwise pair_asset_direction."));
+  }
+  if (family === COMPOUND_RANGE_FAMILY && directionValue !== "compound") {
+    errors.push(issue("COMPOUND_DIRECTION_REQUIRED", "$.fields.direction.value", "pair_asset_conditions requires a creator-confirmed compound view."));
+  }
+  if (directionValue === "range" && family !== null && family !== RANGE_FAMILY) {
+    errors.push(issue("RANGE_NEEDS_RANGE_FAMILY", "$.fields.settlement.family", "A range view uses the single-asset terminal range family."));
+  }
+  if (family === RANGE_FAMILY && directionValue !== "range") {
+    errors.push(issue("RANGE_DIRECTION_REQUIRED", "$.fields.direction.value", "The terminal range family requires the creator-confirmed range direction."));
+  }
+  if (directionValue === "compound") {
+    for (const [name, field, value] of [
+      ["primary", primaryDirection, primaryDirectionValue],
+      ["pair", pairDirection, pairDirectionValue],
+    ]) {
+      if (!field || !["long", "short", "range"].includes(value) || !CAPTURED_PROVENANCE.includes(get(field, "provenance"))) {
+        errors.push(issue("COMPOUND_LEG_MISSING", `$.fields.${name === "primary" ? "primary_direction" : "pair_direction"}`, `A compound view needs a captured ${name}-asset condition.`));
+      }
+    }
+  } else {
+    if (primaryDirectionValue !== null) {
+      errors.push(issue("PRIMARY_DIRECTION_UNEXPECTED", "$.fields.primary_direction", "Only a compound view carries an independent primary_direction."));
+    }
+    if (pairDirectionValue !== null) {
+      errors.push(issue("PAIR_DIRECTION_UNEXPECTED", "$.fields.pair_direction", "Only a compound view carries an independent pair_direction."));
+    }
   }
   if (PAIR_FAMILIES.includes(family)) {
     if (!truthy(pairAsset) || [null, ""].includes(get(pairAsset, "value")) || !CAPTURED_PROVENANCE.includes(get(pairAsset, "provenance"))) {
       errors.push(issue("PAIR_ASSET_MISSING", "$.fields.pair_asset", "Pair settlement families require a captured second asset."));
+    } else if (normalizedAssetRef(get(fields.asset, "value")) === normalizedAssetRef(get(pairAsset, "value"))) {
+      errors.push(issue("PAIR_ASSETS_IDENTICAL", "$.fields.pair_asset", "Two-asset settlement requires two distinct canonical assets."));
     }
   } else if (truthy(pairAsset) && ![null, ""].includes(get(pairAsset, "value"))) {
     errors.push(issue("PAIR_ASSET_UNEXPECTED", "$.fields.pair_asset", "A single-asset family cannot carry a second asset."));
   }
-  if (DIRECTION_FAMILIES.includes(family) && [null, ""].includes(get(settlement, "threshold_bps"))) {
+  if (DIRECTION_FAMILIES.includes(family) && directionValue !== "compound" && [null, ""].includes(get(settlement, "threshold_bps"))) {
     errors.push(issue("THRESHOLD_NOT_EXPLICIT", "$.fields.settlement.threshold_bps", "Direction families freeze an explicit threshold; the standard policy-derived default must be recorded as \"0\"."));
+  }
+  const rangeBand = get(settlement, "max_abs_move_bps");
+  const pairRangeBand = get(settlement, "pair_max_abs_move_bps");
+  const primaryRangeRequired = family === RANGE_FAMILY || (directionValue === "compound" && primaryDirectionValue === "range");
+  const pairRangeRequired = directionValue === "compound" && pairDirectionValue === "range";
+  if (primaryRangeRequired) {
+    if (typeof rangeBand !== "string" || !/^\d+(?:\.\d+)?$/.test(rangeBand)) {
+      errors.push(issue("RANGE_BAND_REQUIRED", "$.fields.settlement.max_abs_move_bps", "A range view needs the exact creator-confirmed symmetric terminal band in basis points."));
+    }
+    if (!askedFields.has("range_band") && !["stated"].includes(get(settlement, "provenance"))) {
+      errors.push(issue("RANGE_BAND_UNCONFIRMED", "$.fields.settlement.max_abs_move_bps", "A proposed range band needs a logged creator confirmation."));
+    }
+  } else if (![null, ""].includes(rangeBand)) {
+    errors.push(issue("RANGE_BAND_UNEXPECTED", "$.fields.settlement.max_abs_move_bps", "Only a terminal range settlement carries max_abs_move_bps."));
+  }
+  if (pairRangeRequired) {
+    if (typeof pairRangeBand !== "string" || !/^\d+(?:\.\d+)?$/.test(pairRangeBand)) {
+      errors.push(issue("PAIR_RANGE_BAND_REQUIRED", "$.fields.settlement.pair_max_abs_move_bps", "A range condition on the second asset needs the exact creator-confirmed symmetric terminal band in basis points."));
+    }
+    if (!askedFields.has("pair_range_band") && get(settlement, "provenance") !== "stated") {
+      errors.push(issue("PAIR_RANGE_BAND_UNCONFIRMED", "$.fields.settlement.pair_max_abs_move_bps", "A proposed second-asset range needs a logged creator confirmation."));
+    }
+  } else if (![null, ""].includes(pairRangeBand)) {
+    errors.push(issue("PAIR_RANGE_BAND_UNEXPECTED", "$.fields.settlement.pair_max_abs_move_bps", "Only a range condition on the second asset carries pair_max_abs_move_bps."));
+  }
+  if (directionValue === "compound") {
+    const threshold = get(settlement, "threshold_bps");
+    const pairThreshold = get(settlement, "pair_threshold_bps");
+    if (primaryDirectionValue === "range" ? threshold !== null : threshold !== "0") {
+      errors.push(issue("COMPOUND_PRIMARY_THRESHOLD", "$.fields.settlement.threshold_bps", "A compound directional first leg uses the atomic zero-bps threshold; a range leg uses null."));
+    }
+    if (pairDirectionValue === "range" ? pairThreshold !== null : pairThreshold !== "0") {
+      errors.push(issue("COMPOUND_PAIR_THRESHOLD", "$.fields.settlement.pair_threshold_bps", "A compound directional second leg uses the atomic zero-bps threshold; a range leg uses null."));
+    }
   }
   if (TARGET_FAMILIES.includes(family) && get(priceAnchor, "value") === null) {
     errors.push(issue("TARGET_PRICE_MISSING", "$.fields.price_anchor.value", "Price-target families require a captured target price."));
@@ -317,6 +403,9 @@ export function validate(payload) {
     ) {
       errors.push(issue("SETTLEMENT_POLICY_DEFAULT", "$.fields.settlement", "policy_default is reserved for a single-asset long/short zero-threshold rule with an exact at_instant deadline."));
     }
+    if ((family === RANGE_FAMILY || directionValue === "compound") && !CAPTURED_PROVENANCE.includes(settlementProvenance)) {
+      errors.push(issue("RANGE_BAND_PROVENANCE", "$.fields.settlement", "Range and compound conditions must be stated, elicited, or explicitly accepted; they are never a policy default."));
+    }
     for (const [check, allowed] of [
       ["asset_resolution", ["pass"]],
       ["horizon_validity", ["pass"]],
@@ -358,6 +447,43 @@ export function validate(payload) {
   }
   if (get(handback, "eligible") === true && !isDict(get(handback, "seed"))) {
     errors.push(issue("HANDBACK_SEED", "$.handback.seed", "An eligible handback carries a seed."));
+  }
+  const seed = isDict(get(handback, "seed")) ? get(handback, "seed") : null;
+  if (seed && family === RANGE_FAMILY) {
+    if (
+      get(seed, "direction") !== "range"
+      || get(seed, "settlement_family") !== RANGE_FAMILY
+      || get(seed, "max_abs_move_bps") !== rangeBand
+    ) {
+      errors.push(issue("RANGE_HANDBACK_MISMATCH", "$.handback.seed", "Range handback must preserve the confirmed direction, family, and exact band."));
+    }
+  }
+  if (seed && directionValue === "relative" && RELATIVE_FAMILIES.includes(family)) {
+    if (
+      get(seed, "direction") !== "relative"
+      || get(seed, "settlement_family") !== family
+      || normalizedAssetRef(get(seed, "asset_ref")) !== normalizedAssetRef(get(fields.asset, "value"))
+      || normalizedAssetRef(get(seed, "pair_asset_ref")) !== normalizedAssetRef(get(pairAsset, "value"))
+      || get(seed, "threshold_bps") !== get(settlement, "threshold_bps")
+    ) {
+      errors.push(issue("PAIR_HANDBACK_MISMATCH", "$.handback.seed", "Relative handback must preserve the expected winner, expected underperformer, family, and spread threshold."));
+    }
+  }
+  if (seed && directionValue === "compound") {
+    if (
+      get(seed, "direction") !== "compound"
+      || get(seed, "primary_direction") !== primaryDirectionValue
+      || get(seed, "pair_direction") !== pairDirectionValue
+      || get(seed, "settlement_family") !== family
+      || normalizedAssetRef(get(seed, "asset_ref")) !== normalizedAssetRef(get(fields.asset, "value"))
+      || normalizedAssetRef(get(seed, "pair_asset_ref")) !== normalizedAssetRef(get(pairAsset, "value"))
+      || get(seed, "threshold_bps") !== get(settlement, "threshold_bps")
+      || get(seed, "pair_threshold_bps") !== get(settlement, "pair_threshold_bps")
+      || get(seed, "max_abs_move_bps") !== rangeBand
+      || get(seed, "pair_max_abs_move_bps") !== pairRangeBand
+    ) {
+      errors.push(issue("COMPOUND_HANDBACK_MISMATCH", "$.handback.seed", "Compound handback must preserve both assets, both independent conditions, their exact bands, and the all-legs family."));
+    }
   }
 
   return { valid: !errors.length, errors };

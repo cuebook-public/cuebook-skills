@@ -620,6 +620,177 @@ test("MARKET rejects copy or settlement changed after creator confirmation", () 
   assert.ok(validateMarketPreviewJob(deadlineChanged).errors.some((error) => error.code === "MEANING_LOCK_DEADLINE"));
 });
 
+test("MARKET locks a creator-confirmed terminal range and keeps it visible", () => {
+  const job = baseMarketJob();
+  job.preview.creator_view.direction = "range";
+  job.preview.meaning_lock.direction = "range";
+  job.preview.meaning_lock.settlement = {
+    mode: "terminal_range",
+    family: "single_asset_range",
+    asset_ref: "asset:btc",
+    direction: "range",
+    requested_settle_at: "2026-08-16T09:00:00Z",
+    session_policy: "at_instant",
+    max_abs_move_bps: "500",
+    success_condition: "within_publication_baseline_band_at_deadline",
+  };
+  job.preview.meaning_lock.visual_intent.required_beats.push("settlement_band");
+  job.expressions[0].horizon_label = "RANGE ±5% · 30D";
+  job.expressions[0].future_beats.push({
+    role: "settlement",
+    label: "Terminal range",
+    criterion: "Finish within ±5% of publication baseline",
+    at: "2026-08-16T09:00:00Z",
+    state: "conditional",
+    binding_id: "BIND_MARKET_RANGE_SETTLEMENT",
+    source_refs: [],
+  });
+
+  let result = validateMarketPreviewJob(job);
+  assert.ok(result.valid, JSON.stringify(result.errors));
+
+  job.preview.meaning_lock.visual_intent.required_beats =
+    job.preview.meaning_lock.visual_intent.required_beats.filter((beat) => beat !== "settlement_band");
+  result = validateMarketPreviewJob(job);
+  assert.ok(result.errors.some((error) => error.code === "MEANING_LOCK_SETTLEMENT_BAND"));
+});
+
+test("MARKET locks relative outperformance to two normalized asset returns", () => {
+  const job = baseMarketJob();
+  job.preview.creator_view.direction = "outperform";
+  job.preview.meaning_lock.direction = "outperform";
+  job.preview.meaning_lock.settlement = {
+    mode: "relative_outperformance",
+    family: "pair_asset_direction",
+    asset_ref: "asset:nvda",
+    pair_asset_ref: "asset:tsla",
+    direction: "outperform",
+    requested_settle_at: "2026-08-16T09:00:00Z",
+    session_policy: "at_instant",
+    spread_threshold_bps: "0",
+    success_condition: "focal_outperforms_pair",
+  };
+  const expression = job.expressions[0];
+  expression.reader_job = "comparison";
+  expression.analytic_relationship = "relative_value";
+  expression.grammar = "relative_divergence";
+  expression.text_image_division.image_job = "comparison_and_time";
+  expression.horizon_label = "NVDA > TSLA · 30D";
+  expression.market.main_transform = "indexed_return";
+  expression.market.support_transform = "none";
+  expression.market.main_binding_ids = ["BIND_MARKET_BTC_CURVE", "BIND_MARKET_SPY_CURVE"];
+  expression.market.support_binding_ids = [];
+  expression.market.chart_style = "line";
+  expression.observation_test.supports_binding_ids = [
+    "BIND_MARKET_OBSERVATION",
+    "BIND_MARKET_BTC_CURVE",
+    "BIND_MARKET_SPY_CURVE",
+  ];
+
+  let result = validateMarketPreviewJob(job);
+  assert.ok(result.valid, JSON.stringify(result.errors));
+
+  job.preview.meaning_lock.settlement.pair_asset_ref = "NVDA";
+  result = validateMarketPreviewJob(job);
+  assert.ok(result.errors.some((error) => error.code === "MEANING_LOCK_RELATIVE_ASSETS"));
+
+  job.preview.meaning_lock.settlement.pair_asset_ref = "asset:tsla";
+  expression.market.benchmark = null;
+  result = validateMarketPreviewJob(job);
+  assert.ok(result.errors.some((error) => error.code === "MEANING_LOCK_RELATIVE_GEOMETRY"));
+});
+
+function compoundMarketJob() {
+  const job = baseMarketJob();
+  job.preview.creator_view.direction = "compound";
+  job.preview.meaning_lock.direction = "compound";
+  job.preview.meaning_lock.settlement = {
+    mode: "compound_conditions",
+    family: "pair_asset_conditions",
+    asset_ref: "asset:tsla",
+    pair_asset_ref: "asset:nvda",
+    direction: "compound",
+    primary_direction: "long",
+    pair_direction: "range",
+    requested_settle_at: "2026-08-16T09:00:00Z",
+    session_policy: "at_instant",
+    threshold_bps: "0",
+    pair_threshold_bps: null,
+    max_abs_move_bps: null,
+    pair_max_abs_move_bps: "500",
+    aggregate: "all_legs",
+    success_condition: "all_conditions_hit",
+    flat_condition: "direction_equals_threshold_with_no_miss_or_missing",
+  };
+  job.preview.meaning_lock.visual_intent.required_beats.push("condition_join", "settlement_band");
+  const expression = job.expressions[0];
+  expression.reader_job = "comparison";
+  expression.analytic_relationship = "relative_value";
+  expression.grammar = "relative_divergence";
+  expression.composition = "divergence_field";
+  expression.text_image_division.image_job = "comparison_and_time";
+  expression.subject_label = "TSLA + NVDA";
+  expression.horizon_label = "BOTH · 30D";
+  expression.market.main_transform = "indexed_return";
+  expression.market.support_transform = "none";
+  expression.market.main_binding_ids = ["BIND_MARKET_BTC_CURVE", "BIND_MARKET_SPY_CURVE"];
+  expression.market.support_binding_ids = [];
+  expression.market.chart_style = "line";
+  expression.observation_test.supports_binding_ids = [
+    "BIND_MARKET_OBSERVATION",
+    "BIND_MARKET_BTC_CURVE",
+    "BIND_MARKET_SPY_CURVE",
+  ];
+  expression.future_beats.push({
+    role: "settlement",
+    label: "TSLA up AND NVDA ±5%",
+    criterion: "TSLA > baseline AND NVDA within ±5%",
+    at: "2026-08-16T09:00:00Z",
+    state: "conditional",
+    binding_id: "BIND_MARKET_COMPOUND_SETTLEMENT",
+    source_refs: [],
+  });
+  return job;
+}
+
+test("MARKET locks two independent conditions to explicit AND geometry", async () => {
+  const job = compoundMarketJob();
+  let result = validateMarketPreviewJob(job);
+  assert.ok(result.valid, JSON.stringify(result.errors));
+
+  const output = mkdtempSync(path.join(os.tmpdir(), "cuebook-market-compound-"));
+  try {
+    const { preview } = await runFastPreviewJob(job, output, { rasterize: fakeRasterize });
+    const svg = readFileSync(
+      path.join(output, preview.candidates[0].candidate_id, "frame-preview.svg"),
+      "utf8",
+    );
+    assert.match(svg, /TSLA up AND<\/tspan><tspan[^>]*>NVDA ±5%/u);
+    assert.match(svg, /data-binding-ref="BIND_MARKET_COMPOUND_SETTLEMENT"/u);
+  } finally {
+    rmSync(output, { recursive: true, force: true });
+  }
+
+  job.preview.meaning_lock.visual_intent.required_beats =
+    job.preview.meaning_lock.visual_intent.required_beats.filter((beat) => beat !== "condition_join");
+  result = validateMarketPreviewJob(job);
+  assert.ok(result.errors.some((error) => error.code === "MEANING_LOCK_COMPOUND_JOIN"));
+});
+
+test("MARKET compound lock cannot drop a leg, band, or all-legs family", () => {
+  const job = compoundMarketJob();
+  job.preview.meaning_lock.settlement.pair_asset_ref = "TSLA";
+  assert.ok(validateMarketPreviewJob(job).errors.some((error) => error.code === "MEANING_LOCK_COMPOUND_ASSETS"));
+
+  job.preview.meaning_lock.settlement.pair_asset_ref = "asset:nvda";
+  job.preview.meaning_lock.settlement.pair_max_abs_move_bps = null;
+  assert.ok(validateMarketPreviewJob(job).errors.some((error) => error.code === "MEANING_LOCK_COMPOUND_RANGE"));
+
+  job.preview.meaning_lock.settlement.pair_max_abs_move_bps = "500";
+  job.preview.meaning_lock.settlement.family = "pair_asset_direction";
+  assert.ok(validateMarketPreviewJob(job).errors.some((error) => error.code === "MEANING_LOCK_COMPOUND_FAMILY"));
+});
+
 test("MARKET rejects future chart annotations, empty-clock beats, and reused preview bindings", () => {
   const futureAnnotation = baseMarketJob();
   futureAnnotation.expressions[0].annotations[0].occurred_at = "2026-07-31T09:00:00Z";

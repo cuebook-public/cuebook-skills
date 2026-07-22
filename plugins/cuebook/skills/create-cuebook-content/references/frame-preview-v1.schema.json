@@ -18,7 +18,7 @@
       "properties": {
         "original_text": {"type": "string", "minLength": 2, "maxLength": 4000},
         "subject": {"type": "string", "minLength": 1, "maxLength": 80},
-        "direction": {"enum": ["long", "short", "outperform", "underperform", "range", "avoid", "watch", "neutral", "explain"]},
+        "direction": {"enum": ["long", "short", "outperform", "underperform", "range", "compound", "avoid", "watch", "neutral", "explain"]},
         "observation_window": {"type": "string", "minLength": 1, "maxLength": 80},
         "horizon": {"type": "string", "minLength": 1, "maxLength": 80},
         "claim": {"type": "string", "minLength": 2, "maxLength": 200},

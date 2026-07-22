@@ -332,7 +332,76 @@ test("creator guidance uses Cues as optional thought anchors rather than proof",
   assert.match(combined, /not proof/iu);
   assert.match(combined, /creator-owned hypothesis/iu);
   assert.match(create, /Only adopted additions enter the confirmed draft/iu);
+  assert.match(create, /The default interview budget is one thought-anchor question/iu);
+  assert.match(create, /A second and final question is allowed only when/iu);
+  assert.match(create, /never turn the follow-up into another research round/iu);
   assert.match(combined, /never treats another published view as proof, consensus, or creator adoption/iu);
+});
+
+test("creator voice polish is local, silent, and meaning preserving", () => {
+  const create = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  assert.match(create, /## Creator Voice Polish/u);
+  assert.match(create, /same drafting pass/u);
+  assert.match(create, /default the body to first person/u);
+  assert.match(create, /one or two natural ownership markers/u);
+  assert.match(create, /never invents a position, trade, expertise, access, lived experience/u);
+  assert.match(create, /never expose bracketed evidence labels/iu);
+  assert.match(create, /not visible taxonomy/iu);
+  assert.match(create, /Keep sourced fact, creator inference, and another creator's Cue distinct/u);
+  assert.match(create, /If polish changes meaning or attribution, restore the confirmed meaning/u);
+  assert.doesNotMatch(create, /Humanizer|second rewrite pass|draft audit final/iu);
+});
+
+test("terminal range requires creator-confirmed time and symmetric band", () => {
+  const create = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const intake = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "intake-cuebook-viewpoint", "SKILL.md"),
+    "utf-8",
+  );
+  assert.match(create, /`range` is distinct from neutral/iu);
+  assert.match(create, /Require an explicit `±X%`/u);
+  assert.match(create, /never supply 3%, 5%, or any other preset/iu);
+  assert.match(create, /absolute terminal return is less than or equal/iu);
+  assert.match(intake, /whole-window barrier/iu);
+  assert.match(intake, /range.*exact symmetric band/iu);
+});
+
+test("relative view keeps natural language outside and a frozen long-short spread inside", () => {
+  const create = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const intake = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "intake-cuebook-viewpoint", "SKILL.md"),
+    "utf-8",
+  );
+  const publish = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "references", "frame-publish-workflow.md"),
+    "utf-8",
+  );
+  assert.match(intake, /A's return should beat B's by the deadline/u);
+  assert.match(create, /equal-notional long A \/ short B/iu);
+  assert.match(create, /Both may rise or fall/u);
+  assert.match(create, /two distinct same-session-family assets/u);
+  assert.match(publish, /pair_asset_ref/u);
+  assert.match(publish, /server uses zero/u);
+});
+
+test("published Frame projection states all-legs conjunction without a website detour", () => {
+  const query = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "query-cuebook", "SKILL.md"),
+    "utf-8",
+  );
+  assert.match(query, /derive one plain settlement sentence from the frozen formula/iu);
+  assert.match(query, /`all_legs` joins every leg with explicit AND/iu);
+  assert.match(query, /every condition must hold/iu);
+  assert.doesNotMatch(query, /canonical URL/iu);
 });
 
 test("query cannot invoke create", () => {
@@ -543,8 +612,9 @@ test("creator journey feels editorial without exposing a fixed flow", () => {
   assert.match(create, /Behave like an attentive editor/iu);
   assert.match(create, /one continuous lift/u);
   assert.match(create, /smallest useful Cuebook memory/u);
-  assert.match(create, /Ask no question when the idea is already sufficient/u);
-  assert.match(create, /one high-leverage question at a time/u);
+  assert.match(create, /normally offer one compact thought-anchor exchange/u);
+  assert.match(create, /one short follow-up/u);
+  assert.match(create, /Never exceed two interview questions/u);
   assert.match(create, /Do not present a form/u);
   assert.match(create, /connection Cuebook made visible/u);
   assert.match(create, /Never announce a gate, stage, lock, workflow/iu);
@@ -579,7 +649,7 @@ test("creator owns the horizon and Cuebook timing help remains opt-in", () => {
   assert.match(combined, /How long should this view be tested.*Cuebook to suggest a horizon/isu);
   assert.match(combined, /one or two.*proposals/isu);
   assert.match(combined, /must accept or edit/iu);
-  assert.match(combined, /Never copy another thesis's expiry/iu);
+  assert.match(combined, /A Cue may inform requested timing help; it never finalizes a creator choice/iu);
   assert.match(combined, /before copy, pixels, settlement, or publication/iu);
   assert.doesNotMatch(combined, /48H \/ 30D \/ 90D/u);
   assert.doesNotMatch(create, /Prefer `BTC · 30D LONG`/u);
@@ -647,6 +717,14 @@ test("Frame publish contract pins consentless prepared and input fields", () => 
     "consent_expires_at",
   ]);
   assert.deepEqual(flow.publish_input_omitted_fields, ["consent_request_id"]);
+  assert.deepEqual(flow.initial_settlement_modes, {
+    directional: "long_or_short_with_zero_bps_at_exact_deadline",
+    terminal_range: "range_with_creator_confirmed_max_abs_move_bps_at_exact_deadline",
+    relative_outperformance:
+      "two_distinct_same_session_assets_with_equal_notional_return_spread_at_exact_deadline",
+    compound_conditions:
+      "two_distinct_same_session_assets_with_independent_all_legs_conditions_at_exact_deadline",
+  });
 });
 
 test("Frame capability map pins the current backend wire goldens", () => {
@@ -655,7 +733,7 @@ test("Frame capability map pins the current backend wire goldens", () => {
   );
   assert.deepEqual(payload.frame_publication_flow.wire_golden, {
     tool_manifest_sha256: "107f0c7753a89b9185152f0f4707f632c9f22101ae33ce3bedccd36eed55a0b5",
-    schema_catalog_sha256: "611384f05c71338e4f40b373cc37d0ceb396e0797d4a5fe43b2c39299b066718",
+    schema_catalog_sha256: "5aba76bf1fcbf4f85105e6423c42565b17a5fb696aa5dd18395bf31570f98b9c",
   });
 });
 

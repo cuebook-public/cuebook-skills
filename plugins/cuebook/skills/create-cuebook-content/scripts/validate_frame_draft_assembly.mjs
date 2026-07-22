@@ -17,7 +17,7 @@ const UUID_V7_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const SHA_PATTERN = /^sha256:[0-9a-f]{64}$/;
 const DECIMAL_PATTERN = /^-?\d+(\.\d+)?$/;
-const FAMILIES = ["single_asset_direction", "single_asset_price_target", "pair_asset_direction", "pair_asset_price_targets"];
+const FAMILIES = ["single_asset_direction", "single_asset_range", "single_asset_price_target", "pair_asset_direction", "pair_asset_price_targets"];
 const PAIR_FAMILIES = ["pair_asset_direction", "pair_asset_price_targets"];
 const TARGET_FAMILIES = ["single_asset_price_target", "pair_asset_price_targets"];
 const HORIZON_UNIT_MAX = { hour: 24 * 183, calendar_day: 183, market_session: 130 };
@@ -148,13 +148,14 @@ export function check_horizon(h, receivedAt, errors, path) {
   }
 }
 
-export function check_leg(leg, needsTarget, needsThreshold, errors, path) {
+export function check_leg(leg, needsTarget, needsThreshold, needsRange, errors, path) {
   if (!isDict(leg)) {
     errors.push(issue("LEG_SHAPE", path, "Leg must be an object."));
     return;
   }
-  if (!["long", "short"].includes(get(leg, "direction"))) {
-    errors.push(issue("LEG_DIRECTION", path, "Leg direction must be long or short."));
+  const direction = get(leg, "direction");
+  if (needsRange ? direction !== "range" : !["long", "short"].includes(direction)) {
+    errors.push(issue("LEG_DIRECTION", path, needsRange ? "Range legs require direction range." : "Leg direction must be long or short."));
   }
   if (!truthy(get(leg, "asset_ref"))) {
     errors.push(issue("LEG_ASSET", path, "Leg needs an asset_ref."));
@@ -163,6 +164,12 @@ export function check_leg(leg, needsTarget, needsThreshold, errors, path) {
     const t = get(leg, "threshold_bps");
     if (typeof t !== "string" || !DECIMAL_PATTERN.test(t)) {
       errors.push(issue("THRESHOLD_NOT_EXPLICIT", path, "Direction legs freeze an explicit decimal-string threshold_bps (\"0\" counts)."));
+    }
+  }
+  if (needsRange) {
+    const band = get(leg, "max_abs_move_bps");
+    if (typeof band !== "string" || !/^\d+(?:\.\d+)?$/.test(band)) {
+      errors.push(issue("RANGE_BAND_REQUIRED", path, "Range legs freeze the creator-confirmed non-negative max_abs_move_bps."));
     }
   }
   if (needsTarget) {
@@ -421,10 +428,11 @@ export function validate(payload, binding = null, visualManifest = null, handoff
   } else if (isDict(intent)) {
     const family = get(intent, "family");
     if (!FAMILIES.includes(family)) {
-      errors.push(issue("INTENT_FAMILY", "$.settlement_intent.family", "Family must be one of the four launch families."));
+      errors.push(issue("INTENT_FAMILY", "$.settlement_intent.family", "Family must be one of the launch families."));
     } else {
       check_horizon(get(intent, "horizon"), assembledAt, errors, "$.settlement_intent.horizon");
       const needsTarget = TARGET_FAMILIES.includes(family);
+      const needsRange = family === "single_asset_range";
       const aggregateOrEmpty = truthy(get(intent, "aggregate", {})) ? get(intent, "aggregate", {}) : {};
       const needsThreshold = ["single_asset_direction", "pair_asset_direction"].includes(family) && get(aggregateOrEmpty, "mode") !== "equal_notional_long_short";
       const legs = PAIR_FAMILIES.includes(family) ? get(intent, "legs") : [get(intent, "leg")];
@@ -433,7 +441,7 @@ export function validate(payload, binding = null, visualManifest = null, handoff
       } else {
         const legList = truthy(legs) ? legs : [];
         legList.forEach((leg, i) => {
-          check_leg(leg, needsTarget, needsThreshold, errors, `$.settlement_intent.legs[${i}]`);
+          check_leg(leg, needsTarget, needsThreshold, needsRange, errors, `$.settlement_intent.legs[${i}]`);
         });
         if (PAIR_FAMILIES.includes(family) && Array.isArray(legs) && legs.length === 2) {
           const refs = new Set(legs.filter((l) => isDict(l)).map((l) => pystr(get(truthy(l) ? l : {}, "asset_ref"))));

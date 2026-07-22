@@ -117,6 +117,57 @@ test("standard single-asset deadline settlement needs no settlement prompt", () 
   assert.ok(result.valid, JSON.stringify(result.errors));
 });
 
+test("range requires and preserves the creator-confirmed symmetric terminal band", () => {
+  const payload = intake();
+  payload.fields.direction = { value: "range", provenance: "stated" };
+  payload.fields.settlement = {
+    family: "single_asset_range",
+    threshold_bps: null,
+    max_abs_move_bps: "500",
+    provenance: "elicited",
+  };
+  payload.elicitation_log.push({
+    round: 3,
+    asked: ["range_band"],
+    prompt_text: "At the deadline, what plus-or-minus range should count as not moving much?",
+    answered_verbatim: "Plus or minus 5 percent.",
+  });
+  payload.confirmation.card_text = "USO · 14D · RANGE ±5% · terminal check";
+  Object.assign(payload.handback.seed, {
+    direction: "range",
+    settlement_family: "single_asset_range",
+    threshold_bps: null,
+    max_abs_move_bps: "500",
+  });
+
+  let result = VALIDATOR.validate(payload);
+  assert.ok(result.valid, JSON.stringify(result.errors));
+
+  payload.fields.settlement.max_abs_move_bps = null;
+  result = VALIDATOR.validate(payload);
+  assert.ok(codes(payload).has("RANGE_BAND_REQUIRED"));
+});
+
+test("range band cannot be supplied as an unconfirmed policy default", () => {
+  const payload = intake();
+  payload.fields.direction = { value: "range", provenance: "stated" };
+  payload.fields.settlement = {
+    family: "single_asset_range",
+    threshold_bps: null,
+    max_abs_move_bps: "300",
+    provenance: "policy_default",
+  };
+  Object.assign(payload.handback.seed, {
+    direction: "range",
+    settlement_family: "single_asset_range",
+    threshold_bps: null,
+    max_abs_move_bps: "300",
+  });
+  const found = codes(payload);
+  assert.ok(found.has("RANGE_BAND_UNCONFIRMED"));
+  assert.ok(found.has("RANGE_BAND_PROVENANCE"));
+});
+
 test("policy_default cannot select a target or pair family", () => {
   let payload = intake();
   payload.fields.settlement.family = "single_asset_price_target";
@@ -258,6 +309,134 @@ test("pair family requires second asset", () => {
   payload.fields.pair_asset = { value: "asset:xle", display: "XLE", candidates: [], provenance: "elicited" };
   payload.elicitation_log.push({ round: 4, asked: ["pair_asset"], prompt_text: "Relative to what?", answered_verbatim: "XLE" });
   assert.ok(!codes(payload).has("PAIR_ASSET_MISSING"));
+});
+
+test("relative view preserves expected winner, underperformer, and zero spread", () => {
+  const payload = intake();
+  payload.raw_input.text = "I think NVDA will outperform TSLA over the next two weeks";
+  payload.fields.asset = { value: "asset:nvda", display: "NVDA", candidates: [], provenance: "stated" };
+  payload.fields.pair_asset = { value: "asset:tsla", display: "TSLA", candidates: [], provenance: "stated" };
+  payload.fields.direction = { value: "relative", provenance: "stated" };
+  payload.fields.settlement = { family: "pair_asset_direction", threshold_bps: "0", provenance: "stated" };
+  payload.verification.asset_resolution.resolved_ref = "asset:nvda";
+  payload.confirmation.card_text = "NVDA over TSLA · 14D · hit when NVDA's return is higher";
+  Object.assign(payload.handback.seed, {
+    claim_gist: "NVDA should outperform TSLA",
+    asset_ref: "asset:nvda",
+    pair_asset_ref: "asset:tsla",
+    direction: "relative",
+    settlement_family: "pair_asset_direction",
+    threshold_bps: "0",
+  });
+
+  let result = VALIDATOR.validate(payload);
+  assert.ok(result.valid, JSON.stringify(result.errors));
+
+  payload.fields.pair_asset.value = "NVDA";
+  result = VALIDATOR.validate(payload);
+  assert.ok(result.errors.some((error) => error.code === "PAIR_ASSETS_IDENTICAL"));
+});
+
+test("relative handback cannot reverse the creator-confirmed pair", () => {
+  const payload = intake();
+  payload.fields.asset = { value: "asset:nvda", display: "NVDA", candidates: [], provenance: "stated" };
+  payload.fields.pair_asset = { value: "asset:tsla", display: "TSLA", candidates: [], provenance: "stated" };
+  payload.fields.direction = { value: "relative", provenance: "stated" };
+  payload.fields.settlement = { family: "pair_asset_direction", threshold_bps: "0", provenance: "stated" };
+  Object.assign(payload.handback.seed, {
+    asset_ref: "asset:tsla",
+    pair_asset_ref: "asset:nvda",
+    direction: "relative",
+    settlement_family: "pair_asset_direction",
+    threshold_bps: "0",
+  });
+  assert.ok(codes(payload).has("PAIR_HANDBACK_MISMATCH"));
+});
+
+function compoundIntake() {
+  const payload = intake();
+  payload.raw_input.text = "I think TSLA rises while NVDA stays within plus or minus five percent over two weeks";
+  payload.fields.asset = { value: "asset:tsla", display: "TSLA", candidates: [], provenance: "stated" };
+  payload.fields.pair_asset = { value: "asset:nvda", display: "NVDA", candidates: [], provenance: "stated" };
+  payload.fields.direction = { value: "compound", provenance: "stated" };
+  payload.fields.primary_direction = { value: "long", provenance: "stated" };
+  payload.fields.pair_direction = { value: "range", provenance: "stated" };
+  payload.fields.settlement = {
+    family: "pair_asset_conditions",
+    threshold_bps: "0",
+    pair_threshold_bps: null,
+    max_abs_move_bps: null,
+    pair_max_abs_move_bps: "500",
+    provenance: "elicited",
+  };
+  payload.elicitation_log.push({
+    round: 3,
+    asked: ["pair_range_band"],
+    prompt_text: "At the deadline, what plus-or-minus range should count as NVDA not moving much?",
+    answered_verbatim: "Plus or minus five percent.",
+  });
+  payload.verification.asset_resolution.resolved_ref = "asset:tsla";
+  payload.confirmation.card_text = "TSLA rises AND NVDA stays within ±5% · 14D · both conditions must hold";
+  Object.assign(payload.handback.seed, {
+    claim_gist: "TSLA rises while NVDA stays quiet",
+    asset_ref: "asset:tsla",
+    pair_asset_ref: "asset:nvda",
+    direction: "compound",
+    primary_direction: "long",
+    pair_direction: "range",
+    settlement_family: "pair_asset_conditions",
+    threshold_bps: "0",
+    pair_threshold_bps: null,
+    max_abs_move_bps: null,
+    pair_max_abs_move_bps: "500",
+  });
+  return payload;
+}
+
+test("compound view preserves two independent conditions and requires both", () => {
+  const payload = compoundIntake();
+  let result = VALIDATOR.validate(payload);
+  assert.ok(result.valid, JSON.stringify(result.errors));
+
+  payload.fields.settlement.pair_max_abs_move_bps = null;
+  assert.ok(codes(payload).has("PAIR_RANGE_BAND_REQUIRED"));
+});
+
+test("compound handback cannot drop or rewrite either leg", () => {
+  const payload = compoundIntake();
+  payload.handback.seed.pair_direction = "short";
+  assert.ok(codes(payload).has("COMPOUND_HANDBACK_MISMATCH"));
+});
+
+test("two directional independent conditions reuse all-legs pair direction", () => {
+  const payload = compoundIntake();
+  payload.fields.pair_direction = { value: "short", provenance: "stated" };
+  payload.fields.settlement = {
+    family: "pair_asset_direction",
+    threshold_bps: "0",
+    pair_threshold_bps: "0",
+    max_abs_move_bps: null,
+    pair_max_abs_move_bps: null,
+    provenance: "stated",
+  };
+  Object.assign(payload.handback.seed, {
+    pair_direction: "short",
+    settlement_family: "pair_asset_direction",
+    pair_threshold_bps: "0",
+    pair_max_abs_move_bps: null,
+  });
+  payload.elicitation_log = payload.elicitation_log.filter((entry) => !entry.asked.includes("pair_range_band"));
+  const result = VALIDATOR.validate(payload);
+  assert.ok(result.valid, JSON.stringify(result.errors));
+
+  payload.fields.settlement.family = "pair_asset_conditions";
+  assert.ok(codes(payload).has("COMPOUND_FAMILY_MISMATCH"));
+});
+
+test("compound aliases cannot resolve to the same asset", () => {
+  const payload = compoundIntake();
+  payload.fields.pair_asset.value = "TSLA";
+  assert.ok(codes(payload).has("PAIR_ASSETS_IDENTICAL"));
 });
 
 test("direction threshold must be explicit", () => {

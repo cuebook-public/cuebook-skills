@@ -64,7 +64,7 @@
         "title": {"type": "string", "minLength": 2, "maxLength": 32},
         "body": {"type": "string", "minLength": 20, "maxLength": 1200},
         "subject": {"type": "string", "minLength": 1, "maxLength": 80},
-        "direction": {"enum": ["long", "short", "outperform", "underperform", "range", "avoid", "watch", "neutral", "explain"]},
+        "direction": {"enum": ["long", "short", "outperform", "underperform", "range", "compound", "avoid", "watch", "neutral", "explain"]},
         "horizon": {"type": "string", "minLength": 1, "maxLength": 80},
         "claim": {"type": "string", "minLength": 2, "maxLength": 200},
         "mechanism": {"type": "string", "minLength": 2, "maxLength": 240},
@@ -93,6 +93,60 @@
         {
           "type": "object",
           "additionalProperties": false,
+          "required": ["mode", "family", "asset_ref", "direction", "requested_settle_at", "session_policy", "max_abs_move_bps", "success_condition"],
+          "properties": {
+            "mode": {"const": "terminal_range"},
+            "family": {"const": "single_asset_range"},
+            "asset_ref": {"type": "string", "minLength": 1, "maxLength": 120},
+            "direction": {"const": "range"},
+            "requested_settle_at": {"type": "string", "format": "date-time"},
+            "session_policy": {"const": "at_instant"},
+            "max_abs_move_bps": {"type": "string", "pattern": "^\\d+(\\.\\d+)?$"},
+            "success_condition": {"const": "within_publication_baseline_band_at_deadline"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "family", "asset_ref", "pair_asset_ref", "direction", "requested_settle_at", "session_policy", "spread_threshold_bps", "success_condition"],
+          "properties": {
+            "mode": {"const": "relative_outperformance"},
+            "family": {"const": "pair_asset_direction"},
+            "asset_ref": {"type": "string", "minLength": 1, "maxLength": 120},
+            "pair_asset_ref": {"type": "string", "minLength": 1, "maxLength": 120},
+            "direction": {"enum": ["outperform", "underperform"]},
+            "requested_settle_at": {"type": "string", "format": "date-time"},
+            "session_policy": {"const": "at_instant"},
+            "spread_threshold_bps": {"type": "string", "pattern": "^\\d+(\\.\\d+)?$"},
+            "success_condition": {"enum": ["focal_outperforms_pair", "focal_underperforms_pair"]}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "family", "asset_ref", "pair_asset_ref", "direction", "primary_direction", "pair_direction", "requested_settle_at", "session_policy", "threshold_bps", "pair_threshold_bps", "max_abs_move_bps", "pair_max_abs_move_bps", "aggregate", "success_condition", "flat_condition"],
+          "properties": {
+            "mode": {"const": "compound_conditions"},
+            "family": {"enum": ["pair_asset_direction", "pair_asset_conditions"]},
+            "asset_ref": {"type": "string", "minLength": 1, "maxLength": 120},
+            "pair_asset_ref": {"type": "string", "minLength": 1, "maxLength": 120},
+            "direction": {"const": "compound"},
+            "primary_direction": {"enum": ["long", "short", "range"]},
+            "pair_direction": {"enum": ["long", "short", "range"]},
+            "requested_settle_at": {"type": "string", "format": "date-time"},
+            "session_policy": {"const": "at_instant"},
+            "threshold_bps": {"type": ["string", "null"], "pattern": "^-?\\d+(\\.\\d+)?$"},
+            "pair_threshold_bps": {"type": ["string", "null"], "pattern": "^-?\\d+(\\.\\d+)?$"},
+            "max_abs_move_bps": {"type": ["string", "null"], "pattern": "^\\d+(\\.\\d+)?$"},
+            "pair_max_abs_move_bps": {"type": ["string", "null"], "pattern": "^\\d+(\\.\\d+)?$"},
+            "aggregate": {"const": "all_legs"},
+            "success_condition": {"const": "all_conditions_hit"},
+            "flat_condition": {"const": "direction_equals_threshold_with_no_miss_or_missing"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
           "required": ["mode", "reason"],
           "properties": {
             "mode": {"enum": ["not_applicable", "non_settleable"]},
@@ -110,9 +164,9 @@
         "required_beats": {
           "type": "array",
           "minItems": 3,
-          "maxItems": 6,
+          "maxItems": 7,
           "uniqueItems": true,
-          "items": {"enum": ["price_context", "tested_observation", "argument_structure", "mechanism", "future_check", "settlement_clock", "component_anatomy"]}
+          "items": {"enum": ["price_context", "tested_observation", "argument_structure", "mechanism", "future_check", "settlement_clock", "settlement_band", "condition_join", "component_anatomy"]}
         }
       }
     },
@@ -123,7 +177,7 @@
       "properties": {
         "original_text": {"type": "string", "minLength": 2, "maxLength": 4000},
         "subject": {"type": "string", "minLength": 1, "maxLength": 80},
-        "direction": {"enum": ["long", "short", "outperform", "underperform", "range", "avoid", "watch", "neutral", "explain"]},
+        "direction": {"enum": ["long", "short", "outperform", "underperform", "range", "compound", "avoid", "watch", "neutral", "explain"]},
         "observation_window": {"type": "string", "minLength": 1, "maxLength": 80},
         "horizon": {"type": "string", "minLength": 1, "maxLength": 80},
         "claim": {"type": "string", "minLength": 2, "maxLength": 200},

@@ -62,8 +62,8 @@ Cuebook Agent is not a research wrapper that replaces the creator's judgment. It
 | Experience | What the creator should feel | What Cuebook does |
 | --- | --- | --- |
 | **Recognized** | “That is the part I was actually noticing.” | Reflects the non-obvious kernel without claiming it as the agent's idea |
-| **Expanded** | “That connection gives me a better way to think.” | Adds one relevant Cue, dated relationship, comparator, mechanism, or next footprint |
-| **In control** | “This is exactly the idea I want to put my name on.” | Preserves the creator's stated horizon—or offers Cue-informed timing only when requested—then confirms the title, reasoning, settlement meaning, and visual intent before drawing |
+| **Expanded** | “That connection gives me a better way to think.” | Opens one compact Cue-backed exchange around a relevant relationship, comparator, mechanism, or next footprint, with one follow-up only when it materially deepens the idea |
+| **In control** | “This is exactly the idea I want to put my name on.” | Preserves the creator's stated horizon and, for a range view, exact ± band—or offers Cue-informed proposals only when requested—then confirms the title, reasoning, settlement meaning, and visual intent before drawing |
 | **Revealed** | “Now I can see the relationship.” | Uses one truthful curve, comparison, mechanism, scenario, or Creator Lens instead of decorating the prose |
 | **Remembered** | “I can come back and judge this later.” | Preserves the unchanged Frame with a future checkpoint, then returns the creator to Cuebook App |
 
@@ -211,13 +211,19 @@ The complete public artifact is deliberately small:
 
 Workflow state, schema versions, candidate IDs, evidence bundles, hashes, scopes, upload progress, receipts, consent fields, and backend enums stay backstage.
 
-Eligible single-asset long and short Frames use one creator-facing settlement model across crypto, equities, ETFs, and indexes: Cuebook freezes the same persisted price snapshot it can already display at publication, fixes the exact chosen deadline, then compares that starting point with the latest completed provider-official observation at or before the deadline. There is no default horizon. A creator-stated duration or date always wins; when time is missing, Cuebook asks for it and may offer one or two Cue- or catalyst-informed proposals only after the creator requests help. A proposal must be accepted or edited before rendering. The creator never chooses regular hours, after hours, trading days, or next close. Before any image is rendered, Cuebook naturally recaps the exact copy, direction, deadline, settlement meaning, and visual idea for confirmation. A later “publish this” authorizes only the external write; target-price and pair overrides are the only cases that need more terms.
+Eligible single-asset Frames use one creator-facing deadline model across crypto, equities, ETFs, and indexes. Cuebook freezes the same persisted price snapshot it can already display at publication, fixes the creator's exact deadline, then compares that starting point with the latest completed provider-official observation at or before the deadline. Long and short use the direction of the endpoint return. A terminal range view succeeds when the absolute endpoint return is inside the creator-confirmed symmetric ± band, including the boundary; movement outside the band before returning inside does not change that endpoint result. Cuebook does not silently convert a whole-window “never break this band” view into terminal range settlement.
+
+A relative Frame preserves “A should outperform B” as a two-asset viewpoint, not an order. Cuebook freezes both publication baselines and compares synchronized endpoint returns at the creator's deadline: ordinary outperformance succeeds when `return(A) > return(B)`, including when both assets fall and A falls less. Internally this is an equal-notional long-A/short-B formula; the public title, first-person body, and normalized comparison image stay in the creator's language. Both assets must be distinct and share a supported session family.
+
+A compound Frame preserves “A rises while B stays within ±X%” as two independent conditions, not a relative spread. Both use separately frozen publication baselines and the same deadline; both must hit. Direction legs use a zero-bps endpoint rule, range legs use the exact creator-confirmed terminal band, and directional equality remains flat. The image shows both synchronized conditions and their AND join. Both assets must be distinct and share a supported session family.
+
+There is no default horizon or range band. Creator-stated terms always win; when either is missing, Cuebook asks for it and may offer one or two Cue-, catalyst-, history-, or volatility-informed proposals only after the creator requests help. Every proposal must be accepted or edited before rendering. The creator never chooses regular hours, after hours, trading days, or next close. Before any image is rendered, Cuebook naturally recaps the exact copy, direction or range, deadline, settlement meaning, and visual idea for confirmation. A later “publish this” authorizes only the external write; target-price and pair overrides are the only other cases that need terms.
 
 ## From Intuition To Expression
 
-1. **Recognize the edge.** Preserve the creator's claim, mechanism, horizon, and next observable. Never fill time from a preset. If the creator asks for timing help, relevant Cues and catalysts may support one or two reasoned proposals, but only the creator selects the horizon. Once the asset is known, at most one aligned and one contrasting or adjacent Cue may become optional thinking anchors for one high-leverage question; skipping them never blocks creation.
+1. **Recognize the edge.** Preserve the creator's claim, mechanism, horizon, and next observable. Never fill time or a range band from a preset. If the creator asks for help, relevant Cues, catalysts, history, or volatility may support one or two reasoned proposals, but only the creator selects the horizon and any exact ± band. Once the asset is known, at most one aligned and one contrasting or adjacent Cue may become optional thinking anchors for one high-leverage question; skipping them never blocks creation.
 2. **Expand the thought.** Start the smallest Cuebook read batch and, when material current claims require it, one bounded authoritative Web batch from the same evidence plan. Prefer the one relationship, prior viewpoint, comparator, or next footprint that materially improves the thought or its visual expression. Cues remain published viewpoints rather than proof; factual sentences use evidence, while clearly framed creator inference may remain inference.
-3. **Lock the meaning.** Show the exact title, body, asset, direction, deadline, human settlement rule, and visual intent as text. Do not render until the creator confirms them.
+3. **Lock the meaning.** Show the exact title, first-person creator body unless another voice was requested, asset, direction, deadline, human settlement rule, and visual intent as text. Facts remain attributed evidence inside the argument rather than becoming visible taxonomy headings. Do not render until the creator confirms them.
 4. **Reveal one relationship.** Render one publication image from the confirmed idea and copy. A request for another version changes only expression, not the claim, evidence, or settlement.
 5. **Remember the idea.** Publication happens only after explicit intent and writes the already confirmed Frame. The successful atomic publish result ends the network flow—no second confirmation, receipt parsing, reconciliation, web link, or browser readback. Cuebook Agent recognizes the specific idea that was preserved and returns the creator to Cuebook App. One optional continuation may invite the creator to share it with another AI, share another signal, or explicitly opt into a later simulated Paper Trade.
 
@@ -232,9 +238,9 @@ The renderer chooses a visual relationship before it chooses a style.
 | Idea topology | Useful visual forms |
 | --- | --- |
 | Change through time | Price curve, indexed curve, drawdown, event window, threshold |
-| Relationship between assets | Relative strength, spread, rolling correlation, contribution view |
+| Relationship between assets | Normalized return comparison, relative spread, independent AND conditions, rolling correlation, contribution view |
 | Mechanism or sequence | Causal path, temporal rail, trigger poster |
-| Conditional future | Checkpoints, catalyst map, confirmation and invalidation, scenario branches |
+| Conditional future | Checkpoints, catalyst map, confirmation and invalidation, scenario branches, terminal range band |
 | Competing evidence | Tension field, evidence balance, transparent Creator Lens |
 
 Every preview has one **2488 × 1056** publication PNG. Cuebook uploads and binds that image once; Feed and detail surfaces display the same master, with the Feed scaling it to the equivalent **622 × 264** aspect-ratio box. The Skill does not create separate compact, web, thumbnail, or OG assets.
