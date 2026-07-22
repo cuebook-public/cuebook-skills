@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.9.10 — 2026-07-22
+
 - Softened public uncertainty language across Frame copy and visuals: counter-signals now read as optional reasons to reassess rather than hard invalidation, falsification, or self-correction statements, while structured settlement semantics stay unchanged.
 - Made Frame body shape adaptive to the idea, with varied paragraph count, weight, opening rhythm, and closing move instead of a repeated observation-to-risk template.
 - Expanded copy-capacity and regression gates so layered viewpoints can breathe without forcing simple ideas to fill the same length or exposing Markdown and memo-style headings.
