@@ -6,7 +6,7 @@
     {
       "module_id": "query",
       "label": "Query",
-      "description": "Search, view, compare, and explain Cuebook data while producing only citable read-only results.",
+      "description": "Search, view, compare, and explain Cuebook data, with optional restricted TradingView observations and focused chart captures, while producing only citable read-only results.",
       "entrypoint_skill": "query-cuebook",
       "menu_ref": "./query-menu-v1.json",
       "access": "read_only",
@@ -28,7 +28,7 @@
     {
       "module_id": "create",
       "label": "Create",
-      "description": "Strengthen a user's trading view into a Frame with one title, one body, and one paired viewpoint visual; keep evidence and optional settlement in the background, querying when data is missing.",
+      "description": "Strengthen a user's trading view into a native or rights-cleared attributed-snapshot Frame, or an explicitly confirmed local TradingView canvas projection; keep evidence and optional settlement backstage.",
       "entrypoint_skill": "create-cuebook-content",
       "menu_ref": "./creation-menu-v1.json",
       "access": "compose_with_authorized_writes",
@@ -76,14 +76,18 @@
       "source_bundle",
       "data_table",
       "factual_chart",
-      "history_view"
+      "history_view",
+      "tradingview_observation",
+      "tradingview_focused_capture"
     ],
     "create_deliverables": [
       "market_post",
       "creator_viewpoint_graphic",
       "settlement_protocol",
       "release_bundle",
-      "publishing_candidates"
+      "publishing_candidates",
+      "attributed_snapshot_frame",
+      "tradingview_canvas"
     ],
     "query_may_invoke_create": false,
     "create_may_invoke_query": true

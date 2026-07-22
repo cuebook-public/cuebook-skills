@@ -16,7 +16,12 @@ function bundle() {
     request: { raw_text: "Show USO's latest narrative", asset_refs: ["asset:uso"], time_range: null, depth: "quick" },
     results: [{ result_id: "RES_story", kind: "story", title: "Oil risk premium", summary: "Risk premium is unwinding.", data_ref: "story:uso:1", source_refs: ["SRC_story"], as_of: "2026-07-15T18:50:00+08:00", status: "available" }],
     source_register: [{ source_ref: "SRC_story", source_type: "cuebook_story", locator: "cuebook://story/uso/1", published_at: "2026-07-15T18:45:00+08:00", retrieved_at: "2026-07-15T19:00:00+08:00", retrieved_via: "cuebook_mcp", usage_rights: "citation_only" }],
-    retrieval_report: { cuebook_batches: 1, web_batches: 0, web_queries: 0, web_source_refs: [] },
+    retrieval_report: {
+      cuebook_batches: 1,
+      web_batches: 0,
+      web_queries: 0,
+      web_source_refs: [],
+    },
     unavailable_capabilities: [],
     creation_handoff: { eligible: true, subject_refs: ["asset:uso"], result_refs: ["RES_story"], warnings: [] },
     quality_report: { warnings: [], hard_failures: [] },
@@ -36,6 +41,44 @@ function request() {
   };
 }
 
+function desktopBundle() {
+  const item = bundle();
+  item.query_type = "derived_metrics";
+  item.request = { raw_text: "Inspect my BTCUSD 4H chart", asset_refs: ["asset:btc"], time_range: "4h", depth: "quick" };
+  item.results = [{
+    result_id: "RES_tv_observation",
+    kind: "analysis",
+    title: "Local chart observation",
+    summary: "Price is testing the creator-marked decision level.",
+    data_ref: "TVOBS_BTC_4H_001",
+    source_refs: ["SRC_tv_desktop"],
+    as_of: "2026-07-15T19:00:00+08:00",
+    status: "available",
+  }];
+  item.source_register = [{
+    source_ref: "SRC_tv_desktop",
+    source_type: "market_data",
+    locator: "tradingview://local/chart/COINBASE:BTCUSD/240",
+    published_at: null,
+    retrieved_at: "2026-07-15T19:00:00+08:00",
+    retrieved_via: "tradingview_desktop_mcp",
+    usage_rights: "restricted",
+  }];
+  item.retrieval_report = {
+    cuebook_batches: 0,
+    web_batches: 0,
+    web_queries: 0,
+    web_source_refs: [],
+  };
+  item.creation_handoff = {
+    eligible: false,
+    subject_refs: ["asset:btc"],
+    result_refs: [],
+    warnings: ["Retrieve Cuebook-backed data before Frame creation."],
+  };
+  return item;
+}
+
 test("valid bundle", () => {
   assert.ok(VALIDATOR.validate(bundle()).valid);
 });
@@ -45,6 +88,16 @@ test("factual chart is a valid query request", () => {
   const item = request();
   item.output_mode = "creator_viewpoint_graphic";
   assert.ok(new Set(REQUEST_VALIDATOR.validate(item).errors.map((error) => error.code)).has("SCHEMA_ENUM"));
+});
+
+test("a local TradingView workbench overlays an existing read-only query type", () => {
+  const item = request();
+  item.query_type = "derived_metrics";
+  item.raw_text = "Inspect the RSI and marked levels on my BTCUSD 4H chart.";
+  item.asset_inputs = ["COINBASE:BTCUSD"];
+  item.time_range = "4h";
+  item.output_mode = "answer";
+  assert.ok(REQUEST_VALIDATOR.validate(item).valid);
 });
 
 test("query must be read only", () => {
@@ -78,7 +131,12 @@ test("authorized Web fallback preserves bounded lineage", () => {
     retrieved_via: "authorized_web",
     usage_rights: "citation_only",
   });
-  item.retrieval_report = { cuebook_batches: 1, web_batches: 1, web_queries: 2, web_source_refs: ["SRC_web"] };
+  item.retrieval_report = {
+    ...item.retrieval_report,
+    web_batches: 1,
+    web_queries: 2,
+    web_source_refs: ["SRC_web"],
+  };
   assert.ok(VALIDATOR.validate(item).valid);
   item.retrieval_report.web_source_refs = [];
   assert.ok(new Set(VALIDATOR.validate(item).errors.map((error) => error.code)).has("WEB_SOURCE_LINEAGE"));
@@ -95,11 +153,64 @@ test("Web fallback requires a public locator and one bounded query batch", () =>
     retrieved_via: "authorized_web",
     usage_rights: "citation_only",
   });
-  item.retrieval_report = { cuebook_batches: 1, web_batches: 1, web_queries: 0, web_source_refs: ["SRC_web"] };
+  item.retrieval_report = {
+    ...item.retrieval_report,
+    web_batches: 1,
+    web_queries: 0,
+    web_source_refs: ["SRC_web"],
+  };
   const result = VALIDATOR.validate(item);
   const resultCodes = new Set(result.errors.map((error) => error.code));
   assert.ok(resultCodes.has("WEB_SOURCE_LOCATOR"));
   assert.ok(resultCodes.has("WEB_BATCH_STATE"));
+});
+
+test("a local Desktop observation keeps exact lineage and restricted rights", () => {
+  const item = desktopBundle();
+  assert.deepEqual(VALIDATOR.validate(item), { valid: true, errors: [] });
+  item.source_register[0].usage_rights = "transform";
+  item.source_register[0].locator = "https://example.com/tradingview-chart";
+  const codes = new Set(VALIDATOR.validate(item).errors.map((error) => error.code));
+  assert.ok(codes.has("TRADINGVIEW_SOURCE_RIGHTS"));
+  assert.ok(codes.has("TRADINGVIEW_DESKTOP_LOCATOR"));
+});
+
+test("bounded network research can supplement but not replace Cuebook sources", () => {
+  const item = desktopBundle();
+  item.request.depth = "focused";
+  item.results[0] = {
+    result_id: "RES_tv_research",
+    kind: "analysis",
+    title: "Multi-timeframe stress test",
+    summary: "The 4H and daily observations disagree.",
+    data_ref: "TVOBS_BTC_MTF_001",
+    source_refs: ["SRC_tv_research"],
+    as_of: "2026-07-15T19:00:00+08:00",
+    status: "available",
+  };
+  item.source_register[0] = {
+    source_ref: "SRC_tv_research",
+    source_type: "calculation",
+    locator: "tradingview-research://multi_timeframe_analysis/BTCUSD",
+    published_at: null,
+    retrieved_at: "2026-07-15T19:00:00+08:00",
+    retrieved_via: "tradingview_research_mcp",
+    usage_rights: "restricted",
+  };
+  assert.deepEqual(VALIDATOR.validate(item), { valid: true, errors: [] });
+});
+
+test("TradingView-backed results cannot enter Frame creation directly", () => {
+  const item = desktopBundle();
+  item.creation_handoff = {
+    eligible: true,
+    subject_refs: ["asset:btc"],
+    result_refs: ["RES_tv_observation"],
+    warnings: [],
+  };
+  const result = VALIDATOR.validate(item);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.code === "TRADINGVIEW_SOURCE_HANDOFF"));
 });
 
 test("partial when capability is unavailable", () => {

@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.xyz/schemas/cuebook-intent-v1.schema.json",
+  "title": "CuebookIntentV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "intent_id", "raw_text", "defaulted_to_query", "steps"],
+  "properties": {
+    "schema_version": {"const": "cuebook-intent-v1"},
+    "intent_id": {"type": "string", "pattern": "^INTENT_[A-Za-z0-9_-]+$"},
+    "raw_text": {"type": "string", "minLength": 1},
+    "defaulted_to_query": {"type": "boolean"},
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["step_id", "module", "branch", "artifact", "effect", "explicitness", "confirmation_gates", "depends_on"],
+        "properties": {
+          "step_id": {"type": "string", "pattern": "^STEP_[A-Za-z0-9_-]+$"},
+          "module": {"enum": ["query", "create"]},
+          "branch": {
+            "enum": [
+              "query",
+              "tradingview_observation",
+              "tradingview_focused_capture",
+              "frame_native_preview",
+              "frame_attributed_snapshot_preview",
+              "frame_publication",
+              "tradingview_canvas",
+              "frame_correction",
+              "frame_withdrawal"
+            ]
+          },
+          "artifact": {
+            "enum": [
+              "answer",
+              "comparison",
+              "source_bundle",
+              "data_table",
+              "factual_chart",
+              "history_view",
+              "tradingview_observation",
+              "tradingview_focused_capture",
+              "frame_preview",
+              "frame_publication",
+              "tradingview_canvas",
+              "frame_correction",
+              "frame_withdrawal"
+            ]
+          },
+          "effect": {
+            "enum": [
+              "read_only",
+              "reversible_local",
+              "local_artifact",
+              "local_persistent_write",
+              "public_write",
+              "destructive_write"
+            ]
+          },
+          "explicitness": {"enum": ["explicit", "implied", "ambiguous"]},
+          "confirmation_gates": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "expression",
+                "snapshot_pixel_use",
+                "publication",
+                "drawing_plan",
+                "withdrawal_consent"
+              ]
+            }
+          },
+          "depends_on": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {"type": "string", "pattern": "^STEP_[A-Za-z0-9_-]+$"}
+          }
+        }
+      }
+    }
+  }
+}

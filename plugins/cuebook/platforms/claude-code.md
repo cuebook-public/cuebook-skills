@@ -55,6 +55,12 @@ Same two public entrypoints as Codex: `query-cuebook` (read-only) and
 `create-cuebook-content` (creation; may call query). The `$skill-name`
 cross-invocation convention maps to Claude Code's Skill tool.
 
+TradingView remains an optional, separately configured workbench rather than a
+third public Skill. Use distinct `tradingview_desktop` and
+`tradingview_research` MCP server names and follow
+[Optional TradingView Connectors](../references/tradingview-optional-connectors.md) for the
+consent, Tool-scope, source-rights, rollback, and Frame rerender boundaries.
+
 ## Runtime dependencies
 
 - Node.js 18+ for validators, with Playwright and local Chromium for render/audit skills.

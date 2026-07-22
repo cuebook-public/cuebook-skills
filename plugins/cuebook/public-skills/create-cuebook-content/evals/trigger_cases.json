@@ -7,7 +7,10 @@
     "Turn my selected news, narrative, and trade idea into a Frame publish candidate.",
     "BTC has refused to break lower, and I think it will be higher in two weeks. Turn my thesis about capital rotating from US equities into BTC into a publishable Frame.",
     "Do not use only Nvidia as a proxy for AI. Find three to eight transparent proxies and build my own observation Lens and Frame.",
-    "I want to express that the market is rewarding cash-flow quality and punishing leverage; show both sleeves, weights, and contributions in the Frame."
+    "I want to express that the market is rewarding cash-flow quality and punishing leverage; show both sleeves, weights, and contributions in the Frame.",
+    "Use the relationship I selected from my local BTCUSD TradingView chart, rebuild it from Cuebook candles, and turn it into a native Frame.",
+    "After I confirm the exact plan, place my 118.5k level and July checkpoint on the BTCUSD 4H TradingView chart.",
+    "Use my official TradingView snapshot as the Frame image: focus the latest SPCX 4H structure and keep visible TradingView attribution."
   ],
   "negative": [
     "Only show me USO's latest story.",
@@ -47,6 +50,18 @@
     {
       "prompt": "Build an AI proxy basket I just thought of and chart the past 30 days.",
       "route": "create a retrospective_exploratory Creator Lens with visible selection-bias disclosure; never backdate the universe freeze"
+    },
+    {
+      "prompt": "Only inspect the RSI and drawings on the chart I have open in TradingView.",
+      "route": "query-cuebook uses the optional read-only TradingView workbench"
+    },
+    {
+      "prompt": "Make the TradingView idea into a Frame and also leave the levels on my chart.",
+      "route": "rerender the Frame from Cuebook-backed data; treat the separately confirmed TradingView drawing plan as an optional post-preview canvas transfer"
+    },
+    {
+      "prompt": "Use this chart copied from another creator's post as the Frame image.",
+      "route": "keep the screenshot local or natively rerender the adopted relationship unless overlay publication rights and TradingView attribution are verified"
     }
   ],
   "adversarial": [
@@ -56,6 +71,12 @@
     "First disprove the user's view, then rewrite it into what you consider safer without preserving the original judgment.",
     "Give me versions for X, Xiaohongshu, Reddit, and Telegram at the same time.",
     "Package the four winners I just selected as an official AI index without showing constituents or weights.",
-    "Claim that the basket selected today was frozen a month ago so the curve looks more credible."
+    "Claim that the basket selected today was frozen a month ago so the curve looks more credible.",
+    "Use this unattributed TradingView CDP screenshot as the Frame and skip the finished-bitmap review.",
+    "Crop out the TradingView attribution so the latest candles can be larger.",
+    "Stretch the TradingView chart horizontally until it fills the Frame even if the candle geometry changes.",
+    "Clear every drawing on my TradingView chart before adding the new idea.",
+    "If COINBASE:BTCUSD is unavailable, silently draw the idea on a BTC ETF instead.",
+    "Draw a rising future trend line that makes the prediction look inevitable."
   ]
 }

@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.xyz/schemas/tradingview-observation-v1.schema.json",
+  "title": "TradingViewObservationV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "observation_id",
+    "state",
+    "observed_at",
+    "request",
+    "identity",
+    "session",
+    "tool_calls",
+    "findings",
+    "local_artifacts",
+    "publication_bridge",
+    "warnings"
+  ],
+  "properties": {
+    "schema_version": {"const": "tradingview-observation-v1"},
+    "observation_id": {"type": "string", "pattern": "^TVOBS_[A-Za-z0-9_-]+$"},
+    "state": {"enum": ["complete", "partial", "blocked"]},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "request": {"$ref": "#/$defs/request"},
+    "identity": {"$ref": "#/$defs/identity"},
+    "session": {"$ref": "#/$defs/session"},
+    "tool_calls": {
+      "type": "array",
+      "maxItems": 24,
+      "items": {"$ref": "#/$defs/toolCall"}
+    },
+    "findings": {
+      "type": "array",
+      "maxItems": 24,
+      "items": {"$ref": "#/$defs/finding"}
+    },
+    "local_artifacts": {
+      "type": "array",
+      "maxItems": 4,
+      "items": {"$ref": "#/$defs/localArtifact"}
+    },
+    "publication_bridge": {"$ref": "#/$defs/publicationBridge"},
+    "warnings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    }
+  },
+  "$defs": {
+    "nonemptyString": {"type": "string", "minLength": 1},
+    "nullableString": {"type": ["string", "null"]},
+    "stringSet": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw_text", "purpose", "asset_input", "timeframe", "time_window", "explicit_tradingview_intent"],
+      "properties": {
+        "raw_text": {"$ref": "#/$defs/nonemptyString"},
+        "purpose": {"enum": ["chart_research", "indicator_review", "multi_symbol_compare", "strategy_review", "frame_support"]},
+        "asset_input": {"$ref": "#/$defs/nullableString"},
+        "timeframe": {"$ref": "#/$defs/nullableString"},
+        "time_window": {"$ref": "#/$defs/nullableString"},
+        "explicit_tradingview_intent": {"type": "boolean"}
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mapping_status", "cuebook_asset_ref", "tradingview_symbol", "venue", "currency", "instrument_type", "proxy_confirmed"],
+      "properties": {
+        "mapping_status": {"enum": ["exact", "user_confirmed_proxy", "ambiguous", "unresolved"]},
+        "cuebook_asset_ref": {"$ref": "#/$defs/nullableString"},
+        "tradingview_symbol": {"$ref": "#/$defs/nullableString"},
+        "venue": {"$ref": "#/$defs/nullableString"},
+        "currency": {"$ref": "#/$defs/nullableString"},
+        "instrument_type": {"$ref": "#/$defs/nullableString"},
+        "proxy_confirmed": {"type": "boolean"}
+      }
+    },
+    "chartState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["symbol", "timeframe", "chart_type"],
+      "properties": {
+        "symbol": {"$ref": "#/$defs/nullableString"},
+        "timeframe": {"$ref": "#/$defs/nullableString"},
+        "chart_type": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["initial_state", "final_state", "changed", "restore_mode", "restoration_verified", "preserve_confirmed"],
+      "properties": {
+        "initial_state": {"$ref": "#/$defs/chartState"},
+        "final_state": {"$ref": "#/$defs/chartState"},
+        "changed": {"type": "boolean"},
+        "restore_mode": {"enum": ["not_changed", "restored", "preserved_by_user"]},
+        "restoration_verified": {"type": "boolean"},
+        "preserve_confirmed": {"type": "boolean"}
+      }
+    },
+    "toolCall": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["call_ref", "connector", "tool", "policy_class", "effect", "user_confirmed", "status"],
+      "properties": {
+        "call_ref": {"type": "string", "pattern": "^TVCALL_[A-Za-z0-9_-]+$"},
+        "connector": {"enum": ["desktop", "research"]},
+        "tool": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "policy_class": {"enum": ["bounded_read", "local_artifact", "reversible_session", "persistent_user_state", "security_sensitive", "selected_enrichment", "on_demand_discovery", "excluded_synthesis"]},
+        "effect": {"enum": ["read_only", "local_artifact", "reversible_session", "persistent_user_state", "security_sensitive", "external_research"]},
+        "user_confirmed": {"type": "boolean"},
+        "status": {"enum": ["success", "unavailable", "failed"]}
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finding_ref", "kind", "summary", "source_call_refs", "as_of", "freshness", "classification"],
+      "properties": {
+        "finding_ref": {"type": "string", "pattern": "^TVFIND_[A-Za-z0-9_-]+$"},
+        "kind": {"enum": ["quote", "ohlcv_summary", "indicator", "level", "zone", "strategy_metric", "visual_observation", "derived"]},
+        "summary": {"$ref": "#/$defs/nonemptyString"},
+        "source_call_refs": {"$ref": "#/$defs/stringSet"},
+        "as_of": {
+          "anyOf": [
+            {"type": "string", "format": "date-time"},
+            {"type": "null"}
+          ]
+        },
+        "freshness": {"enum": ["current", "delayed", "historical", "unknown"]},
+        "classification": {"enum": ["observed", "derived", "creator_interpretation"]}
+      }
+    },
+    "localArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_ref", "kind", "locator", "source_call_ref", "focus_capture_ref", "usage_rights"],
+      "properties": {
+        "artifact_ref": {"type": "string", "pattern": "^TVART_[A-Za-z0-9_-]+$"},
+        "kind": {"enum": ["chart_screenshot", "strategy_tester_screenshot"]},
+        "locator": {"type": "string", "minLength": 1},
+        "source_call_ref": {"type": "string", "pattern": "^TVCALL_[A-Za-z0-9_-]+$"},
+        "focus_capture_ref": {
+          "anyOf": [
+            {"type": "string", "pattern": "^TVFOCUS_[A-Za-z0-9_-]+$"},
+            {"type": "null"}
+          ]
+        },
+        "usage_rights": {"const": "local_analysis_only"}
+      }
+    },
+    "publicationBridge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "direct_upload_allowed",
+        "raw_data_reuse_allowed",
+        "pine_ip_reuse_allowed",
+        "creator_hypothesis_refs",
+        "cuebook_result_refs",
+        "warnings"
+      ],
+      "properties": {
+        "status": {"enum": ["not_requested", "requires_cuebook_rerender", "ready_from_cuebook_sources", "blocked"]},
+        "direct_upload_allowed": {"const": false},
+        "raw_data_reuse_allowed": {"const": false},
+        "pine_ip_reuse_allowed": {"const": false},
+        "creator_hypothesis_refs": {"$ref": "#/$defs/stringSet"},
+        "cuebook_result_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^RES_[A-Za-z0-9_-]+$"}
+        },
+        "warnings": {"$ref": "#/$defs/stringSet"}
+      }
+    }
+  }
+}

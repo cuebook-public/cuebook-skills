@@ -1,0 +1,275 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.xyz/schemas/tradingview-canvas-transfer-v1.schema.json",
+  "title": "TradingViewCanvasTransferV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "transfer_id",
+    "state",
+    "requested_at",
+    "authorization",
+    "identity",
+    "source",
+    "chart_target",
+    "operations",
+    "tool_calls",
+    "inventory",
+    "session",
+    "local_artifacts",
+    "frame_bridge",
+    "warnings"
+  ],
+  "properties": {
+    "schema_version": {"const": "tradingview-canvas-transfer-v1"},
+    "transfer_id": {"type": "string", "pattern": "^TVXFER_[A-Za-z0-9_-]+$"},
+    "state": {"enum": ["prepared", "applied", "partial", "rolled_back", "blocked"]},
+    "requested_at": {"type": "string", "format": "date-time"},
+    "authorization": {"$ref": "#/$defs/authorization"},
+    "identity": {"$ref": "#/$defs/identity"},
+    "source": {"$ref": "#/$defs/source"},
+    "chart_target": {"$ref": "#/$defs/chartTarget"},
+    "operations": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {"$ref": "#/$defs/operation"}
+    },
+    "tool_calls": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {"$ref": "#/$defs/toolCall"}
+    },
+    "inventory": {"$ref": "#/$defs/inventory"},
+    "session": {"$ref": "#/$defs/session"},
+    "local_artifacts": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {"$ref": "#/$defs/localArtifact"}
+    },
+    "frame_bridge": {"$ref": "#/$defs/frameBridge"},
+    "warnings": {"$ref": "#/$defs/stringSet"}
+  },
+  "$defs": {
+    "nonemptyString": {"type": "string", "minLength": 1},
+    "nullableString": {"type": ["string", "null"]},
+    "nullableDatetime": {
+      "anyOf": [
+        {"type": "string", "format": "date-time"},
+        {"type": "null"}
+      ]
+    },
+    "nullableNumber": {"type": ["number", "null"]},
+    "stringSet": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["confirmed", "confirmed_at", "scope", "confirmed_operation_refs"],
+      "properties": {
+        "confirmed": {"type": "boolean"},
+        "confirmed_at": {"$ref": "#/$defs/nullableDatetime"},
+        "scope": {"const": "drawings_only"},
+        "confirmed_operation_refs": {"$ref": "#/$defs/stringSet"}
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mapping_status", "cuebook_asset_ref", "tradingview_symbol", "venue", "currency", "instrument_type", "proxy_confirmed"],
+      "properties": {
+        "mapping_status": {"enum": ["exact", "user_confirmed_proxy", "ambiguous", "unresolved"]},
+        "cuebook_asset_ref": {"$ref": "#/$defs/nullableString"},
+        "tradingview_symbol": {"$ref": "#/$defs/nullableString"},
+        "venue": {"$ref": "#/$defs/nullableString"},
+        "currency": {"$ref": "#/$defs/nullableString"},
+        "instrument_type": {"$ref": "#/$defs/nullableString"},
+        "proxy_confirmed": {"type": "boolean"}
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["meaning_lock_ref", "observation_ref", "cuebook_result_refs", "creator_hypothesis_refs"],
+      "properties": {
+        "meaning_lock_ref": {
+          "anyOf": [
+            {"type": "string", "pattern": "^MLOCK_[A-Za-z0-9_:-]+$"},
+            {"type": "null"}
+          ]
+        },
+        "observation_ref": {
+          "anyOf": [
+            {"type": "string", "pattern": "^TVOBS_[A-Za-z0-9_-]+$"},
+            {"type": "null"}
+          ]
+        },
+        "cuebook_result_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^RES_[A-Za-z0-9_-]+$"}
+        },
+        "creator_hypothesis_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^TVFIND_[A-Za-z0-9_-]+$"}
+        }
+      }
+    },
+    "chartState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["symbol", "timeframe", "chart_type"],
+      "properties": {
+        "symbol": {"$ref": "#/$defs/nullableString"},
+        "timeframe": {"$ref": "#/$defs/nullableString"},
+        "chart_type": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "chartTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["symbol", "timeframe", "observation_cutoff_unix"],
+      "properties": {
+        "symbol": {"$ref": "#/$defs/nonemptyString"},
+        "timeframe": {"$ref": "#/$defs/nonemptyString"},
+        "observation_cutoff_unix": {"type": "integer", "minimum": 0}
+      }
+    },
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["time", "price"],
+      "properties": {
+        "time": {"type": "integer", "minimum": 0},
+        "price": {"type": "number"}
+      }
+    },
+    "nullablePoint": {
+      "anyOf": [
+        {"$ref": "#/$defs/point"},
+        {"type": "null"}
+      ]
+    },
+    "style": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["color", "width", "dash", "fill_color", "fill_opacity", "text_color"],
+      "properties": {
+        "color": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}$"},
+        "width": {"type": "integer", "minimum": 1, "maximum": 4},
+        "dash": {"enum": ["solid", "dashed", "dotted"]},
+        "fill_color": {
+          "anyOf": [
+            {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}$"},
+            {"type": "null"}
+          ]
+        },
+        "fill_opacity": {"type": "integer", "minimum": 0, "maximum": 100},
+        "text_color": {
+          "anyOf": [
+            {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}$"},
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operation_ref", "intent", "shape", "point", "point2", "text", "style", "source_refs", "status", "entity_id"],
+      "properties": {
+        "operation_ref": {"type": "string", "pattern": "^TVOP_[A-Za-z0-9_-]+$"},
+        "intent": {"enum": ["decision_level", "decision_zone", "time_marker", "annotation", "historical_trend_segment"]},
+        "shape": {"enum": ["horizontal_line", "vertical_line", "trend_line", "rectangle", "text"]},
+        "point": {"$ref": "#/$defs/point"},
+        "point2": {"$ref": "#/$defs/nullablePoint"},
+        "text": {"$ref": "#/$defs/nullableString"},
+        "style": {"$ref": "#/$defs/style"},
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "status": {"enum": ["planned", "applied", "failed", "removed"]},
+        "entity_id": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "toolCall": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["call_ref", "tool", "phase", "operation_ref", "entity_id", "status"],
+      "properties": {
+        "call_ref": {"type": "string", "pattern": "^TVCALL_[A-Za-z0-9_-]+$"},
+        "tool": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "phase": {"enum": ["preflight", "stage", "apply", "verify", "cleanup", "local_artifact"]},
+        "operation_ref": {
+          "anyOf": [
+            {"type": "string", "pattern": "^TVOP_[A-Za-z0-9_-]+$"},
+            {"type": "null"}
+          ]
+        },
+        "entity_id": {"$ref": "#/$defs/nullableString"},
+        "status": {"enum": ["success", "failed", "unavailable"]}
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["before_entity_ids", "after_entity_ids", "created_entity_ids", "removed_entity_ids", "verified"],
+      "properties": {
+        "before_entity_ids": {"$ref": "#/$defs/stringSet"},
+        "after_entity_ids": {"$ref": "#/$defs/stringSet"},
+        "created_entity_ids": {"$ref": "#/$defs/stringSet"},
+        "removed_entity_ids": {"$ref": "#/$defs/stringSet"},
+        "verified": {"type": "boolean"}
+      }
+    },
+    "session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["initial_state", "final_state", "changed", "restore_mode", "restoration_verified", "preserve_confirmed"],
+      "properties": {
+        "initial_state": {"$ref": "#/$defs/chartState"},
+        "final_state": {"$ref": "#/$defs/chartState"},
+        "changed": {"type": "boolean"},
+        "restore_mode": {"enum": ["not_changed", "restored", "preserved_by_user"]},
+        "restoration_verified": {"type": "boolean"},
+        "preserve_confirmed": {"type": "boolean"}
+      }
+    },
+    "localArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_ref", "kind", "locator", "source_call_ref", "focus_capture_ref", "usage_rights"],
+      "properties": {
+        "artifact_ref": {"type": "string", "pattern": "^TVART_[A-Za-z0-9_-]+$"},
+        "kind": {"const": "chart_screenshot"},
+        "locator": {"$ref": "#/$defs/nonemptyString"},
+        "source_call_ref": {"type": "string", "pattern": "^TVCALL_[A-Za-z0-9_-]+$"},
+        "focus_capture_ref": {"type": "string", "pattern": "^TVFOCUS_[A-Za-z0-9_-]+$"},
+        "usage_rights": {"const": "local_analysis_only"}
+      }
+    },
+    "frameBridge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "direct_pixel_reuse_allowed", "raw_data_reuse_allowed", "cuebook_result_refs", "warnings"],
+      "properties": {
+        "mode": {"enum": ["none", "cuebook_rerender"]},
+        "direct_pixel_reuse_allowed": {"const": false},
+        "raw_data_reuse_allowed": {"const": false},
+        "cuebook_result_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^RES_[A-Za-z0-9_-]+$"}
+        },
+        "warnings": {"$ref": "#/$defs/stringSet"}
+      }
+    }
+  }
+}

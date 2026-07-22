@@ -455,6 +455,123 @@ test("query skill cannot invoke create skill", () => {
   });
 });
 
+test("public Cuebook entrypoints keep external Skill routing backstage", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, "skills", "query-cuebook", "SKILL.md");
+    const source = fs.readFileSync(filePath, "utf-8");
+    fs.writeFileSync(filePath, source.replace("Keep routing backstage", "Explain the routing"));
+    assert.ok(codes(validate(root)).has("CUEBOOK_CONTEXT_BOUNDARY"));
+  });
+});
+
+test("asset resolution cannot turn fuzzy candidates into exact tickers or catalog absence", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, "skills", "query-cuebook", "SKILL.md");
+    const source = fs.readFileSync(filePath, "utf-8");
+    fs.writeFileSync(filePath, source.replace("ranked candidates, not an existence verdict", "resolved assets"));
+    assert.ok(codes(validate(root)).has("ASSET_EXACT_MATCH_BOUNDARY"));
+  });
+});
+
+test("asset resolution keeps capability gaps separate and forbids implicit proxies", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, "skills", "create-cuebook-content", "SKILL.md");
+    const source = fs.readFileSync(filePath, "utf-8");
+    fs.writeFileSync(filePath, source.replace("a proxy is a different idea", "a proxy is close enough"));
+    assert.ok(codes(validate(root)).has("ASSET_EXACT_MATCH_BOUNDARY"));
+  });
+});
+
+test("TradingView stays optional behind the two public Cuebook entrypoints", () => {
+  const mcp = JSON.parse(fs.readFileSync(path.join(PLUGIN_ROOT, ".mcp.json"), "utf-8"));
+  assert.deepEqual(Object.keys(mcp.mcpServers), ["cuebook"]);
+  const desktop = JSON.parse(fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "query-cuebook", "references", "tradingview-tool-policy-v1.json"),
+    "utf-8",
+  ));
+  const research = JSON.parse(fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "query-cuebook", "references", "tradingview-research-policy-v1.json"),
+    "utf-8",
+  ));
+  assert.equal(Object.values(desktop.classes).flat().length, 84);
+  assert.equal(new Set(Object.values(desktop.classes).flat()).size, 84);
+  assert.equal(Object.values(research.classes).flat().length, 37);
+  assert.equal(new Set(Object.values(research.classes).flat()).size, 37);
+  assert.equal(desktop.frame_policy.official_attributed_snapshot_finished_bitmap_allowed, true);
+  assert.equal(desktop.frame_policy.raw_capture_requires_focus_contract, true);
+  assert.equal(desktop.frame_policy.minimum_attribution_effective_px, 13);
+  for (const relative of [
+    ["query-cuebook", "references", "tradingview-workbench.md"],
+    ["query-cuebook", "scripts", "validate_tradingview_observation.mjs"],
+    ["query-cuebook", "references", "tradingview-focused-capture.md"],
+    ["query-cuebook", "scripts", "validate_tradingview_focused_capture.mjs"],
+    ["create-cuebook-content", "references", "tradingview-canvas-transfer.md"],
+    ["create-cuebook-content", "scripts", "validate_tradingview_canvas_transfer.mjs"],
+  ]) {
+    assert.ok(fs.existsSync(path.join(PLUGIN_ROOT, "public-skills", ...relative)), relative.join("/"));
+  }
+});
+
+test("TradingView canvas policy cannot reintroduce clear-all or Frame pixels", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, "skills", "create-cuebook-content", "references", "tradingview-canvas-tool-policy-v1.json");
+    rewrite(filePath, (payload) => {
+      payload.lifecycle.clear_all_allowed = true;
+      payload.lifecycle.direct_frame_pixel_reuse_allowed = true;
+    });
+    assert.ok(codes(validate(root)).has("TRADINGVIEW_CANVAS_POLICY"));
+  });
+});
+
+test("Cuebook package cannot silently install an optional TradingView server", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, ".mcp.json");
+    rewrite(filePath, (payload) => {
+      payload.mcpServers.tradingview_desktop = { command: "node", args: ["/tmp/server.js"] };
+    });
+    assert.ok(codes(validate(root)).has("MCP_SERVER_SET"));
+  });
+});
+
+test("TradingView observations cannot become direct Frame inputs", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, "skills", "query-cuebook", "SKILL.md");
+    const source = fs.readFileSync(filePath, "utf-8");
+    fs.writeFileSync(filePath, source.replace("restricted and never a direct Frame input", "ready for direct Frame upload"));
+    assert.ok(codes(validate(root)).has("TRADINGVIEW_SKILL_BOUNDARY"));
+  });
+});
+
+test("TradingView focused snapshot policy cannot lose density or attribution gates", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const policyPath = path.join(root, "skills", "query-cuebook", "references", "tradingview-tool-policy-v1.json");
+    rewrite(policyPath, (payload) => {
+      payload.frame_policy.raw_capture_requires_focus_contract = false;
+      payload.frame_policy.minimum_attribution_effective_px = 1;
+    });
+    assert.ok(codes(validate(root)).has("TRADINGVIEW_DESKTOP_POLICY"));
+
+    const createPath = path.join(root, "skills", "create-cuebook-content", "SKILL.md");
+    fs.writeFileSync(createPath, fs.readFileSync(createPath, "utf-8").replace("## Attributed TradingView Snapshot", "## Snapshot"));
+    assert.ok(codes(validate(root)).has("TRADINGVIEW_SKILL_BOUNDARY"));
+  });
+});
+
+test("declared TradingView Frame route keeps its executable runner", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    fs.rmSync(path.join(root, "skills", "create-cuebook-content", "scripts", "build_tradingview_attributed_frame.mjs"));
+    assert.ok(codes(validate(root)).has("TRADINGVIEW_FRAME_RUNNER"));
+  });
+});
+
 test("Frame MCP tool set cannot lose a frozen operation", () => {
   withTmpPath((tmpPath) => {
     const root = copiedPlugin(tmpPath);

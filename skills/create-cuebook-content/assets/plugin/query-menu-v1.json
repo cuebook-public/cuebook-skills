@@ -108,6 +108,33 @@
       "availability": "backend_required"
     },
     {
+      "query_id": "tradingview_inspect",
+      "label": "Inspect a TradingView chart",
+      "description": "Inspect the creator's current local chart or run one bounded network research check without changing the chart.",
+      "skill_refs": [
+        "query-cuebook"
+      ],
+      "mcp_tools": [],
+      "availability": "optional_connector",
+      "optional_connectors": [
+        "tradingview_desktop",
+        "tradingview_research"
+      ]
+    },
+    {
+      "query_id": "tradingview_capture",
+      "label": "Focused TradingView chart",
+      "description": "Capture the latest decision structure at high information density while preserving axes, attribution, and the creator's original viewport.",
+      "skill_refs": [
+        "query-cuebook"
+      ],
+      "mcp_tools": [],
+      "availability": "optional_connector",
+      "optional_connectors": [
+        "tradingview_desktop"
+      ]
+    },
+    {
       "query_id": "settlement_history",
       "label": "View settlement",
       "description": "View observations, formula branches, and settlement results for a frozen viewpoint.",
@@ -179,6 +206,14 @@
     {
       "output_id": "history_view",
       "label": "History view"
+    },
+    {
+      "output_id": "tradingview_observation",
+      "label": "TradingView observation"
+    },
+    {
+      "output_id": "tradingview_focused_capture",
+      "label": "Focused chart image"
     },
     {
       "output_id": "creation_handoff",

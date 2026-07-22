@@ -94,6 +94,13 @@ reinstall or debug plugin discovery inside the creation flow.
   candidate visibly contains only one title, one body, and one paired editorial
   image with sourced curves, event/threshold geometry, or future scenarios).
 
+TradingView is an optional, separately configured workbench behind those same
+two entrypoints; it does not add a third Skill or a hidden Cuebook dependency.
+When a creator wants local-chart inspection, bounded outside research, or a
+confirmed chart annotation transfer, follow
+[Optional TradingView Connectors](../references/tradingview-optional-connectors.md). Keep the
+Desktop and research servers under distinct host names.
+
 ## Runtime dependencies
 
 - Node.js 22+ for every validator script, with Playwright and a local Chromium/Chrome executable for the

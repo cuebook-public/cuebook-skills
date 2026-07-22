@@ -1,0 +1,82 @@
+{
+  "schema_version": "tradingview-research-policy-v1",
+  "upstream": {
+    "repository": "https://github.com/atilaahmettaner/tradingview-mcp",
+    "audited_commit": "6755ba02bb05a933eabeefe8f27121171ec781a7",
+    "audited_at": "2026-07-22T00:00:00Z",
+    "package_version": "0.7.1",
+    "tool_count": 37,
+    "transport": "stdio-or-hosted-http",
+    "data_path": "third-party-network-sources"
+  },
+  "classes": {
+    "selected_enrichment": [
+      "backtest_strategy",
+      "coin_analysis",
+      "compare_strategies",
+      "financial_news",
+      "futures_category_snapshot",
+      "futures_market_overview",
+      "multi_timeframe_analysis",
+      "stock_extended_hours",
+      "stock_options_chain",
+      "volume_confirmation_analysis",
+      "walk_forward_backtest_strategy"
+    ],
+    "on_demand_discovery": [
+      "advanced_candle_pattern",
+      "bitcoin_market_pulse",
+      "bollinger_scan",
+      "consecutive_candles_scan",
+      "egx_fibonacci_retracement",
+      "egx_index_analysis",
+      "egx_market_overview",
+      "egx_sector_scan",
+      "egx_sector_scanner",
+      "egx_stock_screener",
+      "futures_top_movers",
+      "futures_watchlist",
+      "market_sentiment",
+      "market_snapshot",
+      "rating_filter",
+      "smart_volume_scanner",
+      "stock_options_unusual_activity",
+      "stock_prices",
+      "stock_screener",
+      "top_gainers",
+      "top_losers",
+      "volume_breakout_scanner",
+      "yahoo_price"
+    ],
+    "excluded_synthesis": [
+      "combined_analysis",
+      "egx_trade_plan",
+      "multi_agent_analysis"
+    ]
+  },
+  "cuebook_bridge_policy": {
+    "allowed_classes": [
+      "selected_enrichment",
+      "on_demand_discovery"
+    ],
+    "explicit_intent_required_classes": [
+      "on_demand_discovery"
+    ],
+    "blocked_classes": [
+      "excluded_synthesis"
+    ],
+    "max_calls_per_request": 3,
+    "max_discovery_calls_per_request": 1,
+    "prefer_cuebook_for_identity_and_publishable_curves": true
+  },
+  "interpretation_policy": {
+    "usage_rights": "restricted",
+    "allow_direct_frame_evidence": false,
+    "allow_final_recommendation_fields": false,
+    "allow_provider_buy_sell_labels_as_creator_stance": false,
+    "require_provider_and_observation_time": true,
+    "backtests_are_derived_stress_tests": true,
+    "unusual_options_is_mechanical_volume_open_interest_only": true,
+    "news_items_require_original_urls_and_attribution": true
+  }
+}

@@ -79,13 +79,19 @@ The [platform support matrix](platforms/README.md) links to host-specific instal
 
 | Skill | Responsibility |
 | --- | --- |
-| `query-cuebook` | Search, compare, and explain Cuebook assets, stories, published Frames, market series, evidence, and history. Never drafts or publishes. |
-| `create-cuebook-content` | Preserve the creator's idea, open one compact Cue-backed thought-anchor exchange with at most one consequential follow-up, retrieve the smallest useful evidence set, and return one recommended Frame. Alternatives appear only when requested. |
+| `query-cuebook` | Search, compare, and explain Cuebook assets, stories, published Frames, market series, evidence, and history. When explicitly requested and separately connected, it may add one restricted TradingView observation or focused chart capture. Never drafts, mutates, or publishes. |
+| `create-cuebook-content` | Preserve the creator's idea, open one compact Cue-backed thought-anchor exchange, and return one recommended Frame—including a rights-cleared attributed TradingView snapshot when explicitly selected—or apply one separately confirmed local drawing plan. |
 
 ```text
 Query  ◀── evidence request ──  Create
 read only                       explicit write intent only
 ```
+
+## Optional TradingView Workbench
+
+Cuebook does not install or silently depend on either third-party TradingView server. A creator may separately configure `tradingview_desktop` for bounded local-chart inspection and confirmed annotations, `tradingview_research` for one targeted outside research pass, both, or neither. Exact asset identity remains mandatory; provider recommendation labels are never adopted as the creator's view. Existing chart drawings are inventoried and preserved, rollback removes only entities created by the transfer, and `draw_clear` is forbidden.
+
+Raw TradingView captures, bars, indicator payloads, Pine source, and third-party network data cannot become direct Frame media or evidence. The default Frame route retrieves eligible Cuebook data and natively rerenders the adopted relationship. When the creator explicitly selects an official snapshot, a separate focused finished-bitmap route requires visible TradingView attribution, known overlay rights, an exact price lock where needed, undistorted geometry, and image audit. Configuration and scope details are in [Optional TradingView Connectors](references/tradingview-optional-connectors.md).
 
 ## Public Contract
 

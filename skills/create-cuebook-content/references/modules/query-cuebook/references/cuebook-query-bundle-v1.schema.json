@@ -11,7 +11,7 @@
     "query_id": {"type": "string", "pattern": "^QRY_[A-Za-z0-9_-]+$"},
     "state": {"enum": ["complete", "partial", "blocked"]},
     "read_only": {"const": true},
-    "query_type": {"enum": ["latest_stories", "story_detail", "asset_narratives", "market_state", "market_evidence", "fundamentals", "market_series", "derived_metrics", "settlement_history", "published_frame", "commentator_profile", "media_format", "mixed"]},
+    "query_type": {"enum": ["latest_stories", "story_detail", "asset_narratives", "market_state", "market_evidence", "fundamentals", "market_series", "derived_metrics", "tradingview_inspect", "tradingview_capture", "settlement_history", "published_frame", "commentator_profile", "media_format", "mixed"]},
     "as_of": {"type": "string", "format": "date-time"},
     "request": {
       "type": "object",
@@ -32,7 +32,7 @@
         "required": ["result_id", "kind", "title", "summary", "data_ref", "source_refs", "as_of", "status"],
         "properties": {
           "result_id": {"type": "string", "pattern": "^RES_[A-Za-z0-9_-]+$"},
-          "kind": {"enum": ["asset", "story", "narrative", "market_state", "evidence", "fundamental", "series", "metric", "feed", "settlement", "publication", "profile", "media_format", "analysis"]},
+          "kind": {"enum": ["asset", "story", "narrative", "market_state", "evidence", "fundamental", "series", "metric", "feed", "settlement", "publication", "profile", "media_format", "analysis", "tradingview_observation", "tradingview_focused_capture"]},
           "title": {"type": "string", "minLength": 1},
           "summary": {"type": ["string", "null"]},
           "data_ref": {"type": ["string", "null"]},
@@ -54,7 +54,7 @@
           "locator": {"type": "string", "minLength": 1},
           "published_at": {"type": ["string", "null"], "format": "date-time"},
           "retrieved_at": {"type": "string", "format": "date-time"},
-          "retrieved_via": {"enum": ["cuebook_mcp", "authorized_web", "user_supplied", "local_derivation"]},
+          "retrieved_via": {"enum": ["cuebook_mcp", "authorized_web", "user_supplied", "local_derivation", "tradingview_desktop_mcp", "tradingview_research_mcp"]},
           "usage_rights": {"enum": ["display", "transform", "citation_only", "restricted"]}
         }
       }

@@ -284,6 +284,19 @@
             "compile-cuebook-visual-argument",
             "render-cuebook-logic-card"
           ]
+        },
+        {
+          "option_id": "tradingview_attributed_snapshot",
+          "label": "Rights-cleared TradingView snapshot",
+          "skill_refs": [
+            "query-cuebook",
+            "direct-cuebook-viewpoint-visual"
+          ],
+          "mcp_tools": [],
+          "availability": "optional_connector",
+          "optional_connectors": [
+            "tradingview_desktop"
+          ]
         }
       ]
     },

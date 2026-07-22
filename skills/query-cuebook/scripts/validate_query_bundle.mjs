@@ -62,6 +62,12 @@ export function validate(payload) {
   }
   const knownSources = new Set(sourceIds);
   const webSources = sources.filter((item) => isDict(item) && get(item, "retrieved_via") === "authorized_web");
+  const tradingviewDesktopSources = sources.filter((item) => isDict(item) && get(item, "retrieved_via") === "tradingview_desktop_mcp");
+  const tradingviewResearchSources = sources.filter((item) => isDict(item) && get(item, "retrieved_via") === "tradingview_research_mcp");
+  const tradingviewSourceIds = new Set([
+    ...tradingviewDesktopSources.map((source) => get(source, "source_ref")),
+    ...tradingviewResearchSources.map((source) => get(source, "source_ref")),
+  ]);
   for (const [index, source] of sources.entries()) {
     if (!isDict(source)) continue;
     if (get(source, "retrieved_via") === "authorized_web" && !/^https?:\/\//u.test(String(get(source, "locator", "")))) {
@@ -69,6 +75,22 @@ export function validate(payload) {
     }
     if (get(source, "retrieved_via") === "local_derivation" && get(source, "source_type") !== "calculation") {
       errors.push(issue("DERIVATION_SOURCE_TYPE", `$.source_register[${index}].source_type`, "Local derivations must use source_type calculation."));
+    }
+    if (get(source, "retrieved_via") === "tradingview_desktop_mcp") {
+      if (!/^tradingview:\/\/local\//u.test(String(get(source, "locator", "")))) {
+        errors.push(issue("TRADINGVIEW_DESKTOP_LOCATOR", `$.source_register[${index}].locator`, "Desktop observations require a local-only tradingview://local/ locator."));
+      }
+      if (get(source, "usage_rights") !== "restricted") {
+        errors.push(issue("TRADINGVIEW_SOURCE_RIGHTS", `$.source_register[${index}].usage_rights`, "TradingView Desktop observations must remain restricted."));
+      }
+    }
+    if (get(source, "retrieved_via") === "tradingview_research_mcp") {
+      if (!/^(?:https?|tradingview-research):\/\//u.test(String(get(source, "locator", "")))) {
+        errors.push(issue("TRADINGVIEW_RESEARCH_LOCATOR", `$.source_register[${index}].locator`, "Research observations require an original HTTP(S) source or tradingview-research:// locator."));
+      }
+      if (get(source, "usage_rights") !== "restricted") {
+        errors.push(issue("TRADINGVIEW_SOURCE_RIGHTS", `$.source_register[${index}].usage_rights`, "TradingView research observations must remain restricted."));
+      }
     }
   }
 
@@ -119,6 +141,14 @@ export function validate(payload) {
   const unavailableHandoff = [...handoffRefs].filter((resultRef) => statusByResult.get(resultRef) === "unavailable");
   if (unavailableHandoff.length) {
     errors.push(issue("UNAVAILABLE_HANDOFF", "$.creation_handoff.result_refs", `Unavailable results cannot enter creation: ${pyrepr(unavailableHandoff)}.`));
+  }
+  const resultById = new Map(results.filter((item) => isDict(item)).map((item) => [get(item, "result_id"), item]));
+  const tradingviewHandoff = [...handoffRefs].filter((resultRef) => {
+    const result = resultById.get(resultRef);
+    return isDict(result) && (get(result, "source_refs", []) ?? []).some((sourceRef) => tradingviewSourceIds.has(sourceRef));
+  });
+  if (tradingviewHandoff.length) {
+    errors.push(issue("TRADINGVIEW_SOURCE_HANDOFF", "$.creation_handoff.result_refs", `TradingView-backed results cannot become Frame inputs; retrieve and rerender from Cuebook sources: ${pyrepr(tradingviewHandoff)}.`));
   }
 
   const state = get(payload, "state");

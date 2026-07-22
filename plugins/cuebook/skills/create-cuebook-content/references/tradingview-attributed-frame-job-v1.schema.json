@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.xyz/schemas/tradingview-attributed-frame-job-v1.schema.json",
+  "title": "TradingViewAttributedFrameJobV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "focused_capture_ref", "snapshot_ref", "theme", "audited_at", "image_review"],
+  "properties": {
+    "schema_version": {"const": "tradingview-attributed-frame-job-v1"},
+    "focused_capture_ref": {"type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+\\.json$"},
+    "snapshot_ref": {"type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+\\.png$"},
+    "theme": {"enum": ["light", "dark"]},
+    "audited_at": {"type": "string", "format": "date-time"},
+    "image_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewer", "reviewed_at", "legibility", "collision", "imagery_policy", "imagery_result", "wordmark_safe_zone"],
+      "properties": {
+        "reviewer": {"enum": ["model", "human"]},
+        "reviewed_at": {"type": "string", "format": "date-time"},
+        "legibility": {"const": "pass"},
+        "collision": {"const": "pass"},
+        "imagery_policy": {"enum": ["no_external_untrusted", "not_required"]},
+        "imagery_result": {"const": "pass"},
+        "wordmark_safe_zone": {"const": "clear"}
+      }
+    }
+  }
+}

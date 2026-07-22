@@ -9,10 +9,10 @@
     "schema_version": {"const": "cuebook-query-request-v1"},
     "request_id": {"type": "string", "pattern": "^QREQ_[A-Za-z0-9_-]+$"},
     "raw_text": {"type": "string", "minLength": 1},
-    "query_type": {"enum": ["auto", "latest_stories", "story_detail", "asset_narratives", "market_state", "market_evidence", "fundamentals", "market_series", "derived_metrics", "settlement_history", "published_frame", "commentator_profile", "media_format", "mixed"]},
+    "query_type": {"enum": ["auto", "latest_stories", "story_detail", "asset_narratives", "market_state", "market_evidence", "fundamentals", "market_series", "derived_metrics", "tradingview_inspect", "tradingview_capture", "settlement_history", "published_frame", "commentator_profile", "media_format", "mixed"]},
     "asset_inputs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
     "time_range": {"type": ["string", "null"]},
     "depth": {"enum": ["quick", "focused", "deep"]},
-    "output_mode": {"enum": ["answer", "comparison", "source_bundle", "data_table", "factual_chart", "history_view", "creation_handoff"]}
+    "output_mode": {"enum": ["answer", "comparison", "source_bundle", "data_table", "factual_chart", "history_view", "tradingview_observation", "tradingview_focused_capture", "creation_handoff"]}
   }
 }

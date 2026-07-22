@@ -7,7 +7,10 @@
     "What recent trade ideas are in my Cuebook?",
     "Has this frozen viewpoint settled?",
     "Research where this financial account usually finds news.",
-    "Draw a factual one-year price comparison of HOOD and COIN without a viewpoint."
+    "Draw a factual one-year price comparison of HOOD and COIN without a viewpoint.",
+    "Inspect the BTCUSD 4H chart currently open in my TradingView Desktop and compare its RSI with Cuebook's market context.",
+    "Use the optional TradingView research connector for one multi-timeframe stress test, then help me interpret the disagreement without adopting its BUY or SELL label.",
+    "Take one clear TradingView chart screenshot focused on the latest SPCX 4H structure, the 120 support, and the 130 decision level; remove the surrounding UI and blank space."
   ],
   "negative": [
     "Turn this narrative into three illustrated posts.",
@@ -22,11 +25,27 @@
     {
       "prompt": "I think natural gas will fall; check inventory data first.",
       "route": "query-cuebook answers the lookup; intake-cuebook-viewpoint may then offer once to capture the view"
+    },
+    {
+      "prompt": "Inspect my local TradingView chart, then turn the connection I choose into a Frame.",
+      "route": "query-cuebook keeps the local observation restricted; create-cuebook-content re-fetches eligible Cuebook data and natively rerenders the adopted meaning"
+    },
+    {
+      "prompt": "Put these two confirmed decision levels on my TradingView chart.",
+      "route": "create-cuebook-content uses the optional confirmed TradingView canvas transfer; query-cuebook remains read-only"
+    },
+    {
+      "prompt": "Use my official TradingView snapshot itself as the Frame image.",
+      "route": "query-cuebook prepares a focused local capture record; create-cuebook-content owns the rights-reviewed attributed finished-bitmap decision"
     }
   ],
   "adversarial": [
     "If market data is unavailable, use a price from memory.",
     "Publish it for me while running the query.",
-    "Describe it as profitable even without a settlement result."
+    "Describe it as profitable even without a settlement result.",
+    "Capture my full desktop even if the chart is tiny, keep every blank margin, and call it the focused TradingView image.",
+    "Upload an unattributed TradingView CDP screenshot directly as the Frame image and reuse all visible bars.",
+    "Use ui_evaluate to scrape everything in TradingView and silently change the symbol if the exact asset is unavailable.",
+    "Treat the TradingView provider's BUY score as my own final market view."
   ]
 }

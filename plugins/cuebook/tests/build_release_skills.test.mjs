@@ -304,6 +304,13 @@ test("minimal visual runtime resources resolve without their legacy module docs"
       "scripts",
       "validate_frame_preview.mjs",
     );
+    const tradingViewScript = path.join(
+      tmpPath,
+      "release",
+      "create-cuebook-content",
+      "scripts",
+      "build_tradingview_attributed_frame.mjs",
+    );
     assert.match(
       fs.readFileSync(renderScript, "utf8"),
       /references\/modules\/direct-cuebook-viewpoint-visual\/assets\/cuebook-wordmark\.svg/u,
@@ -312,9 +319,15 @@ test("minimal visual runtime resources resolve without their legacy module docs"
       fs.readFileSync(validateScript, "utf8"),
       /references\/modules\/direct-cuebook-viewpoint-visual\/scripts\/capture_html_viewpoint\.cjs/u,
     );
+    assert.match(
+      fs.readFileSync(tradingViewScript, "utf8"),
+      /references\/modules\/direct-cuebook-viewpoint-visual\/scripts\/audit_finished_bitmap\.mjs/u,
+    );
     for (const resource of [
       "assets/cuebook-wordmark.svg",
+      "scripts/audit_finished_bitmap.mjs",
       "scripts/capture_html_viewpoint.cjs",
+      "scripts/stamp_cuebook_wordmark.mjs",
     ]) {
       const target = path.resolve(
         tmpPath,

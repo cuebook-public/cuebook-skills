@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.xyz/schemas/tradingview-focused-capture-v1.schema.json",
+  "title": "TradingViewFocusedCaptureV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "capture_id",
+    "state",
+    "observation_ref",
+    "captured_at",
+    "source",
+    "focus",
+    "quality",
+    "rights",
+    "frame_bridge",
+    "warnings"
+  ],
+  "properties": {
+    "schema_version": {"const": "tradingview-focused-capture-v1"},
+    "capture_id": {"type": "string", "pattern": "^TVFOCUS_[A-Za-z0-9_-]+$"},
+    "state": {"enum": ["complete", "partial", "blocked"]},
+    "observation_ref": {"type": "string", "pattern": "^TVOBS_[A-Za-z0-9_-]+$"},
+    "captured_at": {"type": "string", "format": "date-time"},
+    "source": {"$ref": "#/$defs/source"},
+    "focus": {"$ref": "#/$defs/focus"},
+    "quality": {"$ref": "#/$defs/quality"},
+    "rights": {"$ref": "#/$defs/rights"},
+    "frame_bridge": {"$ref": "#/$defs/frameBridge"},
+    "warnings": {"$ref": "#/$defs/stringSet"}
+  },
+  "$defs": {
+    "nonemptyString": {"type": "string", "minLength": 1},
+    "nullableString": {"type": ["string", "null"]},
+    "stringSet": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "visibleRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": {"type": "integer", "minimum": 1},
+        "to": {"type": "integer", "minimum": 1}
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "call_ref",
+        "method",
+        "region",
+        "locator",
+        "width",
+        "height",
+        "timeframe",
+        "latest_complete_bar_at"
+      ],
+      "properties": {
+        "call_ref": {"type": "string", "pattern": "^TVCALL_[A-Za-z0-9_-]+$"},
+        "method": {"enum": ["cdp_chart", "tradingview_snapshot"]},
+        "region": {"const": "chart"},
+        "locator": {"$ref": "#/$defs/nonemptyString"},
+        "width": {"type": "integer", "minimum": 1},
+        "height": {"type": "integer", "minimum": 1},
+        "timeframe": {"$ref": "#/$defs/nonemptyString"},
+        "latest_complete_bar_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "referenceAnchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "at", "label"],
+      "properties": {
+        "kind": {"enum": ["latest_structure_start", "named_level_origin", "swing_high", "swing_low", "event", "creator_selected"]},
+        "at": {
+          "anyOf": [
+            {"type": "string", "format": "date-time"},
+            {"type": "null"}
+          ]
+        },
+        "label": {"$ref": "#/$defs/nonemptyString"}
+      }
+    },
+    "focus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "initial_visible_range",
+        "selected_visible_range",
+        "visible_bar_count",
+        "reference_anchor",
+        "retained_targets",
+        "excluded_surfaces",
+        "latest_bar_x_ratio",
+        "window_changed",
+        "restore_mode",
+        "restoration_verified",
+        "preserve_confirmed"
+      ],
+      "properties": {
+        "mode": {"enum": ["latest_structure", "named_levels", "creator_window", "full_context"]},
+        "initial_visible_range": {"$ref": "#/$defs/visibleRange"},
+        "selected_visible_range": {"$ref": "#/$defs/visibleRange"},
+        "visible_bar_count": {"type": "integer", "minimum": 5, "maximum": 500},
+        "reference_anchor": {"$ref": "#/$defs/referenceAnchor"},
+        "retained_targets": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "latest_complete_bar",
+              "price_axis",
+              "time_context",
+              "named_decision_levels",
+              "relevant_swing_anchor",
+              "volume_context",
+              "indicator_context",
+              "tradingview_attribution"
+            ]
+          }
+        },
+        "excluded_surfaces": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "profile_header",
+              "post_copy",
+              "blank_margin",
+              "position_card",
+              "toolbar",
+              "side_panel",
+              "unrelated_panes",
+              "irrelevant_history"
+            ]
+          }
+        },
+        "latest_bar_x_ratio": {"type": "number", "minimum": 0, "maximum": 1},
+        "window_changed": {"type": "boolean"},
+        "restore_mode": {"enum": ["not_changed", "restored", "preserved_by_user"]},
+        "restoration_verified": {"type": "boolean"},
+        "preserve_confirmed": {"type": "boolean"}
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "output_width",
+        "output_height",
+        "chart_fill_ratio",
+        "latest_bar_visible",
+        "price_axis_visible",
+        "time_context_visible",
+        "key_annotations_legible",
+        "private_ui_absent",
+        "mutable_price_visible",
+        "non_uniform_scaling",
+        "reviewed"
+      ],
+      "properties": {
+        "output_width": {"type": "integer", "minimum": 1},
+        "output_height": {"type": "integer", "minimum": 1},
+        "chart_fill_ratio": {"type": "number", "minimum": 0, "maximum": 1},
+        "latest_bar_visible": {"type": "boolean"},
+        "price_axis_visible": {"type": "boolean"},
+        "time_context_visible": {"type": "boolean"},
+        "key_annotations_legible": {"type": "boolean"},
+        "private_ui_absent": {"type": "boolean"},
+        "mutable_price_visible": {"type": "boolean"},
+        "non_uniform_scaling": {"const": false},
+        "reviewed": {"type": "boolean"}
+      }
+    },
+    "rights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "usage_scope",
+        "tradingview_attribution_visible",
+        "attribution_effective_px",
+        "overlay_rights",
+        "creator_confirmed_publication"
+      ],
+      "properties": {
+        "usage_scope": {"enum": ["local_analysis_only", "attributed_publication"]},
+        "tradingview_attribution_visible": {"type": "boolean"},
+        "attribution_effective_px": {"type": ["integer", "null"], "minimum": 1},
+        "overlay_rights": {"enum": ["none", "creator_owned", "licensed", "unknown"]},
+        "creator_confirmed_publication": {"type": "boolean"}
+      }
+    },
+    "publicationMaster": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["locator", "width", "height", "cuebook_wordmark_visible", "backend_price_lock_ref"],
+      "properties": {
+        "locator": {"$ref": "#/$defs/nonemptyString"},
+        "width": {"const": 2488},
+        "height": {"const": 1056},
+        "cuebook_wordmark_visible": {"type": "boolean"},
+        "backend_price_lock_ref": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "frameBridge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "direct_raw_upload_allowed",
+        "cuebook_result_refs",
+        "finished_bitmap_audit_required",
+        "publication_master"
+      ],
+      "properties": {
+        "mode": {"enum": ["local_only", "cuebook_native_rerender", "attributed_finished_bitmap"]},
+        "direct_raw_upload_allowed": {"const": false},
+        "cuebook_result_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^RES_[A-Za-z0-9_-]+$"}
+        },
+        "finished_bitmap_audit_required": {"type": "boolean"},
+        "publication_master": {
+          "anyOf": [
+            {"$ref": "#/$defs/publicationMaster"},
+            {"type": "null"}
+          ]
+        }
+      }
+    }
+  }
+}

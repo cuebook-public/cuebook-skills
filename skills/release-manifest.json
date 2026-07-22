@@ -5,9 +5,9 @@
   "discovery_budget": {
     "legacy_skill_count": 38,
     "public_skill_count": 2,
-    "legacy_metadata_bytes": 23332,
-    "public_metadata_bytes": 1448,
-    "reduction_percent": 93.8,
+    "legacy_metadata_bytes": 23405,
+    "public_metadata_bytes": 1521,
+    "reduction_percent": 93.5,
     "minimum_reduction_percent": 60
   },
   "frame_fast_preview_budget": {
@@ -23,7 +23,7 @@
       "references/modules/query-cuebook/references/cuebook-query-request-v1.schema.json",
       "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json"
     ],
-    "cumulative_bytes": 109577,
+    "cumulative_bytes": 109788,
     "maximum_bytes_exclusive": 110000,
     "within_budget": true
   },
@@ -55,8 +55,11 @@
       "vendored_shared_validators": [
         "references/modules/build-market-research-pack/scripts/validate_research_pack.mjs",
         "references/modules/reconcile-market-content-history/scripts/validate_content_history.mjs",
+        "scripts/validate_cuebook_intent.mjs",
         "scripts/validate_query_bundle.mjs",
-        "scripts/validate_query_request.mjs"
+        "scripts/validate_query_request.mjs",
+        "scripts/validate_tradingview_focused_capture.mjs",
+        "scripts/validate_tradingview_observation.mjs"
       ],
       "valid": true
     },
@@ -74,7 +77,9 @@
       "bundled_internal_modules": 6,
       "bundled_runtime_resources": [
         "direct-cuebook-viewpoint-visual/assets/cuebook-wordmark.svg",
+        "direct-cuebook-viewpoint-visual/scripts/audit_finished_bitmap.mjs",
         "direct-cuebook-viewpoint-visual/scripts/capture_html_viewpoint.cjs",
+        "direct-cuebook-viewpoint-visual/scripts/stamp_cuebook_wordmark.mjs",
         "render-cuebook-thesis-chart/scripts/rasterize_thesis_chart.cjs"
       ],
       "plugin_assets": [
@@ -83,14 +88,19 @@
       ],
       "vendored_shared_validators": [
         "references/modules/build-market-research-pack/scripts/validate_research_pack.mjs",
+        "references/modules/query-cuebook/scripts/validate_cuebook_intent.mjs",
         "references/modules/query-cuebook/scripts/validate_query_bundle.mjs",
         "references/modules/query-cuebook/scripts/validate_query_request.mjs",
+        "references/modules/query-cuebook/scripts/validate_tradingview_focused_capture.mjs",
+        "references/modules/query-cuebook/scripts/validate_tradingview_observation.mjs",
         "references/modules/reconcile-market-content-history/scripts/validate_content_history.mjs",
+        "scripts/build_tradingview_attributed_frame.mjs",
         "scripts/run_lens_preview.mjs",
         "scripts/run_market_preview.mjs",
         "scripts/validate_creation_bundle.mjs",
         "scripts/validate_creator_seed.mjs",
-        "scripts/validate_frame_preview.mjs"
+        "scripts/validate_frame_preview.mjs",
+        "scripts/validate_tradingview_canvas_transfer.mjs"
       ],
       "valid": true
     }

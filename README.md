@@ -84,6 +84,8 @@ Both surfaces connect to Cuebook MCP. The server remains authoritative for avail
 
 Behind that one natural-language surface, Cuebook can combine published Cues and their timelines with persisted market snapshots, sealed OHLCV, news clusters, filings, disclosures, positioning, asset events, market calendars, prediction markets, market briefings, themes, reasoning graphs, settlements, and published Frames. Seven output modes cover concise answers, comparisons, source bundles, data tables, factual charts, history views, and handoff into Frame creation.
 
+When separately configured by the creator, two optional TradingView connectors can join those same two Skills without adding a third entrypoint. Query may inspect the open chart, make one high-density latest-structure capture, or run one bounded outside research check. Create may place an exact, separately confirmed set of levels, zones, checkpoints, notes, or historical segments on that local chart. Existing drawings are preserved. Raw screenshots and provider data remain restricted; Frame defaults to Cuebook-native rerendering. An explicitly selected official snapshot can use the finished-bitmap route only with visible TradingView attribution, known overlay rights, an applicable price lock, undistorted geometry, and image audit. See [Optional TradingView Connectors](plugins/cuebook/references/tradingview-optional-connectors.md).
+
 The two public Skills are a context-efficiency boundary, not a capability limit. Specialized routing, research, metrics, visual design, and publication modules remain available on demand without competing in the host's first-turn Skill discovery budget.
 
 ## Platform Support

@@ -39,7 +39,9 @@ const EXCLUDED_RUNTIME_FILE_NAMES = new Set([
 const ENTRYPOINT_RUNTIME_RESOURCES = new Map([
   ["create-cuebook-content", [
     ["direct-cuebook-viewpoint-visual", "assets/cuebook-wordmark.svg"],
+    ["direct-cuebook-viewpoint-visual", "scripts/audit_finished_bitmap.mjs"],
     ["direct-cuebook-viewpoint-visual", "scripts/capture_html_viewpoint.cjs"],
+    ["direct-cuebook-viewpoint-visual", "scripts/stamp_cuebook_wordmark.mjs"],
     ["render-cuebook-thesis-chart", "scripts/rasterize_thesis_chart.cjs"],
   ]],
 ]);
@@ -143,6 +145,9 @@ export function skillResourceRefPattern(skillNames) {
 
 export function findClosure(pluginRoot, entry, skillNames) {
   const pattern = skillRefPattern(skillNames);
+  const explicitRuntimeResources = new Set(
+    (ENTRYPOINT_RUNTIME_RESOURCES.get(entry) ?? []).map(([skill, resource]) => `${skill}/${resource}`),
+  );
   const seen = [];
   const queue = [entry];
   while (queue.length) {
@@ -170,8 +175,13 @@ export function findClosure(pluginRoot, entry, skillNames) {
       for (const match of text.matchAll(importPattern)) {
         const resolved = path.resolve(path.dirname(script), match[1]);
         const relative = path.relative(path.join(pluginRoot, "skills"), resolved);
+        const portableRelative = relative.split(path.sep).join("/");
         const importedSkill = relative.split(path.sep)[0];
-        if (skillNames.has(importedSkill) && !seen.includes(importedSkill)) queue.push(importedSkill);
+        if (
+          skillNames.has(importedSkill)
+          && !explicitRuntimeResources.has(portableRelative)
+          && !seen.includes(importedSkill)
+        ) queue.push(importedSkill);
       }
     }
   }

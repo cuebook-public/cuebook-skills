@@ -500,6 +500,137 @@ export function validate(pluginRoot) {
     "public-skills",
     "Internal capabilities must be references/modules/*.md, never nested SKILL.md files.",
   );
+  for (const skillId of expectedPublicSkillIds) {
+    const sourceSkillPath = path.join(pluginRoot, "skills", skillId, "SKILL.md");
+    const sourceSkill = existsSync(sourceSkillPath) ? readFileSync(sourceSkillPath, "utf-8") : "";
+    check(
+      sourceSkill.includes("## Cuebook Context")
+        && sourceSkill.includes("unless the creator explicitly asks for another Skill")
+        && sourceSkill.includes("Keep routing backstage"),
+      "CUEBOOK_CONTEXT_BOUNDARY",
+      `skills/${skillId}/SKILL.md`,
+      "Every public Cuebook entrypoint must remain self-contained by default and keep Skill routing backstage.",
+    );
+  }
+  const querySource = readFileSync(path.join(pluginRoot, "skills", "query-cuebook", "SKILL.md"), "utf-8");
+  const createSource = readFileSync(path.join(pluginRoot, "skills", "create-cuebook-content", "SKILL.md"), "utf-8");
+  check(
+    querySource.includes("ranked candidates, not an existence verdict")
+      && querySource.includes("`matchType: exact`")
+      && querySource.includes("do not claim Cuebook has no knowledge")
+      && querySource.includes("Never substitute a fuzzy candidate")
+      && querySource.includes("nearest carrier")
+      && querySource.includes("operation gap, not an identity gap")
+      && createSource.includes("Query's exact-identity rule")
+      && createSource.includes("a proxy is a different idea")
+      && createSource.includes("Only settlement legs require `frameSettlement: true`"),
+    "ASSET_EXACT_MATCH_BOUNDARY",
+    "skills/query-cuebook/SKILL.md",
+    "Named assets must bind an exact identity; capability gaps cannot erase identity, and fuzzy candidates or proxies cannot become substitutes.",
+  );
+
+  const tradingviewFiles = {
+    desktopPolicy: path.join(pluginRoot, "skills", "query-cuebook", "references", "tradingview-tool-policy-v1.json"),
+    researchPolicy: path.join(pluginRoot, "skills", "query-cuebook", "references", "tradingview-research-policy-v1.json"),
+    observationSchema: path.join(pluginRoot, "skills", "query-cuebook", "references", "tradingview-observation-v1.schema.json"),
+    observationValidator: path.join(pluginRoot, "skills", "query-cuebook", "scripts", "validate_tradingview_observation.mjs"),
+    workbench: path.join(pluginRoot, "skills", "query-cuebook", "references", "tradingview-workbench.md"),
+    focusedCaptureSchema: path.join(pluginRoot, "skills", "query-cuebook", "references", "tradingview-focused-capture-v1.schema.json"),
+    focusedCaptureValidator: path.join(pluginRoot, "skills", "query-cuebook", "scripts", "validate_tradingview_focused_capture.mjs"),
+    focusedCaptureWorkflow: path.join(pluginRoot, "skills", "query-cuebook", "references", "tradingview-focused-capture.md"),
+    canvasPolicy: path.join(pluginRoot, "skills", "create-cuebook-content", "references", "tradingview-canvas-tool-policy-v1.json"),
+    canvasSchema: path.join(pluginRoot, "skills", "create-cuebook-content", "references", "tradingview-canvas-transfer-v1.schema.json"),
+    canvasValidator: path.join(pluginRoot, "skills", "create-cuebook-content", "scripts", "validate_tradingview_canvas_transfer.mjs"),
+    canvasWorkflow: path.join(pluginRoot, "skills", "create-cuebook-content", "references", "tradingview-canvas-transfer.md"),
+    setupGuide: path.join(pluginRoot, "references", "tradingview-optional-connectors.md"),
+  };
+  check(
+    Object.values(tradingviewFiles).every((filePath) => existsSync(filePath)),
+    "TRADINGVIEW_BRIDGE_FILES",
+    "skills/query-cuebook",
+    "The optional TradingView observation and canvas contracts must ship as internal resources behind the two public Skills.",
+  );
+  const desktopPolicy = existsSync(tradingviewFiles.desktopPolicy) ? load(tradingviewFiles.desktopPolicy) : {};
+  const researchPolicy = existsSync(tradingviewFiles.researchPolicy) ? load(tradingviewFiles.researchPolicy) : {};
+  const canvasPolicy = existsSync(tradingviewFiles.canvasPolicy) ? load(tradingviewFiles.canvasPolicy) : {};
+  const focusedCaptureSource = existsSync(tradingviewFiles.focusedCaptureWorkflow)
+    ? readFileSync(tradingviewFiles.focusedCaptureWorkflow, "utf-8")
+    : "";
+  const policyInventory = (policy) => Object.values(policy.classes ?? {}).flatMap((items) => Array.isArray(items) ? items : []);
+  const desktopInventory = policyInventory(desktopPolicy);
+  const researchInventory = policyInventory(researchPolicy);
+  check(
+    desktopPolicy.upstream?.tool_count === 84
+      && desktopInventory.length === 84
+      && new Set(desktopInventory).size === 84
+      && desktopPolicy.frame_policy?.direct_screenshot_upload_allowed === false
+      && desktopPolicy.frame_policy?.official_attributed_snapshot_finished_bitmap_allowed === true
+      && desktopPolicy.frame_policy?.raw_capture_requires_focus_contract === true
+      && desktopPolicy.frame_policy?.minimum_attribution_effective_px === 13
+      && desktopPolicy.frame_policy?.cuebook_data_rerender_required_for_unattributed_or_unlicensed_capture === true,
+    "TRADINGVIEW_DESKTOP_POLICY",
+    "skills/query-cuebook/references/tradingview-tool-policy-v1.json",
+    "The audited 84-Tool Desktop inventory must remain complete and unique; raw captures stay local while only an attributed, focused, audited official snapshot may reach Frame.",
+  );
+  check(
+    researchPolicy.upstream?.tool_count === 37
+      && researchInventory.length === 37
+      && new Set(researchInventory).size === 37
+      && (researchPolicy.classes?.excluded_synthesis ?? []).includes("multi_agent_analysis")
+      && researchPolicy.interpretation_policy?.allow_final_recommendation_fields === false,
+    "TRADINGVIEW_RESEARCH_POLICY",
+    "skills/query-cuebook/references/tradingview-research-policy-v1.json",
+    "The audited 37-Tool research inventory must remain complete and exclude opaque recommendation synthesis.",
+  );
+  const canvasAllowed = new Set(Object.values(canvasPolicy.allowed_tools ?? {}).flatMap((items) => Array.isArray(items) ? items : []));
+  check(
+    canvasAllowed.has("draw_shape")
+      && canvasAllowed.has("draw_remove_one")
+      && !canvasAllowed.has("draw_clear")
+      && (canvasPolicy.explicitly_blocked_tools ?? []).includes("draw_clear")
+      && canvasPolicy.lifecycle?.cleanup_only_created_entity_ids === true
+      && canvasPolicy.lifecycle?.clear_all_allowed === false
+      && canvasPolicy.lifecycle?.direct_frame_pixel_reuse_allowed === false,
+    "TRADINGVIEW_CANVAS_POLICY",
+    "skills/create-cuebook-content/references/tradingview-canvas-tool-policy-v1.json",
+    "Canvas transfer must require exact confirmed drawings, preserve existing entities, and block clear-all or direct Frame pixel reuse.",
+  );
+  const queryBundleSchemaPath = path.join(pluginRoot, "skills", "query-cuebook", "references", "cuebook-query-bundle-v1.schema.json");
+  const queryBundleSchema = existsSync(queryBundleSchemaPath) ? load(queryBundleSchemaPath) : {};
+  const retrievalMethods = queryBundleSchema.properties?.source_register?.items?.properties?.retrieved_via?.enum ?? [];
+  check(
+    retrievalMethods.includes("tradingview_desktop_mcp")
+      && retrievalMethods.includes("tradingview_research_mcp")
+      && querySource.includes("restricted and never a direct Frame input")
+      && createSource.includes("canvas-transfer reference")
+      && createSource.includes("never TradingView pixels, data, or Pine")
+      && createSource.includes("## Attributed TradingView Snapshot")
+      && createSource.includes("official snapshot")
+      && focusedCaptureSource.includes('region: "chart"')
+      && focusedCaptureSource.includes("attributed_finished_bitmap")
+      && focusedCaptureSource.includes("13 px"),
+    "TRADINGVIEW_SKILL_BOUNDARY",
+    "skills/query-cuebook/SKILL.md",
+    "TradingView must remain optional and read-only in Query; raw captures stay restricted, while Create may use only a focused, attributed, rights-reviewed finished bitmap or native rerender.",
+  );
+  const tradingviewPublicFiles = [
+    path.join(pluginRoot, "public-skills", "query-cuebook", "references", "tradingview-workbench.md"),
+    path.join(pluginRoot, "public-skills", "query-cuebook", "scripts", "validate_tradingview_observation.mjs"),
+    path.join(pluginRoot, "public-skills", "query-cuebook", "references", "tradingview-focused-capture.md"),
+    path.join(pluginRoot, "public-skills", "query-cuebook", "references", "tradingview-focused-capture-v1.schema.json"),
+    path.join(pluginRoot, "public-skills", "query-cuebook", "scripts", "validate_tradingview_focused_capture.mjs"),
+    path.join(pluginRoot, "public-skills", "create-cuebook-content", "references", "tradingview-canvas-transfer.md"),
+    path.join(pluginRoot, "public-skills", "create-cuebook-content", "scripts", "validate_tradingview_canvas_transfer.mjs"),
+    path.join(pluginRoot, "public-skills", "create-cuebook-content", "references", "modules", "query-cuebook", "references", "tradingview-workbench.md"),
+    path.join(pluginRoot, "public-skills", "create-cuebook-content", "references", "modules", "query-cuebook", "references", "tradingview-focused-capture.md"),
+    path.join(pluginRoot, "public-skills", "create-cuebook-content", "references", "modules", "query-cuebook", "scripts", "validate_tradingview_focused_capture.mjs"),
+  ];
+  check(
+    tradingviewPublicFiles.every((filePath) => existsSync(filePath)),
+    "TRADINGVIEW_PUBLIC_BUNDLE",
+    "public-skills",
+    "Both generated public bundles must carry their conditional TradingView references and validators without exposing a third Skill.",
+  );
   const publicReleaseManifestPath = path.join(publicSkillsRoot, "release-manifest.json");
   check(
     existsSync(publicReleaseManifestPath),
@@ -584,13 +715,13 @@ export function validate(pluginRoot) {
   check(routing.creation_intents_route_to === "create", "CREATE_ROUTE", "routing_rules.creation_intents_route_to", "Creation intents must route to Create.");
   check(routing.ambiguous_intents_route_to === "query", "AMBIGUOUS_ROUTE", "routing_rules.ambiguous_intents_route_to", "Ambiguous intents must default to Query.");
   check(
-    setEq(new Set(routing.query_deliverables ?? []), new Set(["answer", "comparison", "source_bundle", "data_table", "factual_chart", "history_view"])),
+    setEq(new Set(routing.query_deliverables ?? []), new Set(["answer", "comparison", "source_bundle", "data_table", "factual_chart", "history_view", "tradingview_observation", "tradingview_focused_capture"])),
     "QUERY_DELIVERABLES",
     "routing_rules.query_deliverables",
     "Read-only views, including factual charts, must belong to Query.",
   );
   check(
-    setEq(new Set(routing.create_deliverables ?? []), new Set(["market_post", "creator_viewpoint_graphic", "settlement_protocol", "release_bundle", "publishing_candidates"])),
+    setEq(new Set(routing.create_deliverables ?? []), new Set(["market_post", "creator_viewpoint_graphic", "settlement_protocol", "release_bundle", "publishing_candidates", "attributed_snapshot_frame", "tradingview_canvas"])),
     "CREATE_DELIVERABLES",
     "routing_rules.create_deliverables",
     "Create must be limited to creator-facing publishing deliverables.",
@@ -656,6 +787,16 @@ export function validate(pluginRoot) {
   check(queryMenu.module_id === "query", "QUERY_MENU_MODULE", "query-menu-v1.json.module_id", "Query menu must belong to Query.");
   (queryMenu.queries ?? []).forEach((item, queryIndex) => {
     const base = `query-menu-v1.json.queries[${queryIndex}]`;
+    const optionalConnectors = item.optional_connectors ?? [];
+    check(
+      item.availability === "optional_connector" ? optionalConnectors.length > 0 : optionalConnectors.length === 0,
+      "QUERY_OPTIONAL_CONNECTOR",
+      `${base}.optional_connectors`,
+      "Optional Query routes must name their connector, and ordinary routes cannot carry one.",
+    );
+    if (item.availability === "optional_connector") {
+      check((item.mcp_tools ?? []).length === 0, "QUERY_OPTIONAL_TOOL_MAP", `${base}.mcp_tools`, "Optional connectors are runtime-discovered and cannot masquerade as Cuebook MCP tools.");
+    }
     for (const skillId of item.skill_refs ?? []) {
       check(querySkills.has(skillId), "QUERY_MENU_SKILL", `${base}.skill_refs`, `Query menu cannot invoke non-query Skill ${skillId}.`);
     }
@@ -672,6 +813,16 @@ export function validate(pluginRoot) {
   (creationMenu.steps ?? []).forEach((step, stepIndex) => {
     (step.options ?? []).forEach((option, optionIndex) => {
       const base = `creation-menu-v1.json.steps[${stepIndex}].options[${optionIndex}]`;
+      const optionalConnectors = option.optional_connectors ?? [];
+      check(
+        option.availability === "optional_connector" ? optionalConnectors.length > 0 : optionalConnectors.length === 0,
+        "CREATION_OPTIONAL_CONNECTOR",
+        `${base}.optional_connectors`,
+        "Optional creation routes must name their connector, and ordinary routes cannot carry one.",
+      );
+      if (option.availability === "optional_connector") {
+        check((option.mcp_tools ?? []).length === 0, "CREATION_OPTIONAL_TOOL_MAP", `${base}.mcp_tools`, "Optional connectors are runtime-discovered and cannot masquerade as Cuebook MCP tools.");
+      }
       for (const skillId of option.skill_refs ?? []) {
         check(createSkills.has(skillId) || querySkills.has(skillId), "CREATION_MENU_SKILL", `${base}.skill_refs`, `Unknown Skill ${skillId}.`);
       }
@@ -692,6 +843,26 @@ export function validate(pluginRoot) {
       }
     });
   });
+
+  const queryById = new Map((queryMenu.queries ?? []).map((item) => [item.query_id, item]));
+  for (const queryId of ["tradingview_inspect", "tradingview_capture"]) {
+    check(queryById.get(queryId)?.availability === "optional_connector", "TRADINGVIEW_QUERY_ROUTE", `query-menu-v1.json.queries.${queryId}`, "TradingView inspection and focus capture must remain reachable as optional Query routes.");
+  }
+  const creationOptions = new Map(
+    (creationMenu.steps ?? []).flatMap((step) => (step.options ?? []).map((option) => [option.option_id, option])),
+  );
+  for (const optionId of ["tradingview_attributed_snapshot"]) {
+    check(creationOptions.get(optionId)?.availability === "optional_connector", "TRADINGVIEW_CREATE_ROUTE", `creation-menu-v1.json.options.${optionId}`, "Attributed snapshots and canvas transfer must remain reachable as optional Create routes.");
+  }
+  for (const [relativePath, code] of [
+    ["skills/query-cuebook/references/cuebook-intent-v1.schema.json", "CUEBOOK_INTENT_SCHEMA"],
+    ["skills/query-cuebook/scripts/validate_cuebook_intent.mjs", "CUEBOOK_INTENT_VALIDATOR"],
+    ["skills/create-cuebook-content/references/tradingview-attributed-frame-job-v1.schema.json", "TRADINGVIEW_FRAME_JOB"],
+    ["skills/create-cuebook-content/references/tradingview-attributed-snapshot.md", "TRADINGVIEW_FRAME_GUIDE"],
+    ["skills/create-cuebook-content/scripts/build_tradingview_attributed_frame.mjs", "TRADINGVIEW_FRAME_RUNNER"],
+  ]) {
+    check(existsSync(path.join(pluginRoot, relativePath)), code, relativePath, "A declared TradingView route is missing its executable contract or runtime resource.");
+  }
 
   const expectedWriteGates = new Map([
     ["complete_frame_publish", new Set(["explicit_user_approval", "uploaded_publication_master", "idempotency_key"])],
@@ -793,6 +964,12 @@ export function validate(pluginRoot) {
   }
 
   const configured = ((mcpConfig.mcpServers ?? {}).cuebook) ?? {};
+  check(
+    setEq(new Set(Object.keys(mcpConfig.mcpServers ?? {})), new Set(["cuebook"])),
+    "MCP_SERVER_SET",
+    ".mcp.json.mcpServers",
+    "Cuebook ships only its own MCP server; optional TradingView connectors belong to creator-owned host configuration.",
+  );
   check(deepEqualPy(configured.url, (capabilityMap.server ?? {}).url), "MCP_URL", ".mcp.json", "MCP config and capability map URLs differ.");
   check(deepEqualPy(configured.oauth_resource, configured.url), "MCP_OAUTH_RESOURCE", ".mcp.json", "Cuebook OAuth resource must match its MCP URL.");
   check(plannedTools.has("publish_release") && !tools.has("publish_release"), "PUBLISH_PHASE", "mcp-capability-map-v1.json", "Future non-Frame publishing must remain planned and non-callable.");
