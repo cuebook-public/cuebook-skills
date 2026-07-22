@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.9.9 — 2026-07-22
+
 - Added creator-owned compound Frames for ideas such as “TSLA rises while NVDA stays within ±5%”: Cuebook freezes two independent same-session conditions at one creator-owned deadline, makes the AND rule visible in copy and graphics, and publishes both legs through the same atomic path.
 - Added creator-owned relative Frames: natural language such as “NVDA should outperform TSLA” now freezes a two-asset equal-notional return-spread settlement, keeps both legs visible in normalized comparison graphics, and uses the same atomic publication path without implying an executed trade.
 - Made creator-owned Frame bodies first-person by default while keeping facts, reported evidence, and other Cues correctly attributed; public copy now rejects bracketed evidence-taxonomy headings and memo-style verification blocks without inventing positions or personal experience.
