@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 0.9.11 — 2026-07-22
+
+- Added two optional, separately installed TradingView connectors behind the same two public Skills, without a third entrypoint: a local Desktop/CDP bridge for the creator's own charts and a network research server, each restricted to an audited read subset that excludes persistent-state, security-sensitive, and opaque buy/sell-stance tools.
+- Query can now, on explicit request, inspect the currently open TradingView Desktop chart with exact identity binding, run one bounded research pass, and produce one high-density focused capture of the latest structure — recent bars fill the surface, the price axis stays legible, and raw captures remain local analysis material rather than publishable evidence.
+- Create can turn a rights-cleared official TradingView snapshot into one plain finished bitmap through the existing image audit: visible TradingView attribution, confirmed overlay rights, applicable price lock, and undistorted geometry are required, focus and audit records stay local quality gates, and every failed condition falls back to Cuebook-native rerendering.
+- Create can also place a separately confirmed, enumerated set of levels, zones, checkpoints, notes, or historical segments on the creator's local TradingView chart as a verified drawing transaction that preserves existing drawings and rolls back atomically on failure; Frame and canvas remain separate confirmed outputs.
+- Normalized mixed requests through one intent contract that routes by effect, orders dependent steps, and defaults ambiguity to a single read-only answer; asset search results are now treated as ranked candidates, and only an exact identity match binds an asset.
+
 ## 0.9.10 — 2026-07-22
 
 - Softened public uncertainty language across Frame copy and visuals: counter-signals now read as optional reasons to reassess rather than hard invalidation, falsification, or self-correction statements, while structured settlement semantics stay unchanged.
