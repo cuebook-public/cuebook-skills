@@ -121,7 +121,7 @@ const BEAT_LABELS = Object.freeze({
   observation: ["WHAT CHANGED", "WHAT CHANGED"],
   mechanism: ["WHY IT MATTERS", "WHY IT MATTERS"],
   implication: ["WHAT COMES NEXT", "WHAT COMES NEXT"],
-  countercase: ["INVALIDATION", "INVALIDATION"],
+  countercase: ["REASSESS IF", "REASSESS IF"],
 });
 
 const GRAMMAR_LABELS = Object.freeze({
@@ -131,7 +131,7 @@ const GRAMMAR_LABELS = Object.freeze({
   correlation_shift: ["ROLLING CORRELATION SHIFT", "ROLLING CORRELATION SHIFT"],
   event_window: ["EVENT WINDOW", "EVENT WINDOW"],
   threshold_regime: ["THRESHOLD REGIME", "THRESHOLD REGIME"],
-  scenario_lanes: ["CONFIRMATION + INVALIDATION BRANCHES", "CONFIRMATION + INVALIDATION BRANCHES"],
+  scenario_lanes: ["TWO POSSIBLE PATHS", "TWO POSSIBLE PATHS"],
   causal_spine: ["CAUSAL SPINE", "CAUSAL SPINE"],
   evidence_balance: ["EVIDENCE BALANCE", "EVIDENCE BALANCE"],
 });
@@ -805,7 +805,7 @@ function renderInvalidation(expression, plot, palette, locale) {
   const width = Math.min(292, hasFuture ? plot.w * 0.27 - 14 : 292);
   const x = hasFuture ? plot.x + plot.w * 0.72 + 8 : plot.x + plot.w - width;
   const y = plot.y + plot.h - 66;
-  return `<g ${bindingAttr(beat.binding_id, beat.state)} data-role="invalidation"><rect x="${f(x)}" y="${f(y)}" width="${f(width)}" height="58" rx="8" fill="${palette.surface}" stroke="${palette.danger}" stroke-width="1.1"/><text x="${f(x + 12)}" y="${f(y + 16)}" fill="${palette.danger}" font-size="9.5" font-weight="780">${esc("INVALIDATION")}</text>${textBlock({ x: x + 12, y: y + 34, text: beat.text, size: 10.5, color: palette.ink, weight: 600, maxUnits: Math.max(12, width / 10.5 * 0.84), maxLines: 2, minSize: 9 })}</g>`;
+  return `<g ${bindingAttr(beat.binding_id, beat.state)} data-role="invalidation"><rect x="${f(x)}" y="${f(y)}" width="${f(width)}" height="58" rx="8" fill="${palette.surface}" stroke="${palette.conditional}" stroke-width="1.1"/><text x="${f(x + 12)}" y="${f(y + 16)}" fill="${palette.conditional}" font-size="9.5" font-weight="780">${esc("REASSESS IF")}</text>${textBlock({ x: x + 12, y: y + 34, text: beat.text, size: 10.5, color: palette.ink, weight: 600, maxUnits: Math.max(12, width / 10.5 * 0.84), maxLines: 2, minSize: 9 })}</g>`;
 }
 
 function renderFutureRail(expression, x, y, width, palette, locale) {
@@ -816,7 +816,7 @@ function renderFutureRail(expression, x, y, width, palette, locale) {
     const top = y + index * (beatHeight + 6);
     const color = stateColor(beat.state, palette);
     const role = locale === "zh-CN"
-      ? ({ catalyst: "CATALYST", checkpoint: "CHECKPOINT", confirmation: "CONFIRMATION", invalidation: "INVALIDATION", settlement: "HORIZON" }[beat.role])
+      ? ({ catalyst: "CATALYST", checkpoint: "CHECKPOINT", confirmation: "CONFIRMATION", invalidation: "REASSESS IF", settlement: "HORIZON" }[beat.role])
       : beat.role.toUpperCase();
     const time = beat.at ? relativeDayLabel(beat.at, expression.time.declared_at, locale) : expression.horizon_label;
     parts.push(`<g ${bindingAttr(beat.binding_id, beat.state)} data-future-role="${beat.role}"><line x1="${f(x)}" y1="${f(top + 9)}" x2="${f(x + 16)}" y2="${f(top + 9)}" stroke="${color}" stroke-width="2" stroke-dasharray="4 3"/><text x="${f(x + 24)}" y="${f(top + 13)}" fill="${color}" font-size="10.5" font-weight="750" letter-spacing="0.06em">${esc(`${role} · ${time}`)}</text>${textBlock({ x: x + 24, y: top + 37, text: `${beat.label} · ${beat.criterion}`, size: 14, color: palette.ink, weight: 610, maxUnits: Math.max(12, width / 14 * 0.82), maxLines: 2 })}</g>`);
@@ -881,7 +881,7 @@ function renderMiniFutureStrip(expression, x, y, width, palette, locale) {
     const left = x + index * segment;
     const color = stateColor(beat.state, palette);
     const role = locale === "zh-CN"
-      ? ({ catalyst: "CATALYST", checkpoint: "CHECK", confirmation: "CONFIRMATION", invalidation: "INVALIDATION", settlement: "HORIZON" }[beat.role])
+      ? ({ catalyst: "CATALYST", checkpoint: "CHECK", confirmation: "CONFIRMATION", invalidation: "REASSESS IF", settlement: "HORIZON" }[beat.role])
       : beat.role.toUpperCase();
     const time = beat.at ? relativeDayLabel(beat.at, expression.time.declared_at, locale) : expression.horizon_label;
     return `<g ${bindingAttr(beat.binding_id, beat.state)} data-future-role="${beat.role}" data-geometry-type="future-marker"><circle cx="${f(left + 4)}" cy="${f(y)}" r="3.5" fill="${color}"/><text x="${f(left + 13)}" y="${f(y + 4)}" fill="${color}" font-size="9.5" font-weight="750">${esc(`${role} · ${time}`)}</text>${textBlock({ x: left + 13, y: y + 23, text: `${beat.label} · ${beat.criterion}`, size: 10.5, color: palette.ink, weight: 580, maxUnits: Math.max(8, segment / 10.5 * 0.78), maxLines: 1 })}</g>`;
@@ -914,7 +914,7 @@ function renderCausal(expression, palette, locale) {
   parts.push(`<text x="72" y="426" fill="${palette.signal}" font-size="11" font-weight="760" letter-spacing="0.08em">${esc("FORWARD WATCH")}</text>`);
   parts.push(`<text x="1170" y="426" text-anchor="end" fill="${palette.conditional}" font-size="12" font-weight="700">${esc(expression.horizon_label)}</text>`);
   if (expression.argument.countercase) {
-    parts.push(`<g ${bindingAttr(expression.argument.countercase.binding_id, expression.argument.countercase.state)} data-role="invalidation"><text x="850" y="414" fill="${palette.danger}" font-size="9.5" font-weight="780">${esc("INVALIDATION")}</text>${textBlock({ x: 850, y: 435, text: expression.argument.countercase.text, size: 11.5, color: palette.ink, weight: 620, maxUnits: 25, maxLines: 1 })}</g>`);
+    parts.push(`<g ${bindingAttr(expression.argument.countercase.binding_id, expression.argument.countercase.state)} data-role="invalidation"><text x="850" y="414" fill="${palette.conditional}" font-size="9.5" font-weight="780">${esc("REASSESS IF")}</text>${textBlock({ x: 850, y: 435, text: expression.argument.countercase.text, size: 11.5, color: palette.ink, weight: 620, maxUnits: 25, maxLines: 1 })}</g>`);
   }
   parts.push(renderMiniFutureStrip(expression, 52, 466, 780, palette, locale));
   return parts.join("");
@@ -937,8 +937,8 @@ function renderScenario(expression, palette, locale) {
     const centerY = y + laneHeight / 2;
     const color = stateColor(beat.state, palette);
     const branch = locale === "zh-CN"
-      ? (beat.role === "invalidation" ? "INVALIDATION BRANCH" : beat.role === "settlement" ? "HORIZON CHECK" : "CONFIRMATION BRANCH")
-      : (beat.role === "invalidation" ? "INVALIDATION BRANCH" : beat.role === "settlement" ? "SETTLEMENT CHECK" : "CONFIRMATION BRANCH");
+      ? (beat.role === "invalidation" ? "REASSESS IF" : beat.role === "settlement" ? "HORIZON CHECK" : "CONFIRMATION BRANCH")
+      : (beat.role === "invalidation" ? "REASSESS IF" : beat.role === "settlement" ? "SETTLEMENT CHECK" : "CONFIRMATION BRANCH");
     const time = relativeDayLabel(beat.at, expression.time.declared_at, locale);
     parts.push(`<g ${bindingAttr(beat.binding_id, beat.state)} data-future-role="${beat.role}" data-geometry-type="conditional-lane">`);
     parts.push(`<path d="M ${originX + 12} ${originY} C ${originX + 78} ${originY}, ${laneX - 72} ${centerY}, ${laneX - 14} ${centerY}" fill="none" stroke="${color}" stroke-width="2.4" stroke-dasharray="${beat.state === "reported" ? "none" : "7 5"}"/>`);
@@ -951,7 +951,7 @@ function renderScenario(expression, palette, locale) {
   });
   parts.push(`<line x1="${originX}" y1="468" x2="1190" y2="468" stroke="${palette.grid}"/><text x="${originX}" y="491" fill="${palette.signal}" font-size="11" font-weight="700">${esc(`VIEW · ${dateLabel(expression.time.declared_at, locale)}`)}</text><text x="1190" y="491" text-anchor="end" fill="${palette.conditional}" font-size="11" font-weight="700">${esc(`HORIZON · ${dateLabel(expression.time.horizon_end, locale)}`)}</text>`);
   if (expression.argument.countercase) {
-    parts.push(`<g ${bindingAttr(expression.argument.countercase.binding_id, expression.argument.countercase.state)} data-role="invalidation"><text x="52" y="466" fill="${palette.danger}" font-size="10" font-weight="780">${esc("INVALIDATION")}</text>${textBlock({ x: 120, y: 466, text: expression.argument.countercase.text, size: 11.5, color: palette.ink, weight: 620, maxUnits: 25, maxLines: 2, minSize: 9.5 })}</g>`);
+    parts.push(`<g ${bindingAttr(expression.argument.countercase.binding_id, expression.argument.countercase.state)} data-role="invalidation"><text x="52" y="466" fill="${palette.conditional}" font-size="10" font-weight="780">${esc("REASSESS IF")}</text>${textBlock({ x: 140, y: 466, text: expression.argument.countercase.text, size: 11.5, color: palette.ink, weight: 620, maxUnits: 25, maxLines: 2, minSize: 9.5 })}</g>`);
   }
   return parts.join("");
 }
@@ -960,14 +960,14 @@ function renderEvidenceBalance(expression, palette, locale) {
   const countercase = expression.argument.countercase;
   const parts = [];
   parts.push(`<rect x="52" y="176" width="546" height="236" fill="${palette.primary}" opacity="0.045"/>`);
-  parts.push(`<rect x="646" y="176" width="544" height="236" fill="${palette.danger}" opacity="0.04"/>`);
+  parts.push(`<rect x="646" y="176" width="544" height="236" fill="${palette.conditional}" opacity="0.04"/>`);
   parts.push(`<line x1="622" y1="184" x2="622" y2="404" stroke="${palette.grid}" stroke-width="1.4"/>`);
   parts.push(`<circle cx="622" cy="292" r="10" fill="${palette.canvas}" stroke="${palette.signal}" stroke-width="2.4"/>`);
   parts.push(`<path d="M 572 282 L 622 292 L 672 302" fill="none" stroke="${palette.signal}" stroke-width="2.4"/>`);
   parts.push(`<text x="76" y="210" fill="${palette.primary}" font-size="12" font-weight="760" letter-spacing="0.08em">${esc("SUPPORTING THE VIEW")}</text>`);
   parts.push(textBlock({ x: 76, y: 268, text: expression.argument.observation.text, size: 25, color: palette.ink, weight: 700, maxUnits: 20, maxLines: 3, minSize: 18, attrs: bindingAttr(expression.argument.observation.binding_id, expression.argument.observation.state) }));
   parts.push(textBlock({ x: 76, y: 374, text: expression.argument.mechanism.text, size: 15.5, color: palette.muted, weight: 590, maxUnits: 30, maxLines: 2, minSize: 12.5, attrs: bindingAttr(expression.argument.mechanism.binding_id, expression.argument.mechanism.state) }));
-  parts.push(`<text x="670" y="210" fill="${palette.danger}" font-size="12" font-weight="760" letter-spacing="0.08em">${esc("WHAT COULD BREAK IT")}</text>`);
+  parts.push(`<text x="670" y="210" fill="${palette.conditional}" font-size="12" font-weight="760" letter-spacing="0.08em">${esc("WHAT COULD CHANGE IT")}</text>`);
   if (countercase) parts.push(textBlock({ x: 670, y: 278, text: countercase.text, size: 25, color: palette.ink, weight: 700, maxUnits: 20, maxLines: 3, minSize: 18, attrs: bindingAttr(countercase.binding_id, countercase.state) }));
   parts.push(`<line x1="52" y1="438" x2="1190" y2="438" stroke="${palette.grid}" stroke-width="1.4"/>`);
   parts.push(`<text x="52" y="466" fill="${palette.conditional}" font-size="10.5" font-weight="760">${esc("ONE NEXT DISAGREEMENT")}</text>`);
@@ -1214,8 +1214,8 @@ function renderCompactScenario(expression, palette, locale) {
   branches.forEach((beat, index) => {
     const y = 56 + index * branchHeight;
     const centerY = y + 28;
-    const color = beat.role === "invalidation" ? palette.danger : palette.conditional;
-    const branch = beat.role === "invalidation" ? "INVALIDATION" : beat.role === "settlement" ? "SETTLEMENT" : "CONFIRMATION";
+    const color = palette.conditional;
+    const branch = beat.role === "invalidation" ? "REASSESS IF" : beat.role === "settlement" ? "SETTLEMENT" : "CONFIRMATION";
     const time = beat.at ? relativeDayLabel(beat.at, expression.time.declared_at, locale).split(" · ")[0] : expression.horizon_label;
     parts.push(
       `<g ${bindingAttr(beat.binding_id, beat.state)} data-geometry-type="conditional-lane" data-future-role="${beat.role}"><path d="M 231 142 C 270 142, 278 ${f(centerY)}, 310 ${f(centerY)}" fill="none" stroke="${color}" stroke-width="3" stroke-dasharray="7 5"/><circle cx="314" cy="${f(centerY)}" r="5" fill="${palette.canvas}" stroke="${color}" stroke-width="3"/><text x="330" y="${f(y + 11)}" fill="${color}" font-size="12" font-weight="820">${esc(`${time} · ${branch}`)}</text>`,

@@ -51,7 +51,7 @@ const STATUS_META = {
 const KIND_LABELS = {
   event: "EVENT", evidence: "EVIDENCE", mechanism: "MECHANISM", actor_action: "CAPITAL ACTION",
   market_effect: "MARKET EFFECT", metric: "METRIC", condition: "CONDITION", countercase: "COUNTERCASE",
-  invalidation: "INVALIDATION", settlement: "SETTLEMENT",
+  invalidation: "REASSESS IF", settlement: "SETTLEMENT",
 };
 const GRAMMAR_LABELS = {
   causal_chain: "CAUSAL CHAIN", metric_thesis: "METRIC THESIS", scenario_tree: "SCENARIO TREE",
@@ -276,9 +276,9 @@ function renderCausalChain(argument, colors) {
     const challengeX = 584;
     const challengeWidth = 560;
     parts.push(
-      `<path d="M ${pyFloatFixed(challengeX + challengeWidth / 2, 1)} 466 C ${pyFloatFixed(challengeX + challengeWidth / 2, 1)} 446, ${pyFloatFixed(targetX, 1)} 452, ${pyFloatFixed(targetX, 1)} 438" fill="none" stroke="${colors.red}" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrow-red)"/>`,
-      rect(challengeX, 466, challengeWidth, 110, colors.red_soft, colors.red, 7),
-      textBlock(challengeX + 22, 494, "COUNTERCASE / INVALIDATION", 30, 1, 13, 15, colors.red, 750),
+      `<path d="M ${pyFloatFixed(challengeX + challengeWidth / 2, 1)} 466 C ${pyFloatFixed(challengeX + challengeWidth / 2, 1)} 446, ${pyFloatFixed(targetX, 1)} 452, ${pyFloatFixed(targetX, 1)} 438" fill="none" stroke="${colors.yellow}" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrow)"/>`,
+      rect(challengeX, 466, challengeWidth, 110, colors.yellow_soft, colors.yellow, 7),
+      textBlock(challengeX + 22, 494, "OTHER PATH / REASSESS", 30, 1, 13, 15, colors.yellow, 750),
       textBlock(challengeX + 22, 530, node.label, 48, 2, 18, 23, colors.ink, 650),
     );
   }
@@ -307,8 +307,8 @@ function renderMetricThesis(argument, colors) {
   const challenge = argument.graph.nodes.filter((node) => new Set(["countercase", "invalidation"]).has(node.kind)).slice(0, 1);
   if (challenge.length) {
     parts.push(
-      rect(56, 494, 1088, 82, colors.red_soft, colors.red, 7),
-      textBlock(78, 524, "VIEW INVALIDATED", 16, 1, 13, 15, colors.red, 750),
+      rect(56, 494, 1088, 82, colors.yellow_soft, colors.yellow, 7),
+      textBlock(78, 524, "REASSESS IF", 16, 1, 13, 15, colors.yellow, 750),
       textBlock(190, 526, challenge[0].label, 78, 2, 18, 23, colors.ink, 600),
     );
   }
@@ -357,9 +357,9 @@ function renderEvidenceBalance(argument, colors) {
   if (!support.length || !challenge.length) throw new Error("evidence_balance requires both supporting and challenging nodes.");
   const parts = [
     rect(56, 250, 524, 294, colors.green_soft, colors.green, 7),
-    rect(620, 250, 524, 294, colors.red_soft, colors.red, 7),
+    rect(620, 250, 524, 294, colors.yellow_soft, colors.yellow, 7),
     textBlock(80, 284, "SUPPORTING THE VIEW", 22, 1, 15, 18, colors.green, 750),
-    textBlock(644, 284, "COUNTERCASE AND INVALIDATION", 32, 1, 15, 18, colors.red, 750),
+    textBlock(644, 284, "OTHER PATH / WHAT TO WATCH", 32, 1, 15, 18, colors.yellow, 750),
   ];
   support.forEach((node, index) => {
     const y = 330 + index * 66;
@@ -367,7 +367,7 @@ function renderEvidenceBalance(argument, colors) {
   });
   challenge.forEach((node, index) => {
     const y = 330 + index * 66;
-    parts.push(rect(644, y - 18, 10, 10, colors.red, "none", 5), textBlock(670, y, node.label, 38, 2, 17, 22, colors.ink, 600));
+    parts.push(rect(644, y - 18, 10, 10, colors.yellow, "none", 5), textBlock(670, y, node.label, 38, 2, 17, 22, colors.ink, 600));
   });
   parts.push(
     rect(348, 560, 504, 42, colors.black, "none", 7),

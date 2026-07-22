@@ -105,7 +105,8 @@ test("renders and validates causal card", () => withTemp((directory) => {
   const svg = readFileSync(result.svgPath, "utf8");
   assert.match(svg, /Cuebook View Logic/);
   assert.match(svg, /After the event shock/);
-  assert.match(svg, /COUNTERCASE \/ INVALIDATION/);
+  assert.match(svg, /OTHER PATH \/ REASSESS/);
+  assert.doesNotMatch(svg, /VIEW INVALIDATED|COUNTERCASE \/ INVALIDATION/);
   assert.match(svg, /SETTLEABLE VIEW/);
   assert.doesNotMatch(svg, /Cuebook completion/iu);
   assert.doesNotMatch(svg, /Cuebook inference/iu);

@@ -123,11 +123,31 @@ test("fingerprint cannot drift", () => {
 
 test("copy budget is hard", () => {
   const item = baseSet();
-  item.candidates[0].copy.body = "x".repeat(961);
+  item.candidates[0].copy.body = "x".repeat(1250);
   item.candidates[0].copy.visible_char_count = visibleCharCount(item.candidates[0].copy);
   const result = validate(item);
   assertCode(result, "COPY_BUDGET_EXCEEDED");
   assertCode(result, "TOTAL_COPY_BUDGET");
+});
+
+test("a layered Frame may use seven uneven paragraphs", () => {
+  const item = baseSet();
+  item.generation_policy.candidate_count = 1;
+  item.candidates = [item.candidates[0]];
+  item.candidates[0].copy.body = [
+    "The first observation stands alone.",
+    "A shorter bridge follows.",
+    "The third paragraph explains the actor under pressure and why behavior may change.",
+    "Then one sentence pauses.",
+    "The fifth paragraph connects that behavior to the selected asset without repeating the setup.",
+    "A catalyst gives the idea its clock.",
+    "The final line leaves one quiet condition to revisit.",
+  ].join("\n");
+  item.candidates[0].copy.visible_char_count = visibleCharCount(item.candidates[0].copy);
+  item.candidates[0].frame.body = canonicalFrameBody(item.candidates[0].copy);
+  confirmSelection(item);
+  const result = validate(item);
+  assert.equal(result.valid, true, JSON.stringify(result.errors));
 });
 
 test("reasoned Frame body may exceed the old 280-character ceiling", () => {

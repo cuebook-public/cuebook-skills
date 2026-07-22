@@ -310,7 +310,7 @@ function validateExpression(expression, expressionPath, candidate, queryBinding,
   }
   if (expression.grammar === "scenario_lanes") {
     if (!expression.future_beats.some((beat) => beat.role === "invalidation")) {
-      errors.push(issue("SCENARIO_INVALIDATION", `${expressionPath}.future_beats`, "Scenario lanes need a visible invalidation branch, not a sequence of optimistic milestones."));
+      errors.push(issue("SCENARIO_INVALIDATION", `${expressionPath}.future_beats`, "Scenario lanes need one counter-signal branch, rendered publicly as a neutral reason to reassess rather than a hard invalidation label."));
     }
     if (!expression.future_beats.some((beat) => beat.role !== "invalidation")) {
       errors.push(issue("SCENARIO_CONFIRMATION", `${expressionPath}.future_beats`, "Scenario lanes need at least one confirmation, checkpoint, catalyst, or settlement branch."));

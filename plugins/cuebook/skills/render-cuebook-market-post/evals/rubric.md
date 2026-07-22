@@ -10,7 +10,7 @@ Score each dimension from 1 to 5. Any hard failure blocks publication regardless
 | Market reasoning | The post explains who may act, why, and what changes next |
 | Angle quality | One supported tension carries the post without forced drama |
 | Human language | Concrete, conversational, varied, and free of template residue |
-| Frame fit | The title, reasoned three-to-five-paragraph body, and paired image divide labor without platform wrappers, padding, or duplicated sections |
+| Frame fit | The title, adaptively shaped body, and paired image divide labor without platform wrappers, padding, duplicated sections, or a repeated house cadence |
 | Decision utility | A reader can follow the asset expression, horizon, market consequence, and next observable |
 | Assisted authorship | Internal provenance keeps the creator seed, Cue/evidence-linked proposals, acceptance or rejection, creator judgment, and idea change distinct while only adopted additions enter meaning and body copy contains no workflow narration |
 | Creator lift | The creator's idea is recognizably theirs and feels clearer, sharper, and better expressed rather than graded or corrected by default |
@@ -37,7 +37,7 @@ Hard failures:
 - personalized order quantity, sizing, leverage, credential, or execution instruction
 - fabricated creator seed or unsupported claim that Cuebook discovered or improved an idea
 - public narration of Cuebook assistance, idea completion, accepted additions, or authoring workflow
-- self-correction headings such as `I admit I was wrong` or `what would prove this wrong`
+- self-correction or hard reversal headings such as `I admit I was wrong`, `what would prove this wrong`, `invalidation`, `falsification condition`, or locale equivalents
 - social-platform variants, labels, or wrappers in the public result
 - a public result with visible fields beyond title, body, and one paired image
 - correction-first rewriting of a creator-owned viewpoint without a material evidence contradiction

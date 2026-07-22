@@ -61,17 +61,19 @@ Research and market-data refresh run in parallel. Revalidate one stale primitive
 
 Use one repair round per failed retained branch by default and a second only for source or rendering failure. A failed attempt is never returned. Keep passed work and regenerate only the failed copy or layout. Block when the requested one or three source-faithful candidates cannot be produced without inventing material meaning, or when any typed material requirement remains unresolved.
 
-## Public Copy Budget
+## Public Copy Capacity
 
-- headline: 24 visible characters;
-- body: 160 visible characters;
-- close: 36 visible characters;
-- total including tags: 220 visible characters;
-- paragraphs: 3;
-- hard numbers: 3;
+Use maxima as guardrails, never as a target template:
+
+- headline: at most 32 visible characters;
+- body: at most 1,080 visible characters;
+- close: at most 80 visible characters;
+- total including tags: at most 1,240 visible characters;
+- paragraphs: at most 7;
+- hard numbers: at most 6;
 - tags: 2-4, each no more than 12 characters.
 
-Each candidate should contain one judgment, one reason, one consequence or next condition, and one material caveat when needed.
+Pick the smallest shape that keeps the creator's reasoning intact. A compact view may use two uneven paragraphs; an ordinary argument may use three to five; a layered mechanism may use four to seven. These are examples, not rotating templates. Do not force a caveat or next-condition close when the image, horizon, or settlement already carries it.
 
 ## Visual Budget
 

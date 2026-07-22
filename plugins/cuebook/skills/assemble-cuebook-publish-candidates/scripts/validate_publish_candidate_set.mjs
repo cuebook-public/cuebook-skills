@@ -281,7 +281,7 @@ export function validate(payload, assetRoot = null) {
   const retryLimit = policy.retry_limit;
   if (!pyInt(retryLimit) || pyNumber(retryLimit) < 0 || pyNumber(retryLimit) > 3) errors.push(issue("RETRY_LIMIT", "$.generation_policy.retry_limit", "Retry limit must be 0-3."));
   const budget = isObject(policy.copy_budget) ? policy.copy_budget : {};
-  const budgetLimits = { headline_max: [12, 32], body_max: [80, 800], close_max: [20, 80], total_max: [160, 960], paragraph_max: [2, 5], hard_number_max: [1, 6] };
+  const budgetLimits = { headline_max: [12, 32], body_max: [80, 1080], close_max: [20, 80], total_max: [160, 1240], paragraph_max: [2, 7], hard_number_max: [1, 6] };
   for (const [key, [minimum, maximum]] of Object.entries(budgetLimits)) {
     const value = budget[key];
     if (!pyInt(value) || pyNumber(value) < minimum || pyNumber(value) > maximum) errors.push(issue("COPY_BUDGET", `$.generation_policy.copy_budget.${key}`, `Budget must be ${minimum}-${maximum}.`));

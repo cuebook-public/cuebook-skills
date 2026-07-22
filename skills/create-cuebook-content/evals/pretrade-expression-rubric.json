@@ -39,7 +39,7 @@
     },
     {
       "id": "future_time",
-      "question": "Does unresolved time have dates, checkable conditions, and a visible invalidation without looking like a fake forecast?"
+      "question": "Does unresolved time have dates and checkable conditions, with any counter-signal phrased as a neutral watch or reason to reassess rather than a hard invalidation or fake forecast?"
     },
     {
       "id": "creator_distinctiveness",
@@ -56,6 +56,10 @@
     {
       "id": "copy_economy",
       "question": "Does the image say only what the geometry cannot, with the tested observation attached to evidence instead of repeated in a summary block?"
+    },
+    {
+      "id": "copy_rhythm",
+      "question": "Does the body use the smallest complete, idea-specific shape—with varied sentence and paragraph weight—rather than repeating a fixed paragraph count, equal blocks, or an obligatory invalidation close?"
     },
     {
       "id": "creator_emotional_payoff",
@@ -86,6 +90,7 @@
     "the publication master is a dense desktop downscale, needs zoom at 622 x 264, contains more than three competing reader-essential groups, or falls below the 20 px primary / 16 px secondary essential type floors",
     "pixels are rendered before the exact copy and settlement Meaning Lock is confirmed, or a post-confirmation semantic or deadline change reuses stale pixels",
     "a layout-only reroll changes facts, evidence, direction, horizon, or claim-state typing",
+    "public copy or image prints correction-first headings such as invalidation, falsification condition, I admit I was wrong, or their locale equivalents",
     "the primary relationship cannot be identified within five seconds"
   ],
   "passing_rule": {

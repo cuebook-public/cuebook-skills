@@ -261,7 +261,7 @@ function validateExpression(expression, candidate, binding, errors) {
   }
 
   if (!expression.future_beats.some((beat) => beat.role === "invalidation")) {
-    errors.push(issue("FUTURE_INVALIDATION", `${expressionPath}.future_beats`, "A Creator Lens needs a visible invalidation condition."));
+    errors.push(issue("FUTURE_INVALIDATION", `${expressionPath}.future_beats`, "A Creator Lens needs one counter-signal condition, rendered publicly as a neutral reason to reassess."));
   }
   if (!expression.future_beats.some((beat) => ["checkpoint", "confirmation"].includes(beat.role))) {
     errors.push(issue("FUTURE_CONFIRMATION", `${expressionPath}.future_beats`, "A Creator Lens needs a visible checkpoint or confirmation condition."));

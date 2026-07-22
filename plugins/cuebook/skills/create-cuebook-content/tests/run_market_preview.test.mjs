@@ -348,9 +348,10 @@ test("MARKET can express conditional futures without inventing a market curve", 
     const svg = readFileSync(path.join(output, preview.candidates[0].candidate_id, "frame-preview.svg"), "utf8");
     assert.match(svg, /data-grammar="scenario_lanes"/u);
     assert.match(svg, /data-geometry-type="conditional-lane"/u);
-    assert.match(svg, /INVALIDATION/u);
+    assert.match(svg, /REASSESS IF/u);
+    assert.doesNotMatch(svg, />INVALIDATION</u);
     assert.match(svg, /D\+22/u);
-    assert.match(preview.candidates[0].frame.alt_text, /confirmation.*invalidation/iu);
+    assert.match(preview.candidates[0].frame.alt_text, /two possible paths/iu);
     assert.doesNotMatch(svg, /data-chart-transform=/u);
   } finally {
     rmSync(output, { recursive: true, force: true });

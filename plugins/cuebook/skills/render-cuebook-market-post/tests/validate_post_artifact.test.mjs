@@ -105,4 +105,12 @@ test("assistance attribution stays internal", () => {
 
 codeTest("self-correction heading is rejected", "PUBLIC_SELF_CORRECTION_HEADING", (item) => { item.drafts.frame = "Inventory beat expectations. What would prove me wrong: the next reading falls."; });
 
+codeTest("hard invalidation heading is rejected", "PUBLIC_SELF_CORRECTION_HEADING", (item) => { item.drafts.frame = "\u5e93\u5b58\u4ecd\u9ad8\u4e8e\u9884\u671f\u3002\u5931\u6548\u6761\u4ef6\uff1a\u4e0b\u4e00\u6b21\u5e93\u5b58\u56de\u843d\u3002"; });
+
+test("a soft change-in-confidence close remains valid", () => {
+  const item = base();
+  item.drafts.frame = "\u5e93\u5b58\u4ecd\u9ad8\u4e8e\u9884\u671f\uff0c\u53cd\u5f39\u7a7a\u95f4\u56e0\u6b64\u66f4\u7a84\u3002\u6211\u4f1a\u518d\u770b\u4e0b\u4e00\u6b21\u6570\u636e\uff1b\u5982\u679c\u5e93\u5b58\u5f00\u59cb\u6301\u7eed\u56de\u843d\uff0c\u8fd9\u4e2a\u5224\u65ad\u7684\u652f\u6491\u4e5f\u4f1a\u5f31\u4e00\u4e9b\u3002";
+  assert.equal(validate(item).valid, true);
+});
+
 export { assistedItem, base };

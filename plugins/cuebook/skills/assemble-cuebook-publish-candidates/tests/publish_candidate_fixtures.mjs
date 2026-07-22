@@ -172,10 +172,10 @@ export function baseSet() {
       retry_limit: 2,
       copy_budget: {
         headline_max: 32,
-        body_max: 800,
+        body_max: 1080,
         close_max: 80,
-        total_max: 960,
-        paragraph_max: 5,
+        total_max: 1240,
+        paragraph_max: 7,
         hard_number_max: 6,
       },
       visual_visible_char_max: 120,

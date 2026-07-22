@@ -32,9 +32,9 @@ Read `references/rendering-method.md` for evidence classes, angle selection, pro
 ## Frame Copy Contract
 
 - The final visible Frame has exactly three components: one title, one body, and one paired image. This renderer owns the body; the candidate assembler derives the title and binds the image.
-- In Chinese, normally use 260–700 visible characters across three to five short paragraphs (roughly 120–300 English words). Finish sooner when the view is genuinely simple; do not pad, but do not collapse a real causal chain into a caption.
-- The body carries the strongest observation, creator-owned viewpoint, causal sequence, horizon, and one confirming or weakening next observable. It does not need to carry all seven reasoning jobs when the image can show the relationship, two to four reasoning beats, and the deadline more clearly.
-- The first paragraph is a self-contained Feed lead. Later paragraphs carry the deeper mechanism and future check for the detail surface; do not move that extra density into the image.
+- Size the body to the idea, not to a recurring template. Most Chinese Frames fit within two to seven paragraphs and roughly 160–1,100 visible characters (about 70–450 English words), under the 1,200-character hard Frame ceiling. Use a short asymmetric shape for one clean mechanism and more space for a genuinely layered causal chain. Never pad, and do not compress material reasoning merely to match the previous post.
+- The body carries the strongest observation, creator-owned viewpoint, and enough causal sequence to make the idea intelligible. Horizon and a confirming or weakening observable remain available, not mandatory closing sections; the image or structured settlement can carry them when prose would become repetitive.
+- The first paragraph is a self-contained Feed lead. Later paragraphs may vary in count and weight for the detail surface. Mix sentence and paragraph lengths; do not produce equal blocks or the same opening/close rhythm across adjacent Frames.
 - The body and image divide labor. Do not repeat the title, reproduce every image label in prose, or paste a settlement form beneath the argument.
 - Keep viewpoint, inference, and observation honest: the viewpoint belongs to the creator; a mechanism, analogy, or future scenario may remain a hypothesis; another Cue remains an external viewpoint until adopted; hard market facts require source-linked evidence.
 - Never pad with generic context, repeated warnings, engagement bait, platform language, or workflow narration.
@@ -83,15 +83,15 @@ When called for explicit alternatives by `$assemble-cuebook-publish-candidates`,
 
 - Start with a concrete change, judgment, or tension. Avoid an abstract scene setter.
 - Optimize the creator's intended judgment before adding caveats. The experience should feel like their idea became clearer, sharper, and better expressed—not like a referee graded it.
-- Put one thought in each paragraph. Let the source fact and the market read occupy separate sentences.
+- Give each paragraph one center of gravity, but let adjacent facts and interpretation share a paragraph when that sounds more natural. Vary paragraph mass and sentence length rather than assembling equal modules.
 - Name the actor who may need to revise, hedge, chase, cut, or wait.
-- End on the horizon, next data point, catalyst, or market condition. Do not force an invalidation paragraph or generic warning.
+- End where the argument naturally lands: the market consequence, unresolved tension, catalyst, horizon, or a quiet next watch. Do not force a countercase, invalidation paragraph, confession, or generic warning.
 - In Cuebook-assisted mode, keep the creator as the decision owner and the assistance record internal. The public draft must not say Cuebook supplied, inspired, completed, strengthened, or corrected the idea.
 - Keep the language conversational without pretending to have private access or personal experience.
 - Build the public argument as `claim -> proof -> market consequence -> next condition`. Do not add marketing CTAs or engagement bait unless explicitly requested.
 - Make the market movement concrete: name the participant who is likely to hedge, reprice, rotate, chase, cut, or wait; name what exposure or balance-sheet constraint changes; then connect that action to the selected asset. Do not jump from news to direction in one sentence.
 - Let the expression plan select the actual rhetorical order. `claim -> proof -> consequence -> condition` is a fallback, not a template to repeat across every post.
-- Do not use `I admit I was wrong`, `where I was wrong`, `what if I am wrong`, or equivalent self-correction headings. If a selected format explicitly requires a risk boundary, phrase it neutrally as a material condition and keep it separate from the creator's main argument.
+- Do not use `invalidation`, `falsification condition`, `I admit I was wrong`, `where I was wrong`, `what if I am wrong`, or equivalent correction-first headings in any locale. If a material counter-signal belongs in public copy, phrase it as a soft change in confidence or something worth revisiting: “I will look again if…,” “this would lose some support if…,” or the natural locale equivalent. Omit it when the deadline, settlement rule, or paired image already makes future resolution clear.
 - Avoid stock AI phrases such as `it is worth noting`, `from a mechanism perspective`, `the core logic is`, `transmission path`, `validation path`, and repeated `not A but B` framing or their locale equivalents.
 - Do not add a ticker, target, direction, motive, or hard number merely to make the post sound tradable.
 

@@ -62,7 +62,7 @@ Before drafting, build a private logic map with seven fields: creator judgment, 
 
 Use research only to supply missing factual fields that materially change comprehension. Relevant Cues may propose a connection, countercase, comparator, or next footprint for the creator to adopt or reject; they do not establish it as fact. Every supplied factual link needs a fact reference, while an adopted causal bridge, analogy, scenario, or expectation may remain explicitly typed as `hypothesis`. Keep unavailable factual links out of the prose; do not cover them with generic market language. The public draft should read as one coherent view, with no mention of prompts, research passes, Cuebook help, idea delta, or authoring workflow.
 
-Counterevidence and invalidation remain available for internal confidence, settlement, and risk artifacts. Body copy includes them only when the user or destination explicitly asks. Never use self-correction headings such as `I admit I was wrong`, `where I was wrong`, or `what would prove this wrong`.
+Counterevidence and invalidation remain available for internal confidence and settlement artifacts. Body copy includes them only when they materially improve the creator's view or the user explicitly asks. Translate them into a neutral watch or change in confidence; never use `invalidation`, `falsification condition`, `I admit I was wrong`, `where I was wrong`, `what would prove this wrong`, or locale-equivalent headings.
 
 ## 4. Using ProfileV1
 
@@ -80,9 +80,9 @@ A profile may not add facts, private access, biography, exact catchphrases, or a
 
 The Frame surface always presents one title, one body, and one paired image. Use plain, market-native language. Lead with the strongest tested observation or creator judgment, connect the actors and transmission mechanism in a short causal sequence, and end with the horizon plus one confirming or weakening next observable.
 
-Normally use three to five short paragraphs and 260–700 visible Chinese characters (roughly 120–300 English words), with a 1,200-character hard Frame ceiling. Finish sooner when the argument is complete; never add generic background simply to make it longer. Let the image carry the observed relationship, two to four reasoning beats, and a deadline or observation marker when material. Do not duplicate every image label in prose, append source lists or settlement forms to the body, or manufacture a future price path.
+Choose body shape from argument complexity. Most Chinese Frames fit within two to seven paragraphs and roughly 160–1,100 visible characters (about 70–450 English words), with a 1,200-character hard Frame ceiling. These are capacity bounds, not targets: finish when the argument is complete, vary paragraph mass and sentence rhythm, and never add generic background simply to make it longer. Let the image carry the observed relationship, selected reasoning beats, and a deadline or observation marker when material. Do not duplicate every image label in prose, append source lists or settlement forms to the body, or manufacture a future price path.
 
-The opening paragraph must stand alone as a Feed lead if the App truncates the detail body. Put the expanded causal chain and future observation in the later paragraphs. This preserves a fast-scroll hook while giving an interested reader the full reasoning after opening the Frame.
+The opening paragraph must stand alone as a Feed lead if the App truncates the detail body. Use later paragraphs only for the causal links, comparisons, or future observation this particular idea needs. The final paragraph need not be a standardized risk boundary; it may end on consequence, tension, catalyst, horizon, or a softly worded reason to revisit.
 
 Facts, inferences, and the creator's viewpoint remain distinct in the evidence ledger even when the public wording is seamless. A material contradiction is surfaced to the creator for a decision; it is not silently rewritten into a different view.
 

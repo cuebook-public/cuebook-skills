@@ -139,7 +139,7 @@ Every `binding_ref` is a display promise. A selected material binding must appea
 - When news is the material catalyst, use the bound compact headline, publisher, and event time as one visual group. Keep the clickable URL in the candidate evidence anchor outside the bitmap.
 - Curves and key numbers participate in the sentence; they do not decorate the footer.
 - For a bounded view, end the solid observed curve at the decision cutoff. Show the cutoff as a vertical line and the deadline as a separate time marker or blank future region. A conditional threshold may be dashed; a future price path may not be drawn.
-- In a curve-led direction, compose the visual as one readable argument: judgment at entry, two to four short reasoning beats, observed curve as evidence hero, and one condition, next observable, or explicit invalidation. Do not make the reader choose between a detached chart and a detached paragraph.
+- In a curve-led direction, compose the visual as one readable argument: judgment at entry, two to four short reasoning beats, observed curve as evidence hero, and one condition, next observable, or softly labeled reason to reassess. Keep the internal invalidation role when required for semantics, but never print `INVALIDATION`, `FALSIFICATION CONDITION`, self-correction language, or locale equivalents. Do not make the reader choose between a detached chart and a detached paragraph.
 - At a 622 × 264 display size, the fixed master must preserve an effective text floor of 11px and all essential logic beats. Repair the master composition rather than generating a separate reflowed bitmap.
 
 ## Final Brand Lock

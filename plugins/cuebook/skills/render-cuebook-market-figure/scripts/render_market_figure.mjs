@@ -67,8 +67,8 @@ const LEVEL_MARKER_KINDS = new Set(["baseline", "latest", "trigger", "target", "
 const CURRENCY_SYMBOLS = { KRW: "₩", JPY: "¥", CNY: "¥", EUR: "€", GBP: "£" };
 const ARGUMENT_KIND_LABELS = {
   event: "CATALYST", evidence: "WHAT I SEE", mechanism: "WHY IT MOVES FIRST", actor_action: "WHERE CAPITAL MOVES",
-  market_effect: "THE BET", metric: "KEY DATA", condition: "WHAT TO WATCH", countercase: "WHAT COULD BREAK IT",
-  invalidation: "THESIS BOUNDARY", settlement: "AT EXPIRY",
+  market_effect: "THE BET", metric: "KEY DATA", condition: "WHAT TO WATCH", countercase: "WHAT COULD CHANGE IT",
+  invalidation: "REASSESS IF", settlement: "AT EXPIRY",
 };
 
 const f1 = (value) => pyFloatFixed(Number(value), 1);
@@ -158,7 +158,7 @@ export function renderArgumentPath(spec, colors, x, y, width, height, compact) {
     const dash = new Set(["challenges", "conditions"]).has(edge.relation) ? ' stroke-dasharray="4 4"' : "";
     const target = nodes[index + 1];
     const edgeColor = new Set(["countercase", "invalidation"]).has(target.kind)
-      ? colors.red
+      ? colors.yellow_ink
       : new Set(["actor_action", "market_effect"]).has(target.kind) ? colors.primary : colors.driver;
     const lineWidth = compact ? 3.2 : 2;
     const arrowDepth = compact ? 8 : 6;
@@ -175,7 +175,7 @@ export function renderArgumentPath(spec, colors, x, y, width, height, compact) {
     let fill, stroke;
     if (kind === "event") [fill, stroke] = [colors.surface_alt, colors.yellow_ink];
     else if (new Set(["mechanism", "evidence", "metric"]).has(kind)) [fill, stroke] = [colors.blue_soft, colors.driver];
-    else if (new Set(["countercase", "invalidation"]).has(kind)) [fill, stroke] = [colors.red_soft, colors.red];
+    else if (new Set(["countercase", "invalidation"]).has(kind)) [fill, stroke] = [colors.surface_alt, colors.yellow_ink];
     else [fill, stroke] = [colors.green_soft, colors.primary];
     parts.push(`<rect data-argument-node="${esc(node.id)}" data-node-status="${esc(status)}" x="${f1(nodeX)}" y="${f1(y)}" width="${f1(nodeWidth)}" height="${f1(height)}" rx="6" fill="${fill}" stroke="${stroke}" stroke-width="1"/>`);
     parts.push(rect(nodeX, y, 4, height, stroke, "none", 2));
@@ -576,8 +576,8 @@ export function renderBottom(spec, colors) {
   const parts = [];
   if (counter && settlement.settleable) {
     parts.push(
-      rect(56, y, 516, height, colors.red_soft, colors.red, 7),
-      textBlock(76, y + 25, counter.label, 28, 1, 12, 14, colors.red, 700),
+      rect(56, y, 516, height, colors.surface_alt, colors.yellow, 7),
+      textBlock(76, y + 25, "WHAT COULD CHANGE IT", 28, 1, 12, 14, colors.yellow_ink, 700),
       textBlock(76, y + 53, counter.condition, 50, 2, 14, 18, colors.ink, 600),
       rect(592, y, 552, height, colors.surface_alt, colors.yellow, 7),
       textBlock(612, y + 25, "HOW IT SETTLES", 18, 1, 12, 14, colors.yellow_ink, 700),
@@ -591,8 +591,8 @@ export function renderBottom(spec, colors) {
     );
   } else if (counter) {
     parts.push(
-      rect(56, y, 1088, height, colors.red_soft, colors.red, 7),
-      textBlock(76, y + 25, counter.label, 18, 1, 12, 14, colors.red, 700),
+      rect(56, y, 1088, height, colors.surface_alt, colors.yellow, 7),
+      textBlock(76, y + 25, "WHAT COULD CHANGE IT", 24, 1, 12, 14, colors.yellow_ink, 700),
       textBlock(76, y + 56, counter.condition, 100, 2, 16, 21, colors.ink, 600),
     );
   }

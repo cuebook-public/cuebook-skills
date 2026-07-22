@@ -18,7 +18,21 @@ const INTERNAL_MARKERS = ["SOURCE_ASSET_MISMATCH", "PROXY_BRIDGE_MISSING", "proj
 const CONDITIONAL_MARKERS_ZH = ["\u5982\u679c", "\u8981\u662f", "\u9664\u975e", "\u4ecd\u9700", "\u8fd8\u8981\u770b", "\u53d6\u51b3\u4e8e", "\u4e00\u65e6", "\u80fd\u5426", "\u662f\u5426", "\u5f85\u786e\u8ba4", "\u53ef\u80fd", "\u89c2\u5bdf"];
 const CONDITIONAL_MARKERS_EN = /\b(if|unless|may|might|could|depends?|watch|conditional|needs? confirmation)\b/i;
 const HISTORICAL_MARKERS = ["\u5386\u53f2", "\u590d\u76d8", "\u622a\u81f3", "\u5f53\u65f6", "historical", "replay", "as of"];
-const SELF_CORRECTION_PHRASES = ["admit I was wrong", "where I was wrong", "what would prove me wrong", "what if I am wrong", "\u8ba4\u9519", "\u54ea\u91cc\u770b\u9519", "\u4ec0\u4e48\u60c5\u51b5\u7b97\u770b\u9519", "\u9519\u4e86\u600e\u4e48\u529e"];
+const SELF_CORRECTION_PHRASES = [
+  "admit I was wrong",
+  "where I was wrong",
+  "what would prove me wrong",
+  "what if I am wrong",
+  "invalidation:",
+  "invalidation condition",
+  "\u8ba4\u9519",
+  "\u627f\u8ba4\u9519\u8bef",
+  "\u54ea\u91cc\u770b\u9519",
+  "\u4ec0\u4e48\u60c5\u51b5\u7b97\u770b\u9519",
+  "\u9519\u4e86\u600e\u4e48\u529e",
+  "\u5931\u6548\u6761\u4ef6",
+  "\u8bc1\u4f2a\u6761\u4ef6",
+];
 const CUEBOOK_WORKFLOW_PATTERNS = [
   /cuebook.{0,40}(?:\u5e2e|\u8865(?:\u5168|\u5145)?|\u5b8c\u5584|\u542f\u53d1|\u534f\u52a9|\u751f\u6210|\u6539\u5199|\u6da6\u8272|\u5199(?:\u51fa|\u6210)?|\u5efa\u8bae|\u8ba9\u6211|\u7ed9\u6211|\u66ff\u6211|\u5b8c\u6210)/i,
   /(?:\u653e\u8fdb|\u7528|\u901a\u8fc7|\u7ecf\u8fc7|\u501f\u52a9|\u5e2e|\u8865(?:\u5168|\u5145)?|\u5b8c\u5584|\u542f\u53d1|\u534f\u52a9|\u751f\u6210|\u6539\u5199|\u6da6\u8272).{0,40}cuebook/i,
