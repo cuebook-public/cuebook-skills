@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.9.14 — 2026-07-23
+
+- The Decision Memory Coach's observed-behavior layer now cites the server-computed behavior observations included in the decision context pack (the creator's own public track-record facts, marked computed_observation with a pinned metric version) verbatim as its factual base, instead of re-deriving statistics from raw order lists; observations remain citable context only and never raise a claim's server-assigned support level.
+
 ## 0.9.13 — 2026-07-23
 
 - Added ARCHITECTURE.md as the plugin's governance contract: the six-layer model, explicit criteria for choosing between internal pipeline skills and entry-embedded capability modules, a four-level routing truth hierarchy, the dormant capability registry, fast-preview budget rules, and the drift gates that referee them.
