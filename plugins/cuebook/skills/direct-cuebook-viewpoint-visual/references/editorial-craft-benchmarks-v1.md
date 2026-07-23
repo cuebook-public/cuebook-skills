@@ -1,6 +1,6 @@
 # Editorial Craft Benchmarks V1
 
-Structural principles distilled from three verified public editorial-graphics systems, adapted to the 2.36:1 Cuebook viewpoint canvas. Transfer the discipline, never the brand surface. Read together with `canvas-craft-v1.md` (composition energy) and `finance-visual-argument-system-v1.md` (chart routing, whose market-relationship taxonomy already derives from the FT vocabulary below).
+Structural principles distilled from three verified public editorial-graphics systems, adapted to the 1.56:1 Cuebook viewpoint canvas. Transfer the discipline, never the brand surface. Read together with `canvas-craft-v1.md` (composition energy) and `finance-visual-argument-system-v1.md` (chart routing, whose market-relationship taxonomy already derives from the FT vocabulary below).
 
 ## Verified sources
 
@@ -33,7 +33,7 @@ Do not transfer: FT pink paper, Economist red and Milo, Datawrapper product chro
 
 - One chart, one message: the direction's `form_from_content` sentence is the message; anything on the canvas that serves a second message is reverse-deletion material.
 - The claim states the takeaway, not the topic: “Oil may struggle to hold $75 in Q3,” never “WTI price trend.” Topic-titling is an automatic critique failure under `three_second`.
-- Horizontal gridlines only, few, and quieter than the data; no vertical grid. At 2.36:1 most evidence fields need zero to three gridlines — prefer a labeled threshold line over a grid.
+- Horizontal gridlines only, few, and quieter than the data; no vertical grid. At 1.56:1 most evidence fields need zero to three gridlines — prefer a labeled threshold line over a grid.
 - One accent carries the primary series or verdict; support data takes neutrals or muted steps of the same hue before any second hue appears. This is the same 70-85% neutral rule as the palette system, stated from the ink side.
 
 ## Poster exception clause

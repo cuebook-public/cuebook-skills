@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.14"><img alt="Release v0.9.14" src="https://img.shields.io/badge/release-v0.9.14-F6C500?style=flat-square&labelColor=111111"></a>
+  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.15"><img alt="Release v0.9.15" src="https://img.shields.io/badge/release-v0.9.15-F6C500?style=flat-square&labelColor=111111"></a>
   <a href="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml"><img alt="Quality" src="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml/badge.svg?branch=main"></a>
   <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/Node.js-%E2%89%A522-3C873A?style=flat-square&labelColor=111111">
   <img alt="Two public skills" src="https://img.shields.io/badge/public_skills-2-4C6FFF?style=flat-square&labelColor=111111">
@@ -143,7 +143,7 @@ Turn that idea into a Frame.
 > [!NOTE]
 > Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly two public entrypoints; internal modules load only when needed.
 
-For a reproducible, intentionally frozen install, add `--ref v0.9.14` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
+For a reproducible, intentionally frozen install, add `--ref v0.9.15` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
 
 ## Updating
 
@@ -245,9 +245,9 @@ The renderer chooses a visual relationship before it chooses a style.
 | Conditional future | Checkpoints, catalyst map, confirmation and invalidation, scenario branches, terminal range band |
 | Competing evidence | Tension field, evidence balance, transparent Creator Lens |
 
-Every preview has one **2488 × 1056** publication PNG. Cuebook uploads and binds that image once; Feed and detail surfaces display the same master, with the Feed scaling it to the equivalent **622 × 264** aspect-ratio box. The Skill does not create separate compact, web, thumbnail, or OG assets.
+Every preview has one **1866 × 1200** publication PNG. Cuebook uploads and binds that image once; Feed and detail surfaces display the same master, with the Feed scaling it to the equivalent **622 × 400** aspect-ratio box. The Skill does not create separate compact, web, thumbnail, or OG assets.
 
-The master is authored against its 622 × 264 phone display box and rasterized at 4x: one dominant geometry and at most three reader-essential groups for orientation, evidence/mechanism, and future/settlement. Primary copy is at least 20 px and secondary essential labels at least 16 px at display size. When price matters, the image keeps one dated historical value, return, spread, drawdown, or threshold. Historical data ends at a visible observation boundary; future space contains checkpoints or branches, never a fabricated price path. Delivery-layer resizing may be added later without changing the authoring or MCP contract.
+The master is authored against its 622 × 400 phone display box and rasterized at 3x: one dominant geometry and at most three reader-essential groups for orientation, evidence/mechanism, and future/settlement. Primary copy is at least 20 px and secondary essential labels at least 16 px at display size. When price matters, the image keeps one dated historical value, return, spread, drawdown, or threshold. Historical data ends at a visible observation boundary; future space contains checkpoints or branches, never a fabricated price path. Delivery-layer resizing may be added later without changing the authoring or MCP contract.
 
 ## Architecture
 
@@ -305,7 +305,7 @@ Validation checks the repository-wide English-only policy, two-entrypoint bounda
 Release preparation has one version source and updates every pinned install ref, Plugin manifest, changelog section, and generated Skill bundle together:
 
 ```bash
-npm run release:prepare -- 0.9.14 \
+npm run release:prepare -- 0.9.15 \
   --date 2026-07-21 \
   --codex-build 20260721103045
 

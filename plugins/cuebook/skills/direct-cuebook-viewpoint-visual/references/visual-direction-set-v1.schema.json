@@ -311,7 +311,7 @@
           "spatial_skeleton": {"type": "string", "minLength": 5, "maxLength": 160},
           "renderer_mode": {"enum": ["cuebook_template", "finished_bitmap"], "description": "Defaults to cuebook_template for legacy artifacts. external_bitmap inputs normalize to finished_bitmap."},
           "html_ref": {"type": ["string", "null"], "pattern": "^[^/].*\\.html$"},
-          "preview_ref": {"type": "string", "pattern": "^[^/].*\\.png$", "description": "The sole 2488 x 1056 publication master."},
+          "preview_ref": {"type": "string", "pattern": "^[^/].*\\.png$", "description": "The sole 1866 x 1200 publication master."},
           "capture_report_ref": {"type": ["string", "null"], "pattern": "^[^/].*\\.json$"},
           "render_audit_ref": {"type": ["string", "null"], "pattern": "^[^/].*\\.json$"},
           "binding_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^BIND_"}},

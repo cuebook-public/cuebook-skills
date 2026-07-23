@@ -48,7 +48,7 @@ Run this gate only after the target Cuebook server release is confirmed healthy:
 2. Start one OAuth flow. If token exchange fails, stop; do not retry in parallel or consume another connection slot.
 3. Require a normal `get_frame_capabilities` result. Browser approval or an “enabled” badge is not enough.
 4. Run one smallest useful read and retain source-linked output.
-5. On a Skill host, create one preview from a real user idea and inspect the sole publication master at its 622 × 264 mobile display size. Preview must not publish.
+5. On a Skill host, create one preview from a real user idea and inspect the sole publication master at its 622 × 400 mobile display size. Preview must not publish.
 6. With explicit user intent, publish one clearly identified test Frame. Treat the successful `complete_frame_publish` result as terminal; do not parse a receipt or add a web-page, reconciliation, or `get_frame` readback to the creator path.
 7. Record the host version and which gates passed before changing “pending” to “verified.”
 

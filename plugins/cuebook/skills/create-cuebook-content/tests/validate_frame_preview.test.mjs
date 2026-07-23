@@ -15,7 +15,7 @@ function candidate(index = 1, angle = "conviction", template = "verdict") {
     frame: {
       title: `BTC Resilience Is Becoming an Opportunity ${index}`,
       body: `BTC did not weaken alongside US equities under pressure. Over the next 30 days, I am watching whether this relative strength keeps attracting marginal capital. Version ${index}`,
-      image_ref: `FPREV_CAND_BTC_${index}/viewpoint-2488.png`,
+      image_ref: `FPREV_CAND_BTC_${index}/viewpoint-1866.png`,
       alt_text: `Viewpoint visual showing BTC relative strength, a capital-rotation hypothesis, and a 30-day observation window, version ${index}`,
     },
     image_sha256: HASH,

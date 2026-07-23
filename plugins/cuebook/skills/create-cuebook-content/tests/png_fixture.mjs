@@ -22,7 +22,7 @@ function chunk(type, data) {
   return output;
 }
 
-export function validPaintedPng(width = 2488, height = 1056, variant = 1) {
+export function validPaintedPng(width = 1866, height = 1200, variant = 1) {
   const key = `${width}x${height}:${variant}`;
   if (cache.has(key)) return cache.get(key);
   const rowBytes = width * 3;

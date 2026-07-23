@@ -55,7 +55,7 @@ Higher density requires stronger grouping and larger differences between hierarc
 Every direction records these checks:
 
 - `copy_audited`: every visible string is plain, specific, and free of internal workflow language;
-- `compact_readable`: the claim is legible and understandable at 622 x 264;
+- `compact_readable`: the claim is legible and understandable at 622 x 400;
 - `anti_default_checked`: the composition has no unmotivated Cuebook anti-default;
 - `layout_signature_unique`: hierarchy, grid, alignment, or density materially differs from the other directions;
 - `source_bindings_complete`: every displayed market fact and geometry resolves to declared upstream lineage, and every selected material binding remains visibly present in the master at phone display scale;
@@ -68,7 +68,7 @@ For `previewed` and `selected` artifacts, every check must be true.
 ## Excluded Upstream Rules
 
 - Motion and GSAP rules: deferred while Cuebook focuses on static output.
-- Landing-page hero, CTA, navigation, and logo-wall rules: unrelated to a 2488 x 1056 market viewpoint.
+- Landing-page hero, CTA, navigation, and logo-wall rules: unrelated to a 1866 x 1200 market viewpoint.
 - Mandatory photography: market evidence may be a curve, number, event, comparison, or causal relationship.
 - Universal font and icon bans: Cuebook follows its own product and data-legibility constraints.
 - Random layout selection: Cuebook derives form from the thesis and source bindings.

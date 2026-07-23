@@ -18,9 +18,9 @@ test("valid relative conditional chart", () => {
   assert.ok(codes(result, "warnings").has("DEGRADED_INTERVAL"));
 });
 
-test("Frame-native 2488 width is accepted", () => {
+test("Frame-native 1866 width is accepted", () => {
   const item = baseSpec();
-  item.render.width = 2488;
+  item.render.width = 1866;
   assert.equal(validate(item).valid, true);
 });
 

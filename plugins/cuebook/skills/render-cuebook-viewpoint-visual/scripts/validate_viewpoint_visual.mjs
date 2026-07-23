@@ -911,11 +911,11 @@ export function validateManifest(payload, assetRoot = null) {
   if (!/^VVIS_[A-Za-z0-9_:-]{8,}$/.test(pyString(g(payload, "visual_id") || ""))) errors.push(issue("VISUAL_ID", "$.visual_id", "Invalid viewpoint visual ID."));
   const renderProfile = g(payload, "render_profile");
   const profileContracts = {
-    wide_2488: {
+    wide_1866: {
       sourceKind: "html",
       specPattern: /^VDIR_[A-Za-z0-9_:-]{8,}$/,
-      dimensions: { width: 2488, height: 1056 },
-      derivatives: { full: [2488, 1056] },
+      dimensions: { width: 1866, height: 1200 },
+      derivatives: { full: [1866, 1200] },
     },
     legacy_720: {
       sourceKind: "svg",
@@ -925,10 +925,10 @@ export function validateManifest(payload, assetRoot = null) {
     },
   };
   const profileContract = profileContracts[renderProfile] ?? null;
-  if (profileContract === null) errors.push(issue("RENDER_PROFILE", "$.render_profile", "Expected wide_2488 or legacy_720."));
+  if (profileContract === null) errors.push(issue("RENDER_PROFILE", "$.render_profile", "Expected wide_1866 or legacy_720."));
   else if (!profileContract.specPattern.test(pyString(g(payload, "spec_ref") || ""))) errors.push(issue("SPEC_REF", "$.spec_ref", `Invalid source ref for ${renderProfile}.`));
   const grammar = g(payload, "grammar"), payloadMode = g(payload, "payload_mode");
-  if (renderProfile === "wide_2488") {
+  if (renderProfile === "wide_1866") {
     if (!WIDE_GRAMMARS.has(grammar)) errors.push(issue("GRAMMAR", "$.grammar", "Unsupported wide viewpoint argument pattern."));
     if (g(payload, "visual_job") !== "render_selected_direction") errors.push(issue("VISUAL_JOB", "$.visual_job", "Wide viewpoints render the selected HTML direction."));
     if (!new Set(["qualitative", "key_numbers", "series", "mixed"]).has(payloadMode)) errors.push(issue("PAYLOAD_MODE", "$.payload_mode", "Unsupported wide viewpoint payload mode."));
@@ -944,7 +944,7 @@ export function validateManifest(payload, assetRoot = null) {
   const dimensions = checkObject(g(payload, "dimensions"), "$.dimensions", dimensionFields, dimensionFields, errors);
   if (profileContract !== null && !exactObject(dimensions, profileContract.dimensions)) errors.push(issue("DIMENSIONS", "$.dimensions", `${renderProfile} visuals use ${profileContract.dimensions.width} x ${profileContract.dimensions.height}.`));
   const theme = g(payload, "theme");
-  if (renderProfile === "wide_2488") {
+  if (renderProfile === "wide_1866") {
     if (typeof theme !== "string" || !/^[a-z0-9]+(?:-[a-z0-9]+){1,5}$/.test(theme)) errors.push(issue("THEME", "$.theme", "Wide viewpoints bind a registered lowercase hyphenated palette preset."));
   } else if (theme !== "cuebook_accessible_light") errors.push(issue("THEME", "$.theme", "Legacy viewpoints use cuebook_accessible_light."));
 
@@ -966,7 +966,7 @@ export function validateManifest(payload, assetRoot = null) {
   if (g(content, "watermark") !== "Cuebook") errors.push(issue("WATERMARK", "$.content.watermark", "Cuebook watermark is required."));
 
   const assetFields = new Set(["html", "svg", "font_manifest", "png_derivatives", "derivative_bundle_hash"]);
-  const requiredAssetFields = renderProfile === "wide_2488" ? assetFields : setDifference(assetFields, new Set(["font_manifest"]));
+  const requiredAssetFields = renderProfile === "wide_1866" ? assetFields : setDifference(assetFields, new Set(["font_manifest"]));
   const asset = checkObject(g(payload, "asset"), "$.asset", requiredAssetFields, assetFields, errors);
   const sourceKind = profileContract !== null ? profileContract.sourceKind : "html";
   const alternateKind = sourceKind === "html" ? "svg" : "html";
@@ -975,7 +975,7 @@ export function validateManifest(payload, assetRoot = null) {
   if (g(asset, alternateKind) !== null) errors.push(issue("ASSET_PROFILE", `$.asset.${alternateKind}`, `${pyString(renderProfile)} must not bind a ${alternateKind.toUpperCase()} source asset.`));
   if (!HASH_PATTERN.test(pyString(g(primaryAsset, "sha256") || ""))) errors.push(issue("ASSET_HASH_FORMAT", `$.asset.${sourceKind}.sha256`, "Expected sha256:<64 lowercase hex characters>."));
   let fontManifestAsset = {};
-  if (renderProfile === "wide_2488") {
+  if (renderProfile === "wide_1866") {
     fontManifestAsset = checkObject(g(asset, "font_manifest"), "$.asset.font_manifest", sourceFields, sourceFields, errors);
     if (!HASH_PATTERN.test(pyString(g(fontManifestAsset, "sha256") || ""))) errors.push(issue("ASSET_HASH_FORMAT", "$.asset.font_manifest.sha256", "Expected sha256:<64 lowercase hex characters>."));
   }
@@ -986,7 +986,7 @@ export function validateManifest(payload, assetRoot = null) {
     errors.push(issue("DERIVATIVE_SET", "$.asset.png_derivatives", `PNG outputs must be absent or contain the complete ${renderProfile} set.`));
     derivatives = [];
   }
-  if (renderProfile === "wide_2488" && derivatives.length === 0) errors.push(issue("DERIVATIVE_REQUIRED", "$.asset.png_derivatives", "The launch wide profile requires its publication master."));
+  if (renderProfile === "wide_1866" && derivatives.length === 0) errors.push(issue("DERIVATIVE_REQUIRED", "$.asset.png_derivatives", "The launch wide profile requires its publication master."));
   const seenKinds = new Set(), parsedDerivatives = [];
   derivatives.forEach((item, index) => {
     const path = `$.asset.png_derivatives[${index}]`;
@@ -1007,7 +1007,7 @@ export function validateManifest(payload, assetRoot = null) {
   if (!derivatives.length && bundleHash !== null) errors.push(issue("DERIVATIVE_BUNDLE_HASH", "$.asset.derivative_bundle_hash", "Bundle hash must be null without derivatives."));
 
   if (assetRoot !== null) {
-    if (renderProfile === "wide_2488") {
+    if (renderProfile === "wide_1866") {
       const fontManifestPath = safeAssetPath(g(fontManifestAsset, "ref"), assetRoot, "$.asset.font_manifest.ref", errors);
       if (fontManifestPath !== null && HASH_PATTERN.test(pyString(g(fontManifestAsset, "sha256") || ""))) {
         const fontManifestData = verifyHash(fontManifestPath, g(fontManifestAsset, "sha256"), "$.asset.font_manifest.sha256", errors);

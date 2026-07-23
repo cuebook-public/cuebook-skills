@@ -63,7 +63,7 @@ function handoffFor(payload) {
     directions: [{
       direction_id: selectedDirectionId,
       html_ref: "selected/viewpoint.html",
-      preview_ref: "selected/viewpoint-2488.png",
+      preview_ref: "selected/viewpoint-1866.png",
       binding_refs: ["BIND_USO_VIEW"],
       preflight: { copy_audited: true, compact_readable: true, source_bindings_complete: true },
       critique: { verdict: "pass" },
@@ -96,13 +96,13 @@ function handoffFor(payload) {
       visual: {
         direction_ref: selectedDirectionId,
         html_ref: "selected/viewpoint.html",
-        preview_ref: "selected/viewpoint-2488.png",
+        preview_ref: "selected/viewpoint-1866.png",
         alt_text: payload.frame_draft.media[0].alt_text,
       },
       frame: {
         title: payload.frame_draft.title,
         body: payload.frame_draft.body,
-        image_ref: "selected/viewpoint-2488.png",
+        image_ref: "selected/viewpoint-1866.png",
         alt_text: payload.frame_draft.media[0].alt_text,
       },
       settlement: { state: "frozen" },
@@ -114,7 +114,7 @@ function handoffFor(payload) {
     source: "viewpoint.html",
     source_sha256: `sha256:${"8".repeat(64)}`,
     derivatives: [
-      { kind: "full", ref: "viewpoint-2488.png", width: 2488, height: 1056, sha256: payload.frame_draft.media[0].sha256, pixel_sha256: `sha256:${"1".repeat(64)}` },
+      { kind: "full", ref: "viewpoint-1866.png", width: 1866, height: 1200, sha256: payload.frame_draft.media[0].sha256, pixel_sha256: `sha256:${"1".repeat(64)}` },
     ],
   };
   return { candidateSet, directionSet, captureReport };

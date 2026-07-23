@@ -122,7 +122,7 @@ For a Lens invented during the current conversation, default to `retrospective_e
 
 `contribution_stage` uses a dominant spread curve and visibly separate long and short sleeves with sleeve-level and component-level contributions. It fits a creator asking “what is winning against what?”
 
-The detailed 2488 publication composition must show:
+The detailed 1866 publication composition must show:
 
 - a creator-owned headline with a real point of view;
 - “Creator Lens” and “not an official index” language;
@@ -131,7 +131,7 @@ The detailed 2488 publication composition must show:
 - a blank future region with dated confirmation and invalidation conditions;
 - the creator's countercase as visible language, not hidden metadata.
 
-The sole 2488 publication master is authored in a 622 x 264 mobile display box. It keeps the Lens identity, observed curve or opposing sleeves, no more than the three strongest visible contributions, one unresolved future check, and minimal provenance. Formula, component reasons, synchronized-bar count, selection-mode detail, and limitations remain in the body, structured references, and alt text; they must not become an unreadable miniature ledger. No second bitmap is created.
+The sole 1866 publication master is authored in a 622 x 400 mobile display box. It keeps the Lens identity, observed curve or opposing sleeves, no more than the three strongest visible contributions, one unresolved future check, and minimal provenance. Formula, component reasons, synchronized-bar count, selection-mode detail, and limitations remain in the body, structured references, and alt text; they must not become an unreadable miniature ledger. No second bitmap is created.
 
 ## 8. Keep Future Time Rich But Unresolved
 
@@ -159,7 +159,7 @@ Frame is social-editorial. The native title and body already carry prose; the im
 
 Use open editorial columns, tension fields, branches, rails, and contribution stages. Avoid turning every beat into the same rounded card. Do not copy navigation bars, tabs, KPI tiles, or app chrome from a dashboard reference. Borrow the useful idea—dense chart plus explanatory layers—without importing dashboard furniture.
 
-Render one 2488 x 1056 publication master from the confirmed Meaning Lock, authored against a 622 x 264 display box and rasterized at 4x. Use one dominant geometry and at most three reader-essential groups: orientation, evidence/mechanism, and future/settlement. Primary essential copy has a 20 px display-size floor and secondary essential labels have a 16 px floor. Preserve one or two material dated values and one future check. Repair the master when it fails; never create a separate compact composition. Preserve diversity through grayscale silhouette and reading direction, not by adding more small labels.
+Render one 1866 x 1200 publication master from the confirmed Meaning Lock, authored against a 622 x 400 display box and rasterized at 3x. Use one dominant geometry and at most three reader-essential groups: orientation, evidence/mechanism, and future/settlement. Primary essential copy has a 20 px display-size floor and secondary essential labels have a 16 px floor. Preserve one or two material dated values and one future check. Repair the master when it fails; never create a separate compact composition. Preserve diversity through grayscale silhouette and reading direction, not by adding more small labels.
 
 Surface comes after structure. `paper_signal`, `midnight`, `warm_editorial`, and `cool_mono` should change tone, not substitute for a different reading path. Creator-facing generation returns one image at a time. A visual-only reroll needs a different truthful grammar or composition, not merely a different color.
 
@@ -176,7 +176,7 @@ A preview passes only when:
 - title, body, and image do different jobs;
 - no visible text is truncated;
 - the SVG is accessible, contains no network asset, and uses the canonical Cuebook wordmark;
-- the sole publication PNG is fully decodable, materially painted, exactly 2488 × 1056, phone-scale legible, and byte-hashed;
+- the sole publication PNG is fully decodable, materially painted, exactly 1866 × 1200, phone-scale legible, and byte-hashed;
 - mutable current or entry prices remain absent until a backend quote or entry lock exists.
 
 Return the four-field public Frame immediately after these gates pass. Internal preview lineage, selection, derivatives, upload, and publication remain backstage.

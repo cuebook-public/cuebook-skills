@@ -14,18 +14,18 @@ function fakePng() {
 }
 
 async function fakeRasterize(svg, output) {
-  assert.match(readFileSync(svg, "utf8"), /<svg\b[^>]*width="2488"[^>]*height="1056"[^>]*viewBox="0 0 622 264"/u);
+  assert.match(readFileSync(svg, "utf8"), /<svg\b[^>]*width="1866"[^>]*height="1200"[^>]*viewBox="0 0 622 400"/u);
   writeFileSync(output, fakePng());
   return output;
 }
 
 async function fakeHeaderRasterize(svg, output) {
-  assert.match(readFileSync(svg, "utf8"), /<svg\b[^>]*width="2488"[^>]*height="1056"[^>]*viewBox="0 0 622 264"/u);
+  assert.match(readFileSync(svg, "utf8"), /<svg\b[^>]*width="1866"[^>]*height="1200"[^>]*viewBox="0 0 622 400"/u);
   const png = Buffer.alloc(24);
   Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]).copy(png, 0);
   png.write("IHDR", 12, "ascii");
-  png.writeUInt32BE(2488, 16);
-  png.writeUInt32BE(1056, 20);
+  png.writeUInt32BE(1866, 16);
+  png.writeUInt32BE(1200, 20);
   writeFileSync(output, png);
   return output;
 }
@@ -274,7 +274,7 @@ test("MARKET compiles one sourced curve, a derived support panel, and an honest 
     assert.doesNotMatch(svg, /data-layout="open-beat"/u);
     assert.doesNotMatch(svg, /data-series-state="future"/u);
     assert.equal(report.renders[0].audit.single_master, true);
-    assert.equal(report.renders[0].audit.mobile_display, "622x264");
+    assert.equal(report.renders[0].audit.mobile_display, "622x400");
     assert.ok(report.renders[0].audit.essential_copy_groups <= 3);
     assert.equal(report.renders[0].audit.essential_font_floor, 20);
     assert.equal(report.renders[0].audit.secondary_font_floor, 16);
@@ -288,7 +288,7 @@ test("MARKET compiles one sourced curve, a derived support panel, and an honest 
     assert.equal(existsSync(path.join(output, preview.candidates[0].candidate_id, "frame-feed-622.svg")), false);
     assert.equal(existsSync(path.join(output, preview.candidates[0].candidate_id, "viewpoint-622.png")), false);
     assert.deepEqual(Object.keys(frame), ["title", "body", "image_ref", "alt_text"]);
-    assert.equal(frame.image_ref, `${preview.candidates[0].candidate_id}/viewpoint-2488.png`);
+    assert.equal(frame.image_ref, `${preview.candidates[0].candidate_id}/viewpoint-1866.png`);
     assert.deepEqual(JSON.parse(readFileSync(path.join(output, "frame.json"), "utf8")), frame);
     for (const privateField of ["state", "schema_version", "candidate_id", "query_binding", "image_sha256", "image_byte_size", "receipt", "scope"]) {
       assert.equal(Object.hasOwn(frame, privateField), false);

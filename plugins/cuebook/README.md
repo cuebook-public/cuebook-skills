@@ -46,7 +46,7 @@ The creator consent presents all six Cuebook scopes once: public research, priva
 
 The installing task owns installation and that one necessary host login. It must not create a background test task, publish a placeholder, or diagnose this local marketplace through a public ChatGPT plugin manager. After Cuebook is enabled and no longer reports `not_logged_in`, fully quit the Codex app with `Cmd+Q` on macOS (or exit it completely on another platform), reopen it, and then enter the real query or market idea in one new task. Codex CLI users should end the current process and start a new one. A new task inside an app process that never restarted can retain the previous Plugin and Tool snapshot. The final readiness proof is a normal MCP result in the restarted host, not a browser approval screen or connector status alone. If authentication fails, stop instead of retrying, reinstalling, or opening more tasks. OAuth credentials stay in the connector, never in a Skill or generated artifact.
 
-Use `--ref v0.9.14` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
+Use `--ref v0.9.15` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
 
 ## Update
 
@@ -127,9 +127,9 @@ If an upstream system supplies a frozen commitment and evidence set, Create chan
 
 ## Mobile-First Visuals
 
-Each preview renders one **2488 × 1056** publication PNG from the creator-confirmed draft. Cuebook uploads and binds it once. Phone and Feed surfaces show that same master in the equivalent **622 × 264** aspect-ratio box; the Skill does not create separate compact, web, thumbnail, or OG assets.
+Each preview renders one **1866 × 1200** publication PNG from the creator-confirmed draft. Cuebook uploads and binds it once. Phone and Feed surfaces show that same master in the equivalent **622 × 400** aspect-ratio box; the Skill does not create separate compact, web, thumbnail, or OG assets.
 
-The master is authored against its 622 × 264 phone display box and rasterized at 4x: one dominant geometry, at most three reader-essential groups, a 20 px primary and 16 px secondary essential type floor, minimal provenance, one material dated value when price matters, and one visible future check. Delivery-layer resizing may be introduced later without changing the authoring or MCP contract.
+The master is authored against its 622 × 400 phone display box and rasterized at 3x: one dominant geometry, at most three reader-essential groups, a 20 px primary and 16 px secondary essential type floor, minimal provenance, one material dated value when price matters, and one visible future check. Delivery-layer resizing may be introduced later without changing the authoring or MCP contract.
 
 Design diversity comes from the reading path, not palette roulette. Curve stages, editorial splits, tension fields, temporal rails, trigger posters, branch maps, mechanism paths, evidence balance, Lens anatomy, and spread arenas remain distinguishable in grayscale. Surface, typography, material, and density follow the idea topology.
 

@@ -268,14 +268,14 @@ function readNetworkFreeHtml(htmlPath, requiredWidth, requiredHeight) {
 async function captureViewpoint(htmlArg, outputArg, browserOverride = null, ogHtmlArg = null, options = {}) {
   const htmlPath = path.resolve(htmlArg);
   const outputDir = path.resolve(outputArg);
-  const html = readNetworkFreeHtml(htmlPath, 1244, 528);
+  const html = readNetworkFreeHtml(htmlPath, 1244, 800);
   if (ogHtmlArg !== null && ogHtmlArg !== undefined) throw new Error("Frame capture accepts one publication master; OG input is no longer supported.");
   void options;
   const allowDark = /data-theme=["']dark["']/i.test(html);
   const browserPath = browserOverride || browserExecutable();
   if (!browserPath) throw new Error("No supported Chromium executable found.");
   fs.mkdirSync(outputDir, { recursive: true });
-  const full = path.join(outputDir, "viewpoint-2488.png");
+  const full = path.join(outputDir, "viewpoint-1866.png");
   const compact = path.join(outputDir, "viewpoint-622.png");
   const og = path.join(outputDir, "og-1200x630.png");
   fs.rmSync(compact, { force: true });
@@ -288,9 +288,9 @@ async function captureViewpoint(htmlArg, outputArg, browserOverride = null, ogHt
     args: [...chromiumPlatformArgs(), "--font-render-hinting=none"],
   });
   try {
-    const fullPaint = await captureReliable(browser, htmlPath, 1244, 528, 2, full, allowDark);
+    const fullPaint = await captureReliable(browser, htmlPath, 1244, 800, 1.5, full, allowDark);
     const derivatives = [
-      { kind: "full", ref: path.basename(full), width: 2488, height: 1056, sha256: sha256(fs.readFileSync(full)), pixel_sha256: canonicalRgbaPixelSha256(full), painted_ratio: Number(fullPaint.paintedRatio.toFixed(6)) },
+      { kind: "full", ref: path.basename(full), width: 1866, height: 1200, sha256: sha256(fs.readFileSync(full)), pixel_sha256: canonicalRgbaPixelSha256(full), painted_ratio: Number(fullPaint.paintedRatio.toFixed(6)) },
     ];
     const report = {
       schema_version: "viewpoint-html-capture-v1",

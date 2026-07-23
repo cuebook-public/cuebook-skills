@@ -125,7 +125,7 @@ export function buildManifest(directionSet, assetRoot, { observedAt, decisionCut
   const capture = JSON.parse(readFileSync(capturePath, "utf8"));
   const captureByKind = Object.fromEntries((capture.derivatives ?? []).filter((item) => item !== null && typeof item === "object" && !Array.isArray(item)).map((item) => [item.kind, item]));
   const expected = {
-    full: [direction.preview_ref, 2488, 1056, sha256Bytes(fullBytes)],
+    full: [direction.preview_ref, 1866, 1200, sha256Bytes(fullBytes)],
   };
   if (capture.source_sha256 !== sha256Bytes(htmlBytes)) throw new Error("Capture report does not bind the selected HTML bytes.");
   for (const [kind, [, width, height, digest]] of Object.entries(expected)) {
@@ -143,14 +143,14 @@ export function buildManifest(directionSet, assetRoot, { observedAt, decisionCut
   return {
     schema_version: "viewpoint-visual-v1",
     visual_id: `VVIS_${visualSuffix}_${htmlDigest.slice(-12)}`,
-    render_profile: "wide_2488",
+    render_profile: "wide_1866",
     spec_ref: directionId,
     grammar,
     payload_mode: payloadMode(bindings),
     visual_job: "render_selected_direction",
     state,
     generated_at: generatedAt,
-    dimensions: { width: 2488, height: 1056 },
+    dimensions: { width: 1866, height: 1200 },
     theme: colorSystem.preset_id,
     lineage: {
       input_artifact_refs: unique([directionSet.direction_set_id, ...directionSet.input_refs]),

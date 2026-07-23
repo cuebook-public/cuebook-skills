@@ -6,7 +6,7 @@ Use this reference after the idea topology and evidence relationship are known. 
 
 Keep these anchors stable across every Frame:
 
-- one 2488 x 1056 publication master, verified at a 622 x 264 phone display size, and the canonical Cuebook wordmark;
+- one 1866 x 1200 publication master, verified at a 622 x 400 phone display size, and the canonical Cuebook wordmark;
 - one creator-owned judgment, honest source/as-of/transform language, and a visible observed/future boundary;
 - readable type, one dominant accent, stable bindings, and no fabricated future path.
 
@@ -69,5 +69,5 @@ Fail the visual when:
 - the creator pulse always occupies the same edge regardless of composition;
 - typography changes but hierarchy and reading order do not;
 - novelty makes the evidence harder to identify within five seconds.
-- the publication master needs zoom to understand when displayed at 622 x 264;
+- the publication master needs zoom to understand when displayed at 622 x 400;
 - a layout-only reroll changes the meaning lock, evidence set, direction, or horizon.

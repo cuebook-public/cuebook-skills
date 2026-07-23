@@ -1,6 +1,6 @@
 # Cuebook Visual Critique V1
 
-Inspect the publication master at full and 622 x 264 display sizes. Score the artifact, not the intent, and do not create a second PNG for the phone check.
+Inspect the publication master at full and 622 x 400 display sizes. Score the artifact, not the intent, and do not create a second PNG for the phone check.
 
 ## Gates
 
@@ -12,7 +12,7 @@ Any failure here forces revision:
 - No curve or quantitative magnitude is invented.
 - The creator's direction and condition are unchanged.
 - All eleven kernel pre-flight checks are true for previewed or selected directions.
-- The capture report and rendered audit match the current HTML, the publication PNG is exactly 2488 x 1056, and audits pass at both 1244 x 528 and 622 x 264.
+- The capture report and rendered audit match the current HTML, the publication PNG is exactly 1866 x 1200, and audits pass at both 1244 x 800 and 622 x 400.
 - Every declared compact logic route still exposes support, a reasoning bridge, and the conclusion.
 - The selected chart answers the declared market relationship and the visible mechanism explains why the evidence matters to the traded asset.
 - A proof candidate gives evidence more visual weight than headline typography, and every label remains attached to its mark at full and phone display scales.

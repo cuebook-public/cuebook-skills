@@ -56,7 +56,7 @@ function writePng(file, width, height, variant = 1) {
   ]));
 }
 
-function focusedCapture(width = 1244, height = 528) {
+function focusedCapture(width = 1244, height = 800) {
   return {
     schema_version: "tradingview-focused-capture-v1",
     capture_id: "TVFOCUS_spcx_frame",
@@ -114,8 +114,8 @@ function focusedCapture(width = 1244, height = 528) {
       finished_bitmap_audit_required: true,
       publication_master: {
         locator: "selected/publication.png",
-        width: 2488,
-        height: 1056,
+        width: 1866,
+        height: 1200,
         cuebook_wordmark_visible: true,
         backend_price_lock_ref: null,
       },
@@ -153,14 +153,14 @@ async function withWorkspace(run) {
 }
 
 test("builds an ordinary Frame PNG after local attributed-snapshot checks", async () => withWorkspace(async (root) => {
-  writePng(path.join(root, "snapshot.png"), 1244, 528);
+  writePng(path.join(root, "snapshot.png"), 1244, 800);
   writeFileSync(path.join(root, "focus.json"), `${JSON.stringify(focusedCapture(), null, 2)}\n`);
   const captureViewpoint = async (htmlPath, outputDir) => {
     const html = readFileSync(htmlPath, "utf8");
     assert.match(html, /data-source-kind="official-tradingview-snapshot"/u);
     assert.match(html, /data-cuebook-wordmark="v1"/u);
     assert.match(html, /object-fit:contain/u);
-    writePng(path.join(outputDir, "viewpoint-2488.png"), 2488, 1056, 2);
+    writePng(path.join(outputDir, "viewpoint-1866.png"), 1866, 1200, 2);
   };
 
   const result = await runAttributedSnapshotFrame(job(), root, path.join(root, "selected"), { captureViewpoint });
@@ -172,8 +172,8 @@ test("builds an ordinary Frame PNG after local attributed-snapshot checks", asyn
 }));
 
 test("rejects a low-density aspect before rendering instead of stretching or blind cropping", async () => withWorkspace(async (root) => {
-  writePng(path.join(root, "snapshot.png"), 1400, 700);
-  writeFileSync(path.join(root, "focus.json"), `${JSON.stringify(focusedCapture(1400, 700), null, 2)}\n`);
+  writePng(path.join(root, "snapshot.png"), 1600, 800);
+  writeFileSync(path.join(root, "focus.json"), `${JSON.stringify(focusedCapture(1600, 800), null, 2)}\n`);
   await assert.rejects(
     runAttributedSnapshotFrame(job(), root, path.join(root, "selected"), { captureViewpoint: async () => assert.fail("capture should not run") }),
     /aspect ratio is too far/u,
@@ -181,8 +181,8 @@ test("rejects a low-density aspect before rendering instead of stretching or bli
 }));
 
 test("rejects a snapshot that is not the exact file bound by the focus record", async () => withWorkspace(async (root) => {
-  writePng(path.join(root, "snapshot.png"), 1244, 528);
-  writePng(path.join(root, "other.png"), 1244, 528, 3);
+  writePng(path.join(root, "snapshot.png"), 1244, 800);
+  writePng(path.join(root, "other.png"), 1244, 800, 3);
   const focus = focusedCapture();
   focus.source.locator = "other.png";
   writeFileSync(path.join(root, "focus.json"), `${JSON.stringify(focus, null, 2)}\n`);

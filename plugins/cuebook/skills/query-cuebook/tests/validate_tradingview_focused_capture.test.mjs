@@ -16,7 +16,7 @@ function focusedCapture() {
       region: "chart",
       locator: "/tmp/tradingview-spcx-focused.png",
       width: 1600,
-      height: 700,
+      height: 1030,
       timeframe: "240",
       latest_complete_bar_at: "2026-07-22T08:00:00+08:00"
     },
@@ -36,7 +36,7 @@ function focusedCapture() {
     },
     quality: {
       output_width: 1600,
-      output_height: 700,
+      output_height: 1030,
       chart_fill_ratio: 0.94,
       latest_bar_visible: true,
       price_axis_visible: true,
@@ -72,10 +72,10 @@ function codes(payload) {
 function attributedSnapshot() {
   const item = focusedCapture();
   item.source.method = "tradingview_snapshot";
-  item.source.width = 2488;
-  item.source.height = 1056;
-  item.quality.output_width = 2488;
-  item.quality.output_height = 1056;
+  item.source.width = 1866;
+  item.source.height = 1200;
+  item.quality.output_width = 1866;
+  item.quality.output_height = 1200;
   item.rights = {
     usage_scope: "attributed_publication",
     tradingview_attribution_visible: true,
@@ -90,8 +90,8 @@ function attributedSnapshot() {
     finished_bitmap_audit_required: true,
     publication_master: {
       locator: "/tmp/spcx-frame-publication.png",
-      width: 2488,
-      height: 1056,
+      width: 1866,
+      height: 1200,
       cuebook_wordmark_visible: true,
       backend_price_lock_ref: "quote-lock:spcx-20260722-1000"
     }

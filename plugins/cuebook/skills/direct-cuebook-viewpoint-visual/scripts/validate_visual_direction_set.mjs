@@ -1166,7 +1166,7 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
       }
       const responsiveRule = layout.responsive_rule;
       if (typeof responsiveRule !== "string" || !(trimLen(responsiveRule) >= 8 && trimLen(responsiveRule) <= 240)) {
-        errors.push(issue("RESPONSIVE_RULE", `${path_}.layout_system.responsive_rule`, "Explain how hierarchy survives at 622 x 264."));
+        errors.push(issue("RESPONSIVE_RULE", `${path_}.layout_system.responsive_rule`, "Explain how hierarchy survives at 622 x 400."));
       }
       const signature = pyJsonDumps(
         { hierarchy, grid, alignment, density },
@@ -1653,7 +1653,7 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
             errors.push(issue("PREVIEW_MISSING", `${path_}.${key}`, `Missing preview: ${ref}`));
           } else {
             previewPaths.set(key, previewPath);
-            const expectedDimensions = [2488, 1056];
+            const expectedDimensions = [1866, 1200];
             const dimensions = png_dimensions(previewPath);
             if (dimensions === null || dimensions[0] !== expectedDimensions[0] || dimensions[1] !== expectedDimensions[1]) {
               errors.push(issue("PREVIEW_FORMAT", `${path_}.${key}`, `Expected a valid ${expectedDimensions[0]} x ${expectedDimensions[1]} PNG.`));
@@ -1683,7 +1683,7 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
           for (const kind of byKind.keys()) {
             if (kind !== "full") errors.push(issue("CAPTURE_REPORT_ROLE", `${path_}.capture_report_ref`, "Capture report must contain only the publication master."));
           }
-          for (const [key, kind, dimensions] of [["preview_ref", "full", [2488, 1056]]]) {
+          for (const [key, kind, dimensions] of [["preview_ref", "full", [1866, 1200]]]) {
             const derivative = byKind.get(kind);
             const previewPath = previewPaths.get(key);
             if (!isObject(derivative) || derivative.width !== dimensions[0] || derivative.height !== dimensions[1]) {
@@ -1727,8 +1727,8 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
             }
           }
           const viewportExpectations = [
-            [[1244, 528], visibleSteps, usedRefSet],
-            [[622, 264], compactSteps, new Set([...compactRequiredBindings, ...selectedMaterialBindingIds])],
+            [[1244, 800], visibleSteps, usedRefSet],
+            [[622, 400], compactSteps, new Set([...compactRequiredBindings, ...selectedMaterialBindingIds])],
           ];
           for (const [dimensions, expectedSteps, expectedBindings] of viewportExpectations) {
             const viewportReport = viewportMap.get(`number:${dimensions[0]}|number:${dimensions[1]}`);
@@ -1778,7 +1778,7 @@ export function validate(payload, assetRoot = null, { require_expression_recipes
         for (const kind of byKind.keys()) {
           if (kind !== "full") errors.push(issue("RASTER_AUDIT_ROLE", `${path_}.capture_report_ref`, "Raster audit must contain only the publication master."));
         }
-        for (const [key, kind, role, dimensions] of [["preview_ref", "full", "publication", [2488, 1056]]]) {
+        for (const [key, kind, role, dimensions] of [["preview_ref", "full", "publication", [1866, 1200]]]) {
           const derivative = byKind.get(kind);
           const previewPath = previewPaths.get(key);
           if (!isObject(derivative) || derivative.width !== dimensions[0] || derivative.height !== dimensions[1]) {

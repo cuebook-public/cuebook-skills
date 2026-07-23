@@ -174,7 +174,7 @@ const FRAME_PUBLICATION_FLOW = {
   creator_link_policy: "never_present_canonical_url",
   published_visual_semantics: "one_visual_attached_to_frame_release",
   client_upload_roles: ["publication"],
-  capture_profiles: { publication: { width: 2488, height: 1056 } },
+  capture_profiles: { publication: { width: 1866, height: 1200 } },
   delivery_resize_policy: "frontend_or_edge_transformation_only",
   forbidden_tools: [...FORBIDDEN_FRAME_MEDIA_TOOLS],
   initial_publish_sequence: [

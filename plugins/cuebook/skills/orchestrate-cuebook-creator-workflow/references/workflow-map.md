@@ -8,7 +8,7 @@ For an ordinary raw idea, execute `asset resolve -> one bounded parallel Query p
 
 ## Selected Freeze Path
 
-After confirmation, execute `reuse selected preview/query refs -> minimal semantics/expression lineage -> selected PostV1 + selected visual direction -> one 2488 x 1056 publication master -> deep audit + manifest -> one-candidate selected set -> Frame assembly`. Continue to upload and publication only when requested.
+After confirmation, execute `reuse selected preview/query refs -> minimal semantics/expression lineage -> selected PostV1 + selected visual direction -> one 1866 x 1200 publication master -> deep audit + manifest -> one-candidate selected set -> Frame assembly`. Continue to upload and publication only when requested.
 
 ## Capability Ownership
 

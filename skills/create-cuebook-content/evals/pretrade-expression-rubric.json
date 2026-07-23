@@ -67,7 +67,7 @@
     },
     {
       "id": "mobile_master_fit",
-      "question": "Is the sole 2488 x 1056 publication master authored against a 622 x 264 mobile box with one dominant geometry, at most three reader-essential groups, primary type at least 20 px, and secondary essential labels at least 16 px?"
+      "question": "Is the sole 1866 x 1200 publication master authored against a 622 x 400 mobile box with one dominant geometry, at most three reader-essential groups, primary type at least 20 px, and secondary essential labels at least 16 px?"
     },
     {
       "id": "controlled_variation",
@@ -87,7 +87,7 @@
     "the visual claims an official index when it is only a creator-defined basket",
     "a visual-only reroll differs only by palette or typography while keeping the same reading silhouette",
     "the publication or expanded Frame hides a derived basket's components, weights, basis, coverage, or limitations",
-    "the publication master is a dense desktop downscale, needs zoom at 622 x 264, contains more than three competing reader-essential groups, or falls below the 20 px primary / 16 px secondary essential type floors",
+    "the publication master is a dense desktop downscale, needs zoom at 622 x 400, contains more than three competing reader-essential groups, or falls below the 20 px primary / 16 px secondary essential type floors",
     "pixels are rendered before the exact copy and settlement Meaning Lock is confirmed, or a post-confirmation semantic or deadline change reuses stale pixels",
     "a layout-only reroll changes facts, evidence, direction, horizon, or claim-state typing",
     "public copy or image prints correction-first headings such as invalidation, falsification condition, I admit I was wrong, or their locale equivalents",

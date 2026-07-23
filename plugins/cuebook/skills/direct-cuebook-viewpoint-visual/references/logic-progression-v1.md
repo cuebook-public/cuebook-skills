@@ -64,7 +64,7 @@ Each visual direction records a `logic_route`:
 
 - `entry_step_id`: the first thing the eye meets;
 - `visible_step_ids`: the order the full composition reveals;
-- `compact_step_ids`: the three to five steps preserved at 622 x 264.
+- `compact_step_ids`: the three to five steps preserved at 622 x 400.
 
 Both routes must include the spine's first and final step plus an interior bridge. Reordering is allowed for evidence-first or reasoning-first art direction, but no route may hide the connection that makes the conclusion understandable.
 

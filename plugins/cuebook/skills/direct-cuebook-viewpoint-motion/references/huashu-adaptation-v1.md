@@ -20,7 +20,7 @@ This reference adapts design methods from [alchaincyf/huashu-design](https://git
 | Scene narrative | Compact 4-7 beat market argument. Feed default is 3.2-5.0 seconds. |
 | Hero morph | Price path, event marker, number, spread, causal line, risk rail, or settlement line persists across beats. |
 | Cinematic focus | Use opacity, scale, crop, and focus sparingly while the claim stays readable. |
-| Keyframe verification | Inspect 0%, evidence, mechanism, judgment, and final hold on the 1244 x 528 authoring canvas and at 622 x 264; preserve the exact 2488 x 1056 poster. |
+| Keyframe verification | Inspect 0%, evidence, mechanism, judgment, and final hold on the 1244 x 800 authoring canvas and at 622 x 400; preserve the exact 1866 x 1200 poster. |
 | Video export | React component is canonical; MP4/WebM are derivatives and the PNG poster remains the fallback. |
 
 ## Methods Deliberately Changed

@@ -311,7 +311,7 @@
             "direction_ref": {"$ref": "#/$defs/nonemptyString"},
             "renderer_mode": {"enum": ["cuebook_template", "finished_bitmap"], "description": "Defaults to cuebook_template for legacy artifacts."},
             "html_ref": {"type": ["string", "null"], "pattern": "^[^/].*\\.html$"},
-            "preview_ref": {"type": "string", "pattern": "^[^/].*\\.png$", "description": "The sole 2488 x 1056 publication master, reused by Feed and detail surfaces."},
+            "preview_ref": {"type": "string", "pattern": "^[^/].*\\.png$", "description": "The sole 1866 x 1200 publication master, reused by Feed and detail surfaces."},
             "visible_char_count": {"type": "integer", "minimum": 1, "maximum": 120},
             "alt_text": {"type": "string", "minLength": 2, "maxLength": 120}
           }

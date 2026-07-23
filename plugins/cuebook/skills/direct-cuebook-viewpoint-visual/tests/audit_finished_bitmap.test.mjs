@@ -79,7 +79,7 @@ function request() {
 function withBitmaps(run) {
   const root = mkdtempSync(path.join(os.tmpdir(), "cuebook-finished-bitmap-"));
   try {
-    writePng(path.join(root, "publication.png"), 2488, 1056, 1);
+    writePng(path.join(root, "publication.png"), 1866, 1200, 1);
     return run(root);
   } finally {
     rmSync(root, { recursive: true, force: true });

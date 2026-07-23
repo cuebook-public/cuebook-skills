@@ -24,23 +24,23 @@
     --risk: #c64e47;
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; width: 1244px; height: 528px; overflow: hidden; background: var(--paper); }
+  html, body { margin: 0; width: 1244px; height: 800px; overflow: hidden; background: var(--paper); }
   body { font-family: var(--font-stack); color: var(--ink); -webkit-font-smoothing: antialiased; font-synthesis: none; letter-spacing: 0; }
-  .cuebook-canvas { position: relative; width: 1244px; height: 528px; overflow: hidden; background: var(--paper); transform-origin: top left; }
+  .cuebook-canvas { position: relative; width: 1244px; height: 800px; overflow: hidden; background: var(--paper); transform-origin: top left; }
   [data-role="claim"] { text-wrap: balance; line-break: strict; }
   [data-role="evidence"], [data-role="condition"] { text-wrap: pretty; }
   [data-binding-ref] { font-variant-numeric: tabular-nums; }
   /* CJK word integrity: wrap each semantic phrase in <span class="w"> so lines break only between words. */
   .w { white-space: nowrap; }
   @media (max-width: 1000px) {
-    html, body { width: 622px; height: 264px; }
+    html, body { width: 622px; height: 400px; }
     .cuebook-canvas { transform: scale(.5); transform-origin: top left; }
   }
 </style>
 </head>
 <body>
 <!-- Stage licensed Noi files into ./fonts before release. Trial files are local-evaluation-only. Replace the fallback palette tokens, set the direction metadata, and put each binding on visible role/logic text or geometry. The final brand-lock script injects the canonical wordmark. -->
-<main class="cuebook-canvas" data-cuebook-viewpoint data-cuebook-visual-contract="launch-v1" data-width="1244" data-height="528" data-direction-id="VDIR_REPLACE_ME" data-entry-role="claim" data-color-system="semantic-v1" data-palette-family="quiet-cobalt" data-palette-strategy="creator_native" data-palette-preset="quiet-cobalt" data-font-profile="cuebook-noi-v1" data-font-license-mode="production" data-font-manifest-ref="fonts/font-assets-v1.json">
+<main class="cuebook-canvas" data-cuebook-viewpoint data-cuebook-visual-contract="launch-v1" data-width="1244" data-height="800" data-direction-id="VDIR_REPLACE_ME" data-entry-role="claim" data-color-system="semantic-v1" data-palette-family="quiet-cobalt" data-palette-strategy="creator_native" data-palette-preset="quiet-cobalt" data-font-profile="cuebook-noi-v1" data-font-license-mode="production" data-font-manifest-ref="fonts/font-assets-v1.json">
 </main>
 </body>
 </html>

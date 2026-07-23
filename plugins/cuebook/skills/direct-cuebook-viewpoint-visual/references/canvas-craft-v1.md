@@ -1,12 +1,12 @@
 # Cuebook Canvas Craft V1
 
-Occupation, scale drama, surface depth, and set diversity for the 2.36:1 viewpoint canvas. The other references say what a direction must not do; this contract says what a composed canvas must positively achieve. Read it with `composition-primitives-v1.md` before authoring HTML, and self-check every direction against it during the kernel craft pass.
+Occupation, scale drama, surface depth, and set diversity for the 1.56:1 viewpoint canvas. The other references say what a direction must not do; this contract says what a composed canvas must positively achieve. Read it with `composition-primitives-v1.md` before authoring HTML, and self-check every direction against it during the kernel craft pass.
 
 The failure mode this contract exists to kill: a compliant but inert render — one text column beside one thin graphic floating on a flat ground, repeated three times with different palettes. That layout is the model default for a wide canvas. It passes every gate and still looks like nothing.
 
-## The 2.36:1 canvas is short, not small
+## The 1.56:1 canvas is short, not small
 
-At 1244 x 528 vertical space is scarce and horizontal space is abundant. Compositions that work at 4:5 or 1:1 die here.
+At 1244 x 800 vertical space is scarce and horizontal space is abundant. Compositions that work at 4:5 or 1:1 die here.
 
 - Think in horizontal fields, seams, and bands. A vertical rail wastes the axis the canvas actually has.
 - Full-height elements are cheap drama: a seam, an inverted panel, a bleeding numeral, or an evidence field that touches both the top and bottom edges reads as command of the canvas.
@@ -33,11 +33,11 @@ At 1244 x 528 vertical space is scarce and horizontal space is abundant. Composi
 - A full-height inverted seam — dark panel against light field or the reverse — is the cheapest honest way to give a wide canvas an editorial spine. At most one inversion per direction.
 - Depth planes are still quiet: no gradients, glows, shadows deeper than a hairline, or glass. Planes separate meaning (claim territory vs evidence territory vs condition territory), never decorate.
 
-## Skeleton recipes at 2.36:1
+## Skeleton recipes at 1.56:1
 
 Concrete starting geometry per `composition-primitives-v1.md` skeleton. Bend them; do not shrink them.
 
-| Skeleton | 2.36:1 recipe | Compact rule |
+| Skeleton | 1.56:1 recipe | Compact rule |
 |---|---|---|
 | Poster | Claim at 84-150px owns the left/upper 55-70% as 2-3 balanced lines; one proof mark (number, micro-curve, level tick) physically interrupts or underlines the claim; ground may be fully inverted. | Claim scales to >=36px effective; proof mark stays attached. |
 | Split tension | One full-height seam at roughly 34-42% or 58-66%, fields on each side in unequal surface values (one may be inverted); the seam is the argument's hinge and can carry the mechanism label. | Seam survives; fields compress but do not stack. |
@@ -69,4 +69,4 @@ Answer for each direction, in `layout_system` or the internal review note:
 - What percentage of the canvas does the active field command, and what is the single deliberate void's meaning?
 - How many depth planes exist, and what meaning does each separate? (Or: why is flat the choice?)
 - Which of the five diversity axes does this direction own against its two siblings?
-- Would this composition survive unchanged at 1:1? If yes, it is not using 2.36:1 — stretch, bleed, or split it.
+- Would this composition survive unchanged at 1:1? If yes, it is not using 1.56:1 — stretch, bleed, or split it.

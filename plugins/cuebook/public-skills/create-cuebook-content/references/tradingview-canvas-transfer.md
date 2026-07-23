@@ -53,6 +53,6 @@ When the creator asks for a Frame from this workbench:
 1. Preserve only the adopted hypothesis, levels, zones, dated checkpoint, and source lineage.
 2. Re-query the exact asset through Cuebook for eligible data and freshness.
 3. Build the normal meaning lock and Fast Preview from those Cuebook results.
-4. Render a native 2488 × 1056 Frame. If the creator instead explicitly chooses official snapshot pixels, leave this canvas flow and validate the attributed finished-bitmap route; do not treat a raw canvas capture as publishable.
+4. Render a native 1866 × 1200 Frame. If the creator instead explicitly chooses official snapshot pixels, leave this canvas flow and validate the attributed finished-bitmap route; do not treat a raw canvas capture as publishable.
 
 After a successful canvas transfer, respond in one or two short sentences naming what was placed and where. Continue the market conversation naturally; do not present an execution log or another checklist.

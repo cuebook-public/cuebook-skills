@@ -21,7 +21,7 @@ const REPORT_SCHEMA = "frame-raster-audit-v1";
 const PROFILE = "frame-raster-audit-v1";
 const FONT_PROFILE = "embedded-pixels-v1";
 const ROLE_SPECS = {
-  publication: { kind: "full", width: 2488, height: 1056 },
+  publication: { kind: "full", width: 1866, height: 1200 },
 };
 const REQUIRED_ROLES = ["publication"];
 const SAFE_REF = /^(?!\/)(?!.*(?:^|\/)\.\.(?:\/|$))[^\0]+\.png$/i;

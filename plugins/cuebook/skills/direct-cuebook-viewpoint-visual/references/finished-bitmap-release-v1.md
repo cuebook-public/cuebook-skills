@@ -7,7 +7,7 @@ Use `finished_bitmap` when the selected publication image already exists as pixe
 - `cuebook_template`: HTML and licensed font files are optional provenance/reproducibility inputs and enable DOM typography, binding, responsive-layout, and collision QA.
 - `finished_bitmap`: HTML and original font files are not required. Set `html_ref: null`, `render_audit_ref: null`, and point `capture_report_ref` to `frame-raster-audit-v1`. The audit records `font_profile.profile: embedded-pixels-v1` and `verification: not_asserted`; it never identifies or certifies a font from pixels.
 
-Both modes retain exactly one 2488 x 1056 `publication` PNG. Feed and detail surfaces display the same master at different CSS sizes. Neither mode creates compact, web, thumbnail, or OG authoring assets, and neither downloads uploaded media through MCP.
+Both modes retain exactly one 1866 x 1200 `publication` PNG. Feed and detail surfaces display the same master at different CSS sizes. Neither mode creates compact, web, thumbnail, or OG authoring assets, and neither downloads uploaded media through MCP.
 
 ## Raster audit request
 
@@ -31,7 +31,7 @@ Both modes retain exactly one 2488 x 1056 `publication` PNG. Feed and detail sur
 }
 ```
 
-The reviewer inspects the master at full size and at a 622 x 264 phone display size without creating a second file. A `legibility: pass` includes the same attention budget as a template render: 2–3 reader-essential prose groups and at least 18 px effective type for those groups at the phone display scale. Axis labels, direct data labels, and minimal provenance do not count as extra argument groups. `imagery_policy: no_external_untrusted` means no obvious external/untrusted image is visible, or every visible external image has an approved source/right. Use `not_required` only when that policy truly does not apply.
+The reviewer inspects the master at full size and at a 622 x 400 phone display size without creating a second file. A `legibility: pass` includes the same attention budget as a template render: 2–3 reader-essential prose groups and at least 18 px effective type for those groups at the phone display scale. Axis labels, direct data labels, and minimal provenance do not count as extra argument groups. `imagery_policy: no_external_untrusted` means no obvious external/untrusted image is visible, or every visible external image has an approved source/right. Use `not_required` only when that policy truly does not apply.
 
 `mutable_price` is `absent` unless the displayed current/entry value is bound to a real backend `quote-lock:` or `entry-lock:` ref. A model-authored ref is invalid. Until such a backend lock exists, use the actual creator-owned clock in relative copy, such as `BTC · TO AUG 14 · LONG`. Historical axes and frozen target/settlement levels are different and remain allowed when source-bound.
 

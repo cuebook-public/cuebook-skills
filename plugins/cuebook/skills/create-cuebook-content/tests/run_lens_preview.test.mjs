@@ -12,7 +12,7 @@ import { validPaintedPng } from "./png_fixture.mjs";
 const AS_OF = "2026-07-17T08:58:00Z";
 
 async function fakeRasterize(svg, output) {
-  assert.match(readFileSync(svg, "utf8"), /<svg\b[^>]*width="2488"[^>]*height="1056"[^>]*viewBox="0 0 622 264"/u);
+  assert.match(readFileSync(svg, "utf8"), /<svg\b[^>]*width="1866"[^>]*height="1200"[^>]*viewBox="0 0 622 400"/u);
   writeFileSync(output, validPaintedPng());
   return output;
 }
@@ -212,7 +212,7 @@ test("LENS computes and renders a transparent four-component Creator Lens", asyn
     for (const item of visibleComponents) assert.match(svg, new RegExp(`data-binding-ref="${item.binding_id}"`, "u"));
     assert.equal((svg.match(/data-role="compact-component-row"/gu) ?? []).length, 3);
     assert.equal(report.renders[0].audit.single_master, true);
-    assert.equal(report.renders[0].audit.mobile_display, "622x264");
+    assert.equal(report.renders[0].audit.mobile_display, "622x400");
     assert.ok(report.renders[0].audit.essential_copy_groups <= 3);
     assert.equal(report.renders[0].audit.essential_font_floor, 20);
     assert.equal(report.renders[0].audit.secondary_font_floor, 16);
@@ -221,7 +221,7 @@ test("LENS computes and renders a transparent four-component Creator Lens", asyn
     assert.equal(existsSync(path.join(output, preview.candidates[0].candidate_id, "frame-feed-622.svg")), false);
     assert.equal(existsSync(path.join(output, preview.candidates[0].candidate_id, "viewpoint-622.png")), false);
     assert.deepEqual(Object.keys(frame), ["title", "body", "image_ref", "alt_text"]);
-    assert.equal(frame.image_ref, `${preview.candidates[0].candidate_id}/viewpoint-2488.png`);
+    assert.equal(frame.image_ref, `${preview.candidates[0].candidate_id}/viewpoint-1866.png`);
     assert.deepEqual(JSON.parse(readFileSync(path.join(output, "frame.json"), "utf8")), frame);
     assert.equal(preview.candidates[0].image_byte_size, validPaintedPng().length);
     for (const privateField of ["state", "schema_version", "candidate_id", "query_binding", "image_sha256", "image_byte_size", "receipt", "scope"]) {

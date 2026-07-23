@@ -22,8 +22,8 @@ const require = createRequire(import.meta.url);
 const { captureViewpoint, pngDimensions } = require("../../direct-cuebook-viewpoint-visual/scripts/capture_html_viewpoint.cjs");
 
 const JOB_SCHEMA = JSON.parse(readFileSync(new URL("../references/tradingview-attributed-frame-job-v1.schema.json", import.meta.url), "utf8"));
-const TARGET_WIDTH = 2488;
-const TARGET_HEIGHT = 1056;
+const TARGET_WIDTH = 1866;
+const TARGET_HEIGHT = 1200;
 const TARGET_ASPECT = TARGET_WIDTH / TARGET_HEIGHT;
 
 function inside(root, target) {
@@ -54,9 +54,9 @@ export function buildSnapshotHtml(snapshotPath, theme) {
   const base = `<!doctype html>
 <html><head><meta charset="utf-8"><style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:${background}}
-main{position:relative;width:1244px;height:528px;overflow:hidden;background:${background}}
+main{position:relative;width:1244px;height:800px;overflow:hidden;background:${background}}
 .tradingview-snapshot{display:block;width:100%;height:100%;object-fit:contain;object-position:center}
-</style></head><body><main data-cuebook-viewpoint data-width="1244" data-height="528" data-theme="${theme}" data-source-kind="official-tradingview-snapshot"><img class="tradingview-snapshot" src="${source}" alt=""></main></body></html>`;
+</style></head><body><main data-cuebook-viewpoint data-width="1244" data-height="800" data-theme="${theme}" data-source-kind="official-tradingview-snapshot"><img class="tradingview-snapshot" src="${source}" alt=""></main></body></html>`;
   return stamp(base, theme)[0];
 }
 
@@ -90,7 +90,7 @@ export async function runAttributedSnapshotFrame(job, assetRoot, outputDir, over
   }
   const aspectDelta = Math.abs(sourceWidth / sourceHeight - TARGET_ASPECT) / TARGET_ASPECT;
   if (aspectDelta > 0.03) {
-    throw new Error("Official snapshot aspect ratio is too far from 2.36:1; recapture the focused chart instead of padding, stretching, or cropping it blindly.");
+    throw new Error("Official snapshot aspect ratio is too far from 1.56:1; recapture the focused chart instead of padding, stretching, or cropping it blindly.");
   }
 
   const publicationPath = path.join(out, "publication.png");
@@ -107,8 +107,8 @@ export async function runAttributedSnapshotFrame(job, assetRoot, outputDir, over
   writeFileSync(htmlPath, buildSnapshotHtml(snapshotPath, job.theme), "utf8");
   const capture = overrides.captureViewpoint ?? captureViewpoint;
   await capture(htmlPath, out);
-  const capturedPath = path.join(out, "viewpoint-2488.png");
-  if (!existsSync(capturedPath)) throw new Error("Frame capture did not produce viewpoint-2488.png.");
+  const capturedPath = path.join(out, "viewpoint-1866.png");
+  if (!existsSync(capturedPath)) throw new Error("Frame capture did not produce viewpoint-1866.png.");
   renameSync(capturedPath, publicationPath);
 
   const mutablePrice = focus.quality.mutable_price_visible ? "backend_locked" : "absent";

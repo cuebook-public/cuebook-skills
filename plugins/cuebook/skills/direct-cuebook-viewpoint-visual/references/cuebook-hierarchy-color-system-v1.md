@@ -27,7 +27,7 @@ Rules:
 - Use two to four levels; do not make all groups equally loud.
 - Separate adjacent levels with at least two cues from size, weight, occupied area, position, whitespace, and contrast. Color alone never establishes a level.
 - Give one block the largest area. When a number is level 1, the claim becomes level 2; when the claim is level 1, the number or curve becomes level 2.
-- Preserve the same entry point and reading order at 1244 x 528 and 622 x 264. Remove level 4 before shrinking level 1 or 2.
+- Preserve the same entry point and reading order at 1244 x 800 and 622 x 400. Remove level 4 before shrinking level 1 or 2.
 - Run a grayscale test and a squint test. If the entry point or reading order disappears without hue, revise the geometry or type scale.
 
 ## Type Roles

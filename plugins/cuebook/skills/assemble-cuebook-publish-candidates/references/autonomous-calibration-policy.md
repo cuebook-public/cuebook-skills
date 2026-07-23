@@ -77,7 +77,7 @@ Pick the smallest shape that keeps the creator's reasoning intact. A compact vie
 
 ## Visual Budget
 
-Use one dominant visual idea, one proof, and an optional condition. Keep total visible image copy at or below 120 characters and prefer 55-95. Disclosures, sources, settlement prose, and research-completeness notes stay outside the image. Preserve the same first-three-second reading order at the 1244 x 528 authoring canvas and 622 x 264 preview; publish only the exact 2488 x 1056 raster.
+Use one dominant visual idea, one proof, and an optional condition. Keep total visible image copy at or below 120 characters and prefer 55-95. Disclosures, sources, settlement prose, and research-completeness notes stay outside the image. Preserve the same first-three-second reading order at the 1244 x 800 authoring canvas and 622 x 400 preview; publish only the exact 1866 x 1200 raster.
 
 ## Selection Semantics
 

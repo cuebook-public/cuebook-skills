@@ -1068,7 +1068,7 @@
       "skill_id": "render-cuebook-viewpoint-visual",
       "version": "1.6.0",
       "display_name": "Finalize Static Viewpoint",
-      "description": "Deterministically freeze the selected HTML-native layout, source bindings, palette, argument pattern, and nonblank raster hashes into an exact 2488 x 1056 Cuebook publication image plus 622 x 264 preview; retain 720 x 420 SVG only for legacy compatibility.",
+      "description": "Deterministically freeze the selected HTML-native layout, source bindings, palette, argument pattern, and nonblank raster hashes into an exact 1866 x 1200 Cuebook publication image plus 622 x 400 preview; retain 720 x 420 SVG only for legacy compatibility.",
       "category_id": "category-rendering",
       "status": "beta",
       "visibility": "selectable",

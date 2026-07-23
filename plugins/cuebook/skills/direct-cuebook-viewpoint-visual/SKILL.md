@@ -1,6 +1,6 @@
 ---
 name: direct-cuebook-viewpoint-visual
-description: "Produce release-grade Cuebook Frame visual directions after a fast preview is selected: retain one chosen direction by default, or build three structurally different directions only when the creator explicitly requested alternatives. Preserve source-linked reasoning, divide labor with the Frame title and body, export one 2488 x 1056 publication master per chosen Frame, and return VisualDirectionSetV1. Do not use this release-grade workflow for an ordinary first preview; do not reclassify intent, research missing facts, change the creator's thesis, duplicate the body, invent chart data or a future path, or render settlement backend fields."
+description: "Produce release-grade Cuebook Frame visual directions after a fast preview is selected: retain one chosen direction by default, or build three structurally different directions only when the creator explicitly requested alternatives. Preserve source-linked reasoning, divide labor with the Frame title and body, export one 1866 x 1200 publication master per chosen Frame, and return VisualDirectionSetV1. Do not use this release-grade workflow for an ordinary first preview; do not reclassify intent, research missing facts, change the creator's thesis, duplicate the body, invent chart data or a future path, or render settlement backend fields."
 license: Proprietary. Cuebook internal; see the repository README for terms.
 compatibility: Node.js 18+. cuebook_template uses Playwright plus local Chromium/Chrome for deterministic HTML capture and DOM audit. finished_bitmap needs only local finished PNGs and image inspection; original HTML and font files are optional. No network access at render time.
 ---
@@ -45,7 +45,7 @@ Do not hand-author HTML for a raw first preview. The public creation entrypoint 
 7. Freeze `renderer_mode`. `cuebook_template` reuses a validated host-approved Noi font cache or stages original Noi files once into the selected release artifact's `fonts/` directory; production requires licensed non-Trial files and an opaque `license_ref`. `finished_bitmap` is the canonical mode for external/already-finished pixels: original HTML and Noi files are optional, and the artifact records `embedded-pixels-v1` with verification `not_asserted` instead of guessing a typeface from pixels.
 8. Complete the static craft, hierarchy, color, and reverse-deletion passes in the kernel, then score each direction with `references/cuebook-visual-critique-v1.md`. Revise any direction that fails data integrity, logic continuity, hierarchy, color logic, anti-default discipline, or the three-second comprehension gate.
 9. Run a reverse-deletion pass before finalizing geometry and responsive behavior. Temporarily remove each visible group; restore it only when its absence changes the claim, uniquely proves the claim, or changes the catalyst, horizon, next observable, or explicit invalidation. Restore a risk boundary only when the user selected it for display. Prefer four to six visible role groups, one evidence modality, and no decorative connector whose relation is already obvious. Reserve the bottom-right brand safe zone and remove handwritten `Cuebook`, `C`, badges, pills, or substitute logos. If every direction scores below 7.5, generate new directions before brand lock.
-10. In `cuebook_template`, **run final brand lock as the last HTML mutation.** Stamp `assets/cuebook-wordmark.svg`, run the launch HTML linter, capture the 2488 × 1056 publication master, and run the DOM render audit plus a scaled 622 × 264 legibility inspection of that same composition. After stamping, only validation and capture are allowed. In `finished_bitmap`, do not reconstruct or demand HTML: inspect the final publication PNG, prepare `frame-finished-bitmap-audit-request-v1`, and run `scripts/audit_finished_bitmap.mjs`. A pass binds legibility, collision, imagery-policy review, mutable-price state, exact dimensions, encoded-byte hash, and canonical pixel hash to the final pixels.
+10. In `cuebook_template`, **run final brand lock as the last HTML mutation.** Stamp `assets/cuebook-wordmark.svg`, run the launch HTML linter, capture the 1866 × 1200 publication master, and run the DOM render audit plus a scaled 622 × 400 legibility inspection of that same composition. After stamping, only validation and capture are allowed. In `finished_bitmap`, do not reconstruct or demand HTML: inspect the final publication PNG, prepare `frame-finished-bitmap-audit-request-v1`, and run `scripts/audit_finished_bitmap.mjs`. A pass binds legibility, collision, imagery-policy review, mutable-price state, exact dimensions, encoded-byte hash, and canonical pixel hash to the final pixels.
 11. **Budget phone attention.** In `cuebook_template`, mark every reader-essential prose block with a stable lowercase `data-essential-copy-group` name; the phone audit requires 2–3 distinct groups and at least 18 px effective type inside them. In `finished_bitmap`, the image reviewer applies the same count and legibility rule directly to the pixels. Axis labels, direct data labels, and minimal provenance may remain outside this count; do not use that exception to hide a fourth argument paragraph.
 12. **Keep one publication master.** Do not create compact, web, thumbnail, or OG files. `scripts/build_frame_visual_manifest.mjs` emits only the `publication` role. The assembly carries that PNG's encoded-byte hash, the manifest carries its canonical RGBA pixel hash and authoritative alt text, and the Skill never downloads uploaded media again. Feed and detail surfaces scale the same master; any future CDN transformation stays outside the authoring and MCP contracts.
 
@@ -72,7 +72,7 @@ Use this mode only when the creator explicitly requested three alternatives. All
 - Produce three structurally distinct passed directions on the publication canvas and verify each at phone display scale. Failed or clipped directions are regenerated internally and never exposed.
 - Pair conviction-first, evidence-first, and catalyst/reasoning-first copy with compatible spatial skeletons; do not paste the same text into unrelated layouts.
 - Pair the three candidate families with the exact locked reader jobs: fast judgment, strongest proof, and full system. Record the market relationship, trading argument archetype, composition archetype, exact evidence shapes, primary grammar, optional support grammars, proof bindings, and data requirements in `expression_recipe`.
-- Compose phone-first. Sketch how the single 2488 × 1056 master reads when scaled to 622 × 264 before finalizing its 1244 × 528 authoring canvas. Use one principal alignment axis, attach every label to its mark, and give proof geometry more area than headline typography in a proof candidate.
+- Compose phone-first. Sketch how the single 1866 × 1200 master reads when scaled to 622 × 400 before finalizing its 1244 × 800 authoring canvas. Use one principal alignment axis, attach every label to its mark, and give proof geometry more area than headline typography in a proof candidate.
 - Keep current data resolution, source repair, and legal/product scope calibration upstream. The public image receives only supported display bindings.
 - Treat a creator-named news event, requested number, comparison metric, or price anchor as material when the expression plan says so. Mark its binding `material_to_claim: true` and `selected_for_display: true` when it is selected for the image. Every direction must keep that binding visible in the master and at phone display scale; a generic qualitative substitute is only a degraded internal preview and cannot enter a selectable set.
 - Treat a material observed series the same way. Render its real geometry once, connect one visible logic step to the event, level, divergence, or change it proves, and keep any unsupported mechanism as text rather than encoding it in the curve.
@@ -89,7 +89,7 @@ Use this mode only when the creator explicitly requested three alternatives. All
 ## Five Form Questions
 
 - **Role**: conviction, evidence, explanation, comparison, strategy, or tracking?
-- **Distance**: verify the 2488 × 1056 master at a 622 × 264 display size; do not generate a second raster.
+- **Distance**: verify the 1866 × 1200 master at a 622 × 400 display size; do not generate a second raster.
 - **Temperature**: urgent, skeptical, calm, analytical, or contrarian?
 - **Capacity**: what can be removed while the claim, reason, and implication remain intact?
 - **Motif**: what visual relationship belongs to this exact thesis and would fail for another topic?
@@ -126,7 +126,7 @@ Write one sentence for `form_from_content`. If it could describe an unrelated st
 
 ## Layout Contract
 
-Each direction must record a `layout_system` with hierarchy, grid, alignment, density, type scale, `craft_system`, data role, and phone-scale legibility rule. It registers exactly one 2488 × 1056 publication preview. `cuebook_template` registers HTML capture plus DOM render audit; `finished_bitmap` registers one `frame-raster-audit-v1` and sets `html_ref`/`render_audit_ref` to null. A different palette with the same layout system is one direction, not two.
+Each direction must record a `layout_system` with hierarchy, grid, alignment, density, type scale, `craft_system`, data role, and phone-scale legibility rule. It registers exactly one 1866 × 1200 publication preview. `cuebook_template` registers HTML capture plus DOM render audit; `finished_bitmap` registers one `frame-raster-audit-v1` and sets `html_ref`/`render_audit_ref` to null. A different palette with the same layout system is one direction, not two.
 
 Every `binding_ref` is a display promise. A selected material binding must appear in `binding_refs` and in a visible logic step for every retained release direction. The launch linter and rendered audit must confirm it remains visible when the master is displayed at phone size.
 
@@ -140,12 +140,12 @@ Every `binding_ref` is a display promise. A selected material binding must appea
 - Curves and key numbers participate in the sentence; they do not decorate the footer.
 - For a bounded view, end the solid observed curve at the decision cutoff. Show the cutoff as a vertical line and the deadline as a separate time marker or blank future region. A conditional threshold may be dashed; a future price path may not be drawn.
 - In a curve-led direction, compose the visual as one readable argument: judgment at entry, two to four short reasoning beats, observed curve as evidence hero, and one condition, next observable, or softly labeled reason to reassess. Keep the internal invalidation role when required for semantics, but never print `INVALIDATION`, `FALSIFICATION CONDITION`, self-correction language, or locale equivalents. Do not make the reader choose between a detached chart and a detached paragraph.
-- At a 622 × 264 display size, the fixed master must preserve an effective text floor of 11px and all essential logic beats. Repair the master composition rather than generating a separate reflowed bitmap.
+- At a 622 × 400 display size, the fixed master must preserve an effective text floor of 11px and all essential logic beats. Repair the master composition rather than generating a separate reflowed bitmap.
 
 ## Final Brand Lock
 
 - Use the exact paths in `assets/cuebook-wordmark.svg`; never redraw, type, approximate, or replace them.
-- At the 1244 x 528 authoring canvas, place the mark at `right: 41px; bottom: 34px; width: 136px; height: 26px`. The 2x publication capture produces a 272 x 52 mark and the host scales it with the rest of the master.
+- At the 1244 x 800 authoring canvas, place the mark at `right: 41px; bottom: 34px; width: 136px; height: 26px`. The 1.5x publication capture produces a 204 x 39 mark and the host scales it with the rest of the master.
 - Use the original `#F2F3F4` on a dark local background and `#101411` on a light local background. Color adaptation is the only permitted visual change.
 - Keep it unframed: no background plate, capsule, border, shadow, animation, or adjoining copy.
 - The SVG carries `data-cuebook-wordmark="v1"` and `data-role="brand"`, but contains no visible brand text and consumes no launch copy budget.
@@ -200,7 +200,7 @@ Every `binding_ref` is a display promise. A selected material binding must appea
 - `references/typography-benchmark-profiles-v1.json`: Noi font profile, licensing boundary, and transferable benchmark principles.
 - `references/market-native-art-direction-v1.md`: optional market-native direction and Robinhood brand-distance gate.
 - `references/composition-primitives-v1.md`: open composition vocabulary and routing guidance.
-- `references/canvas-craft-v1.md`: occupation, scale-drama, surface-depth, and set-diversity contract for the 2.36:1 canvas.
+- `references/canvas-craft-v1.md`: occupation, scale-drama, surface-depth, and set-diversity contract for the 1.56:1 canvas.
 - `references/editorial-craft-benchmarks-v1.md`: chart-honesty, text-discipline, and one-message rules distilled from verified FT/Datawrapper/Economist sources, with the poster exception clause.
 - `references/viewpoint-expression-system-v1.md`: communication-job, evidence-shape, combination, and data-gate contract.
 - `references/finance-visual-argument-system-v1.md`: market-relationship, trading-archetype, chart, and compact-composition routing contract.
@@ -209,14 +209,14 @@ Every `binding_ref` is a display promise. A selected material binding must appea
 - `assets/cuebook-viewpoint-canvas.html`: tokenized, slot-free HTML canvas.
 - `assets/cuebook-wordmark.svg`: canonical Cuebook vector wordmark supplied by the product team.
 - `scripts/validate_visual_direction_set.mjs`: structural and source-binding validator.
-- `scripts/capture_html_viewpoint.cjs`: deterministic 2488 × 1056 publication capture.
+- `scripts/capture_html_viewpoint.cjs`: deterministic 1866 × 1200 publication capture.
 - `references/launch-visual-copy-v1.md`: launch copy, role, deletion, and line-breaking contract.
 - `scripts/lint_launch_viewpoint_html.mjs`: deterministic visible-copy and role linter.
 - `scripts/stamp_cuebook_wordmark.mjs`: idempotent final brand-lock stamp for light or dark local backgrounds.
 - `scripts/capture_html_viewpoints_batch.cjs`: production batch capture with bounded concurrency.
 - `scripts/audit_rendered_viewpoint.cjs`: objective publication and scaled-phone geometry, typography, contrast, safe-zone, logic-node, and visible source-binding audit of one composition.
 - `scripts/build_frame_visual_manifest.mjs`: builds the `frame-visual-manifest-v1` publication handshake binding the master pixel hash, audit verdict, display bindings, font profile, and alt text.
-- `scripts/audit_finished_bitmap.mjs`: validates the final 2488 × 1056 PNG dimensions and hashes, and binds a human/model image review without requiring HTML or claiming font verification.
+- `scripts/audit_finished_bitmap.mjs`: validates the final 1866 × 1200 PNG dimensions and hashes, and binds a human/model image review without requiring HTML or claiming font verification.
 - `references/finished-bitmap-release-v1.md`: two-mode release contract and raster audit request/report example.
 - `scripts/stage_noi_font_assets.mjs`: stage original evaluation or production font files and write the hashed artifact-local font manifest.
 - `scripts/select_creator_palette.mjs`: deterministic palette-profile and three-candidate selector.

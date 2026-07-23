@@ -163,7 +163,7 @@ export function build(captureReport, renderAudit, directionSet, fontsManifestPat
 
     const derivatives = new Map((captureReport.derivatives ?? []).filter((item) => item !== null && typeof item === "object" && !Array.isArray(item)).map((item) => [item.kind, item]));
     const selectedRefs = [
-      ["full", selectedDirection.preview_ref, 2488, 1056],
+      ["full", selectedDirection.preview_ref, 1866, 1200],
     ];
     for (const [kind, selectedRef, width, height] of selectedRefs) {
       const derivative = derivatives.get(kind);

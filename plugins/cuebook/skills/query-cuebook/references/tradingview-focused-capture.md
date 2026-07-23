@@ -18,7 +18,7 @@ Read this reference only when the creator asks to see, inspect, reuse, or publis
 1. Freeze the initial chart state and visible range.
 2. If necessary, use reversible fullscreen or pane focus, then set the selected visible range. Serialize these calls.
 3. Call `capture_screenshot` with `region: "chart"` and `wait_for_render: true`. Never use `region: "full"` for a chart image.
-4. Prefer at least 1244 × 528 source pixels. A complete focused capture gives the chart at least 80% of the output area, places the latest completed bar between 55% and 90% of the image width, and keeps the price axis, time context, and key annotations legible.
+4. Prefer at least 1244 × 800 source pixels. A complete focused capture gives the chart at least 80% of the output area, places the latest completed bar between 55% and 90% of the image width, and keeps the price axis, time context, and key annotations legible.
 5. Preserve chart geometry. Never stretch one axis independently, move labels away from their marks, crop away required TradingView attribution, or enlarge a low-resolution social screenshot until candles and text become soft.
 6. Inspect one result at native size and at its intended conversation or Frame display size. Repair the viewport once when necessary; do not return a gallery of near-duplicate crops.
 7. Restore the initial visible range, fullscreen state, pane, symbol, and timeframe, then verify restoration. Keep the focused layout only when the creator explicitly asks.
@@ -37,7 +37,7 @@ Three outcomes are allowed:
 
 - `local_only`: a CDP chart capture remains `local_analysis_only` and may be shown in the current conversation.
 - `cuebook_native_rerender`: adopt only the qualitative relationship, re-fetch eligible Cuebook data, and render a native Cuebook Frame.
-- `attributed_finished_bitmap`: use only when the creator explicitly wants the snapshot pixels and the source is an official TradingView snapshot. Preserve visible TradingView attribution at no less than 13 px at final display size, confirm rights to every creator/Pine overlay, remove private account or order details, bind any displayed mutable price to the matching Cuebook backend lock, preserve geometry without non-uniform scaling, and produce one audited 2488 × 1056 finished bitmap with the Cuebook wordmark.
+- `attributed_finished_bitmap`: use only when the creator explicitly wants the snapshot pixels and the source is an official TradingView snapshot. Preserve visible TradingView attribution at no less than 13 px at final display size, confirm rights to every creator/Pine overlay, remove private account or order details, bind any displayed mutable price to the matching Cuebook backend lock, preserve geometry without non-uniform scaling, and produce one audited 1866 × 1200 finished bitmap with the Cuebook wordmark.
 
 The audited Desktop bridge's `method: "api"` may trigger TradingView's Snapshot function without returning a local file path. If that happens, ask the creator to save or attach the official snapshot, or use native rerendering. Never substitute a CDP capture for the publication source merely to keep the flow moving.
 

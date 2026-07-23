@@ -1,6 +1,6 @@
 # Cuebook Frame Feed Attention
 
-Use this reference for the sole `2488 x 1056` publication master and creator-requested visual rerolls. Author that master against a `622 x 264` mobile display box, then rasterize it at 4x. There is no separate compact, detail, thumbnail, web, or OG composition.
+Use this reference for the sole `1866 x 1200` publication master and creator-requested visual rerolls. Author that master against a `622 x 400` mobile display box, then rasterize it at 3x. There is no separate compact, detail, thumbnail, web, or OG composition.
 
 ## Product principle
 
@@ -15,7 +15,7 @@ Borrow discovery from short-form feeds without copying compulsion:
 
 ## Mobile attention contract
 
-Judge the same publication master at its `622 x 264` phone display size.
+Judge the same publication master at its `622 x 400` phone display size.
 
 - The native Frame title is the hook. Do not repeat it as a large image headline.
 - The image contains one dominant geometry, one concise creator-owned interpretation, and at most one future check.
@@ -76,4 +76,4 @@ Fail the publication master when:
 - the native title is repeated as the image's largest sentence;
 - the creator interpretation or the next condition is clipped or ellipsized;
 - a visual-only reroll repeats the same grayscale silhouette when an equally truthful alternative exists;
-- the image cannot be understood at `622 x 264` without zooming.
+- the image cannot be understood at `622 x 400` without zooming.

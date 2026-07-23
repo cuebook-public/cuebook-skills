@@ -23,7 +23,7 @@ const TARGET_FAMILIES = ["single_asset_price_target", "pair_asset_price_targets"
 const HORIZON_UNIT_MAX = { hour: 24 * 183, calendar_day: 183, market_session: 130 };
 const MEDIA_ROLES = ["publication"];
 const CAPTURE_KIND_BY_ROLE = { publication: "full" };
-const CAPTURE_DIMENSIONS = { publication: [2488, 1056] };
+const CAPTURE_DIMENSIONS = { publication: [1866, 1200] };
 
 function isDict(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);

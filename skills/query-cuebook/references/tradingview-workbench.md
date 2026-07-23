@@ -75,7 +75,7 @@ Keep every result backed by that source out of `creation_handoff.result_refs`. T
 3. Fetch Cuebook candles and market state for every visible number or curve.
 4. Recompute any reproducible metric from the frozen Cuebook bars.
 5. Confirm copy, settlement meaning, and the new Cuebook visual intent.
-6. Render the standard 2488 × 1056 Cuebook PNG and publish only that finished image through the normal Frame path.
+6. Render the standard 1866 × 1200 Cuebook PNG and publish only that finished image through the normal Frame path.
 
 If Cuebook cannot reproduce the material geometry with publishable sources, keep the TradingView analysis local and block the factual Frame graphic. Never disguise a screenshot, manually transcribed series, or remembered number as a Cuebook-backed chart.
 

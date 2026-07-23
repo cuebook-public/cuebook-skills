@@ -49,7 +49,7 @@ Reject the direction when any of these is true:
 
 ## Compact Gate
 
-At 622 x 264, a reader must still identify, in order:
+At 622 x 400, a reader must still identify, in order:
 
 1. the judgment;
 2. the proof number or event;

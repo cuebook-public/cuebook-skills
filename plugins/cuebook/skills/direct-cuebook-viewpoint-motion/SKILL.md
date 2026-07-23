@@ -58,7 +58,7 @@ node scripts/validate_viewpoint_motion_spec.mjs viewpoint-motion-spec-v1.json
 - No infinite loops, decorative cursor choreography, fake loading, or motion that delays the claim.
 - `prefers-reduced-motion` must resolve to the complete static poster or final readable frame.
 - External time control is mandatory so screenshots and video frames are deterministic.
-- Every keyframe must remain understandable at 622 x 264, and the static publication poster must remain exactly 2488 x 1056.
+- Every keyframe must remain understandable at 622 x 400, and the static publication poster must remain exactly 1866 x 1200.
 
 ## Resources
 

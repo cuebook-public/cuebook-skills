@@ -45,12 +45,12 @@ Remove a block when it repeats another block without adding meaning. For selecta
 3. **Grid**: choose the spatial relationship that expresses the argument.
 4. **Alignment**: establish one dominant reading axis.
 5. **Type scale**: make hierarchy visible in grayscale without relying on color.
-6. **Density**: match the number of blocks to the 1244 x 528 authoring canvas.
-7. **Responsive rule**: define how the hierarchy survives at 622 x 264.
+6. **Density**: match the number of blocks to the 1244 x 800 authoring canvas.
+7. **Responsive rule**: define how the hierarchy survives at 622 x 400.
 
 Choose the `composition_archetype` from `finance-visual-argument-system-v1.md` before choosing a grid family. The composition expresses the financial relationship; the grid implements it.
 
-Then hold the layout to `canvas-craft-v1.md`: the 2.36:1 canvas is short, not small — compose in full-height seams, bleeding evidence fields, and horizontal bands; declare one scale extreme; build depth planes from the preset surfaces instead of floating elements on one flat ground.
+Then hold the layout to `canvas-craft-v1.md`: the 1.56:1 canvas is short, not small — compose in full-height seams, bleeding evidence fields, and horizontal bands; declare one scale extreme; build depth planes from the preset surfaces instead of floating elements on one flat ground.
 
 ## Grid Families
 
@@ -93,7 +93,7 @@ Then hold the layout to `canvas-craft-v1.md`: the 2.36:1 canvas is short, not sm
 
 ## Compact-First Geometry
 
-Sketch the 622 x 264 state first, then expand to 1244 x 528.
+Sketch the 622 x 400 state first, then expand to 1244 x 800.
 
 - Claim normally occupies 14-23% of canvas height and one or two lines.
 - Evidence normally owns the largest contiguous field in proof-led compositions.
@@ -109,7 +109,7 @@ Sketch the 622 x 264 state first, then expand to 1244 x 528.
 
 ## Responsive Rule
 
-Audit 1244 x 528 and 622 x 264 as two authored states, then export the publication raster at exactly 2488 x 1056.
+Audit 1244 x 800 and 622 x 400 as two authored states, then export the publication raster at exactly 1866 x 1200.
 
 - Preserve the same first, second, and third reading order.
 - Scale type and spacing with the container, not viewport-width font rules.

@@ -62,8 +62,8 @@ export function validate(payload) {
   }
 
   if (payload.state === "complete") {
-    if (quality.output_width < 1244 || quality.output_height < 528) {
-      errors.push(issue("FOCUS_RESOLUTION", "$.quality", "A complete focused capture needs at least 1244 x 528 source pixels."));
+    if (quality.output_width < 1244 || quality.output_height < 800) {
+      errors.push(issue("FOCUS_RESOLUTION", "$.quality", "A complete focused capture needs at least 1244 x 800 source pixels."));
     }
     if (quality.chart_fill_ratio < 0.8) {
       errors.push(issue("LOW_INFORMATION_DENSITY", "$.quality.chart_fill_ratio", "The chart must occupy at least 80% of a complete focused capture."));
@@ -112,8 +112,8 @@ export function validate(payload) {
     if (!bridge.finished_bitmap_audit_required || !master) {
       errors.push(issue("FINISHED_BITMAP_REQUIRED", "$.frame_bridge", "Attributed snapshot publication requires one finished-bitmap audit and publication master."));
     } else {
-      if (master.width !== 2488 || master.height !== 1056) {
-        errors.push(issue("FRAME_DIMENSIONS", "$.frame_bridge.publication_master", "The publication master must be exactly 2488 x 1056."));
+      if (master.width !== 1866 || master.height !== 1200) {
+        errors.push(issue("FRAME_DIMENSIONS", "$.frame_bridge.publication_master", "The publication master must be exactly 1866 x 1200."));
       }
       if (!master.cuebook_wordmark_visible) {
         errors.push(issue("CUEBOOK_WORDMARK", "$.frame_bridge.publication_master.cuebook_wordmark_visible", "The finished Frame master must retain the Cuebook wordmark."));

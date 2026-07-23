@@ -136,8 +136,8 @@ export function validate(payload, assetRoot = null) {
       } else {
         try {
           const dimensions = pngDimensions(file);
-          if (dimensions[0] !== 2488 || dimensions[1] !== 1056) {
-            errors.push(issue("IMAGE_DIMENSIONS", `${candidatePath}.frame.image_ref`, "Fast preview must be exactly 2488 x 1056."));
+          if (dimensions[0] !== 1866 || dimensions[1] !== 1200) {
+            errors.push(issue("IMAGE_DIMENSIONS", `${candidatePath}.frame.image_ref`, "Fast preview must be exactly 1866 x 1200."));
           }
           const paint = paintStats(file);
           if (!Number.isFinite(paint.paintedRatio) || paint.paintedRatio < 0.006) {

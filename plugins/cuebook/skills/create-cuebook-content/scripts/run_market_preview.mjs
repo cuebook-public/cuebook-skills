@@ -547,7 +547,7 @@ async function renderCandidate(expression, candidate, outputRoot, dependencies) 
   if (!audit.valid) failValidation("Fast expression SVG", audit.errors.map((message) => issue("SVG_AUDIT", "$.expressions", message)));
   const expressionPath = path.join(candidateDir, "market-expression.json");
   const svgPath = path.join(candidateDir, "frame-preview.svg");
-  const pngPath = path.join(candidateDir, "viewpoint-2488.png");
+  const pngPath = path.join(candidateDir, "viewpoint-1866.png");
   writeJson(expressionPath, expression);
   writeFileSync(svgPath, `${svg}\n`, "utf8");
   await (dependencies.rasterize ?? rasterizeSvg)(svgPath, pngPath);

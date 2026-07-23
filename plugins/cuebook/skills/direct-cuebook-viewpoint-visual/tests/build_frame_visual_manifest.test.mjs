@@ -11,7 +11,7 @@ const captureReport = () => ({
   source: "viewpoint.html",
   source_sha256: `sha256:${"9".repeat(64)}`,
   derivatives: [
-    { kind: "full", ref: "viewpoint-2488.png", width: 2488, height: 1056, sha256: `sha256:${"a".repeat(64)}`, pixel_sha256: `sha256:${"d".repeat(64)}` },
+    { kind: "full", ref: "viewpoint-1866.png", width: 1866, height: 1200, sha256: `sha256:${"a".repeat(64)}`, pixel_sha256: `sha256:${"d".repeat(64)}` },
   ],
 });
 const renderAudit = (valid = true) => ({
@@ -48,7 +48,7 @@ const directionSet = (rendererMode = "cuebook_template") => ({
     direction_id: "VDIR_SELECTED",
     renderer_mode: rendererMode,
     html_ref: rendererMode === "finished_bitmap" ? null : "viewpoint.html",
-    preview_ref: "viewpoint-2488.png",
+    preview_ref: "viewpoint-1866.png",
     binding_refs: ["BIND_VIEW"],
     preflight: { copy_audited: true, compact_readable: true, source_bindings_complete: true },
     critique: { verdict: "pass" },
@@ -140,7 +140,7 @@ const failures = [
   }, "PIXEL_HASH_MISSING"],
   ["legacy rendition role", () => {
     const report = captureReport();
-    report.derivatives.push({ kind: "compact_622", ref: "viewpoint-622.png", width: 622, height: 264, sha256: `sha256:${"b".repeat(64)}`, pixel_sha256: `sha256:${"e".repeat(64)}` });
+    report.derivatives.push({ kind: "compact_622", ref: "viewpoint-622.png", width: 622, height: 400, sha256: `sha256:${"b".repeat(64)}`, pixel_sha256: `sha256:${"e".repeat(64)}` });
     return invoke({ report, alt: { publication: "x" } });
   }, "ROLE_UNEXPECTED"],
   ["audit metadata missing", () => invoke({ audit: { valid: true }, alt: { publication: "x" } }), "AUDIT_METADATA_MISSING"],
@@ -171,7 +171,7 @@ const failures = [
   }, "AUDIT_SOURCE_MISMATCH"],
   ["capture derivative from another direction", () => {
     const report = captureReport();
-    report.derivatives[0].ref = "other-2488.png";
+    report.derivatives[0].ref = "other-1866.png";
     return invoke({ report, alt: { publication: "x" } });
   }, "CAPTURE_REF_MISMATCH"],
 ];

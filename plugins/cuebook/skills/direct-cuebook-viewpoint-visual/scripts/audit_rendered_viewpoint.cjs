@@ -60,7 +60,7 @@ async function inspectViewport(page, width, height, sourceWidth = width, sourceH
     }
     const transformScale = root.offsetWidth ? rootRect.width / root.offsetWidth : logicalScale;
     const authoredWidth = Number(root.dataset.width || 1244);
-    const authoredHeight = Number(root.dataset.height || 528);
+    const authoredHeight = Number(root.dataset.height || 800);
     const contractScale = Math.min(rootRect.width / authoredWidth, rootRect.height / authoredHeight);
     const tolerance = 0.75;
     const seen = new Set();
@@ -520,7 +520,7 @@ async function auditRenderedViewpoint(htmlArg, outputArg, browserOverride = null
   fs.mkdirSync(outputDir, { recursive: true });
   const profileViewports = profile === "og"
     ? [[1200, 630, 1200, 630, 1]]
-    : [[1244, 528, 1244, 528, 1], [622, 264, 1244, 528, 0.5]];
+    : [[1244, 800, 1244, 800, 1], [622, 400, 1244, 800, 0.5]];
   const browser = await chromium.launch({ executablePath: browserPath, headless: true });
   try {
     const page = await browser.newPage({ viewport: { width: profileViewports[0][0], height: profileViewports[0][1] } });

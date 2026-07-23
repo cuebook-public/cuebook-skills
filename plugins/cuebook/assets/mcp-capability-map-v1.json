@@ -692,8 +692,8 @@
     ],
     "capture_profiles": {
       "publication": {
-        "width": 2488,
-        "height": 1056
+        "width": 1866,
+        "height": 1200
       }
     },
     "delivery_resize_policy": "frontend_or_edge_transformation_only",

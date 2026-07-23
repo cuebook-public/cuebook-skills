@@ -756,7 +756,7 @@ export function audit_html(html) {
     /height\s*:\s*26px/i,
     /color\s*:\s*#(?:F2F3F4|101411)/i,
   ].every((pattern) => pattern.test(html))) {
-    errors.push(issue("WORDMARK_GEOMETRY", "Canonical wordmark must use the fixed 136 x 26 bottom-right geometry on the 1244 x 528 authoring canvas."));
+    errors.push(issue("WORDMARK_GEOMETRY", "Canonical wordmark must use the fixed 136 x 26 bottom-right geometry on the 1244 x 800 authoring canvas."));
   }
   if (!roleText.claim) {
     errors.push(issue("CLAIM_REQUIRED", "One visible claim role is required."));

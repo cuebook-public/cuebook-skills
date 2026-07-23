@@ -620,10 +620,10 @@ export function renderLensSvg(expression, candidate, compiled = compileLensExpre
   const design = lensDesignProfile(expression);
   const attentionSignature = `${design.design_family}/${design.narrative_placement}/${expression.grammar}/${MOBILE_LENS_MASTER_PROFILE}`;
   return [
-    `<svg xmlns="http://www.w3.org/2000/svg" width="2488" height="1056" viewBox="0 0 622 264" role="img" aria-labelledby="frame-title frame-desc" data-expression-system="lens" data-grammar="${esc(expression.grammar)}" data-composition="${esc(expression.composition)}" data-surface="${esc(expression.surface)}" data-master-profile="${MOBILE_LENS_MASTER_PROFILE}" data-mobile-display="622x264" data-single-master="true" data-attention-signature="${esc(attentionSignature)}" data-design-family="${design.design_family}" data-narrative-placement="${design.narrative_placement}" data-display-system="${design.display_system}" data-primary-font-floor="${MOBILE_LENS_PRIMARY_FONT_FLOOR}" data-secondary-font-floor="${MOBILE_LENS_SECONDARY_FONT_FLOOR}" font-family="-apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-variant-numeric="tabular-nums">`,
+    `<svg xmlns="http://www.w3.org/2000/svg" width="1866" height="1200" viewBox="0 0 622 400" role="img" aria-labelledby="frame-title frame-desc" data-expression-system="lens" data-grammar="${esc(expression.grammar)}" data-composition="${esc(expression.composition)}" data-surface="${esc(expression.surface)}" data-master-profile="${MOBILE_LENS_MASTER_PROFILE}" data-mobile-display="622x400" data-single-master="true" data-attention-signature="${esc(attentionSignature)}" data-design-family="${design.design_family}" data-narrative-placement="${design.narrative_placement}" data-display-system="${design.display_system}" data-primary-font-floor="${MOBILE_LENS_PRIMARY_FONT_FLOOR}" data-secondary-font-floor="${MOBILE_LENS_SECONDARY_FONT_FLOOR}" font-family="-apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-variant-numeric="tabular-nums">`,
     `<title id="frame-title">${esc(candidate.frame.title)}</title>`,
     `<desc id="frame-desc">${esc(generateLensAltText(expression, candidate, compiled))}</desc>`,
-    `<rect width="622" height="264" fill="${palette.canvas}"/>`,
+    `<rect width="622" height="400" fill="${palette.canvas}"/>`,
     compactLensProvenance(expression, palette, locale),
     expression.composition === "contribution_stage"
       ? renderCompactSpreadArena(expression, compiled, palette, locale)
@@ -636,8 +636,8 @@ export function renderLensSvg(expression, candidate, compiled = compileLensExpre
 export function auditLensSvg(svg, expression, candidate) {
   const errors = [];
   const design = lensDesignProfile(expression);
-  if (!/<svg\b[^>]*\bwidth="2488"[^>]*\bheight="1056"/u.test(svg)) errors.push("SVG must declare the exact 2488 x 1056 publication size.");
-  if (!/viewBox="0 0 622 264"/u.test(svg)) errors.push("The publication master must be authored against its exact 622 x 264 mobile display box.");
+  if (!/<svg\b[^>]*\bwidth="1866"[^>]*\bheight="1200"/u.test(svg)) errors.push("SVG must declare the exact 1866 x 1200 publication size.");
+  if (!/viewBox="0 0 622 400"/u.test(svg)) errors.push("The publication master must be authored against its exact 622 x 400 mobile display box.");
   if (!svg.includes(`data-master-profile="${MOBILE_LENS_MASTER_PROFILE}"`) || !svg.includes('data-single-master="true"')) errors.push("Lens SVG is missing its single-master mobile profile.");
   if (!/role="img"/u.test(svg) || !/<title id="frame-title">/u.test(svg) || !/<desc id="frame-desc">/u.test(svg)) errors.push("SVG needs an accessible title and description.");
   if (!/id="cuebook-wordmark"/u.test(svg)) errors.push("SVG is missing the canonical Cuebook wordmark.");
@@ -673,7 +673,7 @@ export function auditLensSvg(svg, expression, candidate) {
     valid: errors.length === 0,
     errors,
     single_master: true,
-    mobile_display: "622x264",
+    mobile_display: "622x400",
     essential_copy_groups: groups.size,
     essential_font_floor: MOBILE_LENS_PRIMARY_FONT_FLOOR,
     secondary_font_floor: MOBILE_LENS_SECONDARY_FONT_FLOOR,

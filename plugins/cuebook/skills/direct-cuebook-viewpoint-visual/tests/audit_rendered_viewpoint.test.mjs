@@ -33,7 +33,7 @@ function html(extraCss = "") {
   return `<!doctype html>
 <html><head><meta charset="utf-8"><style>
 *{box-sizing:border-box} html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f7f9fc;color:#11151b}
-main{position:relative;width:1244px;height:528px;transform-origin:top left;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-variant-numeric:tabular-nums}
+main{position:relative;width:1244px;height:800px;transform-origin:top left;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-variant-numeric:tabular-nums}
 .claim,.evidence,.condition{position:absolute;letter-spacing:0}
 .claim{left:74px;top:48px;width:1040px;font-size:96px;line-height:1.08;font-weight:750;text-wrap:balance}
 .evidence{left:78px;top:244px;width:800px;font-size:44px;line-height:1.2;font-weight:650}
@@ -41,7 +41,7 @@ main{position:relative;width:1244px;height:528px;transform-origin:top left;font-
 @media(max-width:1000px){main{transform:scale(.5)}}
 ${extraCss}
 </style></head><body>
-<main data-cuebook-viewpoint data-width="1244" data-height="528">
+<main data-cuebook-viewpoint data-width="1244" data-height="800">
   <h1 class="claim" data-role="claim" data-visual-level="1" data-logic-step-id="LSTEP_CLAIM" data-essential-copy-group="claim">HOOD Rerating Window</h1>
   <div class="evidence" data-role="evidence" data-visual-level="2" data-logic-step-id="LSTEP_MECH" data-binding-ref="BIND_MECH" data-essential-copy-group="proof">Distribution meets settlement</div>
   <div class="condition" data-role="condition" data-visual-level="3" data-logic-step-id="LSTEP_ACTION" data-essential-copy-group="future">Watch usage and revenue</div>
@@ -85,7 +85,7 @@ test("hidden binding is not rendered evidence", opts, () => {
 });
 
 test("phone-scale attention, font, and brand safe zone are measured", opts, () => {
-  const source = html(".condition{left:1135px;top:475px;font-size:16px}.extra{position:absolute;left:900px;top:400px;font-size:40px}")
+  const source = html(".condition{left:1135px;top:720px;font-size:16px}.extra{position:absolute;left:900px;top:400px;font-size:40px}")
     .replace("</main>", '<span class="extra" data-essential-copy-group="extra">extra</span></main>');
   const [completed, report] = audit(source);
   assert.notEqual(completed.status, 0);
@@ -98,7 +98,7 @@ test("phone-scale attention, font, and brand safe zone are measured", opts, () =
 test("phone audit scales the same master without responsive reflow", opts, () => {
   const source = html().replace(
     "@media(max-width:1000px){main{transform:scale(.5)}}",
-    "@media(max-width:1000px){main{width:622px;height:264px;transform:none}.claim{left:26px;top:18px;width:570px;font-size:48px}.evidence{left:26px;top:126px;width:480px;font-size:22px}.condition{left:410px;top:202px;width:90px;font-size:18px}}",
+    "@media(max-width:1000px){main{width:622px;height:400px;transform:none}.claim{left:26px;top:18px;width:570px;font-size:48px}.evidence{left:26px;top:126px;width:480px;font-size:22px}.condition{left:410px;top:202px;width:90px;font-size:18px}}",
   ).replace("Watch usage and revenue", "Hold");
   const [completed, report] = audit(source);
   assert.equal(completed.status, 0, JSON.stringify(report.errors));

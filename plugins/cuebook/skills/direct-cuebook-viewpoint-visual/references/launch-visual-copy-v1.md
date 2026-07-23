@@ -45,7 +45,7 @@ Prefer 55-95 total characters. Use the remaining budget only for a data-led comp
 - Mark the root `data-cuebook-visual-contract="launch-v1"`.
 - Mark every visible text container with `data-role="claim|evidence|condition|context|brand"`.
 - Do not place `<br>` inside the claim. Use `text-wrap: balance`, a deliberate width, and natural wrapping.
-- Keep the claim to two authored lines and ensure it remains readable when the same master is displayed at 622 x 264.
+- Keep the claim to two authored lines and ensure it remains readable when the same master is displayed at 622 x 400.
 - Keep verb-object phrases, ticker-action phrases, dates, values, and units together.
 - CJK text breaks between any two characters by default, so `text-wrap: balance` alone cannot protect a word. Segment every visible CJK string — claim, evidence, and condition alike — into semantic phrase spans (`<span class="w">` with `white-space: nowrap`) so lines can break only between phrases.
 - A semantic word or phrase—a market term such as `oil price`, `inventory`, or `production increase`, a proper name, a ticker phrase, or a value with its unit—must never split across lines in the publication master. Apply the same rule to unspaced scripts.
@@ -69,10 +69,10 @@ Prefer 55-95 total characters. Use the remaining budget only for a data-led comp
 ## Final Brand Lock
 
 - The last HTML mutation is `scripts/stamp_cuebook_wordmark.mjs`.
-- Use the exact canonical SVG at `right: 41px`, `bottom: 34px`, `width: 136px`, and `height: 26px` on the 1244 x 528 authoring canvas.
+- Use the exact canonical SVG at `right: 41px`, `bottom: 34px`, `width: 136px`, and `height: 26px` on the 1244 x 800 authoring canvas.
 - Use `#F2F3F4` on dark local backgrounds and `#101411` on light local backgrounds.
 - Do not add visible `Cuebook` text, a `C` badge, pill, plate, border, or shadow.
-- The 2x publication capture yields a 272 x 52 mark. At 622 x 264, scale or override all four geometry values by exactly one half.
+- The 1.5x publication capture yields a 204 x 39 mark. At 622 x 400, scale or override all four geometry values by exactly one half.
 - After brand lock, run the launch linter and production capture. A later design mutation invalidates the lock.
 
 ## Automatic Reduction Order

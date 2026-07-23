@@ -203,8 +203,8 @@
       "required": ["locator", "width", "height", "cuebook_wordmark_visible", "backend_price_lock_ref"],
       "properties": {
         "locator": {"$ref": "#/$defs/nonemptyString"},
-        "width": {"const": 2488},
-        "height": {"const": 1056},
+        "width": {"const": 1866},
+        "height": {"const": 1200},
         "cuebook_wordmark_visible": {"type": "boolean"},
         "backend_price_lock_ref": {"$ref": "#/$defs/nullableString"}
       }

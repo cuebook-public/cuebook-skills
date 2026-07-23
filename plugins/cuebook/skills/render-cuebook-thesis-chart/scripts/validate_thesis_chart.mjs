@@ -833,8 +833,8 @@ export function validate(payload) {
   }
   const width = g(render, "width");
   const height = g(render, "height");
-  if (!pyIsInt(width) || !(pyNum(width) >= 640 && pyNum(width) <= 2488)) {
-    errors.push(issue("RENDER_WIDTH", "$.render.width", "Chart width must be an integer from 640 to 2488."));
+  if (!pyIsInt(width) || !(pyNum(width) >= 640 && pyNum(width) <= 1866)) {
+    errors.push(issue("RENDER_WIDTH", "$.render.width", "Chart width must be an integer from 640 to 1866."));
   }
   if (!pyIsInt(height) || !(pyNum(height) >= 280 && pyNum(height) <= 1600)) {
     errors.push(issue("RENDER_HEIGHT", "$.render.height", "Chart height must be an integer from 280 to 1600."));

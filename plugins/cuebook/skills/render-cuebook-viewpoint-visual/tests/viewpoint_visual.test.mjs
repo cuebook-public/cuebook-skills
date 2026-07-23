@@ -216,13 +216,13 @@ test("wide manifest contract uses launch dimensions and HTML source", () => {
   withTempDirectory((directory) => {
     const manifest = structuredClone(render(grammarSpec("parallel_contrast"), directory, { rasterize: false }).manifest);
     const placeholderHash = `sha256:${"1".repeat(64)}`;
-    Object.assign(manifest, { render_profile: "wide_2488", spec_ref: "VDIR_parallelcontrast20260714", grammar: "event_transmission", visual_job: "render_selected_direction", dimensions: { width: 2488, height: 1056 }, theme: "quiet-cobalt" });
+    Object.assign(manifest, { render_profile: "wide_1866", spec_ref: "VDIR_parallelcontrast20260714", grammar: "event_transmission", visual_job: "render_selected_direction", dimensions: { width: 1866, height: 1200 }, theme: "quiet-cobalt" });
     manifest.asset = {
       html: { ref: "direction.html", sha256: placeholderHash },
       svg: null,
       font_manifest: { ref: "fonts/font-assets-v1.json", sha256: placeholderHash },
       png_derivatives: [
-        { kind: "full", ref: "viewpoint-2488.png", width: 2488, height: 1056, sha256: placeholderHash },
+        { kind: "full", ref: "viewpoint-1866.png", width: 1866, height: 1200, sha256: placeholderHash },
       ],
       derivative_bundle_hash: placeholderHash,
     };
@@ -237,7 +237,7 @@ test("wide finalizer binds selected HTML, production fonts, and one publication 
     const { directionSet } = createWideFinalizerFixture(directory);
     const manifest = buildManifest(directionSet, directory, { observedAt: "2026-07-15T07:00:00Z", decisionCutoffAt: "2026-07-15T07:00:00Z", generatedAt: "2026-07-15T07:01:00Z" });
     assertValid(validateManifest(manifest, directory));
-    assert.equal(manifest.render_profile, "wide_2488");
+    assert.equal(manifest.render_profile, "wide_1866");
     assert.equal(manifest.theme, "quiet-cobalt");
     assert.equal(manifest.asset.font_manifest.ref, "fonts/font-assets-v1.json");
     assert.deepEqual(manifest.asset.png_derivatives.map((item) => item.kind), ["full"]);
