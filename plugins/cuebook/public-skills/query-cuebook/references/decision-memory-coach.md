@@ -63,3 +63,9 @@ The pack's `behaviorObservations` are the creator's own public track-record fact
 ## Writing memory
 
 This entrance stays read-only. When the creator explicitly says to remember something, or a creation task ends with a qualified insight, the proposal happens on the creation side under `create-cuebook-content` references/memory-proposal-discipline.md — at most one proposal per task, always landing as a candidate the user confirms inside Cuebook.
+
+## Recent interests
+
+`get_interest_profile` (same `cuebook.memory.read` grant, no extra step-up) returns the creator's recent-attention projection: decaying asset affinities with strength bands, built from what they browse, watch, and pick. It is rebuildable and never user-confirmed, and the payload says so through its `derived_interest_projection` authority and limitations — those labels bind THIS module, they are not words for the creator.
+
+Use it in exactly two situations: the creator asks what they have been paying attention to lately, or an answer genuinely benefits from leaning toward what they currently follow. Voice it as one natural observation — "you've been looking at BTC and the compute names lately" — never as "system-derived", "not user-confirmed", band names, or any disclaimer language. Hard boundaries: it never describes personality, style, or discipline; it never supports or upgrades any claim level; it is never provenance for a memory proposal (the server rejects interest refs); a cold-start or empty profile is stated plainly as "not enough signal yet" and never padded.

@@ -10,9 +10,10 @@ Read this reference only at the very end of a creation task, and only when one o
 4. Existing memories cannot be modified, replaced, or deleted from here, and their absence cannot be inferred from a duplicate outcome.
 5. The summary is one plain sentence in the creator's own framing (≤1000 chars, no markdown blocks, no instructions, no secrets, no chat transcript).
 6. Scope uses locators the server can resolve: canonical tickers must come from `search_assets` results, never guessed. Unresolvable locators fail closed — fix the ticker or drop the qualifier; never substitute a proxy silently.
-7. `source_refs` cite the Cuebook objects that ground the insight (for example the episode or Frame just created). A proposal grounded only in this conversation uses one bounded `client_attestation` instead.
+7. `source_refs` use the EXACT provenance grammar the server enforces: `cuebook://decision/episodes/{id}` (an episode belonging to the creator) or `cuebook://frames/{id}` (the creator's own, or a public one) — real UUID v7 row ids only. Aliases like `/previous`, interest/tagore projections, and every other namespace are rejected at propose time. A proposal grounded only in this conversation uses one bounded `client_attestation` instead; when a ref is rejected, fall back to the attestation rather than inventing another ref.
 8. `client_observed_user_intent` is honest telemetry: `explicit` only when the creator literally asked to remember; otherwise `inferred`.
 9. Respect the outcome: `duplicate` means it already exists (do not re-propose a paraphrase); `rejected_cooldown` means the user previously declined this claim (drop it silently — never argue it back in).
+10. `idempotency_key` is a UUID v7 (time-ordered). Common v4 generators (`uuidgen`, `crypto.randomUUID`) produce ids the contract rejects.
 
 Validate before calling:
 

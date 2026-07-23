@@ -335,6 +335,16 @@
       "used_by": [
         "create-cuebook-content"
       ]
+    },
+    {
+      "tool": "get_interest_profile",
+      "module": "query",
+      "authorization_scope": "cuebook.memory.read",
+      "access": "read",
+      "purpose": "The creator's recent-attention projection: decaying asset affinities with strength bands, derived from browsing and watching; rebuildable, never user-confirmed, never trait evidence.",
+      "used_by": [
+        "query-cuebook"
+      ]
     }
   ],
   "required_tools": [
@@ -653,6 +663,7 @@
       "list_prediction_markets",
       "list_market_briefings",
       "get_decision_context",
+      "get_interest_profile",
       "list_memory_items"
     ],
     "deep_only": [

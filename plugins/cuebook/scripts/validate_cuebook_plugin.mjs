@@ -112,6 +112,7 @@ const MEMORY_TOOL_SCOPES = new Map([
   ["get_decision_context", "cuebook.memory.read"],
   ["list_memory_items", "cuebook.memory.read"],
   ["propose_memory", "cuebook.memory.propose"],
+  ["get_interest_profile", "cuebook.memory.read"],
 ]);
 
 const PLANNED_TOOLS = new Set([
@@ -147,6 +148,7 @@ const FOCUSED_ON_DEMAND_TOOLS = new Set([
   "list_market_briefings",
   "get_decision_context",
   "list_memory_items",
+  "get_interest_profile",
 ]);
 
 const DEEP_ONLY_TOOLS = new Set([

@@ -40,8 +40,8 @@ Use **L2b (entry-embedded module)** when the capability:
 - ships prose + bounded schemas/policies, with at most thin validators.
 
 Current L2b residents: TradingView (workbench + focused capture on Query;
-attributed snapshot + canvas transfer on Create) and decision memory (coach on
-Query; proposal discipline on Create). Cross-entry references between the two
+attributed snapshot + canvas transfer on Create) and decision memory (coach +
+recent-interests readback on Query; proposal discipline on Create). Cross-entry references between the two
 public skills use `$query-cuebook/references/...` and are legal because Create
 already vendors Query's full closure by design (`create_may_invoke_query`).
 
