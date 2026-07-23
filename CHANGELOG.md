@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.9.15 — 2026-07-23
+
+- Frame publication master generation change (owner decision 2026-07-23): the single publication PNG becomes 1866 x 1200, authored on a 1244 x 800 canvas against a 622 x 400 phone display box and rasterized at 3x display scale (1.5x capture), replacing the 2488 x 1056 / 1244 x 528 / 622 x 264 system across every skill, reference, schema, validator, renderer, and test; the TradingView attributed-snapshot aspect gate follows to near-1.56:1, the capture pipeline emits viewpoint-1866.png under the renamed wide_1866 render profile, and servers keep reading historical 2488 x 1056 masters unchanged.
+
 ## 0.9.14 — 2026-07-23
 
 - The Decision Memory Coach's observed-behavior layer now cites the server-computed behavior observations included in the decision context pack (the creator's own public track-record facts, marked computed_observation with a pinned metric version) verbatim as its factual base, instead of re-deriving statistics from raw order lists; observations remain citable context only and never raise a claim's server-assigned support level.
