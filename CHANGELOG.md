@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.9.16 — 2026-07-23
+
 - Query gains a recent-interests readback: the new `get_interest_profile` tool (same one-time memory read grant, no extra step-up) returns the creator's decaying recent-attention affinities, and the Decision Memory Coach voices them as one natural observation — never as system labels or disclaimers, never as personality, style, or discipline, never to raise a claim level, and never as provenance for a memory proposal; cold-start profiles are stated plainly as not enough signal.
 - Memory proposal discipline now documents the exact provenance grammar the server enforces: `source_refs` accept only `cuebook://decision/episodes/{id}` (the creator's own) or `cuebook://frames/{id}` (own or public) with real UUID v7 ids — aliases like `/previous` and interest/tagore namespaces are rejected — and the `idempotency_key` must be a UUID v7 (common v4 generators are rejected by the contract).
 - Registered `get_interest_profile` in the capability map (28 audited tools) as an explicit on-demand read, updated the plugin validator's tool and tier expectations, and noted the interest readback in the architecture contract's module residency line.
