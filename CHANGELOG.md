@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.9.13 — 2026-07-23
+
+- Added ARCHITECTURE.md as the plugin's governance contract: the six-layer model, explicit criteria for choosing between internal pipeline skills and entry-embedded capability modules, a four-level routing truth hierarchy, the dormant capability registry, fast-preview budget rules, and the drift gates that referee them.
+- Declared the built-but-unrouted capabilities in the release profile instead of leaving them ambient: the resumable advanced-workflow cluster (disabled from runtime bundles since 0.9.8) and the standalone viewpoint intake/opportunity-selection pair (superseded by the in-conversation interview; parked pending an owner decision).
+- Aligned the deliverable taxonomy with the query menu by adding the creation handoff to the module routing rules, and removed stray compiled-Python cache artifacts from the source tree.
+
 ## 0.9.12 — 2026-07-23
 
 - Added a Decision Memory Coach behind the same two public Skills: on explicit request, Query can replay the creator's own past decisions with their frozen pre-trade plans, execution and outcomes, inspect saved memories, or answer "how does Cuebook see me" — always inside the server-computed per-claim support ceilings, with current statements never masquerading as history and candidate memories clearly separated from confirmed ones.
