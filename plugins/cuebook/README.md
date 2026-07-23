@@ -46,7 +46,7 @@ The creator consent presents all six Cuebook scopes once: public research, priva
 
 The installing task owns installation and that one necessary host login. It must not create a background test task, publish a placeholder, or diagnose this local marketplace through a public ChatGPT plugin manager. After Cuebook is enabled and no longer reports `not_logged_in`, fully quit the Codex app with `Cmd+Q` on macOS (or exit it completely on another platform), reopen it, and then enter the real query or market idea in one new task. Codex CLI users should end the current process and start a new one. A new task inside an app process that never restarted can retain the previous Plugin and Tool snapshot. The final readiness proof is a normal MCP result in the restarted host, not a browser approval screen or connector status alone. If authentication fails, stop instead of retrying, reinstalling, or opening more tasks. OAuth credentials stay in the connector, never in a Skill or generated artifact.
 
-Use `--ref v0.9.12` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
+Use `--ref v0.9.13` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
 
 ## Update
 
@@ -144,6 +144,13 @@ Client allowlists optimize tool choice but do not authorize requests. The server
 These authorization checks stay inside MCP and are not additional creator steps. The ordinary one-preview publish lane also reuses the frozen preview directly instead of reconstructing a release DAG, candidate family, or HTML page. Removing those redundant artifacts, a second settlement prompt, or post-publish browser readback does not weaken OAuth, prepared-hash, publish-token, idempotency, or transaction validation.
 
 MCP never returns image bytes to the Skill after upload. The first-party app may transport renditions for display, while the Skill sees only semantic Frame data and owner-only media status.
+
+## Architecture
+
+Layering, extension-pattern criteria, routing truth hierarchy, the dormant
+capability registry, and budget/drift governance live in
+[ARCHITECTURE.md](ARCHITECTURE.md). Structural changes update that contract in
+the same commit.
 
 ## Validate
 

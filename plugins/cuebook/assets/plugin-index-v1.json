@@ -1,6 +1,6 @@
 {
   "schema_version": "cuebook-plugin-index-v1",
-  "plugin_version": "0.9.12",
+  "plugin_version": "0.9.13",
   "catalog_version": "1.28.0",
   "skill_count": 38,
   "default_entrypoint": "query-cuebook",
@@ -23,6 +23,8 @@
     "settlement_protocols": "claim_plus_formula_hash_pair",
     "motion": "internal_disabled_in_menu",
     "external_publishing": "requires_r2_mcp_connector",
-    "trade_execution": "unsupported"
+    "trade_execution": "unsupported",
+    "advanced_workflow": "internal_disabled_since_0_9_8",
+    "viewpoint_intake_triage": "parked_no_inbound_route"
   }
 }

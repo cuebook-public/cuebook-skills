@@ -1,7 +1,7 @@
 {
   "schema_version": "cuebook-release-skills-manifest-v2",
   "catalog_version": "1.28.0",
-  "plugin_version": "0.9.12",
+  "plugin_version": "0.9.13",
   "discovery_budget": {
     "legacy_skill_count": 38,
     "public_skill_count": 2,

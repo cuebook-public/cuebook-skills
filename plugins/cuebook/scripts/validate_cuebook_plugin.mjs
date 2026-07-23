@@ -726,7 +726,7 @@ export function validate(pluginRoot) {
   check(routing.creation_intents_route_to === "create", "CREATE_ROUTE", "routing_rules.creation_intents_route_to", "Creation intents must route to Create.");
   check(routing.ambiguous_intents_route_to === "query", "AMBIGUOUS_ROUTE", "routing_rules.ambiguous_intents_route_to", "Ambiguous intents must default to Query.");
   check(
-    setEq(new Set(routing.query_deliverables ?? []), new Set(["answer", "comparison", "source_bundle", "data_table", "factual_chart", "history_view", "tradingview_observation", "tradingview_focused_capture"])),
+    setEq(new Set(routing.query_deliverables ?? []), new Set(["answer", "comparison", "source_bundle", "data_table", "factual_chart", "history_view", "tradingview_observation", "tradingview_focused_capture", "creation_handoff"])),
     "QUERY_DELIVERABLES",
     "routing_rules.query_deliverables",
     "Read-only views, including factual charts, must belong to Query.",

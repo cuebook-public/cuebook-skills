@@ -78,7 +78,8 @@
       "factual_chart",
       "history_view",
       "tradingview_observation",
-      "tradingview_focused_capture"
+      "tradingview_focused_capture",
+      "creation_handoff"
     ],
     "create_deliverables": [
       "market_post",
