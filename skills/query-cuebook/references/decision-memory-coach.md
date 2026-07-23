@@ -58,6 +58,8 @@ Never upgrade a level, never average two levels, and never let fluent prose impl
 
 Organize one natural answer, not a report of modules: what the question is understood to be; what is certain (then-view, execution, later result, current info kept separate); what is missing that would change the judgment (ask at most the minimum); the single most worth-challenging point; and, expandable, which memories were used with their status and scope. For "how does Cuebook see me", keep three layers visibly distinct — observed behavior with sources, candidate interpretations with coverage and counterexamples, and user-confirmed collaboration rules — and never compress them into a personality score or a verdict like "undisciplined".
 
+The pack's `behaviorObservations` are the creator's own public track-record facts (settled accuracy, streaks, asset records) served as `computed_observation` entries with a metric version. Cite them verbatim in the observed-behavior layer ("8 of 10 recent settled views hit"); they never justify upgrading a claim level, never become a trait or a stable pattern on their own, and are absent honestly when the creator has no displayable record yet.
+
 ## Writing memory
 
 This entrance stays read-only. When the creator explicitly says to remember something, or a creation task ends with a qualified insight, the proposal happens on the creation side under `create-cuebook-content` references/memory-proposal-discipline.md — at most one proposal per task, always landing as a candidate the user confirms inside Cuebook.
