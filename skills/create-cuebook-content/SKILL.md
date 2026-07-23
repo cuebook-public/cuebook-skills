@@ -1,6 +1,6 @@
 ---
 name: create-cuebook-content
-description: "Turn a market idea or selected Cuebook material into one creator-owned Frame with a sharp title, reasoned body, and mobile-first image. Use for directional, range, relative-performance, two-condition, or explicitly requested rights-cleared TradingView-snapshot viewpoints. Also use to place a selected idea, level, zone, checkpoint, or note on a separately connected TradingView chart. Frame and canvas transfer are separate confirmed outputs. Never fabricate a future path, silently choose a proxy, trade, or publish before confirmation."
+description: "Turn a market idea or selected Cuebook material into one creator-owned Frame with a sharp title, reasoned body, and mobile-first image. Use for directional, range, relative-performance, two-condition, or explicitly requested rights-cleared TradingView-snapshot viewpoints. Also use to place a selected idea, level, zone, checkpoint, or note on a connected TradingView chart, and to propose one end-of-task memory candidate on an explicit remember request. Frame and canvas transfer are separate confirmed outputs. Never fabricate a future path, silently choose a proxy, trade, claim a memory was saved, or publish before confirmation."
 license: Proprietary. Cuebook internal; see the repository README for terms.
 compatibility: Uses the connected Cuebook MCP server plus one bounded authorized Web lane. Optional, separately installed tradingview_desktop and tradingview_research connectors add local research and confirmed canvas transfer. Node.js 18+ and local Chromium/Chrome are required for deterministic Frame rendering.
 ---
@@ -13,7 +13,7 @@ Cuebook Agent turns a raw market intuition into a thought the creator can see, s
 
 Stay in Cuebook unless the creator explicitly asks for another Skill. Keep routing backstage.
 
-For explicit TradingView use, inspection reads `references/modules/query-cuebook/references/tradingview-workbench.md`; a requested chart image also reads `references/modules/query-cuebook/references/tradingview-focused-capture.md`; chart writing reads `references/tradingview-canvas-transfer.md`. Never install or configure either connector here.
+Explicit TradingView use: inspection reads `references/modules/query-cuebook/references/tradingview-workbench.md`; chart images add `references/modules/query-cuebook/references/tradingview-focused-capture.md`; chart writing reads `references/tradingview-canvas-transfer.md`. Never install or configure connectors here.
 
 ## Creator Experience
 
@@ -46,9 +46,13 @@ Before a Frame conversation begins, silently call `get_frame_capabilities` once 
 - Publish only after explicit publication intent. Read [Frame Publish Workflow](references/frame-publish-workflow.md) at that point, not during preview.
 - If an upstream system provides a frozen commitment, evidence refs, mechanism path, and render-safe projection, consume them as truth. Improve expression and design without re-deciding the asset, direction, horizon, or facts. A layout reroll never reopens the thesis.
 
+## End-Of-Task Memory Proposal
+
+On an explicit "remember this" or one qualified post-publication insight, read [Memory Proposal Discipline](references/memory-proposal-discipline.md): one candidate max, "proposed for review", never "remembered".
+
 ## Attributed TradingView Snapshot
 
-Read [Attributed TradingView Snapshot](references/tradingview-attributed-snapshot.md) only after the creator selects snapshot pixels. It is the sole TradingView-pixel route; every failed condition falls back to native rerender.
+Only after the creator selects snapshot pixels, read [Attributed TradingView Snapshot](references/tradingview-attributed-snapshot.md) — the sole TradingView-pixel route; failures fall back to native rerender.
 
 ## Fast Preview
 

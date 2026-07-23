@@ -1,0 +1,93 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DecisionContextRequestV2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "goal_summary", "analysis_requests", "as_of"],
+  "properties": {
+    "schema_version": { "const": "decision-context-request.v2" },
+    "goal_summary": { "type": "string", "minLength": 1, "maxLength": 1000 },
+    "analysis_requests": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["lens", "subject_ref"],
+        "properties": {
+          "lens": {
+            "enum": [
+              "plan_completeness",
+              "historical_reconstruction",
+              "plan_execution_comparison",
+              "decision_outcome_comparison",
+              "current_context_challenge",
+              "recurring_pattern_search",
+              "decision_behavior_inspection",
+              "memory_inspection"
+            ]
+          },
+          "subject_ref": {
+            "type": "string",
+            "pattern": "^(cuebook://[^\\s]+|working-context://current-plan)$",
+            "maxLength": 1024
+          },
+          "focus": {
+            "type": "object",
+            "additionalProperties": false,
+            "minProperties": 1,
+            "properties": {
+              "mechanism_query": { "type": "string", "minLength": 1, "maxLength": 500 },
+              "evidence_question": { "type": "string", "minLength": 1, "maxLength": 500 },
+              "comparison_axis": { "type": "string", "minLength": 1, "maxLength": 200 }
+            }
+          }
+        }
+      }
+    },
+    "as_of": { "type": "string", "format": "date-time" },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "kind"],
+      "properties": {
+        "schema_version": { "const": "memory-scope.v1" },
+        "kind": { "enum": ["global", "qualified"] },
+        "asset_refs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["locator_type", "locator"],
+            "properties": {
+              "locator_type": { "const": "canonical_ticker" },
+              "locator": { "type": "string", "minLength": 1, "maxLength": 32 },
+              "asset_class_hint": { "type": "string" }
+            }
+          }
+        },
+        "sector_refs": { "type": "array", "minItems": 1, "maxItems": 16, "items": { "type": "string", "maxLength": 128 } },
+        "strategy_refs": { "type": "array", "minItems": 1, "maxItems": 16, "items": { "type": "string", "maxLength": 128 } },
+        "task_refs": { "type": "array", "minItems": 1, "maxItems": 16, "items": { "type": "string", "maxLength": 128 } },
+        "horizons": { "type": "array", "minItems": 1, "maxItems": 16, "items": { "type": "string", "maxLength": 128 } }
+      }
+    },
+    "current_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authority", "captured_at", "thesis", "invalidation", "horizon"],
+      "properties": {
+        "authority": { "const": "client_asserted_current" },
+        "captured_at": { "type": "string", "format": "date-time" },
+        "thesis": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "invalidation": { "type": ["string", "null"], "minLength": 1, "maxLength": 1000 },
+        "horizon": { "type": ["string", "null"], "minLength": 1, "maxLength": 128 }
+      }
+    },
+    "max_bytes": { "type": "integer", "minimum": 1024, "maximum": 32768 },
+    "include_source_excerpts": { "type": "boolean" }
+  }
+}

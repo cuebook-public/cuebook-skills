@@ -8,7 +8,9 @@ Provide one read-only entrance to Cuebook. Keep retrieval separate from creation
 
 Stay in Cuebook unless the creator explicitly asks for another Skill. Keep routing backstage.
 
-For an explicit or accepted TradingView aid, read `references/modules/query-cuebook/references/tradingview-workbench.md`; it routes requested chart images to `references/modules/query-cuebook/references/tradingview-focused-capture.md`. An absent optional connector never blocks Cuebook.
+For an explicit or accepted TradingView aid, read `references/modules/query-cuebook/references/tradingview-workbench.md` (chart images: `references/modules/query-cuebook/references/tradingview-focused-capture.md`); an absent connector never blocks Cuebook.
+
+Explicit personal memory/replay asks: `references/modules/query-cuebook/references/decision-memory-coach.md` (consent step-up; read-only).
 
 ## Quiet Readiness Check
 
@@ -24,7 +26,7 @@ Assume the plugin's host authentication is complete. Silently run the smallest r
 ## Routing
 
 1. Normalize once with `references/modules/query-cuebook/references/cuebook-intent-v1.schema.json`: route by effect, order mixed dependencies, and default ambiguity to one read-only Query answer.
-2. Classify each Query step as `latest_stories`, `story_detail`, `asset_narratives`, `market_state`, `market_evidence`, `fundamentals`, `market_series`, `derived_metrics`, `tradingview_inspect`, `tradingview_capture`, `settlement_history`, `published_frame`, `commentator_profile`, `media_format`, or `mixed`.
+2. Classify each Query step as `latest_stories`, `story_detail`, `asset_narratives`, `market_state`, `market_evidence`, `fundamentals`, `market_series`, `derived_metrics`, `tradingview_inspect`, `tradingview_capture`, `decision_memory`, `settlement_history`, `published_frame`, `commentator_profile`, `media_format`, or `mixed`.
 3. `search_assets` returns ranked candidates, not an existence verdict. Bind only an exact identity (`matchType: exact`). Never substitute a fuzzy candidate, proxy, or nearest carrier. A missing capability is an operation gap, not an identity gap. With no exact result, retain the term; do not claim Cuebook has no knowledge of it or infer lifecycle from a miss.
 4. Query stays read-only. An active TradingView workbench adds only its audited observation subset; live Tool lists remain runtime truth.
 5. Select the smallest query path that answers the request:
@@ -34,7 +36,8 @@ Assume the plugin's host authentication is complete. Silently run the smallest r
    - current snapshot: `get_market_state`;
    - evidence or valuation: `search_news`, `list_filings`, and `references/modules/build-market-research-pack.md` when synthesis is requested;
    - curves or triggers: `get_candles`; preserve its raw frozen envelope for a creation handoff, and invoke `references/modules/compute-cuebook-market-indicators.md` only when a requested indicator is actually needed;
-   - explicit TradingView inspection, focused chart image, or stress test: use the workbench, preserve exact identity and restricted lineage, and exclude raw observations from direct Frame handoff;
+   - explicit TradingView inspection/capture/stress test: use the workbench; raw observations never enter direct Frame handoff;
+   - explicit decision memory asks: coach module — one `get_decision_context` or `list_memory_items`; obey server claim-support levels;
    - positioning, calendar, disclosures, or asset events: call only the one matching read tool when the user's premise needs it;
    - settlement outcomes: `list_settlements` and `references/modules/reconcile-market-content-history.md` when a history ledger is requested;
    - published Frames: `get_frame` for one release-pinned Frame, attached visual, settlement state, and discussion entry; never retrieve a rendition separately;

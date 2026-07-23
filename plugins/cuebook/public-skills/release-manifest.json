@@ -1,13 +1,13 @@
 {
   "schema_version": "cuebook-release-skills-manifest-v2",
   "catalog_version": "1.28.0",
-  "plugin_version": "0.9.11",
+  "plugin_version": "0.9.12",
   "discovery_budget": {
     "legacy_skill_count": 38,
     "public_skill_count": 2,
-    "legacy_metadata_bytes": 23405,
-    "public_metadata_bytes": 1521,
-    "reduction_percent": 93.5,
+    "legacy_metadata_bytes": 23491,
+    "public_metadata_bytes": 1607,
+    "reduction_percent": 93.2,
     "minimum_reduction_percent": 60
   },
   "frame_fast_preview_budget": {
@@ -23,8 +23,8 @@
       "references/modules/query-cuebook/references/cuebook-query-request-v1.schema.json",
       "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json"
     ],
-    "cumulative_bytes": 109788,
-    "maximum_bytes_exclusive": 110000,
+    "cumulative_bytes": 110282,
+    "maximum_bytes_exclusive": 112000,
     "within_budget": true
   },
   "frame_publish_input_budget": {
@@ -56,6 +56,7 @@
         "references/modules/build-market-research-pack/scripts/validate_research_pack.mjs",
         "references/modules/reconcile-market-content-history/scripts/validate_content_history.mjs",
         "scripts/validate_cuebook_intent.mjs",
+        "scripts/validate_decision_context_request.mjs",
         "scripts/validate_query_bundle.mjs",
         "scripts/validate_query_request.mjs",
         "scripts/validate_tradingview_focused_capture.mjs",
@@ -89,6 +90,7 @@
       "vendored_shared_validators": [
         "references/modules/build-market-research-pack/scripts/validate_research_pack.mjs",
         "references/modules/query-cuebook/scripts/validate_cuebook_intent.mjs",
+        "references/modules/query-cuebook/scripts/validate_decision_context_request.mjs",
         "references/modules/query-cuebook/scripts/validate_query_bundle.mjs",
         "references/modules/query-cuebook/scripts/validate_query_request.mjs",
         "references/modules/query-cuebook/scripts/validate_tradingview_focused_capture.mjs",
@@ -100,6 +102,7 @@
         "scripts/validate_creation_bundle.mjs",
         "scripts/validate_creator_seed.mjs",
         "scripts/validate_frame_preview.mjs",
+        "scripts/validate_memory_proposal.mjs",
         "scripts/validate_tradingview_canvas_transfer.mjs"
       ],
       "valid": true

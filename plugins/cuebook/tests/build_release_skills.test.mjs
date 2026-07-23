@@ -46,7 +46,7 @@ test("builds every public entrypoint as valid bundle", () => {
     assert.equal(manifest.discovery_budget.public_skill_count, 2);
     assert.ok(manifest.discovery_budget.reduction_percent >= 60);
     assert.ok(manifest.frame_fast_preview_budget.within_budget);
-    assert.ok(manifest.frame_fast_preview_budget.cumulative_bytes < 110_000);
+    assert.ok(manifest.frame_fast_preview_budget.cumulative_bytes < 112_000);
     assert.ok(manifest.frame_publish_input_budget.within_budget);
     assert.ok(manifest.frame_publish_input_budget.cumulative_bytes < 40_000);
     assert.ok(!manifest.frame_fast_preview_budget.files.includes("assets/plugin/mcp-capability-map-v1.json"));

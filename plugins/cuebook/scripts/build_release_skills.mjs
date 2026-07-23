@@ -48,7 +48,10 @@ const ENTRYPOINT_RUNTIME_RESOURCES = new Map([
 const MODULE_RESOURCE_DIRS = "references|scripts|templates|assets|evals|tests";
 const PUBLIC_SKILL_LIMIT = 2;
 const MIN_DISCOVERY_REDUCTION_PERCENT = 60;
-const FAST_PREVIEW_BYTE_LIMIT = 110_000;
+// 2026-07-23: raised 110000 -> 112000 for the decision-memory routing lines in
+// the two public Skills (the coach itself stays in on-demand references). The
+// ceiling remains a hard gate against fast-preview bloat.
+const FAST_PREVIEW_BYTE_LIMIT = 112_000;
 const PUBLISH_LANE_BYTE_LIMIT = 40_000;
 const FAST_PREVIEW_FILES = [
   "SKILL.md",

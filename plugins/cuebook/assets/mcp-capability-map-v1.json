@@ -305,6 +305,36 @@
       ],
       "content_kind": "noesis_research",
       "default_enabled": false
+    },
+    {
+      "tool": "get_decision_context",
+      "module": "query",
+      "authorization_scope": "cuebook.memory.read",
+      "access": "read",
+      "purpose": "One frozen Decision Context Pack: composable closed lenses over the creator's frozen commitments, execution, outcomes, and memories, with server-computed evidence manifest and per-claim support ceilings.",
+      "used_by": [
+        "query-cuebook"
+      ]
+    },
+    {
+      "tool": "list_memory_items",
+      "module": "query",
+      "authorization_scope": "cuebook.memory.read",
+      "access": "read",
+      "purpose": "Inventory of the creator's own candidate and confirmed decision memories; read-only, cursor paged.",
+      "used_by": [
+        "query-cuebook"
+      ]
+    },
+    {
+      "tool": "propose_memory",
+      "module": "create",
+      "authorization_scope": "cuebook.memory.propose",
+      "access": "write",
+      "purpose": "Propose at most one unconfirmed memory candidate at task end (requires memory.read as well); confirmation, correction, and deletion stay inside Cuebook.",
+      "used_by": [
+        "create-cuebook-content"
+      ]
     }
   ],
   "required_tools": [
@@ -621,7 +651,9 @@
       "list_asset_disclosures",
       "get_news_cluster",
       "list_prediction_markets",
-      "list_market_briefings"
+      "list_market_briefings",
+      "get_decision_context",
+      "list_memory_items"
     ],
     "deep_only": [
       "list_themes",
@@ -655,8 +687,15 @@
     "publish_success_source": "successful_complete_frame_publish_result",
     "creator_link_policy": "never_present_canonical_url",
     "published_visual_semantics": "one_visual_attached_to_frame_release",
-    "client_upload_roles": ["publication"],
-    "capture_profiles": {"publication": {"width": 2488, "height": 1056}},
+    "client_upload_roles": [
+      "publication"
+    ],
+    "capture_profiles": {
+      "publication": {
+        "width": 2488,
+        "height": 1056
+      }
+    },
     "delivery_resize_policy": "frontend_or_edge_transformation_only",
     "forbidden_tools": [
       "get_frame_media",
@@ -741,5 +780,5 @@
     "source_rights_required_for_creation": true,
     "valuation_comparisons_require_compatible_basis": true
   },
-  "notes": "Skill tool policy is client-side routing, not a claimed MCP profile field. Data-expansion tools with default_enabled=false may return typed unavailable. Superseded legacy writes are absent; planned tools are non-callable. Frame publish uses the active OAuth grant plus the first-party publish action; separate action consent is withdrawal-only."
+  "notes": "Skill tool policy is client-side routing, not a claimed MCP profile field. Data-expansion tools with default_enabled=false may return typed unavailable. Superseded legacy writes are absent; planned tools are non-callable. Frame publish uses the active OAuth grant plus the first-party publish action; separate action consent is withdrawal-only. Memory scopes (cuebook.memory.read / cuebook.memory.propose) are requestable via a one-time consent step-up and are never part of the standard or creator bundles; no third-party manage scope exists."
 }

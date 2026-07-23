@@ -105,6 +105,15 @@ const PAPER_TOOL_SCOPES = new Map([
   ["close_paper_position", "cuebook.paper.trade"],
 ]);
 
+// Personal decision memory (user-memory PR3/PR4): read tools carry the
+// dedicated read scope; the single proposal tool carries propose (read is a
+// server-side prerequisite). No manage scope may ever appear here.
+const MEMORY_TOOL_SCOPES = new Map([
+  ["get_decision_context", "cuebook.memory.read"],
+  ["list_memory_items", "cuebook.memory.read"],
+  ["propose_memory", "cuebook.memory.propose"],
+]);
+
 const PLANNED_TOOLS = new Set([
   "get_creator_feed",
   "compute_market_metrics",
@@ -136,6 +145,8 @@ const FOCUSED_ON_DEMAND_TOOLS = new Set([
   "get_news_cluster",
   "list_prediction_markets",
   "list_market_briefings",
+  "get_decision_context",
+  "list_memory_items",
 ]);
 
 const DEEP_ONLY_TOOLS = new Set([
@@ -654,10 +665,10 @@ export function validate(pluginRoot) {
     "Public Skill discovery metadata must be at least 60% smaller than the legacy source surface.",
   );
   check(
-    (publicReleaseManifest.frame_fast_preview_budget ?? {}).cumulative_bytes < 110_000,
+    (publicReleaseManifest.frame_fast_preview_budget ?? {}).cumulative_bytes < 112_000,
     "PLUGIN_FAST_PREVIEW_BUDGET",
     "public-skills/release-manifest.json.frame_fast_preview_budget",
-    "Fast Frame preview instruction and contract input must stay below 110k bytes.",
+    "Fast Frame preview instruction and contract input must stay below 112k bytes.",
   );
   check(
     (publicReleaseManifest.frame_publish_input_budget ?? {}).cumulative_bytes < 40_000,
@@ -909,6 +920,7 @@ export function validate(pluginRoot) {
     check(allowedAccess.has(norm(access)), "TOOL_ACCESS_MODULE", `tools.${toolName}`, `Tool access ${rep(access)} is invalid for module ${rep(moduleId)}.`);
     const expectedScope = FRAME_TOOL_SCOPES.get(toolName)
       ?? PAPER_TOOL_SCOPES.get(toolName)
+      ?? MEMORY_TOOL_SCOPES.get(toolName)
       ?? (availableTools.has(toolName) && moduleId === "query"
         ? "read:public"
         : (moduleId === "query" ? "cuebook.query" : (access === "external_write" ? "cuebook.publish" : "cuebook.create.write")));

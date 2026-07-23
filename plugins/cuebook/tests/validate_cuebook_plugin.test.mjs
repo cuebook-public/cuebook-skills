@@ -40,7 +40,7 @@ test("valid plugin package", () => {
   assert.deepEqual(result.stats.module_skill_counts, { create: 27, query: 11 });
   assert.equal(result.stats.public_skill_count, 2);
   assert.ok(result.stats.discovery_reduction_percent >= 60);
-  assert.ok(result.stats.frame_fast_preview_bytes < 110_000);
+  assert.ok(result.stats.frame_fast_preview_bytes < 112_000);
   assert.ok(result.stats.frame_publish_input_bytes < 40_000);
   assert.equal(result.stats.platform_guide_count, 10);
   const modules = JSON.parse(
