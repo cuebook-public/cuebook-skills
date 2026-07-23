@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.9.12 — 2026-07-23
+
+- Added a Decision Memory Coach behind the same two public Skills: on explicit request, Query can replay the creator's own past decisions with their frozen pre-trade plans, execution and outcomes, inspect saved memories, or answer "how does Cuebook see me" — always inside the server-computed per-claim support ceilings, with current statements never masquerading as history and candidate memories clearly separated from confirmed ones.
+- Memory uses two dedicated one-time step-up scopes (read, propose) that are never bundled with the standard or creator grants; confirming, correcting, rejecting, and forgetting memories stay inside Cuebook, and no external client can manage them.
+- Create can now propose at most one unconfirmed memory candidate at the end of a task, only on an explicit "remember this" or one clearly qualified post-publication insight, with a validator that blocks markup payloads, ungrounded proposals, and single-task personality claims; rejected claims are never re-proposed.
+- Added bounded request validators for the new memory surfaces, registered the three memory tools in the capability map as explicit on-demand reads plus one create-side proposal, and raised the fast-preview input ceiling from 110k to 112k bytes to carry the new routing lines while keeping the hard gate.
+
 ## 0.9.11 — 2026-07-22
 
 - Added two optional, separately installed TradingView connectors behind the same two public Skills, without a third entrypoint: a local Desktop/CDP bridge for the creator's own charts and a network research server, each restricted to an audited read subset that excludes persistent-state, security-sensitive, and opaque buy/sell-stance tools.
