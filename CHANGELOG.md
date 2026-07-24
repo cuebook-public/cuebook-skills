@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.9.17 — 2026-07-24
+
 - Added `author-cuebook-skill`, a third public entrypoint and the conversational front door for community skill marketplace submission: it collects a creator-authored package (one root SKILL.md plus references markdown or JSON, no scripts, at most 40 files, 512 KiB zip cap), runs a local structural pre-check with a new CommunitySkillSubmissionV1 schema and validator, confirms one manifest card (slug, display name, summary, description, semver version, declared capability tier with reasoning, license), and walks the signed upload contract (`begin_skill_publish`, HTTP PUT, `complete_skill_publish`) at most once per task; every truthful receipt reads "submitted for review", and listing happens only after Cuebook's automated gates plus, for write-capable skills, human review distribute the package to the community repo.
 - Registered the four community tools in the capability map — public `list_community_skills` and `get_community_skill` reads plus the `begin_skill_publish` / `complete_skill_publish` submission pair behind the one-time `cuebook.community.publish` consent — extended the scope schema and validator expectations accordingly, added the skill to the create module and skill catalog (catalog 1.29.0), raised the public discovery surface from two to three bundles across the builder, plugin validator, marketplace manifests, OpenAI submission packet, and platform docs, and recorded the marketplace boundary in the architecture contract.
 

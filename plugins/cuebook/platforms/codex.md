@@ -25,7 +25,7 @@ Codex reads exactly three `SKILL.md` files at startup. Internal capabilities are
 vendored as non-discoverable `references/modules/*.md` resources behind
 `query-cuebook`, `create-cuebook-content`, and `author-cuebook-skill`.
 
-The default marketplace follows stable releases from `main`. Add `--ref v0.9.16`
+The default marketplace follows stable releases from `main`. Add `--ref v0.9.17`
 only for an intentionally frozen install.
 
 ## Update
