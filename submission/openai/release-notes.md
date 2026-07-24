@@ -1,6 +1,6 @@
 # Release Notes
 
-Cuebook's initial OpenAI Plugins Directory submission provides two public Skills and one authenticated production MCP service.
+Cuebook's initial OpenAI Plugins Directory submission provides three public Skills and one authenticated production MCP service.
 
 - Query source-linked market context, persisted snapshots, Cues, published Frames, and simulated history.
 - Turn a creator-owned market intuition into one confirmed title, reasoned body, and mobile-first editorial image.

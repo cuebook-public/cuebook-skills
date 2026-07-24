@@ -22,7 +22,7 @@ Do not paste API keys, access tokens, refresh tokens, or OAuth codes into app in
 
 ## Capability boundary
 
-This is a direct MCP connection. Verify `get_frame_capabilities`, source-linked reads, and existing Frame reads. Full Cuebook creator parity is not claimed because the custom app does not install the local interview, evidence-routing, JavaScript rendering, bitmap audit, and upload orchestration in the two Agent Skills.
+This is a direct MCP connection. Verify `get_frame_capabilities`, source-linked reads, and existing Frame reads. Full Cuebook creator parity is not claimed because the custom app does not install the local interview, evidence-routing, JavaScript rendering, bitmap audit, and upload orchestration in the three Agent Skills.
 
 Write verification must also wait until the ChatGPT workspace exposes modify actions and the user explicitly authorizes a clearly identified test Frame.
 

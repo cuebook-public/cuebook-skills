@@ -6,10 +6,11 @@ Cuebook uses one authenticated remote MCP endpoint:
 https://cuebook.xyz/mcp
 ```
 
-The repository also publishes exactly two self-contained Agent Skills:
+The repository also publishes exactly three self-contained Agent Skills:
 
 - `query-cuebook`
 - `create-cuebook-content`
+- `author-cuebook-skill`
 
 Those layers are related but not interchangeable. MCP provides typed Cuebook data and authorized Frame operations. The Skills provide natural creator conversation, a reconciled evidence plan, confirmation before rendering, mobile visual composition, and safe publication behavior.
 
@@ -38,7 +39,7 @@ These hosts are the complete Cuebook creator targets. They can preserve the user
 
 ### MCP direct
 
-These hosts can authenticate and call Cuebook Tools. They do not automatically inherit the two Skills or their local JavaScript renderers. Until a host-specific creator adapter is verified, document successful reads and Frame Tool discovery without claiming full creator parity.
+These hosts can authenticate and call Cuebook Tools. They do not automatically inherit the three Skills or their local JavaScript renderers. Until a host-specific creator adapter is verified, document successful reads and Frame Tool discovery without claiming full creator parity.
 
 ## Live verification gate
 

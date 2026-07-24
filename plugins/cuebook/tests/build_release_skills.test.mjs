@@ -41,9 +41,9 @@ test("builds every public entrypoint as valid bundle", () => {
     const manifest = buildRelease(tmpPath);
     assert.ok(manifest.valid, JSON.stringify(manifest.errors));
     const built = new Set(manifest.bundles.map((bundle) => bundle.skill));
-    assert.deepEqual(built, new Set(["query-cuebook", "create-cuebook-content"]));
+    assert.deepEqual(built, new Set(["query-cuebook", "create-cuebook-content", "author-cuebook-skill"]));
     assert.ok(manifest.bundles.every((bundle) => bundle.valid));
-    assert.equal(manifest.discovery_budget.public_skill_count, 2);
+    assert.equal(manifest.discovery_budget.public_skill_count, 3);
     assert.ok(manifest.discovery_budget.reduction_percent >= 60);
     assert.ok(manifest.frame_fast_preview_budget.within_budget);
     assert.ok(manifest.frame_fast_preview_budget.cumulative_bytes < 112_000);
@@ -54,7 +54,7 @@ test("builds every public entrypoint as valid bundle", () => {
   });
 });
 
-test("release discovery exposes exactly two root Skills and ordinary internal modules", () => {
+test("release discovery exposes exactly three root Skills and ordinary internal modules", () => {
   withTmpPath((tmpPath) => {
     const manifest = buildRelease(tmpPath);
     const releaseRoot = path.join(tmpPath, "release");
@@ -63,13 +63,15 @@ test("release discovery exposes exactly two root Skills and ordinary internal mo
       .map((candidate) => path.relative(releaseRoot, candidate))
       .sort();
     assert.deepEqual(skillDocs, [
+      "author-cuebook-skill/SKILL.md",
       "create-cuebook-content/SKILL.md",
       "query-cuebook/SKILL.md",
     ]);
     for (const bundle of manifest.bundles) {
       const modulesRoot = path.join(releaseRoot, bundle.skill, "references", "modules");
-      const moduleDocs = fs.readdirSync(modulesRoot)
-        .filter((name) => name.endsWith(".md"));
+      const moduleDocs = fs.existsSync(modulesRoot)
+        ? fs.readdirSync(modulesRoot).filter((name) => name.endsWith(".md"))
+        : [];
       assert.equal(moduleDocs.length, bundle.bundled_internal_modules);
       for (const moduleDoc of moduleDocs) {
         const text = fs.readFileSync(path.join(modulesRoot, moduleDoc), "utf-8");
@@ -406,7 +408,7 @@ test("advanced creator workflow scripts stay outside the runtime bundle", () => 
 test("bundle frontmatter follows agent skills spec", () => {
   withTmpPath((tmpPath) => {
     buildRelease(tmpPath);
-    for (const name of ["query-cuebook", "create-cuebook-content"]) {
+    for (const name of ["query-cuebook", "create-cuebook-content", "author-cuebook-skill"]) {
       const front = parseFrontmatter(path.join(tmpPath, "release", name, "SKILL.md"));
       assert.equal(front.name, name);
       assert.ok(front.description.length >= 1 && front.description.length <= 1024);

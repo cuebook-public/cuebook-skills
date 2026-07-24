@@ -1,6 +1,6 @@
 {
   "schema_version": "cuebook-modules-v1",
-  "catalog_version": "1.28.0",
+  "catalog_version": "1.29.0",
   "default_module": "query",
   "modules": [
     {
@@ -62,7 +62,8 @@
         "assemble-cuebook-viewpoint-card",
         "prepare-market-content-release",
         "orchestrate-cuebook-creator-workflow",
-        "intake-cuebook-viewpoint"
+        "intake-cuebook-viewpoint",
+        "author-cuebook-skill"
       ]
     }
   ],

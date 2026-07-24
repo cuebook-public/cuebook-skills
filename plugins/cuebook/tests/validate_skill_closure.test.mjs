@@ -32,7 +32,7 @@ function appendToEntrypoint(pluginRoot, text) {
 test("all packaged skill references close", () => {
   const result = validateSkillClosure(PLUGIN_ROOT);
   assert.equal(result.valid, true, JSON.stringify(result.errors, null, 2));
-  assert.equal(result.stats.skill_count, 38);
+  assert.equal(result.stats.skill_count, 39);
   assert.ok(result.stats.markdown_file_count >= 100);
   assert.ok(result.stats.resource_ref_count > 100);
   assert.ok(result.stats.skill_ref_count > 30);

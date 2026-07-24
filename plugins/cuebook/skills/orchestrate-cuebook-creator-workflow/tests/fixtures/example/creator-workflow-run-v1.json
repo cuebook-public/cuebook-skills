@@ -4,7 +4,7 @@
   "feed_ref": "CF_1234abcd",
   "opportunity_set_ref": "OS_1234abcd",
   "recipe_ref": "RECIPE_1234abcd",
-  "catalog_version": "1.28.0",
+  "catalog_version": "1.29.0",
   "query_bundle_refs": [],
   "selected_opportunity_refs": [
     "OPP_q2_revision"

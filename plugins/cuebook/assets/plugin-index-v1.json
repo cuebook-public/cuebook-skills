@@ -1,8 +1,8 @@
 {
   "schema_version": "cuebook-plugin-index-v1",
   "plugin_version": "0.9.16",
-  "catalog_version": "1.28.0",
-  "skill_count": 38,
+  "catalog_version": "1.29.0",
+  "skill_count": 39,
   "default_entrypoint": "query-cuebook",
   "module_entrypoints": {
     "query": "query-cuebook",
@@ -10,7 +10,8 @@
   },
   "public_entrypoints": [
     "query-cuebook",
-    "create-cuebook-content"
+    "create-cuebook-content",
+    "author-cuebook-skill"
   ],
   "canonical_catalog_ref": "../skills/compose-cuebook-content-recipe/references/skill-catalog-v1.json",
   "module_map_ref": "./cuebook-modules-v1.json",

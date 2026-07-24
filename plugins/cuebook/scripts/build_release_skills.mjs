@@ -46,7 +46,9 @@ const ENTRYPOINT_RUNTIME_RESOURCES = new Map([
   ]],
 ]);
 const MODULE_RESOURCE_DIRS = "references|scripts|templates|assets|evals|tests";
-const PUBLIC_SKILL_LIMIT = 2;
+// 2026-07-24: raised 2 -> 3 for the community submission front door
+// (author-cuebook-skill); discovery growth stays a deliberate, validated act.
+const PUBLIC_SKILL_LIMIT = 3;
 const MIN_DISCOVERY_REDUCTION_PERCENT = 60;
 // 2026-07-23: raised 110000 -> 112000 for the decision-memory routing lines in
 // the two public Skills (the coach itself stays in on-demand references). The

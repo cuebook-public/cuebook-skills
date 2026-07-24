@@ -18,7 +18,7 @@ import { validate } from "./validate_cuebook_plugin.mjs";
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(SCRIPT_DIR, "../../..");
-const PUBLIC_SKILLS = ["query-cuebook", "create-cuebook-content"];
+const PUBLIC_SKILLS = ["query-cuebook", "create-cuebook-content", "author-cuebook-skill"];
 const SUBMISSION_FILES = [
   "README.md",
   "listing.json",

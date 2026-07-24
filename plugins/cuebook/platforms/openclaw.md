@@ -6,9 +6,9 @@
 
 **Live status:** Skill discovery, OAuth, Tool probe, preview, and publication are pending host verification.
 
-## Install the two Skills
+## Install the three Skills
 
-Copy the generated `skills/query-cuebook` and `skills/create-cuebook-content` directories into one OpenClaw Skill root, preferably the project-level `<workspace>/.agents/skills/` directory. Use `~/.agents/skills/` only when the same Cuebook Skills should be visible to every local agent.
+Copy the generated `skills/query-cuebook`, `skills/create-cuebook-content`, and `skills/author-cuebook-skill` directories into one OpenClaw Skill root, preferably the project-level `<workspace>/.agents/skills/` directory. Use `~/.agents/skills/` only when the same Cuebook Skills should be visible to every local agent.
 
 Do not point OpenClaw at `plugins/cuebook/skills/`; its recursive discovery would expose internal modules and recreate the context-budget problem the public bundles solve.
 

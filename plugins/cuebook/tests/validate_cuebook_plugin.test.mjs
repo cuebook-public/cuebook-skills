@@ -37,8 +37,8 @@ function rewrite(filePath, mutate) {
 test("valid plugin package", () => {
   const result = validate(PLUGIN_ROOT);
   assert.ok(result.valid, JSON.stringify(result));
-  assert.deepEqual(result.stats.module_skill_counts, { create: 27, query: 11 });
-  assert.equal(result.stats.public_skill_count, 2);
+  assert.deepEqual(result.stats.module_skill_counts, { create: 28, query: 11 });
+  assert.equal(result.stats.public_skill_count, 3);
   assert.ok(result.stats.discovery_reduction_percent >= 60);
   assert.ok(result.stats.frame_fast_preview_bytes < 112_000);
   assert.ok(result.stats.frame_publish_input_bytes < 40_000);
@@ -50,7 +50,7 @@ test("valid plugin package", () => {
   assert.ok(modules.routing_rules.create_deliverables.includes("creator_viewpoint_graphic"));
 });
 
-test("Claude Code marketplace explicitly exposes only two self-contained Skills", () => {
+test("Claude Code marketplace explicitly exposes only the three self-contained Skills", () => {
   const repositoryRoot = path.resolve(PLUGIN_ROOT, "..", "..");
   const marketplace = JSON.parse(
     fs.readFileSync(path.join(repositoryRoot, ".claude-plugin", "marketplace.json"), "utf-8"),
@@ -63,6 +63,7 @@ test("Claude Code marketplace explicitly exposes only two self-contained Skills"
   assert.deepEqual(marketplace.plugins[0].skills, [
     "./skills/query-cuebook",
     "./skills/create-cuebook-content",
+    "./skills/author-cuebook-skill",
   ]);
   for (const skillRoot of marketplace.plugins[0].skills) {
     assert.ok(fs.existsSync(path.join(repositoryRoot, skillRoot, "SKILL.md")), skillRoot);
@@ -251,7 +252,7 @@ test("Codex update docs distinguish Git marketplaces from local checkouts", () =
   }
 });
 
-test("plugin discovery points only at the two generated public Skills", () => {
+test("plugin discovery points only at the three generated public Skills", () => {
   const manifest = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, ".codex-plugin", "plugin.json"), "utf-8"),
   );
@@ -267,6 +268,7 @@ test("plugin discovery points only at the two generated public Skills", () => {
   };
   walk(publicRoot);
   assert.deepEqual(skillDocs.sort(), [
+    "author-cuebook-skill/SKILL.md",
     "create-cuebook-content/SKILL.md",
     "query-cuebook/SKILL.md",
   ]);

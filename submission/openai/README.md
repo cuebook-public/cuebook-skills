@@ -9,9 +9,9 @@ npm run submission:check
 npm run submission:prepare
 ```
 
-The prepare command validates the Cuebook Plugin, verifies exactly five positive and three negative reviewer cases, confirms that exactly two public `SKILL.md` entrypoints are discoverable, and writes:
+The prepare command validates the Cuebook Plugin, verifies exactly five positive and three negative reviewer cases, confirms that exactly three public `SKILL.md` entrypoints are discoverable, and writes:
 
-- `dist/openai-submission/cuebook-skills-<version>.zip` — the final two-Skill upload bundle;
+- `dist/openai-submission/cuebook-skills-<version>.zip` — the final three-Skill upload bundle;
 - `dist/openai-submission/submission-manifest.json` — file and archive SHA-256 digests;
 - copies of the listing, test cases, annotation rationale, reviewer runbook, release notes, and logo for portal entry.
 

@@ -31,7 +31,7 @@ function fixture(root, { unreleased = "- Added one release feature." } = {}) {
   });
   json(path.join(root, "plugins/cuebook/assets/plugin-index-v1.json"), {
     plugin_version: "0.6.0",
-    catalog_version: "1.28.0",
+    catalog_version: "1.29.0",
   });
   json(path.join(root, "plugins/cuebook/.codex-plugin/plugin.json"), {
     name: "cuebook",
@@ -83,7 +83,7 @@ test("prepares every public version surface while preserving catalog version", (
     assert.equal(JSON.parse(fs.readFileSync(path.join(root, "package-lock.json"))).packages[""].version, "0.7.0");
     const index = JSON.parse(fs.readFileSync(path.join(root, "plugins/cuebook/assets/plugin-index-v1.json")));
     assert.equal(index.plugin_version, "0.7.0");
-    assert.equal(index.catalog_version, "1.28.0");
+    assert.equal(index.catalog_version, "1.29.0");
     assert.equal(
       JSON.parse(fs.readFileSync(path.join(root, "plugins/cuebook/.codex-plugin/plugin.json"))).version,
       "0.7.0+codex.20260721103045",

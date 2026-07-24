@@ -1,13 +1,13 @@
 {
   "schema_version": "cuebook-release-skills-manifest-v2",
-  "catalog_version": "1.28.0",
+  "catalog_version": "1.29.0",
   "plugin_version": "0.9.16",
   "discovery_budget": {
-    "legacy_skill_count": 38,
-    "public_skill_count": 2,
-    "legacy_metadata_bytes": 23491,
-    "public_metadata_bytes": 1607,
-    "reduction_percent": 93.2,
+    "legacy_skill_count": 39,
+    "public_skill_count": 3,
+    "legacy_metadata_bytes": 24411,
+    "public_metadata_bytes": 2527,
+    "reduction_percent": 89.6,
     "minimum_reduction_percent": 60
   },
   "frame_fast_preview_budget": {
@@ -104,6 +104,19 @@
         "scripts/validate_frame_preview.mjs",
         "scripts/validate_memory_proposal.mjs",
         "scripts/validate_tradingview_canvas_transfer.mjs"
+      ],
+      "valid": true
+    },
+    {
+      "skill": "author-cuebook-skill",
+      "closure": [
+        "author-cuebook-skill"
+      ],
+      "bundled_internal_modules": 0,
+      "bundled_runtime_resources": [],
+      "plugin_assets": [],
+      "vendored_shared_validators": [
+        "scripts/validate_community_skill_submission.mjs"
       ],
       "valid": true
     }

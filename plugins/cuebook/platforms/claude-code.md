@@ -1,8 +1,8 @@
 # Cuebook on Claude Code
 
-**Surface:** Native Claude Code plugin with two Agent Skills and remote MCP.
+**Surface:** Native Claude Code plugin with three Agent Skills and remote MCP.
 
-**Package status:** Native marketplace packaging explicitly exposes two self-contained Skills plus the canonical remote MCP config.
+**Package status:** Native marketplace packaging explicitly exposes three self-contained Skills plus the canonical remote MCP config.
 
 **Live status:** OAuth, Tool discovery, image upload, and atomic Frame publication were live-verified on 2026-07-21.
 
@@ -17,7 +17,7 @@ claude plugin marketplace add cuebook-public/cuebook-skills \
 claude plugin install cuebook@cuebook
 ```
 
-Start a new Claude Code session, or run `/reload-plugins`. The repository-root marketplace entry explicitly installs only `skills/query-cuebook` and `skills/create-cuebook-content`. Each is a self-contained generated bundle; supporting implementation modules remain non-discoverable references inside those bundles.
+Start a new Claude Code session, or run `/reload-plugins`. The repository-root marketplace entry explicitly installs only `skills/query-cuebook`, `skills/create-cuebook-content`, and `skills/author-cuebook-skill`. Each is a self-contained generated bundle; supporting implementation modules remain non-discoverable references inside those bundles.
 
 Verify the installed inventory before using it:
 
@@ -26,7 +26,7 @@ claude plugin details cuebook@cuebook
 claude mcp list
 ```
 
-The plugin inventory must report exactly **2 Skills**, and the MCP list must contain `plugin:cuebook:cuebook`. A larger Skill count means an older marketplace snapshot is still installed; update the marketplace and reinstall the plugin once, then reload Claude Code. This refresh does not require a second OAuth grant.
+The plugin inventory must report exactly **3 Skills**, and the MCP list must contain `plugin:cuebook:cuebook`. A larger Skill count means an older marketplace snapshot is still installed; update the marketplace and reinstall the plugin once, then reload Claude Code. This refresh does not require a second OAuth grant.
 
 For a reproducible frozen install, use `cuebook-public/cuebook-skills@v0.9.16` in the marketplace command. A tag-pinned marketplace stays on that release until its source is changed.
 
@@ -51,12 +51,13 @@ If authentication or token exchange fails, stop after that one result. Do not ad
 
 ## Invocation
 
-Same two public entrypoints as Codex: `query-cuebook` (read-only) and
-`create-cuebook-content` (creation; may call query). The `$skill-name`
+Same three public entrypoints as Codex: `query-cuebook` (read-only),
+`create-cuebook-content` (creation; may call query), and
+`author-cuebook-skill` (community skill submission). The `$skill-name`
 cross-invocation convention maps to Claude Code's Skill tool.
 
-TradingView remains an optional, separately configured workbench rather than a
-third public Skill. Use distinct `tradingview_desktop` and
+TradingView remains an optional, separately configured workbench rather than
+another public Skill. Use distinct `tradingview_desktop` and
 `tradingview_research` MCP server names and follow
 [Optional TradingView Connectors](../references/tradingview-optional-connectors.md) for the
 consent, Tool-scope, source-rights, rollback, and Frame rerender boundaries.
@@ -100,10 +101,10 @@ around a host permission denial.
 
 ## Current verification boundary
 
-- The released two-Skill inventory still needs one post-install count check after each package update; active sessions retain their startup snapshot until reload.
+- The released three-Skill inventory still needs one post-install count check after each package update; active sessions retain their startup snapshot until reload.
 - Render/audit scripts unverified against a locally installed Playwright
   (only the bundled Codex runtime is exercised today).
-- Automated two-entrypoint trigger evaluation has not yet run on Claude Code
+- Automated public-entrypoint trigger evaluation has not yet run on Claude Code
   (see `evals/`).
 
 ## Smoke test
@@ -113,6 +114,6 @@ node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook
 node --test 'plugins/cuebook/**/*.test.mjs'
 ```
 
-Also run `claude plugin validate . --strict` from a checkout of this repository, confirm `claude plugin details cuebook@cuebook` reports exactly two Skills, and confirm `claude mcp list` contains `plugin:cuebook:cuebook`.
+Also run `claude plugin validate . --strict` from a checkout of this repository, confirm `claude plugin details cuebook@cuebook` reports exactly three Skills, and confirm `claude mcp list` contains `plugin:cuebook:cuebook`.
 
 Run the shared [live verification gate](README.md#live-verification-gate). Ask `What changed around USO recently?` and confirm routing to `query-cuebook` with a normal source-linked MCP result and no write-tool calls.

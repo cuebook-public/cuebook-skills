@@ -160,4 +160,4 @@ npm run build:release
 npm run check
 ```
 
-Only the two public entrypoints are discoverable. Internal modules are packaged as on-demand references, and `npm run verify:release-bundles` compares generated bundles byte-for-byte with an isolated rebuild instead of relying on Git state.
+Only the three public entrypoints are discoverable. Internal modules are packaged as on-demand references, and `npm run verify:release-bundles` compares generated bundles byte-for-byte with an isolated rebuild instead of relying on Git state.

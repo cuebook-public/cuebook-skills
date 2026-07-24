@@ -2,7 +2,7 @@
 
 **Surface:** OAuth-authenticated Streamable HTTP MCP.
 
-**Skill layer:** None unless the host separately supports and installs the two Agent Skills bundles.
+**Skill layer:** None unless the host separately supports and installs the three Agent Skills bundles.
 
 **Live status:** Protocol compatibility is documented; each client remains unverified until it passes the shared gate.
 

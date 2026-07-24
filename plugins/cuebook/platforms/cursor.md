@@ -6,16 +6,17 @@
 
 **Live status:** Skill discovery, OAuth, preview, and publication are pending host verification.
 
-## Install the two Skills
+## Install the three Skills
 
 Use the generated bundles from the repository root, not `plugins/cuebook/skills/`:
 
 ```text
 skills/query-cuebook/
 skills/create-cuebook-content/
+skills/author-cuebook-skill/
 ```
 
-Copy those two directories into either the project's `.agents/skills/` directory or the user's Agent Skills directory supported by the installed Cursor version. Start a new Cursor session after installation. Never copy the source modules as separate Skills.
+Copy those three directories into either the project's `.agents/skills/` directory or the user's Agent Skills directory supported by the installed Cursor version. Start a new Cursor session after installation. Never copy the source modules as separate Skills.
 
 ## Configure MCP
 
@@ -42,7 +43,7 @@ If the installed build uses different command names, use its MCP settings UI rat
 
 ## Verification
 
-After the server rollout, run the shared [live verification gate](README.md#live-verification-gate). Confirm that only the two public Skills are discoverable, require a normal `get_frame_capabilities` result, then preview a real idea without publishing. Cursor's host-native image generation is not a substitute for the Skill's exact PNG dimensions, bitmap audit, and manifest hashes.
+After the server rollout, run the shared [live verification gate](README.md#live-verification-gate). Confirm that only the three public Skills are discoverable, require a normal `get_frame_capabilities` result, then preview a real idea without publishing. Cursor's host-native image generation is not a substitute for the Skill's exact PNG dimensions, bitmap audit, and manifest hashes.
 
 ## Official host references
 

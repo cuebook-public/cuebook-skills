@@ -20,7 +20,7 @@
   <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.16"><img alt="Release v0.9.16" src="https://img.shields.io/badge/release-v0.9.16-F6C500?style=flat-square&labelColor=111111"></a>
   <a href="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml"><img alt="Quality" src="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml/badge.svg?branch=main"></a>
   <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/Node.js-%E2%89%A522-3C873A?style=flat-square&labelColor=111111">
-  <img alt="Two public skills" src="https://img.shields.io/badge/public_skills-2-4C6FFF?style=flat-square&labelColor=111111">
+  <img alt="Three public skills" src="https://img.shields.io/badge/public_skills-3-4C6FFF?style=flat-square&labelColor=111111">
 </p>
 
 <p align="center">
@@ -73,7 +73,7 @@ Internal Tool calls, providers, retries, hashes, and publication mechanics remai
 
 | Surface | Best for | Current contract |
 | --- | --- | --- |
-| **[Cuebook Skills](https://github.com/cuebook-public/cuebook-skills)** | Natural-language research and guided Frame creation in Agent Skills hosts | Two public entrypoints; internal research, rendering, and publication modules load on demand |
+| **[Cuebook Skills](https://github.com/cuebook-public/cuebook-skills)** | Natural-language research and guided Frame creation in Agent Skills hosts | Three public entrypoints; internal research, rendering, and publication modules load on demand |
 | **[Cuebook CLI](https://github.com/cuebook-public/cuebook-cli)** | Terminal use, scripts, automation, and direct Tool inspection | Live Tool discovery, structured JSON, OAuth connection management, and fail-closed write confirmation |
 
 Both surfaces connect to Cuebook MCP. The server remains authoritative for available Tools, source-linked data, authorization, idempotency, and publication policy; neither client maintains a second catalog of product truth.
@@ -84,9 +84,9 @@ Both surfaces connect to Cuebook MCP. The server remains authoritative for avail
 
 Behind that one natural-language surface, Cuebook can combine published Cues and their timelines with persisted market snapshots, sealed OHLCV, news clusters, filings, disclosures, positioning, asset events, market calendars, prediction markets, market briefings, themes, reasoning graphs, settlements, and published Frames. Seven output modes cover concise answers, comparisons, source bundles, data tables, factual charts, history views, and handoff into Frame creation.
 
-When separately configured by the creator, two optional TradingView connectors can join those same two Skills without adding a third entrypoint. Query may inspect the open chart, make one high-density latest-structure capture, or run one bounded outside research check. Create may place an exact, separately confirmed set of levels, zones, checkpoints, notes, or historical segments on that local chart. Existing drawings are preserved. Raw screenshots and provider data remain restricted; Frame defaults to Cuebook-native rerendering. An explicitly selected official snapshot can use the finished-bitmap route only with visible TradingView attribution, known overlay rights, an applicable price lock, undistorted geometry, and image audit. See [Optional TradingView Connectors](plugins/cuebook/references/tradingview-optional-connectors.md).
+When separately configured by the creator, two optional TradingView connectors can join those same two Skills without adding another entrypoint. Query may inspect the open chart, make one high-density latest-structure capture, or run one bounded outside research check. Create may place an exact, separately confirmed set of levels, zones, checkpoints, notes, or historical segments on that local chart. Existing drawings are preserved. Raw screenshots and provider data remain restricted; Frame defaults to Cuebook-native rerendering. An explicitly selected official snapshot can use the finished-bitmap route only with visible TradingView attribution, known overlay rights, an applicable price lock, undistorted geometry, and image audit. See [Optional TradingView Connectors](plugins/cuebook/references/tradingview-optional-connectors.md).
 
-The two public Skills are a context-efficiency boundary, not a capability limit. Specialized routing, research, metrics, visual design, and publication modules remain available on demand without competing in the host's first-turn Skill discovery budget.
+The public Skills are a context-efficiency boundary, not a capability limit. Specialized routing, research, metrics, visual design, and publication modules remain available on demand without competing in the host's first-turn Skill discovery budget. A third public entrypoint, `author-cuebook-skill`, packages a creator-authored agent skill and submits it to the Cuebook community skill marketplace for review; every successful walk ends at "submitted for review", and approved packages are distributed separately through `github.com/cuebook-public/cuebook-community-skills`.
 
 ## Platform Support
 
@@ -127,7 +127,7 @@ One creator consent covers Cuebook's six explicit authorization domains: public 
 
 The installing task may complete that one host-owned login, but it must not create a background test task, invent a placeholder idea, or publish anything. Installation is ready for use only after Cuebook is enabled and no longer reports `not_logged_in`.
 
-After installation and authentication are complete, fully restart the host before testing: quit the Codex app with `Cmd+Q` on macOS (or exit it completely on another platform), reopen it, and then start one new task. For Codex CLI, end the current process and start a new one. Merely opening another task in an already-running app can retain the previous in-memory Plugin and Tool snapshot. The restarted task loads the two Skills and the authenticated Cuebook connector; it should receive your real request immediately instead of repeating setup.
+After installation and authentication are complete, fully restart the host before testing: quit the Codex app with `Cmd+Q` on macOS (or exit it completely on another platform), reopen it, and then start one new task. For Codex CLI, end the current process and start a new one. Merely opening another task in an already-running app can retain the previous in-memory Plugin and Tool snapshot. The restarted task loads the three Skills and the authenticated Cuebook connector; it should receive your real request immediately instead of repeating setup.
 
 Then try either path:
 
@@ -141,7 +141,7 @@ Turn that idea into a Frame.
 ```
 
 > [!NOTE]
-> Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly two public entrypoints; internal modules load only when needed.
+> Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly three public entrypoints; internal modules load only when needed.
 
 For a reproducible, intentionally frozen install, add `--ref v0.9.16` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
 
@@ -295,7 +295,7 @@ npm run build:release
 npm run check
 ```
 
-Validation checks the repository-wide English-only policy, two-entrypoint boundary, referenced-resource closure, mobile preview and publication context budgets, schema correctness, rendering gates, and byte-for-byte generated bundle parity against an isolated rebuild. CI also rejects tracked Python runtime files.
+Validation checks the repository-wide English-only policy, public-entrypoint boundary, referenced-resource closure, mobile preview and publication context budgets, schema correctness, rendering gates, and byte-for-byte generated bundle parity against an isolated rebuild. CI also rejects tracked Python runtime files.
 
 </details>
 

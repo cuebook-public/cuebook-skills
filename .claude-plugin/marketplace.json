@@ -17,7 +17,8 @@
       "category": "Finance",
       "skills": [
         "./skills/query-cuebook",
-        "./skills/create-cuebook-content"
+        "./skills/create-cuebook-content",
+        "./skills/author-cuebook-skill"
       ],
       "mcpServers": "./plugins/cuebook/.mcp.json",
       "tags": [

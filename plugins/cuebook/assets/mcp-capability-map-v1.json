@@ -345,6 +345,48 @@
       "used_by": [
         "query-cuebook"
       ]
+    },
+    {
+      "tool": "list_community_skills",
+      "module": "query",
+      "authorization_scope": "read:public",
+      "access": "read",
+      "purpose": "Published community skills with install refs and the reviewed capability disclosure; newest first or one creator's set.",
+      "used_by": [
+        "query-cuebook",
+        "author-cuebook-skill"
+      ]
+    },
+    {
+      "tool": "get_community_skill",
+      "module": "query",
+      "authorization_scope": "read:public",
+      "access": "read",
+      "purpose": "One published community skill by handle and slug with its reviewed capability disclosure.",
+      "used_by": [
+        "query-cuebook",
+        "author-cuebook-skill"
+      ]
+    },
+    {
+      "tool": "begin_skill_publish",
+      "module": "create",
+      "authorization_scope": "cuebook.community.publish",
+      "access": "write",
+      "purpose": "Reserve the signed upload slot for one community skill package submission; sha256- and size-bound.",
+      "used_by": [
+        "author-cuebook-skill"
+      ]
+    },
+    {
+      "tool": "complete_skill_publish",
+      "module": "create",
+      "authorization_scope": "cuebook.community.publish",
+      "access": "write",
+      "purpose": "Freeze the uploaded package and land an append-only version awaiting marketplace review.",
+      "used_by": [
+        "author-cuebook-skill"
+      ]
     }
   ],
   "required_tools": [

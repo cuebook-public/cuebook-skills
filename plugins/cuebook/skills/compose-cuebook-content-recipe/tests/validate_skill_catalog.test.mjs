@@ -28,7 +28,7 @@ test("base catalog structure", () => {
   const catalog = baseCatalog();
   const result = validate(catalog, false);
   assert.equal(result.valid, true, JSON.stringify(result));
-  assert.equal(catalog.catalog_version, "1.28.0");
+  assert.equal(catalog.catalog_version, "1.29.0");
   const query = skill(catalog, "query-cuebook");
   const create = skill(catalog, "create-cuebook-content");
   assert.equal(query.output_contract, "CuebookQueryBundleV1");

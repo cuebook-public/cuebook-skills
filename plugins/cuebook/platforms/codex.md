@@ -1,6 +1,6 @@
 # Cuebook on Codex and Codex CLI
 
-**Surface:** Cuebook Plugin with two Agent Skills and remote MCP.
+**Surface:** Cuebook Plugin with three Agent Skills and remote MCP.
 
 **Package status:** Validated locally.
 
@@ -21,9 +21,9 @@ codex mcp list --json
 ```
 
 Skills are discovered from the plugin's generated `public-skills/` directory.
-Codex reads exactly two `SKILL.md` files at startup. Internal capabilities are
+Codex reads exactly three `SKILL.md` files at startup. Internal capabilities are
 vendored as non-discoverable `references/modules/*.md` resources behind
-`query-cuebook` and `create-cuebook-content`.
+`query-cuebook`, `create-cuebook-content`, and `author-cuebook-skill`.
 
 The default marketplace follows stable releases from `main`. Add `--ref v0.9.16`
 only for an intentionally frozen install.
@@ -93,9 +93,12 @@ reinstall or debug plugin discovery inside the creation flow.
 - Turn an idea into a Frame: `create-cuebook-content` (may call Query; each
   candidate visibly contains only one title, one body, and one paired editorial
   image with sourced curves, event/threshold geometry, or future scenarios).
+- Submit a creator-authored skill to the community marketplace:
+  `author-cuebook-skill` (structural pre-check, one confirmed manifest card,
+  signed upload; every receipt reads submitted for review).
 
-TradingView is an optional, separately configured workbench behind those same
-two entrypoints; it does not add a third Skill or a hidden Cuebook dependency.
+TradingView is an optional, separately configured workbench behind the Query
+and Create entrypoints; it does not add another Skill or a hidden Cuebook dependency.
 When a creator wants local-chart inspection, bounded outside research, or a
 confirmed chart annotation transfer, follow
 [Optional TradingView Connectors](../references/tradingview-optional-connectors.md). Keep the

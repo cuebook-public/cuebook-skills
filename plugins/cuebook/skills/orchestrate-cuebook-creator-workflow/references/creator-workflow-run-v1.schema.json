@@ -11,7 +11,7 @@
     "feed_ref": {"type": "string", "pattern": "^CF_[a-z0-9]{8,64}$"},
     "opportunity_set_ref": {"type": "string", "pattern": "^OS_[a-z0-9]{8,64}$"},
     "recipe_ref": {"type": "string", "pattern": "^RECIPE_[a-z0-9]{8,64}$"},
-    "catalog_version": {"const": "1.28.0", "description": "Pinned Cuebook creator skill catalog for this workflow contract revision."},
+    "catalog_version": {"const": "1.29.0", "description": "Pinned Cuebook creator skill catalog for this workflow contract revision."},
     "query_bundle_refs": {"type": "array", "items": {"type": "string", "pattern": "^ART_"}, "uniqueItems": true},
     "selected_opportunity_refs": {"type": "array", "items": {"type": "string", "pattern": "^OPP_"}, "uniqueItems": true},
     "mode": {"enum": ["plan_only", "single", "batch", "event_lifecycle", "postmortem", "correction"]},

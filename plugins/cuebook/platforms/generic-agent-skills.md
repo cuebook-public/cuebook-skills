@@ -26,7 +26,7 @@ shared assets are copied inside, internal capabilities become ordinary
 `references/modules/<name>.md` documents with sibling resource directories,
 and every `$skill-name` or `../../assets` reference is rewritten to a
 bundle-root-relative path. Each bundle contains exactly one root `SKILL.md`.
-Only the two public bundles belong in `.agents/skills/`; never mirror the
+Only the three public bundles belong in `.agents/skills/`; never mirror the
 source module tree into a user-level Skill directory.
 
 ## Install and discovery

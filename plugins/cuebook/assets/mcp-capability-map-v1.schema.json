@@ -404,7 +404,8 @@
             "cuebook.frame.write",
             "cuebook.frame.publish",
             "cuebook.memory.read",
-            "cuebook.memory.propose"
+            "cuebook.memory.propose",
+            "cuebook.community.publish"
           ]
         },
         "phase": {

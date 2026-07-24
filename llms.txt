@@ -6,8 +6,9 @@
 
 - [Query Cuebook](plugins/cuebook/skills/query-cuebook/SKILL.md): read-only search, inspection, comparison, evidence, market data, and history. It never writes or invokes Create.
 - [Create Cuebook Content](plugins/cuebook/skills/create-cuebook-content/SKILL.md): turns a creator's seed into sourced text, static visuals, and optional settlement artifacts. It may invoke Query for evidence.
+- [Author Cuebook Skill](plugins/cuebook/skills/author-cuebook-skill/SKILL.md): packages a creator-authored skill, runs the structural pre-check, confirms one manifest card, and submits it to the community marketplace for review.
 
-Only these two skills are public entrypoints. Supporting capability modules are loaded through them on demand.
+Only these three skills are public entrypoints. Supporting capability modules are loaded through them on demand.
 
 ## Architecture and distribution
 
@@ -16,15 +17,15 @@ Only these two skills are public entrypoints. Supporting capability modules are 
 - [Canonical plugin index](plugins/cuebook/assets/plugin-index-v1.json): public entrypoints, catalog version, and package inventory.
 - [Module map](plugins/cuebook/assets/cuebook-modules-v1.json): the one-way `Create -> Query` dependency and skill ownership.
 - [MCP capability map](plugins/cuebook/assets/mcp-capability-map-v1.json): Cuebook MCP URL, read/write ownership, OAuth scopes, and release gates.
-- [Built generic bundles](skills/): self-contained `query-cuebook` and `create-cuebook-content` packages. These are generated artifacts; do not edit them directly.
+- [Built generic bundles](skills/): self-contained `query-cuebook`, `create-cuebook-content`, and `author-cuebook-skill` packages. These are generated artifacts; do not edit them directly.
 
-The source plugin is under `plugins/cuebook/`. Codex and Claude Code use native plugin marketplaces. Cursor, Hermes, OpenClaw, and generic Agent Skills clients install the two self-contained bundles under `skills/`. Claude, Claude Desktop, ChatGPT, Grok, and generic MCP clients connect directly to the remote endpoint without loading the Skill layer. Credentials never belong in this repository or generated artifacts.
+The source plugin is under `plugins/cuebook/`. Codex and Claude Code use native plugin marketplaces. Cursor, Hermes, OpenClaw, and generic Agent Skills clients install the three self-contained bundles under `skills/`. Claude, Claude Desktop, ChatGPT, Grok, and generic MCP clients connect directly to the remote endpoint without loading the Skill layer. Credentials never belong in this repository or generated artifacts.
 
 ## Deterministic checks
 
 - `npm run validate` checks package/module policy, local resource closure, `$skill-name` closure, and retired capability references.
 - `npm test` runs the Node.js test suite.
-- `npm run build:release` regenerates both public bundles and `skills/release-manifest.json`.
+- `npm run build:release` regenerates the public bundles and `skills/release-manifest.json`.
 - `npm run check` runs validation, tests, regeneration, and verifies that the tracked bundles match source.
 
 Node.js 22 or newer is the supported validation runtime. Playwright plus Chromium is required for browser-backed render and audit tests.

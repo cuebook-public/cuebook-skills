@@ -6,16 +6,18 @@
 
 **Live status:** Security scan, Skill discovery, OAuth, preview, and publication are pending host verification.
 
-## Install the two Skills
+## Install the three Skills
 
 Inspect each community Skill before installation, then install only the public bundles:
 
 ```bash
 hermes skills inspect cuebook-public/cuebook-skills/skills/query-cuebook
 hermes skills inspect cuebook-public/cuebook-skills/skills/create-cuebook-content
+hermes skills inspect cuebook-public/cuebook-skills/skills/author-cuebook-skill
 
 hermes skills install cuebook-public/cuebook-skills/skills/query-cuebook
 hermes skills install cuebook-public/cuebook-skills/skills/create-cuebook-content
+hermes skills install cuebook-public/cuebook-skills/skills/author-cuebook-skill
 ```
 
 Do not install `plugins/cuebook/skills/`; those directories are on-demand implementation modules, not public entrypoints.
@@ -41,7 +43,7 @@ Do not mark Cuebook as safe for parallel MCP calls. Its read operations can be b
 
 ## Verification
 
-After the server rollout, run the shared [live verification gate](README.md#live-verification-gate). Confirm the two Skills with `hermes skills list`, retain one normal `get_frame_capabilities` result, and preview a real idea before any explicit test publication.
+After the server rollout, run the shared [live verification gate](README.md#live-verification-gate). Confirm the three Skills with `hermes skills list`, retain one normal `get_frame_capabilities` result, and preview a real idea before any explicit test publication.
 
 ## Official host references
 

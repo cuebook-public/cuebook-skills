@@ -115,6 +115,20 @@ const MEMORY_TOOL_SCOPES = new Map([
   ["get_interest_profile", "cuebook.memory.read"],
 ]);
 
+// Community skill marketplace: the submission pair carries the dedicated
+// one-time cuebook.community.publish consent; the catalog reads stay public.
+const COMMUNITY_TOOL_SCOPES = new Map([
+  ["begin_skill_publish", "cuebook.community.publish"],
+  ["complete_skill_publish", "cuebook.community.publish"],
+]);
+
+// The community catalog is submission metadata, not market data: the author
+// entry may read it directly instead of consuming a QueryBundleV1.
+const COMMUNITY_CATALOG_READ_TOOLS = new Set([
+  "list_community_skills",
+  "get_community_skill",
+]);
+
 const PLANNED_TOOLS = new Set([
   "get_creator_feed",
   "compute_market_metrics",
@@ -494,16 +508,16 @@ export function validate(pluginRoot) {
   );
   const expectedPublicSkillIds = new Set((index.public_entrypoints ?? []).map(norm));
   check(
-    publicSkillDocs.length === 2,
+    publicSkillDocs.length === 3,
     "PLUGIN_PUBLIC_SKILL_COUNT",
     "public-skills",
-    "The Codex plugin release must expose exactly two SKILL.md files.",
+    "The Codex plugin release must expose exactly three SKILL.md files.",
   );
   check(
     setEq(publicSkillIds, expectedPublicSkillIds),
     "PLUGIN_PUBLIC_SKILL_SET",
     "public-skills",
-    "Only query-cuebook and create-cuebook-content may be public Codex Skills.",
+    "Only query-cuebook, create-cuebook-content, and author-cuebook-skill may be public Codex Skills.",
   );
   check(
     publicSkillDocs.every((skillDoc) => (
@@ -782,10 +796,14 @@ export function validate(pluginRoot) {
     check(skillDirs.has(skillId), "PUBLIC_ENTRYPOINT", `public_entrypoints.${skillId}`, "Public entrypoint is not packaged.");
   }
   check(
-    deepEqualPy(index.public_entrypoints, [norm(query.entrypoint_skill), norm(create.entrypoint_skill)]),
+    deepEqualPy(index.public_entrypoints, [
+      norm(query.entrypoint_skill),
+      norm(create.entrypoint_skill),
+      "author-cuebook-skill",
+    ]),
     "PUBLIC_ENTRYPOINT_SET",
     "plugin-index-v1.json.public_entrypoints",
-    "Only Query and Create may be public plugin entrypoints.",
+    "Only Query, Create, and the community submission entry may be public plugin entrypoints.",
   );
   check(
     isSubset(
@@ -923,6 +941,7 @@ export function validate(pluginRoot) {
     const expectedScope = FRAME_TOOL_SCOPES.get(toolName)
       ?? PAPER_TOOL_SCOPES.get(toolName)
       ?? MEMORY_TOOL_SCOPES.get(toolName)
+      ?? COMMUNITY_TOOL_SCOPES.get(toolName)
       ?? (availableTools.has(toolName) && moduleId === "query"
         ? "read:public"
         : (moduleId === "query" ? "cuebook.query" : (access === "external_write" ? "cuebook.publish" : "cuebook.create.write")));
@@ -936,7 +955,7 @@ export function validate(pluginRoot) {
       if (owner !== undefined) {
         const allowed = owner === moduleId || ((modules.get(owner) ?? {}).may_invoke ?? []).includes(moduleId);
         check(allowed, "TOOL_MODULE_EDGE", `tools.${toolName}.used_by`, `${owner} Skill ${skillId} cannot use ${moduleId} tool ${toolName}.`);
-        if (moduleId === "query") check(owner === "query", "CREATE_DIRECT_READ", `tools.${toolName}.used_by`, `Create Skill ${skillId} must consume QueryBundleV1 instead of calling Query tool ${toolName} directly.`);
+        if (moduleId === "query" && !COMMUNITY_CATALOG_READ_TOOLS.has(toolName)) check(owner === "query", "CREATE_DIRECT_READ", `tools.${toolName}.used_by`, `Create Skill ${skillId} must consume QueryBundleV1 instead of calling Query tool ${toolName} directly.`);
       }
     }
   }

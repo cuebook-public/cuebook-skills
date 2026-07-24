@@ -1,8 +1,8 @@
 {
   "schema_version": "skill-catalog-v1",
   "catalog_id": "CAT_cuebook",
-  "catalog_version": "1.28.0",
-  "generated_at": "2026-07-19T17:22:20+08:00",
+  "catalog_version": "1.29.0",
+  "generated_at": "2026-07-24T09:00:00+08:00",
   "default_locale": "zh-CN",
   "categories": [
     {
@@ -68,7 +68,7 @@
     {
       "category_id": "category-modules",
       "label": "Product entrypoints",
-      "description": "Expose stable Query and Create entrypoints with a one-way invocation boundary.",
+      "description": "Expose stable public product entrypoints with a one-way invocation boundary.",
       "order": 11
     }
   ],
@@ -2312,6 +2312,56 @@
         ],
         "test_refs": [
           "intake-cuebook-viewpoint/tests/validate_viewpoint_intake.test.mjs"
+        ]
+      },
+      "replaced_by": null
+    },
+    {
+      "skill_id": "author-cuebook-skill",
+      "version": "1.0.0",
+      "display_name": "Author Cuebook Skill",
+      "description": "Package the creator's own agent skill, run the structural pre-check, confirm one manifest card, and walk the signed community-marketplace submission that ends at submitted for review.",
+      "category_id": "category-modules",
+      "status": "stable",
+      "visibility": "selectable",
+      "execution": "installed",
+      "user_selectable": true,
+      "default_enabled": true,
+      "capabilities": [
+        "author-cuebook-skill"
+      ],
+      "input_contracts": [
+        "FreeformUserInput"
+      ],
+      "output_contract": "CommunitySkillSubmissionV1",
+      "requires_all": [],
+      "supported_modes": [
+        "single"
+      ],
+      "supported_channels": [
+        "all"
+      ],
+      "ui": {
+        "surface": "creator",
+        "group": "Create",
+        "order": 41,
+        "control_type": "single_select",
+        "icon": "package-plus",
+        "summary": "Submit a creator-authored skill package to the community marketplace for review."
+      },
+      "maintenance": {
+        "owner": "cuebook-platform",
+        "stability": "stable",
+        "last_verified_at": "2026-07-24T09:00:00+08:00",
+        "skill_path": "author-cuebook-skill",
+        "schema_refs": [
+          "author-cuebook-skill/references/community-skill-submission-v1.schema.json"
+        ],
+        "validator_refs": [
+          "author-cuebook-skill/scripts/validate_community_skill_submission.mjs"
+        ],
+        "test_refs": [
+          "author-cuebook-skill/tests/validate_community_skill_submission.test.mjs"
         ]
       },
       "replaced_by": null

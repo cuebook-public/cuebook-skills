@@ -10,18 +10,31 @@ these rules need a deliberate edit HERE in the same commit.
 | Layer | Contents | Authority |
 |---|---|---|
 | L0 — MCP server | Tools, scopes, OAuth, schemas | The deployed server registry is the runtime truth; `assets/mcp-capability-map-v1.json` is this repo's audited snapshot of it |
-| L1 — Public entrypoints | `query-cuebook`, `create-cuebook-content` | The ONLY discoverable skills. Everything a host can select routes through these two |
+| L1 — Public entrypoints | `query-cuebook`, `create-cuebook-content`, `author-cuebook-skill` | The ONLY discoverable skills. Everything a host can select routes through these three |
 | L2a — Internal pipeline skills | 36 directories under `skills/` | Routable stages invoked via `$skill-name` or a menu `skill_refs`; each owns its schemas, validators, and tests |
 | L2b — Entry-embedded capability modules | Prose + schema files under the two public skills' `references/` | Consent-gated or optional-connector capabilities bound to one entry's flow (TradingView, decision memory) |
 | L3 — Plugin assets | Module registry, menus, intent contract, capability map, index | Machine-readable routing and gating data shared by all skills |
 | L4 — Generated bundles | `public-skills/`, repo-root `skills/`, submission packet | Never edited by hand; `build_release_skills.mjs` output, parity-checked in CI |
 
-## One discovery surface, two entries
+## One discovery surface, three entries
 
-Host discovery sees exactly two skills. A third public entry requires evidence
-that routing quality measurably improves and a validator update in the same
-change; the default answer is no (adversarial review AR-09). Internal
+Host discovery sees exactly three skills. Growing the public surface requires
+evidence that routing quality measurably improves and a validator update in the
+same change; the default answer is no (adversarial review AR-09). Internal
 capability never justifies discovery growth: it lands as L2a or L2b.
+
+The third entry is the community skill marketplace front door:
+`author-cuebook-skill` (L1) exists solely for community submission — package a
+creator-authored skill, pre-check its structure, confirm one manifest card, and
+walk the signed begin/PUT/complete upload that ends at "submitted for review".
+It earned discovery because submission intent never routes through Query or
+Create. Its four community tools (`list_community_skills`,
+`get_community_skill`, `begin_skill_publish`, `complete_skill_publish`) live in
+the capability map like every other tool, with the submission pair behind the
+one-time `cuebook.community.publish` consent. The distribution surface for
+approved packages is the separate community repo
+(`github.com/cuebook-public/cuebook-community-skills`), populated only by the
+platform's review-then-bot pipeline — never by this repo's release process.
 
 ## Extension pattern criteria
 
