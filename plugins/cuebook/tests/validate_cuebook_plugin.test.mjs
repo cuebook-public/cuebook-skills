@@ -279,7 +279,7 @@ test("active, planned, and superseded tool surfaces stay separate", () => {
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
   );
   const active = new Set([...payload.available_tools, ...payload.required_tools].map((item) => item.tool));
-  assert.equal(payload.required_tools.length, 18);
+  assert.equal(payload.required_tools.length, 19);
   assert.deepEqual(new Set(payload.planned_tools.map((item) => item.tool)), new Set([
     "get_creator_feed",
     "compute_market_metrics",
@@ -641,6 +641,7 @@ test("initial and correction publish skip separate consent while withdrawal reta
   assert.deepEqual(flow.initial_publish_sequence, [
     "begin_frame_media_upload",
     "https_put_publication_master",
+    "complete_frame_media_upload",
     "complete_frame_publish",
   ]);
   assert.deepEqual(flow.correction_publish_sequence, [
@@ -797,12 +798,13 @@ test("ordinary one-preview publish does not reconstruct the advanced release gra
     "utf-8",
   );
   assert.match(create, /let `complete_frame_publish` finish the server-owned work/u);
-  assert.match(publish, /## Initial Publish: Three Steps/u);
+  assert.match(publish, /## Stage At Preview, Publish In One Call/u);
   assert.match(publish, /Do not reread design references/u);
   assert.match(publish, /only completion call for a new Frame/u);
+  assert.match(publish, /`complete_frame_media_upload`/u);
   assert.doesNotMatch(
     publish,
-    /`(?:complete_frame_media_upload|get_frame_media_status|register_frame_visual_manifest|create_frame_draft|get_frame_draft|update_frame_draft|prepare_frame_publish|publish_frame)`/u,
+    /`(?:get_frame_media_status|register_frame_visual_manifest|create_frame_draft|get_frame_draft|update_frame_draft|prepare_frame_publish|publish_frame)`/u,
   );
   assert.match(publish, /including before market open, after market close, on weekends/u);
   assert.match(publish, /never waits for a trading session/u);

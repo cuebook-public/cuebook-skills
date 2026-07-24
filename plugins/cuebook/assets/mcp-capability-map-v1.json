@@ -433,6 +433,20 @@
       "source": "Frame Remote MCP Phase B fast initial publish"
     },
     {
+      "tool": "preflight_frame_publish",
+      "module": "create",
+      "authorization_scope": "cuebook.frame.publish",
+      "phase": "frame_phase_b",
+      "access": "read",
+      "purpose": "Read-only publishability dry run over one settlement intent: resolves assets, the settlement schedule, and entry-observation availability without writing a draft, upload, or publication.",
+      "input_contract": "PreflightFramePublishV1",
+      "output_contract": "FramePublishPreflightV1",
+      "used_by": [
+        "create-cuebook-content"
+      ],
+      "source": "Frame Remote MCP Phase B publish preflight"
+    },
+    {
       "tool": "complete_frame_media_upload",
       "module": "create",
       "authorization_scope": "cuebook.frame.write",
@@ -759,6 +773,7 @@
     "initial_publish_sequence": [
       "begin_frame_media_upload",
       "https_put_publication_master",
+      "complete_frame_media_upload",
       "complete_frame_publish"
     ],
     "initial_settlement_modes": {
@@ -833,5 +848,5 @@
     "source_rights_required_for_creation": true,
     "valuation_comparisons_require_compatible_basis": true
   },
-  "notes": "Skill tool policy is client-side routing, not a claimed MCP profile field. Data-expansion tools with default_enabled=false may return typed unavailable. Superseded legacy writes are absent; planned tools are non-callable. Frame publish uses the active OAuth grant plus the first-party publish action; separate action consent is withdrawal-only. Memory scopes (cuebook.memory.read / cuebook.memory.propose) are requestable via a one-time consent step-up and are never part of the standard or creator bundles; no third-party manage scope exists."
+  "notes": "Skill tool policy is client-side routing, not a claimed MCP profile field. Data-expansion tools with default_enabled=false may return typed unavailable. Superseded legacy writes are absent; planned tools are non-callable. Frame publish uses the active OAuth grant plus the first-party publish action; separate action consent is withdrawal-only. Memory scopes (cuebook.memory.read / cuebook.memory.propose) are requestable via a one-time consent step-up and are never part of the standard or creator bundles; no third-party manage scope exists. Staged initial publish: begin, signed PUT, and complete_frame_media_upload run at preview time against the quarantine store; publication intent costs only complete_frame_publish, and preflight_frame_publish stays a read-only availability check outside the mutation sequence."
 }

@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 0.9.18 — 2026-07-24
+
+- Frame publication now stages at preview and publishes in one call: the moment a rendered Frame is presented, the frozen PNG's reserve, signed PUT, and media completion run silently against the quarantine store (never a publication, abandoned stagings expire backstage), so explicit publish intent costs a single `complete_frame_publish` — the SKILL, publish workflow, capability-map sequence, its schema, and the plugin validator all encode the staged contract.
+- `preflight_frame_publish` joins the 19-tool Frame family as a read-only publishability dry run (assets, settlement schedule, entry-observation availability; no draft, upload, or ledger writes), scoped by the workflow to genuinely-in-doubt publishes rather than a routine pre-publish gate.
+- The failure budget now tells the truth about retries: a blocked (`reprepare_required`) completion is condition-bound and retries once with the SAME idempotency key (completed sub-steps replay, no orphan drafts), a lost success replays the journaled receipt as `idempotent_replay: true`, and only true domain rejections stop the flow.
+- Every market-grammar pairing (grammars, compositions, relationships, observation tests, main transforms, image jobs) moves into `references/frame-market-grammar-pairings.json` as one machine-readable source loaded by the preview validator — no more reverse-engineering validator source to author a render job.
+- The render audit gains a warning-tier text-collision check built on the layout's own char-unit widths; the 0723 production regression pair validates it (the broken two-curve variant warns on the exact 84x15px event-label × series-label overlap, the shipped variant and the full test suite stay clean).
+
 ## 0.9.17 — 2026-07-24
 
 - Added `author-cuebook-skill`, a third public entrypoint and the conversational front door for community skill marketplace submission: it collects a creator-authored package (one root SKILL.md plus references markdown or JSON, no scripts, at most 40 files, 512 KiB zip cap), runs a local structural pre-check with a new CommunitySkillSubmissionV1 schema and validator, confirms one manifest card (slug, display name, summary, description, semver version, declared capability tier with reasoning, license), and walks the signed upload contract (`begin_skill_publish`, HTTP PUT, `complete_skill_publish`) at most once per task; every truthful receipt reads "submitted for review", and listing happens only after Cuebook's automated gates plus, for write-capable skills, human review distribute the package to the community repo.

@@ -43,7 +43,7 @@ Before a Frame conversation begins, silently call `get_frame_capabilities` once 
 - Route TradingView reads to Query, native Frames to Fast Preview, a rights-cleared official snapshot to Attributed Snapshot, and only explicit chart writes to the canvas-transfer reference. For Frame plus canvas, select the Frame before separately confirming its drawing plan.
 - Resolve only rigid gaps, research once, then recap copy, deadline meaning, and visual intent. Time, any terminal ± band, and every two-asset leg are creator-owned; never preset them.
 - After the creator sees the rendered Frame, preserve the chosen copy, meaning, evidence, settlement, and image bytes unchanged.
-- Publish only after explicit publication intent. Read [Frame Publish Workflow](references/frame-publish-workflow.md) at that point, not during preview.
+- Publish only after explicit publication intent. The moment a rendered Frame is shown, silently stage its frozen image in the background (reserve, signed PUT, media completion) so server-side processing finishes while the creator decides; staging touches only the quarantine store and is never a publication. Read [Frame Publish Workflow](references/frame-publish-workflow.md) for the staging and publication contract.
 - If an upstream system provides a frozen commitment, evidence refs, mechanism path, and render-safe projection, consume them as truth. Improve expression and design without re-deciding the asset, direction, horizon, or facts. A layout reroll never reopens the thesis.
 
 ## End-Of-Task Memory Proposal
@@ -163,7 +163,7 @@ The runner must verify creator ownership, numerical source support, text-image d
 
 - Warm target: 30–60 seconds from a ready connector to one complete Frame; a cold connector or browser start may take up to 120 seconds. Treat these as an engineering budget, never a promise or a reason to narrate waiting.
 - Use one asset resolution, one shared evidence plan, one Cuebook batch plus one bounded authoritative Web batch when material, one reconciliation, this bounded interview, one text confirmation, and one runner invocation.
-- After selection, publish in three remote steps: reserve the frozen image, signed PUT, then one high-level completion call. Reuse the runner's hash and size; after publication intent, do not reconfirm, rerun, audit, rebuild, prepare, poll, validate a receipt, reconcile, or read back. Replay uncertain transport once with the same key and payload; never retry domain rejection or alternate shapes.
+- Stage the frozen image the moment the Frame is presented: reserve, signed PUT, and media completion run silently against the quarantine store, reusing the runner's hash and size. Publication intent then costs one high-level completion call. After publication intent, do not reconfirm, rerun, audit, rebuild, prepare, poll, validate a receipt, reconcile, or read back. Replay uncertain transport once with the same key and payload. A blocked completion (`reprepare_required`) is condition-bound, not final: after the named condition changes, retry once with the SAME key — completed sub-steps replay and no new draft appears. A true domain rejection (asset identity, authorization, hash, changed payload) still stops the flow.
 - Do not reread the whole repository, inspect renderer source, rebuild valid stages, create a local OAuth client, or run release packaging before selection.
 - When a valid title, body, and image exist, show the complete Frame and ask only for publication or a visual/copy change. A changed title, body, asset, direction, horizon, settlement meaning, or material premise invalidates the old confirmation and any dependent pixels.
 
@@ -171,7 +171,7 @@ After the Frame, give the one-sentence reveal: the preserved edge, visible conne
 
 ## Controlled Variation
 
-Default to one strongest preview. If the creator asks for another version or a different visual direction, reuse the confirmed proposal: title, body, claim, adopted interview signal, exact tested observation, evidence refs, observation window, horizon, direction, settlement, visual requirements, and fact typing. Do not call Cuebook or Web again for a layout-only reroll.
+Default to one strongest preview. If the creator asks for another version or a different visual direction, reuse the confirmed proposal: title, body, claim, adopted interview signal, exact tested observation, evidence refs, observation window, horizon, direction, settlement, visual requirements, and fact typing. Do not query Cuebook or the Web again for a layout-only reroll; staging the new variant's frozen image (reserve, PUT, media completion) is the one permitted remote touch.
 
 Change one truthful expressive route and avoid the last two design or attention fingerprints when an equally truthful route exists. Return exactly one new variant at a time, even when the creator wants to explore a range; never turn the response into a gallery. Say the new emphasis in one phrase and ask whether this is the one. Stop offering variants when the creator is satisfied. A changed idea, premise, horizon, direction, or settlement meaning requires a new text confirmation.
 

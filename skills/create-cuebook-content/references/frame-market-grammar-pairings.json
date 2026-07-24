@@ -1,0 +1,63 @@
+{
+  "schema_version": "frame-market-grammar-pairings.v1",
+  "description": "Single source of truth for every grammar pairing the market preview validator enforces. The validator loads this file; Skills and agents read the same file instead of reverse-engineering validator source.",
+  "market_grammars": [
+    "curve_story",
+    "relative_divergence",
+    "drawdown_recovery",
+    "correlation_shift",
+    "event_window",
+    "threshold_regime"
+  ],
+  "grammar_compositions": {
+    "curve_story": ["curve_stage", "editorial_split"],
+    "relative_divergence": ["divergence_field", "curve_stage"],
+    "drawdown_recovery": ["curve_stage", "editorial_split", "divergence_field"],
+    "correlation_shift": ["divergence_field", "editorial_split"],
+    "event_window": ["timeline_rail", "curve_stage"],
+    "threshold_regime": ["threshold_field", "curve_stage"],
+    "scenario_lanes": ["scenario_field"],
+    "causal_spine": ["causal_spine"],
+    "evidence_balance": ["evidence_balance"]
+  },
+  "grammar_relationships": {
+    "curve_story": ["change_over_time", "deviation"],
+    "relative_divergence": ["relative_value"],
+    "drawdown_recovery": ["change_over_time", "deviation", "relative_value"],
+    "correlation_shift": ["correlation"],
+    "event_window": ["event_reaction"],
+    "threshold_regime": ["trigger_state"],
+    "scenario_lanes": ["scenario_payoff"],
+    "causal_spine": ["causal_transmission"],
+    "evidence_balance": ["deviation", "relative_value", "causal_transmission"]
+  },
+  "grammar_observation_tests": {
+    "curve_story": ["primary_positive", "primary_outperformed_benchmark", "benchmark_declined"],
+    "relative_divergence": ["primary_outperformed_benchmark"],
+    "drawdown_recovery": ["primary_drawdown_shallower", "primary_recovered_faster"],
+    "correlation_shift": ["correlation_above", "correlation_below"],
+    "event_window": [
+      "primary_positive_after_event",
+      "primary_negative_after_event",
+      "primary_outperformed_after_event"
+    ],
+    "threshold_regime": ["latest_above_threshold", "latest_below_threshold"]
+  },
+  "grammar_main_transforms": {
+    "relative_divergence": ["indexed_return", "relative_spread"],
+    "drawdown_recovery": ["drawdown"],
+    "correlation_shift": ["rolling_correlation"],
+    "threshold_regime": ["raw_price"]
+  },
+  "grammar_image_jobs": {
+    "curve_story": ["evidence_and_time", "comparison_and_time"],
+    "relative_divergence": ["comparison_and_time"],
+    "drawdown_recovery": ["evidence_and_time", "comparison_and_time"],
+    "correlation_shift": ["evidence_and_time", "comparison_and_time"],
+    "event_window": ["evidence_and_time", "comparison_and_time"],
+    "threshold_regime": ["evidence_and_time", "comparison_and_time"],
+    "scenario_lanes": ["scenario_and_time"],
+    "causal_spine": ["mechanism_and_time"],
+    "evidence_balance": ["mechanism_and_time"]
+  }
+}

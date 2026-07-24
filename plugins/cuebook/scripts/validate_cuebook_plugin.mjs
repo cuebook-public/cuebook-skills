@@ -80,6 +80,7 @@ const FRAME_TOOL_SCOPES = new Map([
   ["get_frame_capabilities", "read:public"],
   ["begin_frame_media_upload", "cuebook.frame.write"],
   ["complete_frame_publish", "cuebook.frame.publish"],
+  ["preflight_frame_publish", "cuebook.frame.publish"],
   ["complete_frame_media_upload", "cuebook.frame.write"],
   ["get_frame_media_status", "cuebook.frame.write"],
   ["register_frame_visual_manifest", "cuebook.frame.write"],
@@ -196,6 +197,7 @@ const FRAME_PUBLICATION_FLOW = {
   initial_publish_sequence: [
     "begin_frame_media_upload",
     "https_put_publication_master",
+    "complete_frame_media_upload",
     "complete_frame_publish",
   ],
   initial_settlement_modes: {
@@ -420,7 +422,7 @@ export function validate(pluginRoot) {
     setEq(requiredTools, frameTools),
     "REQUIRED_TOOL_SET",
     "mcp-capability-map-v1.json.required_tools",
-    "Active required tools must contain only the current 18-Tool Frame family.",
+    "Active required tools must contain only the current 19-Tool Frame family.",
   );
   check(
     setEq(plannedTools, PLANNED_TOOLS),

@@ -996,7 +996,7 @@ function compactProvenance(expression, palette, locale) {
   return [
     `<circle cx="20" cy="22" r="4" fill="${palette.signal}"/>`,
     `<text x="31" y="28" fill="${palette.ink}" font-size="16" font-weight="760" letter-spacing="0.02em">${esc(`${expression.subject_label} · ${expression.horizon_label}`)}</text>`,
-    `<g data-role="mobile-provenance"><text x="602" y="27" text-anchor="end" fill="${expression.data_status === "synthetic_fixture" ? palette.danger : palette.muted}" font-size="14" font-weight="650">${esc(clipped(`${source}${asOf ? ` · ${asOf}` : ""}`, 28))}</text></g>`,
+    `<g data-role="mobile-provenance"><text data-collision-exempt="true" x="602" y="27" text-anchor="end" fill="${expression.data_status === "synthetic_fixture" ? palette.danger : palette.muted}" font-size="14" font-weight="650">${esc(clipped(`${source}${asOf ? ` · ${asOf}` : ""}`, 28))}</text></g>`,
   ].join("");
 }
 
@@ -1294,6 +1294,63 @@ export function renderExpressionSvg(expression, candidate, compiled = compileExp
   return body.join("");
 }
 
+function decodeSvgText(value) {
+  return value
+    .replace(/&lt;/gu, "<")
+    .replace(/&gt;/gu, ">")
+    .replace(/&quot;/gu, '"')
+    .replace(/&#39;/gu, "'")
+    .replace(/&amp;/gu, "&");
+}
+
+// Approximate text bounding boxes from the same char-unit widths the layout
+// uses, then flag visible text pairs that overlap. Estimation error on mixed
+// CJK/Latin runs is real, so this stays a WARNING tier: it never fails the
+// render, it names the risky pair for a human or agent eye.
+const COLLISION_MIN_OVERLAP_PX = 10;
+
+export function collectSvgTextCollisions(svg) {
+  const boxes = [];
+  for (const match of svg.matchAll(/<text\b([^>]*)>([\s\S]*?)<\/text>/gu)) {
+    const attrs = match[1];
+    if (/data-collision-exempt="true"/u.test(attrs)) continue;
+    const x = Number(attrs.match(/\bx="(-?[0-9.]+)"/u)?.[1]);
+    const y = Number(attrs.match(/\by="(-?[0-9.]+)"/u)?.[1]);
+    const size = Number(attrs.match(/font-size="([0-9.]+)"/u)?.[1]);
+    if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(size)) continue;
+    const anchorMode = attrs.match(/text-anchor="(start|middle|end)"/u)?.[1] ?? "start";
+    const inner = match[2];
+    const lines = [...inner.matchAll(/<tspan\b[^>]*>([\s\S]*?)<\/tspan>/gu)].map((tspan) => tspan[1]);
+    const texts = (lines.length ? lines : [inner]).map((line) => decodeSvgText(line.replace(/<[^>]+>/gu, "")).trim()).filter(Boolean);
+    if (!texts.length) continue;
+    const widest = Math.max(...texts.map((line) => textWidth(line))) * size;
+    const height = size * 1.18 * texts.length;
+    const left = anchorMode === "end" ? x - widest : anchorMode === "middle" ? x - widest / 2 : x;
+    boxes.push({
+      text: texts.join(" "),
+      left,
+      right: left + widest,
+      top: y - size,
+      bottom: y - size + height,
+    });
+  }
+  const warnings = [];
+  for (let a = 0; a < boxes.length; a += 1) {
+    for (let b = a + 1; b < boxes.length; b += 1) {
+      const left = boxes[a];
+      const right = boxes[b];
+      const overlapX = Math.min(left.right, right.right) - Math.max(left.left, right.left);
+      const overlapY = Math.min(left.bottom, right.bottom) - Math.max(left.top, right.top);
+      if (overlapX > COLLISION_MIN_OVERLAP_PX && overlapY > COLLISION_MIN_OVERLAP_PX) {
+        warnings.push(
+          `text collision risk: "${left.text.slice(0, 24)}" x "${right.text.slice(0, 24)}" (overlap ${overlapX.toFixed(0)}x${overlapY.toFixed(0)}px)`,
+        );
+      }
+    }
+  }
+  return warnings;
+}
+
 export function auditExpressionSvg(svg, expression, candidate) {
   const errors = [];
   const design = expressionDesignProfile(expression);
@@ -1327,9 +1384,11 @@ export function auditExpressionSvg(svg, expression, candidate) {
   if (groups.size > 3) errors.push("The publication master may contain at most three essential copy groups.");
   if (/data-role="(?:source-detail|formula|limitations|component-reason)"/u.test(svg)) errors.push("The mobile master contains publication-only source or method detail.");
   if (compiledFutureRequired(expression) && !/data-future-region="unresolved"|data-essential-copy-group="future"|data-essential-copy-group="branches"/u.test(svg)) errors.push("The publication master must preserve one visible unresolved future cue.");
+  const warnings = collectSvgTextCollisions(svg);
   return {
     valid: errors.length === 0,
     errors,
+    warnings,
     single_master: true,
     mobile_display: "622x400",
     essential_copy_groups: groups.size,

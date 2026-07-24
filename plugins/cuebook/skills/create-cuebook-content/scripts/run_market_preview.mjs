@@ -24,47 +24,21 @@ const require = createRequire(import.meta.url);
 const rasterizerScript = fileURLToPath(new URL("../../render-cuebook-thesis-chart/scripts/rasterize_thesis_chart.cjs", import.meta.url));
 const { rasterizeSvg } = require(rasterizerScript);
 const JOB_SCHEMA = JSON.parse(readFileSync(new URL("../references/frame-market-preview-job.schema.json", import.meta.url), "utf8"));
+const GRAMMAR_PAIRINGS = JSON.parse(readFileSync(new URL("../references/frame-market-grammar-pairings.json", import.meta.url), "utf8"));
+const pairingSets = (table) => Object.freeze(
+  Object.fromEntries(Object.entries(GRAMMAR_PAIRINGS[table]).map(([key, values]) => [key, new Set(values)])),
+);
 const PUBLIC_FRAME_SCHEMA = JSON.parse(readFileSync(new URL("../references/frame.schema.json", import.meta.url), "utf8"));
 const QUALITY_CHECKS = ["creator_ownership", "source_binding", "copy_fit", "image_render"];
 const EXTERNAL_STATES = new Set(["observed", "reported", "derived"]);
-const MARKET_GRAMMARS = new Set([
-  "curve_story",
-  "relative_divergence",
-  "drawdown_recovery",
-  "correlation_shift",
-  "event_window",
-  "threshold_regime",
-]);
-const GRAMMAR_COMPOSITIONS = Object.freeze({
-  curve_story: new Set(["curve_stage", "editorial_split"]),
-  relative_divergence: new Set(["divergence_field", "curve_stage"]),
-  drawdown_recovery: new Set(["curve_stage", "editorial_split", "divergence_field"]),
-  correlation_shift: new Set(["divergence_field", "editorial_split"]),
-  event_window: new Set(["timeline_rail", "curve_stage"]),
-  threshold_regime: new Set(["threshold_field", "curve_stage"]),
-  scenario_lanes: new Set(["scenario_field"]),
-  causal_spine: new Set(["causal_spine"]),
-  evidence_balance: new Set(["evidence_balance"]),
-});
-const GRAMMAR_RELATIONSHIPS = Object.freeze({
-  curve_story: new Set(["change_over_time", "deviation"]),
-  relative_divergence: new Set(["relative_value"]),
-  drawdown_recovery: new Set(["change_over_time", "deviation", "relative_value"]),
-  correlation_shift: new Set(["correlation"]),
-  event_window: new Set(["event_reaction"]),
-  threshold_regime: new Set(["trigger_state"]),
-  scenario_lanes: new Set(["scenario_payoff"]),
-  causal_spine: new Set(["causal_transmission"]),
-  evidence_balance: new Set(["deviation", "relative_value", "causal_transmission"]),
-});
-const GRAMMAR_OBSERVATION_TESTS = Object.freeze({
-  curve_story: new Set(["primary_positive", "primary_outperformed_benchmark", "benchmark_declined"]),
-  relative_divergence: new Set(["primary_outperformed_benchmark"]),
-  drawdown_recovery: new Set(["primary_drawdown_shallower", "primary_recovered_faster"]),
-  correlation_shift: new Set(["correlation_above", "correlation_below"]),
-  event_window: new Set(["primary_positive_after_event", "primary_negative_after_event", "primary_outperformed_after_event"]),
-  threshold_regime: new Set(["latest_above_threshold", "latest_below_threshold"]),
-});
+// Every grammar pairing lives in references/frame-market-grammar-pairings.json —
+// one machine-readable source shared by this validator, the Skill, and agents.
+const MARKET_GRAMMARS = new Set(GRAMMAR_PAIRINGS.market_grammars);
+const GRAMMAR_COMPOSITIONS = pairingSets("grammar_compositions");
+const GRAMMAR_RELATIONSHIPS = pairingSets("grammar_relationships");
+const GRAMMAR_OBSERVATION_TESTS = pairingSets("grammar_observation_tests");
+const GRAMMAR_MAIN_TRANSFORMS = pairingSets("grammar_main_transforms");
+const GRAMMAR_IMAGE_JOBS = pairingSets("grammar_image_jobs");
 const CHECKABLE_CRITERION = /(?:\d+\s*(?:D|\u65e5|\u5929|\u5468|\u6839|sessions?|bars?)|[<>≤≥±]|\u65b0\u9ad8|\u65b0\u4f4e|\u8f6c\u6b63|\u8f6c\u8d1f|\u7a81\u7834|\u8dcc\u7834|\u53d1\u751f|\u843d\u5730|\u786e\u8ba4|\u5931\u6548|holds?|cross(?:es)?|above|below|within|outside|occurs?|settles?)/iu;
 
 function issue(code, issuePath, message) {
@@ -368,13 +342,7 @@ function validateExpression(expression, expressionPath, candidate, queryBinding,
     if (market.support_binding_ids.length !== expectedSupportBindings) {
       errors.push(issue("SUPPORT_BINDING_COUNT", `${expressionPath}.market.support_binding_ids`, `${market.support_transform} needs one binding per visible support-panel curve.`));
     }
-    const grammarTransforms = {
-      relative_divergence: new Set(["indexed_return", "relative_spread"]),
-      drawdown_recovery: new Set(["drawdown"]),
-      correlation_shift: new Set(["rolling_correlation"]),
-      threshold_regime: new Set(["raw_price"]),
-    };
-    if (grammarTransforms[expression.grammar] && !grammarTransforms[expression.grammar].has(market.main_transform)) {
+    if (GRAMMAR_MAIN_TRANSFORMS[expression.grammar] && !GRAMMAR_MAIN_TRANSFORMS[expression.grammar].has(market.main_transform)) {
       errors.push(issue("GRAMMAR_TRANSFORM", `${expressionPath}.market.main_transform`, `${expression.grammar} cannot use ${market.main_transform}.`));
     }
     for (const [role, leg] of [["primary", market.primary], ["benchmark", market.benchmark]]) {
@@ -457,9 +425,7 @@ function validateExpression(expression, expressionPath, candidate, queryBinding,
   if (candidate.frame.body.includes(expression.argument.claim.text) && candidate.frame.body.trim() === expression.argument.claim.text.trim()) {
     errors.push(issue("TEXT_IMAGE_DIVISION", `${expressionPath}.argument.claim.text`, "The image cannot merely repeat the entire body."));
   }
-  const expectedImageJobs = MARKET_GRAMMARS.has(expression.grammar)
-    ? new Set(expression.grammar === "relative_divergence" ? ["comparison_and_time"] : ["evidence_and_time", "comparison_and_time"])
-    : new Set(expression.grammar === "scenario_lanes" ? ["scenario_and_time"] : ["mechanism_and_time"]);
+  const expectedImageJobs = GRAMMAR_IMAGE_JOBS[expression.grammar] ?? new Set();
   if (!expectedImageJobs.has(expression.text_image_division.image_job)) {
     errors.push(issue("IMAGE_JOB", `${expressionPath}.text_image_division.image_job`, `${expression.grammar} does not satisfy ${expression.text_image_division.image_job}.`));
   }

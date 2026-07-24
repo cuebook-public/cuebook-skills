@@ -235,6 +235,7 @@
           "const": [
             "begin_frame_media_upload",
             "https_put_publication_master",
+            "complete_frame_media_upload",
             "complete_frame_publish"
           ]
         },
@@ -328,7 +329,7 @@
     },
     "notes": {
       "type": "string",
-      "maxLength": 500
+      "maxLength": 900
     }
   },
   "$defs": {

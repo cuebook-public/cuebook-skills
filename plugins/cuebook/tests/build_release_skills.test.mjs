@@ -151,11 +151,11 @@ test("runtime bundles omit the development capability catalog and old initial-pu
       "references",
       "frame-publish-workflow.md",
     ), "utf-8");
-    assert.match(workflow, /Initial Publish: Three Steps/u);
+    assert.match(workflow, /Stage At Preview, Publish In One Call/u);
     assert.match(workflow, /only completion call for a new Frame/u);
     assert.doesNotMatch(
       workflow,
-      /`(?:complete_frame_media_upload|get_frame_media_status|register_frame_visual_manifest|create_frame_draft|get_frame_draft|update_frame_draft|prepare_frame_publish|publish_frame)`/u,
+      /`(?:get_frame_media_status|register_frame_visual_manifest|create_frame_draft|get_frame_draft|update_frame_draft|prepare_frame_publish|publish_frame)`/u,
     );
   });
 });
