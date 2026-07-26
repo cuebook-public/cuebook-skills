@@ -20,6 +20,20 @@ test("OpenAI submission packet has three Skills and exactly 5/3 reviewer cases",
   });
 });
 
+test("OpenAI reviewer surfaces describe permanent Frames without a withdrawal action", () => {
+  const annotations = readFileSync(
+    path.join(ROOT, "submission", "openai", "tool-annotations.json"),
+    "utf8",
+  );
+  const runbook = readFileSync(
+    path.join(ROOT, "submission", "openai", "reviewer-runbook.md"),
+    "utf8",
+  );
+  const combined = `${annotations}\n${runbook}`;
+  assert.match(combined, /Published Frames are permanent/iu);
+  assert.doesNotMatch(combined, /\bwithdraw(?:al|n|ing)?\b/iu);
+});
+
 test("OpenAI submission build emits a hashed three-Skill archive", () => {
   const temp = mkdtempSync(path.join(os.tmpdir(), "cuebook-openai-submission-"));
   try {

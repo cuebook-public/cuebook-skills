@@ -1,6 +1,6 @@
 # Cuebook Frame Publish Workflow
 
-Read this reference only after the creator has seen one complete Frame and explicitly asks to publish, correct, or withdraw it. Keep every transport field and server state backstage.
+Read this reference only after the creator has seen one complete Frame and explicitly asks to publish or correct it. Keep every transport field and server state backstage.
 
 An explicit “publish,” “send this version,” or equivalent instruction in any language is the one publication authorization for the already confirmed Frame. Do not restate the copy or settlement, ask “confirm publish?” again, or add a release checklist.
 
@@ -28,9 +28,11 @@ Publish immediately whenever the creator confirms, including before market open,
 
 A successful `complete_frame_publish` result is final success. Trust the typed MCP result and stop all network work immediately: do not parse or validate a receipt, extract Frame or release IDs, read back the Frame, open a web page, inspect HTML or metadata, probe a canonical URL, or call any follow-up Tool.
 
-## Corrections And Withdrawals
+## Corrections And Permanent Publication
 
-The high-level Tool is for a new initial publication. An explicit correction continues through its correction draft and `prepare_frame_correction_publish` → `publish_frame_correction`. Withdrawal continues through `prepare_frame_withdraw` → first-party consent → `get_frame_action_consent` → `withdraw_frame`. Only withdrawal uses separate action consent.
+The high-level Tool is for a new initial publication. An explicit correction continues through its correction draft and `prepare_frame_correction_publish` → `publish_frame_correction`.
+
+Published Frames are permanent. If the creator asks to withdraw, unpublish, or delete one, do not look for a removal action. Use a Correction only when the economics are unchanged and the creator is clarifying copy, references, or the visual. A changed thesis, direction, horizon, settlement rule, or other economic meaning requires a new Frame.
 
 ## Failure Budget
 

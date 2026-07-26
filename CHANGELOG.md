@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.9.19 — 2026-07-26
+
+- Removed Frame withdrawal end to end from the Skill/plugin contract. Published Frames are permanent; unchanged copy, references, or visuals use an append-only Correction, while changed thesis or economics require a new Frame. The intent schema, creation actions, platform guides, reviewer runbook, and Tool annotations no longer expose a withdrawal route or consent gate.
+- The capability map now targets the finalized `frame-mcp-phase-b-v2` 18-Tool family, adds the previously omitted child-note read/publish Tools, and pins the backend tool-manifest and schema-catalog fixture hashes.
+
 ## 0.9.18 — 2026-07-24
 
 - Frame publication now stages at preview and publishes in one call: the moment a rendered Frame is presented, the frozen PNG's reserve, signed PUT, and media completion run silently against the quarantine store (never a publication, abandoned stagings expire backstage), so explicit publish intent costs a single `complete_frame_publish` — the SKILL, publish workflow, capability-map sequence, its schema, and the plugin validator all encode the staged contract.

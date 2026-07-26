@@ -1,7 +1,7 @@
 {
   "schema_version": "skill-catalog-v1",
   "catalog_id": "CAT_cuebook",
-  "catalog_version": "1.29.0",
+  "catalog_version": "1.30.0",
   "generated_at": "2026-07-24T09:00:00+08:00",
   "default_locale": "zh-CN",
   "categories": [

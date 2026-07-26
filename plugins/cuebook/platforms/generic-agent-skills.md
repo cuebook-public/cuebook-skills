@@ -51,9 +51,9 @@ and audit paths.
 ## Write operations
 
 Writes happen only through explicit Cuebook MCP write tools. Initial and
-correction publication go from prepare directly to publish; only withdrawal
-uses separate first-party consent. A client without those tools gets read-only
-behavior.
+correction publication go from prepare directly to publish. Published Frames
+are permanent; changed thesis or economics require a new Frame. A client
+without those tools gets read-only behavior.
 
 ## Known limitations
 

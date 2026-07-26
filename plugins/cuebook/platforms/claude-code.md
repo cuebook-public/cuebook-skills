@@ -28,7 +28,7 @@ claude mcp list
 
 The plugin inventory must report exactly **3 Skills**, and the MCP list must contain `plugin:cuebook:cuebook`. A larger Skill count means an older marketplace snapshot is still installed; update the marketplace and reinstall the plugin once, then reload Claude Code. This refresh does not require a second OAuth grant.
 
-For a reproducible frozen install, use `cuebook-public/cuebook-skills@v0.9.17` in the marketplace command. A tag-pinned marketplace stays on that release until its source is changed.
+For a reproducible frozen install, use `cuebook-public/cuebook-skills@v0.9.19` in the marketplace command. A tag-pinned marketplace stays on that release until its source is changed.
 
 ## Update
 
@@ -73,8 +73,7 @@ consent, Tool-scope, source-rights, rollback, and Frame rerender boundaries.
 Identical policy to Codex: writes are explicit MCP tools behind user
 authorization. Ordinary initial publication uses one upload reservation, one
 signed PUT, and `complete_frame_publish`; correction keeps its prepare/publish
-path, withdrawal retains separate first-party consent, and query is
-structurally read-only.
+path, published Frames are permanent, and query is structurally read-only.
 
 ### Claude Code permission modes
 
@@ -90,7 +89,7 @@ open `/permissions`, review the recently denied action, and retry it with manual
 approval. A creator who wants a persistent rule should allow only the exact
 Tool names Claude Code displays for those two actions. Never allow a whole
 `mcp__<cuebook-server>__*` wildcard: it also covers Paper Trade, correction, and
-withdrawal actions.
+other Frame actions.
 
 Do not approve or retry `create_frame_draft`, `prepare_frame_publish`, or
 `publish_frame` for an ordinary new Frame. Seeing one of those actions means the

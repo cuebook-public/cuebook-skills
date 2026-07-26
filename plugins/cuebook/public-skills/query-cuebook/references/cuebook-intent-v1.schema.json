@@ -30,8 +30,7 @@
               "frame_attributed_snapshot_preview",
               "frame_publication",
               "tradingview_canvas",
-              "frame_correction",
-              "frame_withdrawal"
+              "frame_correction"
             ]
           },
           "artifact": {
@@ -47,8 +46,7 @@
               "frame_preview",
               "frame_publication",
               "tradingview_canvas",
-              "frame_correction",
-              "frame_withdrawal"
+              "frame_correction"
             ]
           },
           "effect": {
@@ -57,8 +55,7 @@
               "reversible_local",
               "local_artifact",
               "local_persistent_write",
-              "public_write",
-              "destructive_write"
+              "public_write"
             ]
           },
           "explicitness": {"enum": ["explicit", "implied", "ambiguous"]},
@@ -70,8 +67,7 @@
                 "expression",
                 "snapshot_pixel_use",
                 "publication",
-                "drawing_plan",
-                "withdrawal_consent"
+                "drawing_plan"
               ]
             }
           },

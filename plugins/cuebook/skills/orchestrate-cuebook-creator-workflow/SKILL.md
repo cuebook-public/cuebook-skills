@@ -1,6 +1,6 @@
 ---
 name: orchestrate-cuebook-creator-workflow
-description: "Run an explicitly advanced or resumable Cuebook Frame workflow: requested three-way alternatives, corrections, reproducibility audits, withdrawals, postmortems, or a release path that genuinely needs a workflow DAG. Ordinary publication of one selected Fast Preview uses the direct publish lane and does not invoke this orchestrator. Do not use for social-platform programs, direct order execution, credential handling, unavailable backend writes, browser verification, or claiming publication without a verified receipt."
+description: "Run an explicitly advanced or resumable Cuebook Frame workflow: requested three-way alternatives, corrections, reproducibility audits, postmortems, or a release path that genuinely needs a workflow DAG. Ordinary publication of one selected Fast Preview uses the direct publish lane and does not invoke this orchestrator. Do not use for social-platform programs, direct order execution, credential handling, unavailable backend writes, browser verification, or claiming publication without a verified receipt."
 license: Proprietary. Cuebook internal; see the repository README for terms.
 compatibility: Requires a connected Cuebook MCP server for asset resolution and market data; degrades to partial results, never invented values, when tools are unavailable. Node.js 18+ for validators.
 ---
@@ -11,7 +11,9 @@ Operate the advanced release-grade control plane after a creator-facing preview 
 
 ## Fast Preview Boundary
 
-For a raw idea whose requested result is simply a Frame, return to the public `create-cuebook-content` entrypoint and use its `preview_fast` route. Before selection, do not create a DAG, normalize a feed, select an opportunity, compose a recipe, build a program, materialize research/semantics/expression/data/post/direction/candidate contracts, render release derivatives, or run release gates. A selected one-preview publish still stays on the public entrypoint's direct Fast Publish lane. Enter this orchestrator only for explicit three-way alternatives, corrections, reproducibility audits, withdrawals, postmortems, or another advanced request that genuinely requires its artifacts.
+For a raw idea whose requested result is simply a Frame, return to the public `create-cuebook-content` entrypoint and use its `preview_fast` route. Before selection, do not create a DAG, normalize a feed, select an opportunity, compose a recipe, build a program, materialize research/semantics/expression/data/post/direction/candidate contracts, render release derivatives, or run release gates. A selected one-preview publish still stays on the public entrypoint's direct Fast Publish lane. Enter this orchestrator only for explicit three-way alternatives, corrections, reproducibility audits, postmortems, or another advanced request that genuinely requires its artifacts.
+
+Published Frames are permanent. If the creator asks to withdraw, unpublish, or delete one, do not create a workflow node: use a Correction for copy, reference, or visual clarification, or publish a new Frame when the thesis or economics changed.
 
 ## Plugin Bootstrap
 
@@ -38,7 +40,7 @@ For a raw idea whose requested result is simply a Frame, return to the public `c
 13. **Deadline settlement**: for every eligible new single-asset `long` or `short` Frame, compile the standard exact-deadline, zero-bps direction claim and formula from the bound settlement result. The creator's explicit publish intent confirms it with the selected Frame; do not add a second settlement prompt. Price-target and pair overrides require their creator-owned terms. Non-trade semantics skip settlement.
 14. **Candidate freeze**: run `$assemble-cuebook-publish-candidates`. Preserve one selected preview without siblings, or assemble three only when explicitly requested. Build each exact public projection as `title + body + image`; keep all lineage and calibration backstage.
 15. **Selection and Frame assembly**: select the copy-to-image pair atomically, validate that `candidate.frame` exactly matches the frozen internal copy split and publication visual, then assemble `FrameDraftAssemblyV1 + FrameDraftAssemblyBindingV1`. Optional thesis, trade logic, and settlement remain backstage inputs.
-16. **Frame activation**: after explicit user intent, reuse the selected preview's emitted hash and byte size, reserve one publication upload, PUT the frozen PNG once, and call `complete_frame_publish`. The server owns processing, binding, draft, prepare, and the atomic initial publication. Do not recreate local release contracts, request separate action consent, or read the Frame back. If the fast Tool is absent, stop without a legacy fallback.
+16. **Frame activation**: after explicit user intent, reuse the selected preview's emitted hash and byte size, reserve one publication upload, PUT the frozen PNG once, and call `complete_frame_publish`. The server owns processing, binding, draft, prepare, and the atomic initial publication. Do not recreate local release contracts or read the Frame back. If the fast Tool is absent, stop without a legacy fallback.
 17. **Publish terminal and warm handoff**: when the publication Tool returns success, treat its typed result as opaque and stop the publication network flow. Do not validate or inspect a receipt, extract IDs, call `get_frame`, browse or curl a canonical page, inspect web HTML or metadata, reconcile history, configure sharing, or expose a URL. Use a natural localized success line such as “It is published—take a look in the Cuebook App,” recognize one creator-specific kernel preserved by the frozen Meaning Lock, and ask at most one optional question. Prefer inviting the creator to share the idea from the App with another AI for a fresh judgment; the App owns the just-published Frame binding, while the Skill sees neither raw IDs nor `canonical_url`. Depending on context, the one question may instead ask about another signal or intuition. Keep it to two or three short sentences. For an eligible directional single-asset idea, a simulated Paper Trade may be offered only when its tools are available. The offer never authorizes a Tool call: wait for explicit opt-in, preview required order terms, then require explicit placement intent before `place_paper_order`. `get_frame` and `$reconcile-market-content-history` remain later, explicit capabilities, never automatic publication checks.
 
 Read `references/workflow-map.md` for scenario paths, role gates, and skill ownership.
@@ -57,7 +59,7 @@ Read `references/workflow-map.md` for scenario paths, role gates, and skill owne
 - Use `ready_for_handoff` only after an exact current ReleaseBundleV1 has release approval. Use `complete` only after required receipt/reconciliation work is complete.
 - Never use `published` as a workflow assertion without a verified `PublicationReceiptV1` produced by an external connector.
 - Never send credentials through Skill inputs or artifacts. OAuth and platform credentials remain inside the MCP server or authorized publication connector.
-- Execute a Frame mutation only when the runtime advertises it, every command has its own fresh lowercase UUIDv7, and the preceding receipt is bound. Initial and correction publication require the exact prepared hash and short-lived publish token under the active `cuebook.frame.publish` grant and first-party publish action; neither accepts `consent_request_id`. Withdrawal still requires approved first-party consent bound to its prepared action. Otherwise stop at the latest valid phase.
+- Execute a Frame mutation only when the runtime advertises it, every command has its own fresh lowercase UUIDv7, and the preceding receipt is bound. Initial and correction publication require the exact prepared hash and short-lived publish token under the active OAuth `cuebook.frame.publish` grant; a first-party Publish action is a separate UI path, not an additional MCP gate. Otherwise stop at the latest valid phase.
 - Do not print a mutable current/entry price in any pre-publish visual unless the exact value is bound to a real backend quote/entry lock. No such lock means use asset + horizon + direction wording. BTC/QQQ may remain a comparison view, but its continuous/scheduled session mismatch forbids equal-notional pair settlement; degrade explicitly to single BTC or block.
 
 ## Selected Preview Freeze Path
@@ -68,7 +70,7 @@ Do not use this full-contract path for an ordinary one-preview publication. The 
 2. Compile one minimal meaning fingerprint and one selected visual route only because the advanced request consumes them. Do not normalize feed, select opportunities, compose a recipe, or plan a content program.
 3. Retain only the selected direction. For `cuebook_template`, render one production-font 1866 × 1200 publication master and run DOM/release audits once. For `finished_bitmap`, keep HTML/fonts optional and run the raster/image-review path once over that same publication master. A 622 × 400 inspection may test scaled mobile legibility, but it must not create a second asset, hash role, upload, or database record.
 4. Materialize the selected `PostV1`, one-direction selected `VisualDirectionSetV1`, one-candidate selected `PublishCandidateSetV1`, and Frame assembly. For an eligible single-asset `long` or `short`, compile the standard exact-deadline settlement automatically from a horizon the creator stated or explicitly accepted after requesting timing help; never supply a default duration. The explicit publish action is its only confirmation. Do not ask about sessions, market days, or next close.
-5. Stop before media upload, prepare, or publish unless the user requested the next write. Stop before withdrawal consent unless the user requested withdrawal.
+5. Stop before media upload, prepare, or publish unless the user requested the next write.
 
 ## Mode Rules
 
@@ -113,7 +115,7 @@ An approval records artifact IDs and their hashes. A changed hash requires a new
 
 - Do not embed source text, research facts, drafts, or release payloads into this run contract. Register their artifacts.
 - Do not inspect artifact payloads through registry locators. Artifact-producing Skills own payload validation and must publish their normalized gate summary into the registry alongside the payload hash.
-- Do not invent a universal publisher or social derivative. The first-party Frame MCP family owns authorization, idempotency, publication behavior, and withdrawal consent.
+- Do not invent a universal publisher or social derivative. The first-party Frame MCP family owns authorization, idempotency, and publication behavior.
 - Do not optimize the research truth layer using clicks, likes, or later returns.
 - Do not place or modify trades.
 

@@ -78,6 +78,9 @@ const isSubset = (a, b) => [...a].every((item) => b.has(item));
 
 const FRAME_TOOL_SCOPES = new Map([
   ["get_frame_capabilities", "read:public"],
+  ["get_frame", "read:public"],
+  ["list_child_frames", "read:public"],
+  ["publish_child_frame", "cuebook.frame.publish"],
   ["begin_frame_media_upload", "cuebook.frame.write"],
   ["complete_frame_publish", "cuebook.frame.publish"],
   ["preflight_frame_publish", "cuebook.frame.publish"],
@@ -88,15 +91,26 @@ const FRAME_TOOL_SCOPES = new Map([
   ["get_frame_draft", "cuebook.frame.read"],
   ["update_frame_draft", "cuebook.frame.write"],
   ["prepare_frame_publish", "cuebook.frame.publish"],
-  ["get_frame_action_consent", "cuebook.frame.publish"],
   ["publish_frame", "cuebook.frame.publish"],
-  ["get_frame", "read:public"],
   ["create_frame_correction_draft", "cuebook.frame.write"],
   ["prepare_frame_correction_publish", "cuebook.frame.publish"],
   ["publish_frame_correction", "cuebook.frame.publish"],
-  ["prepare_frame_withdraw", "cuebook.frame.publish"],
-  ["withdraw_frame", "cuebook.frame.publish"],
 ]);
+
+const REMOVED_FRAME_TOOLS = new Set([
+  "get_frame_action_consent",
+  "prepare_frame_withdraw",
+  "withdraw_frame",
+]);
+
+const REMOVED_FRAME_CONTRACT_IDENTIFIERS = [
+  ...REMOVED_FRAME_TOOLS,
+  "frame_withdrawal",
+  "withdrawal_consent",
+  "withdraw_sequence",
+  "action_consent_usage",
+  "frame_withdraw_requires_first_party_consent",
+];
 
 const PAPER_TOOL_SCOPES = new Map([
   ["get_paper_portfolio", "cuebook.paper.read"],
@@ -192,7 +206,7 @@ const FRAME_PUBLICATION_FLOW = {
   published_visual_semantics: "one_visual_attached_to_frame_release",
   client_upload_roles: ["publication"],
   capture_profiles: { publication: { width: 1866, height: 1200 } },
-  delivery_resize_policy: "frontend_or_edge_transformation_only",
+  delivery_resize_policy: "server_generated_web_rendition_only",
   forbidden_tools: [...FORBIDDEN_FRAME_MEDIA_TOOLS],
   initial_publish_sequence: [
     "begin_frame_media_upload",
@@ -212,14 +226,7 @@ const FRAME_PUBLICATION_FLOW = {
     "prepare_frame_correction_publish",
     "publish_frame_correction",
   ],
-  withdraw_sequence: [
-    "prepare_frame_withdraw",
-    "first_party_consent",
-    "get_frame_action_consent",
-    "withdraw_frame",
-  ],
-  publish_authorization: "active_frame_publish_grant_and_first_party_publish_action",
-  action_consent_usage: "withdrawal_only",
+  publish_authorization: "active_oauth_frame_publish_grant_or_explicit_first_party_publish_action",
   prepared_publish_required_fields: [
     "prepared_hash",
     "publish_token",
@@ -234,15 +241,14 @@ const FRAME_PUBLICATION_FLOW = {
     "base_release_id",
     "expected_economic_hash",
   ],
-  prepared_publish_omitted_fields: [
-    "consent_request_id",
-    "consent_url",
-    "consent_expires_at",
-  ],
-  publish_input_omitted_fields: ["consent_request_id"],
   wire_golden: {
-    tool_manifest_sha256: "107f0c7753a89b9185152f0f4707f632c9f22101ae33ce3bedccd36eed55a0b5",
-    schema_catalog_sha256: "5aba76bf1fcbf4f85105e6423c42565b17a5fb696aa5dd18395bf31570f98b9c",
+    contract_version: "frame-mcp-phase-b-v2",
+    tool_count: 18,
+    sync_status: "synced",
+    tool_manifest_sha256:
+      "sha256:575c5b27a1cdded6344eaa65fd52a5c8b5a6ce1e158c85f4a530f33d959e072a",
+    schema_catalog_sha256:
+      "sha256:0d632a40c1e5b0b101a626cbbd6c69e0abbd1d5bc58dc2b7737b663e706221f8",
   },
   mutation_idempotency: "distinct_lowercase_uuidv7_per_command",
   replay_policy: "same_key_same_payload_returns_receipt_changed_payload_conflict",
@@ -416,13 +422,13 @@ export function validate(pluginRoot) {
     setEq(frameTools, new Set(FRAME_TOOL_SCOPES.keys())),
     "FRAME_TOOL_SET",
     "mcp-capability-map-v1.json.required_tools",
-    "Frame MCP must expose the fast initial publication Tool plus the compatible upload, draft, correction, withdrawal-consent, and full-Frame operations.",
+    "Frame MCP must expose exactly the 18-Tool v2 family for reads, child notes, upload, draft, permanent publication, and append-only Correction.",
   );
   check(
     setEq(requiredTools, frameTools),
     "REQUIRED_TOOL_SET",
     "mcp-capability-map-v1.json.required_tools",
-    "Active required tools must contain only the current 19-Tool Frame family.",
+    "Active required tools must contain only the current 18-Tool Frame family.",
   );
   check(
     setEq(plannedTools, PLANNED_TOOLS),
@@ -443,6 +449,12 @@ export function validate(pluginRoot) {
     "Superseded settlement and legacy write tools must be absent from the capability catalog.",
   );
   check(
+    !intersects(new Set([...tools.keys(), ...plannedTools]), REMOVED_FRAME_TOOLS),
+    "FRAME_WITHDRAWAL_REMOVED",
+    "mcp-capability-map-v1.json",
+    "Frame withdrawal and its action-consent polling Tool have been removed from the callable contract.",
+  );
+  check(
     !intersects(new Set(tools.keys()), FORBIDDEN_FRAME_MEDIA_TOOLS),
     "FRAME_MEDIA_TOOL",
     "mcp-capability-map-v1.json.required_tools",
@@ -452,13 +464,15 @@ export function validate(pluginRoot) {
     deepEqualPy(capabilityMap.frame_publication_flow, FRAME_PUBLICATION_FLOW),
     "FRAME_FLOW_CONTRACT",
     "mcp-capability-map-v1.json.frame_publication_flow",
-    "Frame publication must remain signed-upload-only; ordinary and correction publishing go directly from prepare to publish, while only withdrawal uses first-party action consent.",
+    "Frame publication must remain signed-upload-only and permanent; only initial publication and append-only Correction flows are callable.",
   );
   check(
-    tools.get("create_frame_draft")?.input_contract === "FrameDraftAssemblyV1 + FrameDraftAssemblyBindingV1",
+    tools.get("get_frame_media_status")?.output_contract === "FrameMediaStatusV1"
+      && tools.get("create_frame_draft")?.input_contract === "CreateFrameDraftInputV1"
+      && tools.get("update_frame_draft")?.input_contract === "UpdateFrameDraftInputV1",
     "FRAME_DRAFT_INPUT",
-    "mcp-capability-map-v1.json.required_tools.create_frame_draft.input_contract",
-    "create_frame_draft must receive the Skill assembly plus the registered server binding, never a bare FrameDraftV1.",
+    "mcp-capability-map-v1.json.required_tools",
+    "Frame media status and draft Tool contract names must match the generated backend v2 manifest exactly.",
   );
 
   const skillToolPolicy = capabilityMap.skill_tool_policy ?? {};
@@ -899,10 +913,9 @@ export function validate(pluginRoot) {
 
   const expectedWriteGates = new Map([
     ["complete_frame_publish", new Set(["explicit_user_approval", "uploaded_publication_master", "idempotency_key"])],
-    ["withdraw_frame", new Set(["explicit_user_approval", "first_party_consent", "prepared_hash", "idempotency_key"])],
   ]);
   const writeActions = creationMenu.write_actions ?? [];
-  check(writeActions.length === expectedWriteGates.size, "WRITE_ACTION_COUNT", "creation-menu-v1.json.write_actions", "Creation menu must expose only atomic initial publication and withdrawal actions.");
+  check(writeActions.length === expectedWriteGates.size, "WRITE_ACTION_COUNT", "creation-menu-v1.json.write_actions", "Creation menu must expose only atomic initial publication.");
   writeActions.forEach((action, actionIndex) => {
     const base = `creation-menu-v1.json.write_actions[${actionIndex}]`;
     const toolName = action.mcp_tool;
@@ -931,7 +944,6 @@ export function validate(pluginRoot) {
     "frame_mutations_use_distinct_uuidv7_keys",
     "frame_publish_action_authorizes_publish",
     "frame_publish_recomputes_prepared_hash_and_revalidates_authority",
-    "frame_withdraw_requires_first_party_consent",
   ]) {
     check(releaseRules[ruleName] === true, "RUNTIME_ENFORCEMENT", `release_rules.${ruleName}`, "Runtime enforcement rule must be enabled.");
   }
@@ -986,6 +998,33 @@ export function validate(pluginRoot) {
     );
     for (const toolName of [...SUPERSEDED_TOOLS, ...PLANNED_TOOLS]) {
       check(!new RegExp(`\\b${toolName}\\b`, "u").test(body), "PUBLIC_SKILL_NONCALLABLE_TOOL", `skills/${skillId}/SKILL.md`, `Public entrypoint must not route to non-callable tool ${toolName}.`);
+    }
+  }
+
+  const withdrawalFreeSurfaces = [
+    "README.md",
+    ".codex-plugin/plugin.json",
+    "assets/mcp-capability-map-v1.schema.json",
+    "skills/create-cuebook-content/SKILL.md",
+    "skills/create-cuebook-content/references/frame-publish-workflow.md",
+    "skills/orchestrate-cuebook-creator-workflow/SKILL.md",
+    "skills/query-cuebook/SKILL.md",
+    "skills/query-cuebook/references/cuebook-intent-v1.schema.json",
+    "skills/query-cuebook/scripts/validate_cuebook_intent.mjs",
+    "platforms/README.md",
+    ...[...PLATFORM_GUIDES].map((guideName) => `platforms/${guideName}`),
+  ];
+  for (const relativePath of withdrawalFreeSurfaces) {
+    const surfacePath = path.join(pluginRoot, relativePath);
+    if (!existsSync(surfacePath)) continue;
+    const body = readFileSync(surfacePath, "utf-8");
+    for (const identifier of REMOVED_FRAME_CONTRACT_IDENTIFIERS) {
+      check(
+        !body.includes(identifier),
+        "FRAME_WITHDRAWAL_REMOVED",
+        relativePath,
+        `Removed Frame withdrawal contract identifier ${identifier} must not reappear on a canonical Skill, schema, manifest, or platform surface.`,
+      );
     }
   }
 

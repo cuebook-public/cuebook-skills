@@ -405,6 +405,44 @@
       "source": "Frame Remote MCP Phase B §6-7"
     },
     {
+      "tool": "get_frame",
+      "module": "query",
+      "authorization_scope": "read:public",
+      "phase": "frame_phase_b",
+      "access": "read",
+      "purpose": "Read one release-pinned full Frame with its single attached publication visual, settlement, discussion, and canonical URL; never returns media[] or a standalone media result.",
+      "input_contract": "FrameRefV1",
+      "output_contract": "FrameMcpViewV1",
+      "used_by": [
+        "query-cuebook"
+      ],
+      "source": "Frame MCP Phase B v2"
+    },
+    {
+      "tool": "list_child_frames",
+      "module": "query",
+      "authorization_scope": "read:public",
+      "phase": "frame_phase_b",
+      "access": "read",
+      "purpose": "Read visible supplementary child notes for one readable published Frame with keyset pagination.",
+      "input_contract": "ListChildFramesInputV1",
+      "output_contract": "FrameChildNotesPageV1",
+      "used_by": [],
+      "source": "Frame MCP Phase B v2"
+    },
+    {
+      "tool": "publish_child_frame",
+      "module": "create",
+      "authorization_scope": "cuebook.frame.publish",
+      "phase": "frame_phase_b",
+      "access": "write",
+      "purpose": "Append one supplementary child note without changing the parent Frame's settlement direction, position, or release.",
+      "input_contract": "PublishChildFrameInputV1",
+      "output_contract": "FrameChildPublicationReceiptV1",
+      "used_by": [],
+      "source": "Frame MCP Phase B v2"
+    },
+    {
       "tool": "begin_frame_media_upload",
       "module": "create",
       "authorization_scope": "cuebook.frame.write",
@@ -468,7 +506,7 @@
       "access": "read",
       "purpose": "Poll owner-only processing and encoded/pixel hash receipts; returns no image bytes, delivery URL, or browsing surface.",
       "input_contract": "GetFrameMediaStatusV1",
-      "output_contract": "FrameMediaStatusV1 (processing and hash receipts only)",
+      "output_contract": "FrameMediaStatusV1",
       "used_by": [
         "create-cuebook-content"
       ],
@@ -495,7 +533,7 @@
       "phase": "frame_phase_b",
       "access": "write",
       "purpose": "Materialize a Skill assembly only after the server returns a registered media/manifest binding.",
-      "input_contract": "FrameDraftAssemblyV1 + FrameDraftAssemblyBindingV1",
+      "input_contract": "CreateFrameDraftInputV1",
       "output_contract": "FrameDraftAssemblyResultV1",
       "used_by": [
         "create-cuebook-content"
@@ -523,7 +561,7 @@
       "phase": "frame_phase_b",
       "access": "write",
       "purpose": "Revise a draft under optimistic concurrency using the assembly and registered binding with a distinct UUIDv7.",
-      "input_contract": "FrameDraftAssemblyV1 + FrameDraftAssemblyBindingV1 + expected_revision",
+      "input_contract": "UpdateFrameDraftInputV1",
       "output_contract": "FrameDraftAssemblyResultV1",
       "used_by": [
         "create-cuebook-content"
@@ -536,23 +574,9 @@
       "authorization_scope": "cuebook.frame.publish",
       "phase": "frame_phase_b",
       "access": "write",
-      "purpose": "Validate the draft and create a prepared hash, short-lived publish token, and preview without publishing or creating a separate action-consent request.",
+      "purpose": "Validate the draft and create a prepared hash, short-lived publish token, and preview without publishing.",
       "input_contract": "PrepareFramePublishInputV1",
       "output_contract": "PreparedFramePublishV1",
-      "used_by": [
-        "create-cuebook-content"
-      ],
-      "source": "Frame Remote MCP Phase B §6-7"
-    },
-    {
-      "tool": "get_frame_action_consent",
-      "module": "create",
-      "authorization_scope": "cuebook.frame.publish",
-      "phase": "frame_phase_b",
-      "access": "read",
-      "purpose": "Poll an opaque first-party withdrawal-consent request state; ordinary publish and correction flows never call this tool.",
-      "input_contract": "GetFrameActionConsentInputV1",
-      "output_contract": "FrameActionConsentStatusV1",
       "used_by": [
         "create-cuebook-content"
       ],
@@ -564,25 +588,11 @@
       "authorization_scope": "cuebook.frame.publish",
       "phase": "frame_phase_b",
       "access": "write",
-      "purpose": "Revalidate the active publish grant and first-party publish action, recompute the prepared hash, verify the short-lived token, then freeze the Frame, release, visual binding, and Settlement Contract atomically.",
+      "purpose": "Revalidate the active OAuth publish grant, recompute the prepared hash, verify the short-lived token, then freeze the Frame, release, visual binding, and Settlement Contract atomically.",
       "input_contract": "PublishFrameInputV1",
       "output_contract": "FramePublicationReceiptV1",
       "used_by": [
         "create-cuebook-content"
-      ],
-      "source": "Frame Remote MCP Phase B §6-7"
-    },
-    {
-      "tool": "get_frame",
-      "module": "query",
-      "authorization_scope": "read:public",
-      "phase": "frame_phase_b",
-      "access": "read",
-      "purpose": "Read one release-pinned full Frame with its single attached publication visual, settlement, discussion, and canonical URL; never returns media[] or a standalone media result.",
-      "input_contract": "FrameRefV1",
-      "output_contract": "FrameMcpViewV1 (full Frame plus one attached visual)",
-      "used_by": [
-        "query-cuebook"
       ],
       "source": "Frame Remote MCP Phase B §6-7"
     },
@@ -606,7 +616,7 @@
       "authorization_scope": "cuebook.frame.publish",
       "phase": "frame_phase_b",
       "access": "write",
-      "purpose": "Prove the economic hash is unchanged and create a correction prepared hash, short-lived publish token, and preview without a separate action-consent request.",
+      "purpose": "Prove the economic hash is unchanged and create a correction prepared hash, short-lived publish token, and preview.",
       "input_contract": "PrepareFrameCorrectionPublishInputV1",
       "output_contract": "PreparedFrameCorrectionPublishV1",
       "used_by": [
@@ -623,34 +633,6 @@
       "purpose": "Revalidate correction publish authority, recompute the prepared hash, publish a new content release, and reuse the frozen economic contract.",
       "input_contract": "PublishFrameCorrectionInputV1",
       "output_contract": "FramePublicationReceiptV1",
-      "used_by": [
-        "create-cuebook-content"
-      ],
-      "source": "Frame Remote MCP Phase B §6-7"
-    },
-    {
-      "tool": "prepare_frame_withdraw",
-      "module": "create",
-      "authorization_scope": "cuebook.frame.publish",
-      "phase": "frame_phase_b",
-      "access": "write",
-      "purpose": "Create a withdrawal preview and one-time first-party consent request without changing distribution.",
-      "input_contract": "PrepareFrameWithdrawInputV1",
-      "output_contract": "PreparedFrameWithdrawV1",
-      "used_by": [
-        "create-cuebook-content"
-      ],
-      "source": "Frame Remote MCP Phase B §6-7"
-    },
-    {
-      "tool": "withdraw_frame",
-      "module": "create",
-      "authorization_scope": "cuebook.frame.publish",
-      "phase": "frame_phase_b",
-      "access": "write",
-      "purpose": "Consume withdrawal consent and stop distribution without deleting release, settlement, discussion, or audit history.",
-      "input_contract": "WithdrawFrameInputV1",
-      "output_contract": "FrameWithdrawalReceiptV1",
       "used_by": [
         "create-cuebook-content"
       ],
@@ -763,7 +745,7 @@
         "height": 1200
       }
     },
-    "delivery_resize_policy": "frontend_or_edge_transformation_only",
+    "delivery_resize_policy": "server_generated_web_rendition_only",
     "forbidden_tools": [
       "get_frame_media",
       "list_frame_media",
@@ -786,14 +768,7 @@
       "prepare_frame_correction_publish",
       "publish_frame_correction"
     ],
-    "withdraw_sequence": [
-      "prepare_frame_withdraw",
-      "first_party_consent",
-      "get_frame_action_consent",
-      "withdraw_frame"
-    ],
-    "publish_authorization": "active_frame_publish_grant_and_first_party_publish_action",
-    "action_consent_usage": "withdrawal_only",
+    "publish_authorization": "active_oauth_frame_publish_grant_or_explicit_first_party_publish_action",
     "prepared_publish_required_fields": [
       "prepared_hash",
       "publish_token",
@@ -808,17 +783,12 @@
       "base_release_id",
       "expected_economic_hash"
     ],
-    "prepared_publish_omitted_fields": [
-      "consent_request_id",
-      "consent_url",
-      "consent_expires_at"
-    ],
-    "publish_input_omitted_fields": [
-      "consent_request_id"
-    ],
     "wire_golden": {
-      "tool_manifest_sha256": "107f0c7753a89b9185152f0f4707f632c9f22101ae33ce3bedccd36eed55a0b5",
-      "schema_catalog_sha256": "5aba76bf1fcbf4f85105e6423c42565b17a5fb696aa5dd18395bf31570f98b9c"
+      "contract_version": "frame-mcp-phase-b-v2",
+      "tool_count": 18,
+      "sync_status": "synced",
+      "tool_manifest_sha256": "sha256:575c5b27a1cdded6344eaa65fd52a5c8b5a6ce1e158c85f4a530f33d959e072a",
+      "schema_catalog_sha256": "sha256:0d632a40c1e5b0b101a626cbbd6c69e0abbd1d5bc58dc2b7737b663e706221f8"
     },
     "mutation_idempotency": "distinct_lowercase_uuidv7_per_command",
     "replay_policy": "same_key_same_payload_returns_receipt_changed_payload_conflict"
@@ -836,7 +806,6 @@
     "frame_mutations_use_distinct_uuidv7_keys": true,
     "frame_publish_action_authorizes_publish": true,
     "frame_publish_recomputes_prepared_hash_and_revalidates_authority": true,
-    "frame_withdraw_requires_first_party_consent": true,
     "external_write_requires_exact_artifact_hash": true,
     "external_write_requires_release_approval": true,
     "publish_success_requires_verified_receipt": true,
@@ -848,5 +817,5 @@
     "source_rights_required_for_creation": true,
     "valuation_comparisons_require_compatible_basis": true
   },
-  "notes": "Skill tool policy is client-side routing, not a claimed MCP profile field. Data-expansion tools with default_enabled=false may return typed unavailable. Superseded legacy writes are absent; planned tools are non-callable. Frame publish uses the active OAuth grant plus the first-party publish action; separate action consent is withdrawal-only. Memory scopes (cuebook.memory.read / cuebook.memory.propose) are requestable via a one-time consent step-up and are never part of the standard or creator bundles; no third-party manage scope exists. Staged initial publish: begin, signed PUT, and complete_frame_media_upload run at preview time against the quarantine store; publication intent costs only complete_frame_publish, and preflight_frame_publish stays a read-only availability check outside the mutation sequence."
+  "notes": "Skill tool policy is client-side routing, not a claimed MCP profile field. Data-expansion tools with default_enabled=false may return typed unavailable. Superseded legacy writes are absent; planned tools are non-callable. Published Frames are permanent: copy, reference, or visual clarification uses an append-only Correction, while changed thesis or economics require a new Frame. Memory scopes (cuebook.memory.read / cuebook.memory.propose) are requestable via a one-time consent step-up and are never part of the standard or creator bundles; no third-party manage scope exists. Staged initial publish: begin, signed PUT, and complete_frame_media_upload run at preview time against the quarantine store; publication intent costs only complete_frame_publish, and preflight_frame_publish stays a read-only availability check outside the mutation sequence."
 }

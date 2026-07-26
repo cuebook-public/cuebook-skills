@@ -19,10 +19,9 @@ const ROUTES = Object.freeze({
   frame_publication: { module: "create", effects: ["public_write"], artifacts: ["frame_publication"], gates: ["publication"], dependencyBranches: ["frame_native_preview", "frame_attributed_snapshot_preview"] },
   tradingview_canvas: { module: "create", effects: ["local_persistent_write"], artifacts: ["tradingview_canvas"], gates: ["drawing_plan"] },
   frame_correction: { module: "create", effects: ["public_write"], artifacts: ["frame_correction"], gates: ["publication"] },
-  frame_withdrawal: { module: "create", effects: ["destructive_write"], artifacts: ["frame_withdrawal"], gates: ["withdrawal_consent"] },
 });
 
-const WRITE_EFFECTS = new Set(["local_persistent_write", "public_write", "destructive_write"]);
+const WRITE_EFFECTS = new Set(["local_persistent_write", "public_write"]);
 
 function issue(code, path, message) {
   return { code, path, message };

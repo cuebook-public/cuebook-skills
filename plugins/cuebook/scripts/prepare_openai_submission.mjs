@@ -27,7 +27,12 @@ const SUBMISSION_FILES = [
   "reviewer-runbook.md",
   "release-notes.md",
 ];
+const PERMANENT_FRAME_REVIEW_FILES = [
+  "reviewer-runbook.md",
+  "tool-annotations.json",
+];
 const HAN = /\p{Script=Han}/u;
+const FRAME_WITHDRAWAL_LANGUAGE = /\bwithdraw(?:al|n|ing)?\b/iu;
 
 export class SubmissionValidationError extends Error {
   constructor(issues) {
@@ -78,6 +83,15 @@ export function validateOpenAiSubmission(rootArg = REPO_ROOT) {
     }
     if (HAN.test(readFileSync(target, "utf8"))) {
       add(`submission/openai/${file}`, "Submission-facing content must be English-only.");
+    }
+  }
+  for (const file of PERMANENT_FRAME_REVIEW_FILES) {
+    const target = path.join(submissionRoot, file);
+    if (existsSync(target) && FRAME_WITHDRAWAL_LANGUAGE.test(readFileSync(target, "utf8"))) {
+      add(
+        `submission/openai/${file}`,
+        "Published Frames are permanent; reviewer instructions and Tool annotations must not expose a withdrawal path.",
+      );
     }
   }
 

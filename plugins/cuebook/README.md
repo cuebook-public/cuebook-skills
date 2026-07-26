@@ -46,7 +46,7 @@ The creator consent presents all six Cuebook scopes once: public research, priva
 
 The installing task owns installation and that one necessary host login. It must not create a background test task, publish a placeholder, or diagnose this local marketplace through a public ChatGPT plugin manager. After Cuebook is enabled and no longer reports `not_logged_in`, fully quit the Codex app with `Cmd+Q` on macOS (or exit it completely on another platform), reopen it, and then enter the real query or market idea in one new task. Codex CLI users should end the current process and start a new one. A new task inside an app process that never restarted can retain the previous Plugin and Tool snapshot. The final readiness proof is a normal MCP result in the restarted host, not a browser approval screen or connector status alone. If authentication fails, stop instead of retrying, reinstalling, or opening more tasks. OAuth credentials stay in the connector, never in a Skill or generated artifact.
 
-Use `--ref v0.9.17` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
+Use `--ref v0.9.19` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
 
 ## Update
 
@@ -102,7 +102,7 @@ A creator-facing Frame contains exactly four fields:
 - `image_ref`
 - `alt_text`
 
-There is no public workflow state on the Frame. Preview blockers use plain language. After an action succeeds, Cuebook confirms only the meaningful result, such as “Published” or “Withdrawn.” Schema versions, selection IDs, source bundles, hashes, scores, scopes, upload state, receipts, consent, and credentials stay backstage.
+There is no public workflow state on the Frame. Preview blockers use plain language. After an action succeeds, Cuebook confirms only the meaningful result, such as “Published” or “Corrected.” Schema versions, selection IDs, source bundles, hashes, scores, scopes, upload state, receipts, consent, and credentials stay backstage.
 
 Eligible single-asset Frames share one deadline rule across crypto, equities, ETFs, and indexes: Cuebook freezes the same persisted price snapshot it can already display at publication, fixes the exact creator-owned deadline, and compares that starting point with the latest completed provider-official observation at or before the deadline. Long and short use the direction of the endpoint return. A terminal range view succeeds when the absolute endpoint return is inside the creator-confirmed symmetric ± band, including the boundary. An interim breach does not change an endpoint result, and a whole-window barrier claim is never silently reinterpreted as terminal range.
 
@@ -139,7 +139,7 @@ Observed history ends at a visible declaration boundary. Future space may contai
 
 The Skill is a thin orchestrator. Cuebook MCP provides authenticated typed reads and authorized Frame mutations; local deterministic code adapts frozen results and renders pixels. Broad internal graphs and algorithm stages are not public creator Tools.
 
-Client allowlists optimize tool choice but do not authorize requests. The server enforces grants, users, clients, scopes, policy, idempotency, prepared hashes, and publish tokens. Initial and correction publication go directly from prepare to publish under the active grant and first-party action. Withdrawal alone requires separate consent.
+Client allowlists optimize tool choice but do not authorize requests. The server enforces grants, users, clients, scopes, policy, idempotency, prepared hashes, and publish tokens. Initial and correction publication go directly from prepare to publish under the caller's active authority: an OAuth MCP grant for MCP calls, or an explicit first-party Publish action for first-party UI calls. Neither path requires the other. Published Frames are permanent: clarify unchanged economics with an append-only Correction, and publish a new Frame when the thesis or economics changed.
 
 These authorization checks stay inside MCP and are not additional creator steps. The ordinary one-preview publish lane also reuses the frozen preview directly instead of reconstructing a release DAG, candidate family, or HTML page. Removing those redundant artifacts, a second settlement prompt, or post-publish browser readback does not weaken OAuth, prepared-hash, publish-token, idempotency, or transaction validation.
 

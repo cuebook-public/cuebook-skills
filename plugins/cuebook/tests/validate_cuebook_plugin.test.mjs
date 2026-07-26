@@ -279,7 +279,7 @@ test("active, planned, and superseded tool surfaces stay separate", () => {
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
   );
   const active = new Set([...payload.available_tools, ...payload.required_tools].map((item) => item.tool));
-  assert.equal(payload.required_tools.length, 19);
+  assert.equal(payload.required_tools.length, 18);
   assert.deepEqual(new Set(payload.planned_tools.map((item) => item.tool)), new Set([
     "get_creator_feed",
     "compute_market_metrics",
@@ -633,7 +633,7 @@ test("Frame publication flow cannot become pull-based", () => {
   });
 });
 
-test("initial and correction publish skip separate consent while withdrawal retains it", () => {
+test("Frame publication is permanent and exposes only initial and correction flows", () => {
   const payload = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
   );
@@ -648,19 +648,40 @@ test("initial and correction publish skip separate consent while withdrawal reta
     "prepare_frame_correction_publish",
     "publish_frame_correction",
   ]);
-  assert.deepEqual(flow.withdraw_sequence, [
-    "prepare_frame_withdraw",
-    "first_party_consent",
-    "get_frame_action_consent",
-    "withdraw_frame",
-  ]);
-  assert.equal(flow.action_consent_usage, "withdrawal_only");
+  assert.equal(Object.hasOwn(flow, "withdraw_sequence"), false);
+  assert.equal(Object.hasOwn(flow, "action_consent_usage"), false);
   assert.equal(flow.publish_success_source, "successful_complete_frame_publish_result");
   assert.equal(flow.creator_link_policy, "never_present_canonical_url");
   assert.equal(flow.explicit_frame_query_tool, "get_frame");
   assert.equal(flow.automatic_post_publish_readback, false);
   assert.ok(!flow.initial_publish_sequence.includes("get_frame"));
   assert.ok(!flow.correction_publish_sequence.includes("get_frame"));
+  assert.deepEqual(
+    payload.required_tools
+      .filter((tool) => tool.phase === "frame_phase_b")
+      .map((tool) => tool.tool)
+      .sort(),
+    [
+      "begin_frame_media_upload",
+      "complete_frame_media_upload",
+      "complete_frame_publish",
+      "create_frame_correction_draft",
+      "create_frame_draft",
+      "get_frame",
+      "get_frame_capabilities",
+      "get_frame_draft",
+      "get_frame_media_status",
+      "list_child_frames",
+      "preflight_frame_publish",
+      "prepare_frame_correction_publish",
+      "prepare_frame_publish",
+      "publish_child_frame",
+      "publish_frame",
+      "publish_frame_correction",
+      "register_frame_visual_manifest",
+      "update_frame_draft",
+    ],
+  );
 });
 
 test("creation menu exposes atomic initial publication without the legacy draft lane", () => {
@@ -669,7 +690,7 @@ test("creation menu exposes atomic initial publication without the legacy draft 
   );
   assert.deepEqual(
     menu.write_actions.map((action) => action.mcp_tool),
-    ["complete_frame_publish", "withdraw_frame"],
+    ["complete_frame_publish"],
   );
   assert.deepEqual(menu.write_actions[0].required_gates, [
     "explicit_user_approval",
@@ -813,7 +834,7 @@ test("ordinary one-preview publish does not reconstruct the advanced release gra
   assert.match(publish, /Do not probe alternate payload shapes/u);
 });
 
-test("Frame publish contract pins consentless prepared and input fields", () => {
+test("Frame publish contract contains no withdrawn action-consent fields", () => {
   const payload = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
   );
@@ -832,12 +853,8 @@ test("Frame publish contract pins consentless prepared and input fields", () => 
     "base_release_id",
     "expected_economic_hash",
   ]);
-  assert.deepEqual(flow.prepared_publish_omitted_fields, [
-    "consent_request_id",
-    "consent_url",
-    "consent_expires_at",
-  ]);
-  assert.deepEqual(flow.publish_input_omitted_fields, ["consent_request_id"]);
+  assert.equal(Object.hasOwn(flow, "prepared_publish_omitted_fields"), false);
+  assert.equal(Object.hasOwn(flow, "publish_input_omitted_fields"), false);
   assert.deepEqual(flow.initial_settlement_modes, {
     directional: "long_or_short_with_zero_bps_at_exact_deadline",
     terminal_range: "range_with_creator_confirmed_max_abs_move_bps_at_exact_deadline",
@@ -848,13 +865,18 @@ test("Frame publish contract pins consentless prepared and input fields", () => 
   });
 });
 
-test("Frame capability map pins the current backend wire goldens", () => {
+test("Frame capability map targets the finalized 18-Tool v2 backend contract", () => {
   const payload = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
   );
   assert.deepEqual(payload.frame_publication_flow.wire_golden, {
-    tool_manifest_sha256: "107f0c7753a89b9185152f0f4707f632c9f22101ae33ce3bedccd36eed55a0b5",
-    schema_catalog_sha256: "5aba76bf1fcbf4f85105e6423c42565b17a5fb696aa5dd18395bf31570f98b9c",
+    contract_version: "frame-mcp-phase-b-v2",
+    tool_count: 18,
+    sync_status: "synced",
+    tool_manifest_sha256:
+      "sha256:575c5b27a1cdded6344eaa65fd52a5c8b5a6ce1e158c85f4a530f33d959e072a",
+    schema_catalog_sha256:
+      "sha256:0d632a40c1e5b0b101a626cbbd6c69e0abbd1d5bc58dc2b7737b663e706221f8",
   });
 });
 
@@ -870,33 +892,44 @@ test("Frame flow rejects reintroduced publish consent", () => {
   });
 });
 
-test("Frame flow rejects withdrawal without action consent", () => {
+test("Frame contract rejects a reintroduced withdrawal action", () => {
   withTmpPath((tmpPath) => {
     const root = copiedPlugin(tmpPath);
     const filePath = path.join(root, "assets", "mcp-capability-map-v1.json");
     rewrite(filePath, (payload) => {
-      payload.frame_publication_flow.withdraw_sequence = [
-        "prepare_frame_withdraw",
-        "withdraw_frame",
-      ];
+      const removedTool = structuredClone(
+        payload.required_tools.find((tool) => tool.tool === "publish_frame"),
+      );
+      removedTool.tool = "withdraw_frame";
+      payload.required_tools.push(removedTool);
+      payload.frame_publication_flow.withdraw_sequence = ["withdraw_frame"];
     });
-    assert.ok(codes(validate(root)).has("FRAME_FLOW_CONTRACT"));
+    assert.ok(codes(validate(root)).has("FRAME_WITHDRAWAL_REMOVED"));
   });
 });
 
-test("Frame entry skills describe consentless publish and withdrawal-only consent", () => {
+test("Frame entry skills route withdrawal requests only to Correction or a new Frame", () => {
   const create = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const query = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "query-cuebook", "SKILL.md"),
     "utf-8",
   );
   const orchestrate = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "orchestrate-cuebook-creator-workflow", "SKILL.md"),
     "utf-8",
   );
+  const combined = `${create}\n${query}\n${orchestrate}`;
   assert.match(create, /Ordinary initial publication uses `complete_frame_publish`/u);
-  assert.match(create, /Withdrawals alone retain/u);
   assert.match(orchestrate, /complete_frame_publish/u);
-  assert.match(orchestrate, /Withdrawal still requires approved first-party consent/u);
+  assert.match(combined, /Published Frames are permanent/iu);
+  assert.match(combined, /withdraw.*Correction.*new Frame/isu);
+  assert.doesNotMatch(
+    combined,
+    /\b(?:get_frame_action_consent|prepare_frame_withdraw|withdraw_frame|frame_withdrawal|withdrawal_consent)\b/u,
+  );
   assert.doesNotMatch(create, /prepare → first-party consent bound to `prepared_hash` → publish/u);
 });
 

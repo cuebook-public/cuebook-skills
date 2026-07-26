@@ -44,7 +44,7 @@
     {
       "name": "frame-draft-and-publication",
       "annotations_source": "The frozen Frame MCP tool contract",
-      "rationale": "Read, draft, upload, publish, correction, and withdrawal hints are declared per tool; public publication and signed upload are open-world actions, and withdrawal is destructive."
+      "rationale": "Read, child-note, draft, upload, publish, and correction hints are declared per tool. Public publication and signed upload are open-world actions; the Frame contract exposes no destructive removal action."
     }
   ]
 }

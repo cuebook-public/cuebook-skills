@@ -1,6 +1,6 @@
 {
   "schema_version": "creation-menu-v1",
-  "catalog_version": "1.29.0",
+  "catalog_version": "1.30.0",
   "module_id": "create",
   "default_preset": "preset-publish-candidates",
   "steps": [
@@ -416,18 +416,6 @@
       "required_gates": [
         "explicit_user_approval",
         "uploaded_publication_master",
-        "idempotency_key"
-      ]
-    },
-    {
-      "action_id": "withdraw_frame",
-      "label": "Withdraw Frame",
-      "mcp_tool": "withdraw_frame",
-      "availability": "backend_required",
-      "required_gates": [
-        "explicit_user_approval",
-        "first_party_consent",
-        "prepared_hash",
         "idempotency_key"
       ]
     }

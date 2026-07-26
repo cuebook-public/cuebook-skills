@@ -25,7 +25,7 @@ Codex reads exactly three `SKILL.md` files at startup. Internal capabilities are
 vendored as non-discoverable `references/modules/*.md` resources behind
 `query-cuebook`, `create-cuebook-content`, and `author-cuebook-skill`.
 
-The default marketplace follows stable releases from `main`. Add `--ref v0.9.17`
+The default marketplace follows stable releases from `main`. Add `--ref v0.9.19`
 only for an intentionally frozen install.
 
 ## Update
@@ -118,9 +118,11 @@ Frame publication follows the capability-advertised upload → manifest → draf
 → prepare → publish sequence. A successful typed publish result ends the creator
 flow; Codex does not parse a receipt, reconcile history, call `get_frame`, browse
 a canonical page, or display a web link after publication. Initial and correction
-publishing use the active grant and first-party publish action without a
-separate consent request; only withdrawal uses `get_frame_action_consent`.
-Every mutation uses a separate lowercase UUIDv7. Query never calls writes;
+publishing use the active OAuth MCP grant; a first-party Publish action is a
+separate UI authorization path, not an additional MCP gate. Published Frames
+are permanent: unchanged economics may use an append-only Correction, while a
+changed thesis or economic contract requires a new Frame. Every mutation uses a
+separate lowercase UUIDv7. Query never calls writes;
 Create never publishes silently, and no standalone media retrieval tool is
 exposed.
 

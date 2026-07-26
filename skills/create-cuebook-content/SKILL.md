@@ -179,9 +179,9 @@ Change one truthful expressive route and avoid the last two design or attention 
 
 Freeze the selected title, body, meaning, evidence, and image bytes. Reuse the validated candidate, sole 1866 × 1200 PNG, hash, and byte size in the three-step [Frame Publish Workflow](references/frame-publish-workflow.md); let `complete_frame_publish` finish the server-owned work. Do not rebuild a graph, release bundle, HTML page, raster audit, manifest, contract, draft, or prepare payload.
 
-Corrections and withdrawals use only their dedicated server actions. The ordinary selected PNG is already the finished publication master; no gallery, HTML, font file, or derivative is required. Keep wire types, hashes, mutation keys, and server states backstage.
+Published Frames are permanent. If the creator asks to withdraw, unpublish, or delete one, explain that Cuebook does not remove a published Frame: use a Correction for copy, reference, or visual clarification, or publish a new Frame when the thesis or economics changed.
 
-Ordinary initial publication uses `complete_frame_publish`. Correction follows its matching prepare → publish pair without separate action consent. Withdrawals alone retain first-party consent and consent-status polling.
+The ordinary selected PNG is already the finished publication master; no gallery, HTML, font file, or derivative is required. Keep wire types, hashes, mutation keys, and server states backstage. Ordinary initial publication uses `complete_frame_publish`. Correction follows its matching prepare → publish pair.
 
 ### Exact-Deadline Settlement
 

@@ -175,13 +175,9 @@
         "initial_publish_sequence",
         "initial_settlement_modes",
         "correction_publish_sequence",
-        "withdraw_sequence",
         "publish_authorization",
-        "action_consent_usage",
         "prepared_publish_required_fields",
         "prepared_correction_publish_required_fields",
-        "prepared_publish_omitted_fields",
-        "publish_input_omitted_fields",
         "wire_golden",
         "mutation_idempotency",
         "replay_policy"
@@ -221,7 +217,7 @@
           "const": {"publication": {"width": 1866, "height": 1200}}
         },
         "delivery_resize_policy": {
-          "const": "frontend_or_edge_transformation_only"
+          "const": "server_generated_web_rendition_only"
         },
         "forbidden_tools": {
           "const": [
@@ -253,19 +249,8 @@
             "publish_frame_correction"
           ]
         },
-        "withdraw_sequence": {
-          "const": [
-            "prepare_frame_withdraw",
-            "first_party_consent",
-            "get_frame_action_consent",
-            "withdraw_frame"
-          ]
-        },
         "publish_authorization": {
-          "const": "active_frame_publish_grant_and_first_party_publish_action"
-        },
-        "action_consent_usage": {
-          "const": "withdrawal_only"
+          "const": "active_oauth_frame_publish_grant_or_explicit_first_party_publish_action"
         },
         "prepared_publish_required_fields": {
           "const": [
@@ -285,31 +270,31 @@
             "expected_economic_hash"
           ]
         },
-        "prepared_publish_omitted_fields": {
-          "const": [
-            "consent_request_id",
-            "consent_url",
-            "consent_expires_at"
-          ]
-        },
-        "publish_input_omitted_fields": {
-          "const": [
-            "consent_request_id"
-          ]
-        },
         "wire_golden": {
           "type": "object",
           "additionalProperties": false,
           "required": [
+            "contract_version",
+            "tool_count",
+            "sync_status",
             "tool_manifest_sha256",
             "schema_catalog_sha256"
           ],
           "properties": {
+            "contract_version": {
+              "const": "frame-mcp-phase-b-v2"
+            },
+            "tool_count": {
+              "const": 18
+            },
+            "sync_status": {
+              "const": "synced"
+            },
             "tool_manifest_sha256": {
-              "const": "107f0c7753a89b9185152f0f4707f632c9f22101ae33ce3bedccd36eed55a0b5"
+              "const": "sha256:575c5b27a1cdded6344eaa65fd52a5c8b5a6ce1e158c85f4a530f33d959e072a"
             },
             "schema_catalog_sha256": {
-              "const": "5aba76bf1fcbf4f85105e6423c42565b17a5fb696aa5dd18395bf31570f98b9c"
+              "const": "sha256:0d632a40c1e5b0b101a626cbbd6c69e0abbd1d5bc58dc2b7737b663e706221f8"
             }
           }
         },

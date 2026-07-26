@@ -68,3 +68,17 @@ test("rejects forward dependencies and implicit writes", () => {
   assert.ok(codes.has("INVALID_STEP_DEPENDENCY"));
   assert.ok(codes.has("WRITE_NOT_EXPLICIT"));
 });
+
+test("withdrawal has no intent branch, artifact, action effect, or confirmation gate", () => {
+  const payload = intent([
+    step({
+      step_id: "STEP_withdraw",
+      module: "create",
+      branch: "frame_withdrawal",
+      artifact: "frame_withdrawal",
+      effect: "destructive_write",
+      confirmation_gates: ["withdrawal_consent"],
+    }),
+  ]);
+  assert.equal(validate(payload).valid, false);
+});
