@@ -8,6 +8,9 @@
   },
   "scripts": {
     "build:release": "node plugins/cuebook/scripts/build_release_skills.mjs plugins/cuebook skills && node plugins/cuebook/scripts/build_release_skills.mjs plugins/cuebook plugins/cuebook/public-skills",
+    "distribution:development": "node plugins/cuebook/scripts/configure_distribution_channel.mjs development && npm run build:release",
+    "distribution:production": "node plugins/cuebook/scripts/configure_distribution_channel.mjs production && npm run build:release",
+    "distribution:check": "node plugins/cuebook/scripts/configure_distribution_channel.mjs --check",
     "validate:english": "node plugins/cuebook/scripts/validate_english_repo.mjs",
     "validate:plugin": "node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook",
     "validate:closure": "node plugins/cuebook/scripts/validate_skill_closure.mjs plugins/cuebook",

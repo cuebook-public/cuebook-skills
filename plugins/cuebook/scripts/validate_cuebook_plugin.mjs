@@ -5,11 +5,13 @@ import { readFileSync, readdirSync, existsSync, realpathSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { DISTRIBUTION_CHANNELS } from "./configure_distribution_channel.mjs";
 import { validateInstance, pyrepr } from "./validate_json_schema.mjs";
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 
-const CUEBOOK_MCP_URL = "https://cuebook.xyz/mcp";
+const PRODUCTION_MCP_URL = DISTRIBUTION_CHANNELS.production.mcp_url;
+const DEVELOPMENT_MCP_URL = DISTRIBUTION_CHANNELS.development.mcp_url;
 
 const PLATFORM_GUIDES = new Set([
   "chatgpt.md",
@@ -264,6 +266,7 @@ export function validate(pluginRoot) {
   const assetsRoot = path.join(pluginRoot, "assets");
   const manifest = load(path.join(pluginRoot, ".codex-plugin", "plugin.json"));
   const mcpConfig = load(path.join(pluginRoot, ".mcp.json"));
+  const distribution = load(path.join(pluginRoot, "distribution-channel-v1.json"));
   const index = load(path.join(assetsRoot, "plugin-index-v1.json"));
   const moduleMap = load(path.resolve(assetsRoot, index.module_map_ref));
   const queryMenu = load(path.resolve(assetsRoot, index.query_menu_ref));
@@ -291,10 +294,11 @@ export function validate(pluginRoot) {
     "Platform documentation must contain exactly the ten supported host guides plus its README index.",
   );
   check(
-    platformIndex.includes(CUEBOOK_MCP_URL),
+    platformIndex.includes(PRODUCTION_MCP_URL)
+      && platformIndex.includes(DEVELOPMENT_MCP_URL),
     "PLATFORM_MCP_ENDPOINT",
     "platforms/README.md",
-    "The platform matrix must name the canonical Cuebook MCP endpoint.",
+    "The platform matrix must distinguish the production and development Cuebook MCP endpoints.",
   );
   check(
     !/[\u3400-\u9fff]/u.test(platformIndex),
@@ -307,10 +311,10 @@ export function validate(pluginRoot) {
     if (!existsSync(guidePath)) continue;
     const guide = readFileSync(guidePath, "utf-8");
     check(
-      guide.includes(CUEBOOK_MCP_URL),
+      guide.includes(PRODUCTION_MCP_URL),
       "PLATFORM_MCP_ENDPOINT",
       `platforms/${guideName}`,
-      "Every host guide must name the same canonical Cuebook MCP endpoint.",
+      "Every host guide must name the stable production Cuebook MCP endpoint.",
     );
     check(
       /\*\*Live status:\*\*/u.test(guide),
@@ -1038,6 +1042,41 @@ export function validate(pluginRoot) {
   }
 
   const configured = ((mcpConfig.mcpServers ?? {}).cuebook) ?? {};
+  const selectedDistribution = DISTRIBUTION_CHANNELS[distribution.channel];
+  check(
+    Boolean(selectedDistribution),
+    "DISTRIBUTION_CHANNEL",
+    "distribution-channel-v1.json.channel",
+    "Cuebook distribution channel must be production or development.",
+  );
+  if (selectedDistribution) {
+    for (const field of ["schema_version", "channel", "web_origin", "mcp_url"]) {
+      check(
+        distribution[field] === selectedDistribution[field],
+        "DISTRIBUTION_CHANNEL",
+        `distribution-channel-v1.json.${field}`,
+        `Distribution ${field} must match the closed ${selectedDistribution.channel} channel configuration.`,
+      );
+    }
+    check(
+      configured.url === selectedDistribution.mcp_url,
+      "DISTRIBUTION_CHANNEL",
+      ".mcp.json.mcpServers.cuebook.url",
+      "MCP URL must match the selected distribution channel.",
+    );
+    check(
+      configured.oauth_resource === selectedDistribution.mcp_url,
+      "DISTRIBUTION_CHANNEL",
+      ".mcp.json.mcpServers.cuebook.oauth_resource",
+      "OAuth resource must match the selected distribution channel.",
+    );
+    check(
+      capabilityMap.server?.url === selectedDistribution.mcp_url,
+      "DISTRIBUTION_CHANNEL",
+      "assets/mcp-capability-map-v1.json.server.url",
+      "Capability map server URL must match the selected distribution channel.",
+    );
+  }
   check(
     setEq(new Set(Object.keys(mcpConfig.mcpServers ?? {})), new Set(["cuebook"])),
     "MCP_SERVER_SET",

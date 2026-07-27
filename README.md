@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://cuebook.xyz">
+  <a href="https://cuebook.app">
     <img
       src="https://raw.githubusercontent.com/cuebook-public/cuebook-cli/main/assets/cuebook-cli-logo.png"
       width="200"
@@ -90,7 +90,7 @@ The public Skills are a context-efficiency boundary, not a capability limit. Spe
 
 ## Platform Support
 
-Cuebook has one remote MCP endpoint and two optional Agent Skills. Hosts that load both layers can run the complete creator workflow; MCP-only hosts can connect to Cuebook Tools, but do not automatically inherit the interview, evidence-selection, rendering, and publication orchestration encoded in the Skills.
+Cuebook has one remote MCP endpoint per distribution channel and three optional Agent Skills. Hosts that load both layers can run the complete creator workflow; MCP-only hosts can connect to Cuebook Tools, but do not automatically inherit the interview, evidence-selection, rendering, and publication orchestration encoded in the Skills.
 
 | Host | Distribution | Intended surface | Live status |
 | --- | --- | --- | --- |
@@ -103,7 +103,7 @@ Cuebook has one remote MCP endpoint and two optional Agent Skills. Hosts that lo
 | **ChatGPT** | Custom MCP app | MCP direct | Eligible plans only; connector check pending |
 | **Grok** | Custom MCP connector | MCP direct | Team-admin setup; connector check pending |
 
-See the [platform matrix and installation guides](plugins/cuebook/platforms/README.md). Every guide points to the same endpoint: `https://cuebook.xyz/mcp`. A completed browser approval is not proof of readiness; each host must return a normal MCP result before it is marked live-verified.
+See the [platform matrix and installation guides](plugins/cuebook/platforms/README.md). Stable releases from `main` use `https://cuebook.app/mcp`; development builds from `dev` use `https://cuebook.xyz/mcp`. A completed browser approval is not proof of readiness; each host must return a normal MCP result before it is marked live-verified.
 
 ## Quick Start
 
@@ -267,6 +267,16 @@ The Skill remains a thin orchestrator. Cuebook MCP supplies authenticated data a
 Client tool filters improve selection but are not a security boundary. The server enforces grants, users, clients, scopes, policy, idempotency, prepared hashes, and publish tokens. Image bytes are never pulled back through MCP after upload.
 
 ## Development
+
+Distribution is branch-aware while the Skills and Tool contracts remain shared:
+
+```bash
+npm run distribution:development # dev → https://cuebook.xyz/mcp
+npm run distribution:production  # main/releases → https://cuebook.app/mcp
+```
+
+Both commands regenerate the checked-in public Skill bundles. CI rejects a
+development connector on `main` and a production connector on `dev`.
 
 <details>
 <summary><strong>Repository layout</strong></summary>

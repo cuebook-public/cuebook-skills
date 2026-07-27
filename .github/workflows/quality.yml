@@ -45,6 +45,20 @@ jobs:
             exit 1
           fi
 
+      - name: Verify branch distribution channel
+        shell: bash
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          target="${BASE_REF:-$REF_NAME}"
+          if [[ "$target" == "main" ]]; then
+            expected="production"
+          else
+            expected="development"
+          fi
+          npm run distribution:check -- --expected-channel "$expected"
+
       - name: Validate plugin and skill closure
         run: npm run validate
 

@@ -10,6 +10,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { build } from "./build_release_skills.mjs";
+import { distributionWrites } from "./configure_distribution_channel.mjs";
 
 const STABLE_SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/u;
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/u;
@@ -234,6 +235,9 @@ export function prepareRelease(rootArg, options) {
   }
 
   const writes = new Map();
+  for (const [file, text] of distributionWrites(root, "production")) {
+    writes.set(file, text);
+  }
   packageJson.version = version;
   writes.set(VERSION_FILES.package, jsonText(packageJson));
 

@@ -7,7 +7,7 @@
 <p align="center"><strong>Make a market intuition clearer, more visible, and easier to revisit.</strong></p>
 
 <p align="center">
-  <img alt="Two public skills" src="https://img.shields.io/badge/public_skills-2-4C6FFF?style=flat-square&labelColor=111111">
+  <img alt="Three public skills" src="https://img.shields.io/badge/public_skills-3-4C6FFF?style=flat-square&labelColor=111111">
   <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/Node.js-%E2%89%A522-3C873A?style=flat-square&labelColor=111111">
 </p>
 
@@ -69,7 +69,9 @@ Older connections retain their original immutable scopes. If one lacks Paper or 
 Cuebook ships two layers:
 
 - the self-contained `query-cuebook` and `create-cuebook-content` Agent Skills;
-- the authenticated remote MCP endpoint at `https://cuebook.xyz/mcp`.
+- one authenticated remote MCP endpoint selected by distribution channel:
+  stable `main` releases use `https://cuebook.app/mcp`, while `dev` builds use
+  `https://cuebook.xyz/mcp`.
 
 Codex, Claude Code, Cursor, Hermes, and OpenClaw can use both layers and are the full creator targets. Claude, Claude Desktop, ChatGPT, and Grok connect directly to MCP; they are useful connector targets, but do not receive the local Cuebook interview and visual-rendering workflow merely by adding the endpoint.
 

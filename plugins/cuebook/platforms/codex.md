@@ -72,7 +72,8 @@ connector.
 
 ## MCP configuration and auth
 
-The plugin ships `.mcp.json` pointing at `https://cuebook.xyz/mcp`. OAuth
+Stable `main` releases ship `.mcp.json` pointing at `https://cuebook.app/mcp`;
+development builds from `dev` point at `https://cuebook.xyz/mcp`. OAuth
 credentials live in the Codex connector, never in a Skill file or generated
 artifact. Authentication belongs to installation, not to Query or Create.
 

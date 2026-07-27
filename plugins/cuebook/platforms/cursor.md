@@ -26,7 +26,7 @@ Add this project configuration at `.cursor/mcp.json`:
 {
   "mcpServers": {
     "cuebook": {
-      "url": "https://cuebook.xyz/mcp"
+      "url": "https://cuebook.app/mcp"
     }
   }
 }

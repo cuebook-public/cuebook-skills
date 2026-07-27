@@ -45,7 +45,11 @@ Restart Claude Code, or run `/reload-plugins`, after the update. Do not remove t
 
 ## MCP configuration and auth
 
-The plugin ships `.mcp.json` with an HTTP endpoint at `https://cuebook.xyz/mcp`. Do not register the same endpoint a second time. In Claude Code, open `/mcp`, select Cuebook, and complete one browser authentication flow. OAuth credentials stay in the host connector.
+Stable `main` releases ship `.mcp.json` with `https://cuebook.app/mcp`;
+development builds from `dev` use `https://cuebook.xyz/mcp`. Do not register
+the selected endpoint a second time. In Claude Code, open `/mcp`, select
+Cuebook, and complete one browser authentication flow. OAuth credentials stay
+in the host connector.
 
 If authentication or token exchange fails, stop after that one result. Do not add another server name, reinstall the plugin, or launch parallel logins.
 

@@ -33,6 +33,30 @@ function fixture(root, { unreleased = "- Added one release feature." } = {}) {
     plugin_version: "0.6.0",
     catalog_version: "1.29.0",
   });
+  json(path.join(root, "plugins/cuebook/assets/mcp-capability-map-v1.json"), {
+    schema_version: "cuebook-mcp-capability-map-v1",
+    server: {
+      id: "cuebook",
+      url: "https://cuebook.xyz/mcp",
+      transport: "http",
+      authentication: "oauth",
+    },
+  });
+  json(path.join(root, "plugins/cuebook/distribution-channel-v1.json"), {
+    schema_version: "cuebook-distribution-channel-v1",
+    channel: "development",
+    web_origin: "https://cuebook.xyz",
+    mcp_url: "https://cuebook.xyz/mcp",
+  });
+  json(path.join(root, "plugins/cuebook/.mcp.json"), {
+    mcpServers: {
+      cuebook: {
+        type: "http",
+        url: "https://cuebook.xyz/mcp",
+        oauth_resource: "https://cuebook.xyz/mcp",
+      },
+    },
+  });
   json(path.join(root, "plugins/cuebook/.codex-plugin/plugin.json"), {
     name: "cuebook",
     version: "0.6.0+codex.20260720133237",
@@ -96,6 +120,18 @@ test("prepares every public version surface while preserving catalog version", (
       JSON.parse(fs.readFileSync(path.join(root, ".claude-plugin/marketplace.json"))).plugins[0].version,
       "0.7.0",
     );
+    const distribution = JSON.parse(
+      fs.readFileSync(path.join(root, "plugins/cuebook/distribution-channel-v1.json")),
+    );
+    assert.equal(distribution.channel, "production");
+    assert.equal(distribution.mcp_url, "https://cuebook.app/mcp");
+    const mcp = JSON.parse(fs.readFileSync(path.join(root, "plugins/cuebook/.mcp.json")));
+    assert.equal(mcp.mcpServers.cuebook.url, "https://cuebook.app/mcp");
+    assert.equal(mcp.mcpServers.cuebook.oauth_resource, "https://cuebook.app/mcp");
+    const capabilityMap = JSON.parse(
+      fs.readFileSync(path.join(root, "plugins/cuebook/assets/mcp-capability-map-v1.json")),
+    );
+    assert.equal(capabilityMap.server.url, "https://cuebook.app/mcp");
     assert.match(
       fs.readFileSync(path.join(root, "plugins/cuebook/platforms/claude-code.md"), "utf8"),
       /cuebook-skills@v0\.7\.0/u,

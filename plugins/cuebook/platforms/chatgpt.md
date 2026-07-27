@@ -14,7 +14,7 @@ At the time this guide was written, custom apps with full MCP read and write sup
 
 1. Enable developer mode in the applicable workspace or user settings.
 2. Open **Settings → Apps** and create a custom app.
-3. Name it `Cuebook` and enter `https://cuebook.xyz/mcp`.
+3. Name it `Cuebook` and enter the stable endpoint `https://cuebook.app/mcp`.
 4. Complete one OAuth flow.
 5. Let ChatGPT scan the Tools, then enable the app in a new conversation.
 

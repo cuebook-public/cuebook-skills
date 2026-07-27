@@ -115,6 +115,7 @@ stay under the builder's `FAST_PREVIEW_BYTE_LIMIT` (112 000 bytes since
 | Bundles vs source | `verify:release-bundles` + isolated-rebuild test |
 | Capability map vs validator expectations | scope maps inside `validate_cuebook_plugin.mjs` |
 | Capability map vs the DEPLOYED server | not yet automated — reconcile against the server's `tools/list` during integration passes until a checked-in server-registry snapshot comparison exists (adversarial review AR-04) |
+| Distribution endpoint vs branch | `distribution:check` in CI: `dev` is development (`cuebook.xyz`), `main` and releases are production (`cuebook.app`) |
 | English-only public text | `validate:english` (multilingual test inputs use `\uXXXX` escapes) |
 | Version surfaces | `release:prepare` single-source bump + `release:check` |
 
@@ -124,3 +125,5 @@ Source edits → `npm run validate && npm test` → `npm run build:release` →
 release prep (`release:prepare -- <version>`) → `release:verify` → feature
 commit + `release: publish …` commit + tag + GitHub Release. Generated trees
 are never patched directly; installed plugins follow tagged releases.
+`release:prepare` also forces the production distribution channel before it
+regenerates stable bundles.

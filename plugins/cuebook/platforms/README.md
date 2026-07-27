@@ -1,10 +1,15 @@
 # Cuebook Platform Support
 
-Cuebook uses one authenticated remote MCP endpoint:
+Cuebook uses one authenticated remote MCP endpoint per distribution channel:
 
 ```text
-https://cuebook.xyz/mcp
+stable main / production: https://cuebook.app/mcp
+dev / development:        https://cuebook.xyz/mcp
 ```
+
+The Skill behavior and Tool contract are identical. OAuth credentials are
+resource-bound, so do not register both endpoints under the same host profile
+or expect a token issued for one endpoint to work on the other.
 
 The repository also publishes exactly three self-contained Agent Skills:
 
