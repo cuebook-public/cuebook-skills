@@ -12,7 +12,7 @@ For an individual Claude plan:
 
 1. Open **Customize → Connectors**.
 2. Select **Add custom connector**.
-3. Name it `Cuebook` and enter the stable endpoint `https://cuebook.xyz/mcp`.
+3. Name it `Cuebook` and enter the stable endpoint `https://cuebook.app/mcp`.
 4. Select **Connect** and complete one OAuth flow.
 5. Enable Cuebook for the conversation from the connector picker.
 
