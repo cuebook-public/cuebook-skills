@@ -181,7 +181,7 @@ test("distribution validation rejects channel and connector drift", () => {
     fs.mkdirSync(path.dirname(pluginRoot), { recursive: true });
     fs.cpSync(PLUGIN_ROOT, pluginRoot, { recursive: true });
     rewrite(path.join(pluginRoot, ".mcp.json"), (payload) => {
-      payload.mcpServers.cuebook.url = "https://cuebook.xyz/mcp";
+      payload.mcpServers.cuebook.url = "https://example.com/mcp";
     });
     assert.ok(collectDistributionIssues(tmpPath, "production").length > 0);
     assert.ok(codes(validate(pluginRoot)).has("DISTRIBUTION_CHANNEL"));
