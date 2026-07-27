@@ -10,7 +10,7 @@
 
 1. Open the Grok Business connector management page with team-management permission.
 2. Select **Add Connector**.
-3. Choose **Other** and enter the stable endpoint `https://cuebook.xyz/mcp`.
+3. Choose **Other** and enter the stable endpoint `https://cuebook.app/mcp`.
 4. Complete the required authentication.
 5. Connect the individual account at `grok.com/connectors` if the team flow requires it.
 

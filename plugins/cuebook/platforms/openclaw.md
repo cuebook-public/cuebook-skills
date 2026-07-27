@@ -22,7 +22,7 @@ openclaw skills list
 
 ```bash
 openclaw mcp add cuebook \
-  --url https://cuebook.xyz/mcp \
+  --url https://cuebook.app/mcp \
   --transport streamable-http \
   --auth oauth \
   --timeout 20 \

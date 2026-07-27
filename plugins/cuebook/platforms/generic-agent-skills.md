@@ -38,7 +38,7 @@ at startup, body on activation, resources on demand.
 
 ## MCP configuration and auth
 
-Stable bundles assume a connected Cuebook MCP server at `https://cuebook.xyz/mcp`; configure it through the
+Stable bundles assume a connected Cuebook MCP server at `https://cuebook.app/mcp`; configure it through the
 client's native MCP mechanism. Without it, query and verification steps
 report unavailable capabilities instead of inventing values.
 

@@ -1,6 +1,6 @@
 {
   "schema_version": "cuebook-distribution-channel-v1",
   "channel": "production",
-  "web_origin": "https://cuebook.xyz",
-  "mcp_url": "https://cuebook.xyz/mcp"
+  "web_origin": "https://cuebook.app",
+  "mcp_url": "https://cuebook.app/mcp"
 }

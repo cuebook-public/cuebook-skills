@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Keep the checked-in Cuebook connector aligned with its distribution branch.
-// Skill behavior and Tool contracts are shared. Channel metadata stays
-// branch-specific even when production and development use the same origin.
+// Skill behavior and Tool contracts are shared; only the OAuth resource origin
+// changes between the stable production channel and the development channel.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -18,8 +18,8 @@ export const DISTRIBUTION_CHANNELS = Object.freeze({
   production: Object.freeze({
     schema_version: "cuebook-distribution-channel-v1",
     channel: "production",
-    web_origin: "https://cuebook.xyz",
-    mcp_url: "https://cuebook.xyz/mcp",
+    web_origin: "https://cuebook.app",
+    mcp_url: "https://cuebook.app/mcp",
   }),
 });
 

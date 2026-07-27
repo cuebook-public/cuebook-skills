@@ -95,12 +95,12 @@ test("platform guides are English, endpoint-pinned, and explicit about live evid
     .sort();
   assert.equal(guideNames.length, 10);
   const index = fs.readFileSync(path.join(platformsRoot, "README.md"), "utf-8");
-  assert.match(index, /stable main \/ production: https:\/\/cuebook\.xyz\/mcp/u);
+  assert.match(index, /stable main \/ production: https:\/\/cuebook\.app\/mcp/u);
   assert.match(index, /dev \/ development:\s+https:\/\/cuebook\.xyz\/mcp/u);
   assert.doesNotMatch(index, /[\u3400-\u9fff]/u);
   for (const guideName of guideNames) {
     const guide = fs.readFileSync(path.join(platformsRoot, guideName), "utf-8");
-    assert.match(guide, /https:\/\/cuebook\.xyz\/mcp/u, guideName);
+    assert.match(guide, /https:\/\/cuebook\.app\/mcp/u, guideName);
     assert.match(guide, /\*\*Live status:\*\*/u, guideName);
     assert.match(guide, /live verification gate/u, guideName);
     assert.doesNotMatch(guide, /[\u3400-\u9fff]/u, guideName);
@@ -145,7 +145,7 @@ test("platform validation rejects endpoint drift", () => {
     const filePath = path.join(root, "platforms", "cursor.md");
     fs.writeFileSync(
       filePath,
-      fs.readFileSync(filePath, "utf-8").replaceAll("https://cuebook.xyz/mcp", "https://example.com/mcp"),
+      fs.readFileSync(filePath, "utf-8").replaceAll("https://cuebook.app/mcp", "https://example.com/mcp"),
     );
     assert.ok(codes(validate(root)).has("PLATFORM_MCP_ENDPOINT"));
   });
@@ -170,8 +170,8 @@ test("distribution channels generate one internally consistent OAuth resource", 
     assert.deepEqual(collectDistributionIssues(tmpPath, "production"), []);
     assert.ok(validate(pluginRoot).valid);
     const prodMcp = JSON.parse(fs.readFileSync(path.join(pluginRoot, ".mcp.json"), "utf8"));
-    assert.equal(prodMcp.mcpServers.cuebook.url, "https://cuebook.xyz/mcp");
-    assert.equal(prodMcp.mcpServers.cuebook.oauth_resource, "https://cuebook.xyz/mcp");
+    assert.equal(prodMcp.mcpServers.cuebook.url, "https://cuebook.app/mcp");
+    assert.equal(prodMcp.mcpServers.cuebook.oauth_resource, "https://cuebook.app/mcp");
   });
 });
 
@@ -181,7 +181,7 @@ test("distribution validation rejects channel and connector drift", () => {
     fs.mkdirSync(path.dirname(pluginRoot), { recursive: true });
     fs.cpSync(PLUGIN_ROOT, pluginRoot, { recursive: true });
     rewrite(path.join(pluginRoot, ".mcp.json"), (payload) => {
-      payload.mcpServers.cuebook.url = "https://example.com/mcp";
+      payload.mcpServers.cuebook.url = "https://cuebook.xyz/mcp";
     });
     assert.ok(collectDistributionIssues(tmpPath, "production").length > 0);
     assert.ok(codes(validate(pluginRoot)).has("DISTRIBUTION_CHANNEL"));
