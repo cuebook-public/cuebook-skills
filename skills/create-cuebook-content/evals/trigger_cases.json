@@ -10,7 +10,9 @@
     "I want to express that the market is rewarding cash-flow quality and punishing leverage; show both sleeves, weights, and contributions in the Frame.",
     "Use the relationship I selected from my local BTCUSD TradingView chart, rebuild it from Cuebook candles, and turn it into a native Frame.",
     "After I confirm the exact plan, place my 118.5k level and July checkpoint on the BTCUSD 4H TradingView chart.",
-    "Use my official TradingView snapshot as the Frame image: focus the latest SPCX 4H structure and keep visible TradingView attribution."
+    "Use my official TradingView snapshot as the Frame image: focus the latest SPCX 4H structure and keep visible TradingView attribution.",
+    "Use the portrait JPEG I attached as the Frame image without cropping it, and publish the idea without a price settlement.",
+    "Turn this public Kimi-hosted interactive page into a Frame with my supplied poster; tapping the poster should open the live Artifact in Cuebook App."
   ],
   "negative": [
     "Only show me USO's latest story.",
@@ -62,6 +64,18 @@
     {
       "prompt": "Use this chart copied from another creator's post as the Frame image.",
       "route": "keep the screenshot local or natively rerender the adopted relationship unless overlay publication rights and TradingView attribution are verified"
+    },
+    {
+      "prompt": "This is an interactive market explainer, not a prediction. Publish it with BTC and ETH as subjects.",
+      "route": "preserve the external Artifact URL and one immutable poster, record BTC and ETH as subject assets, and use settlement_mode none without inventing a deadline or economic contract"
+    },
+    {
+      "prompt": "Use my own 1080 x 1350 WebP as the post image.",
+      "route": "inspect the exact creator file, preserve its native dimensions and aspect ratio, and upload its unchanged bytes instead of forcing the generated 1866 x 1200 profile"
+    },
+    {
+      "prompt": "Attach this interactive scenario and also settle my NVDA long view at the date I chose.",
+      "route": "confirm one poster plus the provider-hosted Artifact and the independent market Settlement, then publish both bindings atomically"
     }
   ],
   "adversarial": [

@@ -7,7 +7,7 @@
     "email": "info@cuebook.app",
     "url": "https://github.com/cuebook-public"
   },
-  "homepage": "https://cuebook.app",
+  "homepage": "https://cuebook.xyz",
   "repository": "https://github.com/cuebook-public/cuebook-skills",
   "keywords": [
     "finance",
@@ -35,9 +35,9 @@
       "Settlement Protocols",
       "Release Preparation"
     ],
-    "websiteURL": "https://cuebook.app",
-    "privacyPolicyURL": "https://cuebook.app/privacy",
-    "termsOfServiceURL": "https://cuebook.app/terms",
+    "websiteURL": "https://cuebook.xyz",
+    "privacyPolicyURL": "https://cuebook.xyz/privacy",
+    "termsOfServiceURL": "https://cuebook.xyz/terms",
     "brandColor": "#FFD21C",
     "composerIcon": "./assets/icon.png",
     "logo": "./assets/icon.png",

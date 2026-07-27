@@ -8,14 +8,14 @@
     "email": "info@cuebook.app"
   },
   "urls": {
-    "website": "https://cuebook.app",
-    "support": "https://cuebook.app/support",
-    "privacy_policy": "https://cuebook.app/privacy",
-    "terms_of_service": "https://cuebook.app/terms",
+    "website": "https://cuebook.xyz",
+    "support": "https://cuebook.xyz/support",
+    "privacy_policy": "https://cuebook.xyz/privacy",
+    "terms_of_service": "https://cuebook.xyz/terms",
     "source_repository": "https://github.com/cuebook-public/cuebook-skills"
   },
   "integration": {
-    "production_mcp_url": "https://cuebook.app/mcp",
+    "production_mcp_url": "https://cuebook.xyz/mcp",
     "authentication": "OAuth 2.1 with PKCE and dynamic client registration",
     "public_skills": [
       "query-cuebook",

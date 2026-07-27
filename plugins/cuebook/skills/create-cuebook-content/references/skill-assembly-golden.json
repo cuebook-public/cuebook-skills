@@ -9,6 +9,8 @@
       "title": "USO Bullish for 30 Days: Shipping Risk Prices In First",
       "body": "Tighter channel rules move rerouting and insurance costs first, adding a shipping risk premium to oil prices.",
       "language": "en-US",
+      "artifact": null,
+      "subject_asset_refs": ["asset:uso"],
       "disclosures": { "ai_assistance": "assisted", "position": "undisclosed" },
       "media": [
         {
@@ -50,6 +52,8 @@
     "title": "USO Bullish for 30 Days: Shipping Risk Prices In First",
     "body": "Tighter channel rules move rerouting and insurance costs first, adding a shipping risk premium to oil prices.",
     "language": "en-US",
+    "artifact": null,
+    "subject_asset_refs": ["asset:uso"],
     "media": [
       {
         "media_asset_id": "0198a5b0-2222-7000-8000-000000000002",

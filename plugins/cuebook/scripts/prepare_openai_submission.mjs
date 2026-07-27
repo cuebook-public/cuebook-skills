@@ -124,10 +124,10 @@ export function validateOpenAiSubmission(rootArg = REPO_ROOT) {
         add("plugins/cuebook/.codex-plugin/plugin.json", `${field} must match the HTTPS listing URL.`);
       }
     }
-    if (listing.urls?.support !== "https://cuebook.app/support") {
+    if (listing.urls?.support !== "https://cuebook.xyz/support") {
       add("submission/openai/listing.json", "Support must use the production Cuebook support page.");
     }
-    if (listing.integration?.production_mcp_url !== "https://cuebook.app/mcp") {
+    if (listing.integration?.production_mcp_url !== "https://cuebook.xyz/mcp") {
       add("submission/openai/listing.json", "MCP URL must use the production review endpoint.");
     }
     if (listing.integration?.real_money_trading !== false) {

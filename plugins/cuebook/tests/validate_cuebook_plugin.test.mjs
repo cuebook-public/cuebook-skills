@@ -95,12 +95,12 @@ test("platform guides are English, endpoint-pinned, and explicit about live evid
     .sort();
   assert.equal(guideNames.length, 10);
   const index = fs.readFileSync(path.join(platformsRoot, "README.md"), "utf-8");
-  assert.match(index, /stable main \/ production: https:\/\/cuebook\.app\/mcp/u);
+  assert.match(index, /stable main \/ production: https:\/\/cuebook\.xyz\/mcp/u);
   assert.match(index, /dev \/ development:\s+https:\/\/cuebook\.xyz\/mcp/u);
   assert.doesNotMatch(index, /[\u3400-\u9fff]/u);
   for (const guideName of guideNames) {
     const guide = fs.readFileSync(path.join(platformsRoot, guideName), "utf-8");
-    assert.match(guide, /https:\/\/cuebook\.app\/mcp/u, guideName);
+    assert.match(guide, /https:\/\/cuebook\.xyz\/mcp/u, guideName);
     assert.match(guide, /\*\*Live status:\*\*/u, guideName);
     assert.match(guide, /live verification gate/u, guideName);
     assert.doesNotMatch(guide, /[\u3400-\u9fff]/u, guideName);
@@ -145,7 +145,7 @@ test("platform validation rejects endpoint drift", () => {
     const filePath = path.join(root, "platforms", "cursor.md");
     fs.writeFileSync(
       filePath,
-      fs.readFileSync(filePath, "utf-8").replaceAll("https://cuebook.app/mcp", "https://example.com/mcp"),
+      fs.readFileSync(filePath, "utf-8").replaceAll("https://cuebook.xyz/mcp", "https://example.com/mcp"),
     );
     assert.ok(codes(validate(root)).has("PLATFORM_MCP_ENDPOINT"));
   });
@@ -170,8 +170,8 @@ test("distribution channels generate one internally consistent OAuth resource", 
     assert.deepEqual(collectDistributionIssues(tmpPath, "production"), []);
     assert.ok(validate(pluginRoot).valid);
     const prodMcp = JSON.parse(fs.readFileSync(path.join(pluginRoot, ".mcp.json"), "utf8"));
-    assert.equal(prodMcp.mcpServers.cuebook.url, "https://cuebook.app/mcp");
-    assert.equal(prodMcp.mcpServers.cuebook.oauth_resource, "https://cuebook.app/mcp");
+    assert.equal(prodMcp.mcpServers.cuebook.url, "https://cuebook.xyz/mcp");
+    assert.equal(prodMcp.mcpServers.cuebook.oauth_resource, "https://cuebook.xyz/mcp");
   });
 });
 
@@ -181,7 +181,7 @@ test("distribution validation rejects channel and connector drift", () => {
     fs.mkdirSync(path.dirname(pluginRoot), { recursive: true });
     fs.cpSync(PLUGIN_ROOT, pluginRoot, { recursive: true });
     rewrite(path.join(pluginRoot, ".mcp.json"), (payload) => {
-      payload.mcpServers.cuebook.url = "https://cuebook.xyz/mcp";
+      payload.mcpServers.cuebook.url = "https://example.com/mcp";
     });
     assert.ok(collectDistributionIssues(tmpPath, "production").length > 0);
     assert.ok(codes(validate(pluginRoot)).has("DISTRIBUTION_CHANNEL"));
@@ -897,7 +897,15 @@ test("Frame publish contract contains no withdrawn action-consent fields", () =>
   ]);
   assert.equal(Object.hasOwn(flow, "prepared_publish_omitted_fields"), false);
   assert.equal(Object.hasOwn(flow, "publish_input_omitted_fields"), false);
+  assert.equal(flow.native_image_uploads, true);
+  assert.deepEqual(flow.accepted_mime_types, ["image/png", "image/jpeg", "image/webp"]);
+  assert.equal(flow.creator_image_policy, "preserve_native_dimensions_and_aspect_ratio");
+  assert.equal(flow.external_artifacts, true);
+  assert.equal(flow.artifact_hosting_policy, "provider_hosted_url_with_immutable_publication_poster");
+  assert.equal(flow.artifact_settlement_independence, true);
+  assert.equal(flow.subject_assets_policy, "discovery_only_independent_from_settlement");
   assert.deepEqual(flow.initial_settlement_modes, {
+    non_settling: "none_with_subject_assets_and_no_economic_contract",
     directional: "long_or_short_with_zero_bps_at_exact_deadline",
     terminal_range: "range_with_creator_confirmed_max_abs_move_bps_at_exact_deadline",
     relative_outperformance:
@@ -918,7 +926,7 @@ test("Frame capability map targets the finalized 18-Tool v2 backend contract", (
     tool_manifest_sha256:
       "sha256:575c5b27a1cdded6344eaa65fd52a5c8b5a6ce1e158c85f4a530f33d959e072a",
     schema_catalog_sha256:
-      "sha256:0d632a40c1e5b0b101a626cbbd6c69e0abbd1d5bc58dc2b7737b663e706221f8",
+      "sha256:5904eba37c45ede47f7fcbefa0520d0a7313645a4a25f122a46dbdbbcfe2a1ef",
   });
 });
 

@@ -170,6 +170,13 @@
         "published_visual_semantics",
         "client_upload_roles",
         "capture_profiles",
+        "native_image_uploads",
+        "accepted_mime_types",
+        "creator_image_policy",
+        "external_artifacts",
+        "artifact_hosting_policy",
+        "artifact_settlement_independence",
+        "subject_assets_policy",
         "delivery_resize_policy",
         "forbidden_tools",
         "initial_publish_sequence",
@@ -216,6 +223,27 @@
         "capture_profiles": {
           "const": {"publication": {"width": 1866, "height": 1200}}
         },
+        "native_image_uploads": {
+          "const": true
+        },
+        "accepted_mime_types": {
+          "const": ["image/png", "image/jpeg", "image/webp"]
+        },
+        "creator_image_policy": {
+          "const": "preserve_native_dimensions_and_aspect_ratio"
+        },
+        "external_artifacts": {
+          "const": true
+        },
+        "artifact_hosting_policy": {
+          "const": "provider_hosted_url_with_immutable_publication_poster"
+        },
+        "artifact_settlement_independence": {
+          "const": true
+        },
+        "subject_assets_policy": {
+          "const": "discovery_only_independent_from_settlement"
+        },
         "delivery_resize_policy": {
           "const": "server_generated_web_rendition_only"
         },
@@ -237,6 +265,7 @@
         },
         "initial_settlement_modes": {
           "const": {
+            "non_settling": "none_with_subject_assets_and_no_economic_contract",
             "directional": "long_or_short_with_zero_bps_at_exact_deadline",
             "terminal_range": "range_with_creator_confirmed_max_abs_move_bps_at_exact_deadline",
             "relative_outperformance": "two_distinct_same_session_assets_with_equal_notional_return_spread_at_exact_deadline",
@@ -294,7 +323,7 @@
               "const": "sha256:575c5b27a1cdded6344eaa65fd52a5c8b5a6ce1e158c85f4a530f33d959e072a"
             },
             "schema_catalog_sha256": {
-              "const": "sha256:0d632a40c1e5b0b101a626cbbd6c69e0abbd1d5bc58dc2b7737b663e706221f8"
+              "const": "sha256:5904eba37c45ede47f7fcbefa0520d0a7313645a4a25f122a46dbdbbcfe2a1ef"
             }
           }
         },

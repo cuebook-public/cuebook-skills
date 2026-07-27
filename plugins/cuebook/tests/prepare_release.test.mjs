@@ -124,14 +124,14 @@ test("prepares every public version surface while preserving catalog version", (
       fs.readFileSync(path.join(root, "plugins/cuebook/distribution-channel-v1.json")),
     );
     assert.equal(distribution.channel, "production");
-    assert.equal(distribution.mcp_url, "https://cuebook.app/mcp");
+    assert.equal(distribution.mcp_url, "https://cuebook.xyz/mcp");
     const mcp = JSON.parse(fs.readFileSync(path.join(root, "plugins/cuebook/.mcp.json")));
-    assert.equal(mcp.mcpServers.cuebook.url, "https://cuebook.app/mcp");
-    assert.equal(mcp.mcpServers.cuebook.oauth_resource, "https://cuebook.app/mcp");
+    assert.equal(mcp.mcpServers.cuebook.url, "https://cuebook.xyz/mcp");
+    assert.equal(mcp.mcpServers.cuebook.oauth_resource, "https://cuebook.xyz/mcp");
     const capabilityMap = JSON.parse(
       fs.readFileSync(path.join(root, "plugins/cuebook/assets/mcp-capability-map-v1.json")),
     );
-    assert.equal(capabilityMap.server.url, "https://cuebook.app/mcp");
+    assert.equal(capabilityMap.server.url, "https://cuebook.xyz/mcp");
     assert.match(
       fs.readFileSync(path.join(root, "plugins/cuebook/platforms/claude-code.md"), "utf8"),
       /cuebook-skills@v0\.7\.0/u,

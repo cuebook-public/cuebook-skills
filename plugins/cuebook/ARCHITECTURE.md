@@ -115,7 +115,7 @@ stay under the builder's `FAST_PREVIEW_BYTE_LIMIT` (112 000 bytes since
 | Bundles vs source | `verify:release-bundles` + isolated-rebuild test |
 | Capability map vs validator expectations | scope maps inside `validate_cuebook_plugin.mjs` |
 | Capability map vs the DEPLOYED server | not yet automated — reconcile against the server's `tools/list` during integration passes until a checked-in server-registry snapshot comparison exists (adversarial review AR-04) |
-| Distribution endpoint vs branch | `distribution:check` in CI: `dev` is development (`cuebook.xyz`), `main` and releases are production (`cuebook.app`) |
+| Distribution channel vs branch | `distribution:check` in CI: `dev` is development and `main`/releases are production; both currently use `cuebook.xyz` |
 | English-only public text | `validate:english` (multilingual test inputs use `\uXXXX` escapes) |
 | Version surfaces | `release:prepare` single-source bump + `release:check` |
 

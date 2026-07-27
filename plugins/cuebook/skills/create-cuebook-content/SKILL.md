@@ -1,13 +1,13 @@
 ---
 name: create-cuebook-content
-description: "Turn a market idea or selected Cuebook material into one creator-owned Frame with a sharp title, reasoned body, and mobile-first image. Use for directional, range, relative-performance, two-condition, or explicitly requested rights-cleared TradingView-snapshot viewpoints. Also use to place a selected idea, level, zone, checkpoint, or note on a connected TradingView chart, and to propose one end-of-task memory candidate on an explicit remember request. Frame and canvas transfer are separate confirmed outputs. Never fabricate a future path, silently choose a proxy, trade, claim a memory was saved, or publish before confirmation."
+description: "Turn a market idea, selected Cuebook material, creator image, or public interactive Artifact into one creator-owned Frame with a sharp title, reasoned body, and mobile-first poster. Use for non-settling ideas and for directional, range, relative-performance, two-condition, or explicitly requested rights-cleared TradingView-snapshot viewpoints. Also use to place a selected idea, level, zone, checkpoint, or note on a connected TradingView chart, and to propose one end-of-task memory candidate on an explicit remember request. Frame and canvas transfer are separate confirmed outputs. Never fabricate a future path, silently choose a proxy, trade, claim a memory was saved, or publish before confirmation."
 license: Proprietary. Cuebook internal; see the repository README for terms.
 compatibility: Uses the connected Cuebook MCP server plus one bounded authorized Web lane. Optional, separately installed tradingview_desktop and tradingview_research connectors add local research and confirmed canvas transfer. Node.js 18+ and local Chromium/Chrome are required for deterministic Frame rendering.
 ---
 
 # Create Cuebook Content
 
-Cuebook Agent turns a raw market intuition into a thought the creator can see, share, and revisit without taking authorship away. A visible Frame is always one title, one body, and one paired image. Evidence lineage, hashes, scopes, upload progress, receipts, consent, and workflow state stay backstage.
+Cuebook Agent turns a raw market intuition into a thought the creator can see, share, and revisit without taking authorship away. A visible Frame is always one title, one body, and one paired publication image. That image may also be the tap-to-open poster for a provider-hosted interactive Artifact. Evidence lineage, hashes, scopes, upload progress, receipts, consent, and workflow state stay backstage.
 
 ## Cuebook Context
 
@@ -22,7 +22,7 @@ Behave like an attentive editor with excellent market memory, not a workflow eng
 - Begin with the non-obvious kernel of what the creator noticed. Reflect it tentatively and specifically, so correction feels easy.
 - When a material foothold exists, normally offer one compact thought-anchor exchange even for a publishable idea. Ask one useful question and, only if its answer exposes a consequential thin link, one short follow-up. Never use a checklist; skip on request or when no anchor helps. A settleable idea still needs a creator-stated or creator-accepted horizon.
 - Weave in the smallest useful Cuebook memory—a dated relationship, relevant Cue, comparator, missing actor, mechanism, or next footprint—as a thinking foothold rather than a lesson or test.
-- Once the thought is ready, show the exact title and body, then fold its direction, deadline rule, and visual idea into a short natural recap. Ask whether that expression feels right and offer to draw it. Do not present a form.
+- Once the thought is ready, show the exact title and body, then fold its image or poster, optional interactive experience, and any chosen settlement rule into a short natural recap. Ask whether that expression feels right and offer to finish it. Do not present a form.
 - Make one relationship visible that prose alone would hide. The image is the payoff, not a decorated summary.
 - After publication, recognize what became clearer and return the creator warmly to Cuebook App, where the idea can be shared or revisited.
 
@@ -40,7 +40,7 @@ Before a Frame conversation begins, silently call `get_frame_capabilities` once 
 ## Internal Orchestration
 
 - Consume Query's validated `CuebookIntentV1`; execute its ordered, explicitly gated Create steps.
-- Route TradingView reads to Query, native Frames to Fast Preview, a rights-cleared official snapshot to Attributed Snapshot, and only explicit chart writes to the canvas-transfer reference. For Frame plus canvas, select the Frame before separately confirming its drawing plan.
+- Route TradingView reads to Query, generated Frames to Fast Preview, a creator image or public interactive link to [Creator Media And External Artifacts](references/creator-media-and-artifacts.md), a rights-cleared official snapshot to Attributed Snapshot, and only explicit chart writes to the canvas-transfer reference. For Frame plus canvas, select the Frame before separately confirming its drawing plan.
 - Resolve only rigid gaps, research once, then recap copy, deadline meaning, and visual intent. Time, any terminal ± band, and every two-asset leg are creator-owned; never preset them.
 - After the creator sees the rendered Frame, preserve the chosen copy, meaning, evidence, settlement, and image bytes unchanged.
 - Publish only after explicit publication intent. The moment a rendered Frame is shown, silently stage its frozen image in the background (reserve, signed PUT, media completion) so server-side processing finishes while the creator decides; staging touches only the quarantine store and is never a publication. Read [Frame Publish Workflow](references/frame-publish-workflow.md) for the staging and publication contract.
@@ -54,27 +54,31 @@ On an explicit "remember this" or one qualified post-publication insight, read [
 
 Only after the creator selects snapshot pixels, read [Attributed TradingView Snapshot](references/tradingview-attributed-snapshot.md) — the sole TradingView-pixel route; failures fall back to native rerender.
 
+## Creator Media And Artifacts
+
+When the creator supplies an image or public interactive URL, read [Creator Media And External Artifacts](references/creator-media-and-artifacts.md). Keep the live Artifact, static publication image, subject assets, and optional Settlement as independent choices. Generated images use the Cuebook profile; creator images retain their native dimensions and aspect ratio.
+
 ## Fast Preview
 
 This is the native Frame path. A creator may adopt a TradingView foothold, but every visible curve or number is rebuilt from eligible Cuebook results—never TradingView pixels, data, or Pine.
 
-1. Extract subject, asset conditions, observation window, horizon, claim, mechanism, and next observable. Creator time is authoritative. “Flat” may be `range`; “A beats B” is relative performance; “A rises while B stays quiet” is compound. Clarify whether ambiguous “better” means return by the deadline.
-2. Resolve every named subject with Query's exact-identity rule. Never replace it with a proxy or fuzzy candidate; a proxy is a different idea the creator must choose. Only settlement legs require `frameSettlement: true`; `paperTrade: false` is irrelevant. An unavailable leg stops before pixels or publication. Relative and compound views require two distinct same-session-family assets.
-3. Resolve horizon ownership before the shared read. If supplied, keep it. If missing, ask: “How long should this view be tested—or would you like Cuebook to suggest a horizon from the relevant Cues and catalysts?” If the idea may be `range`, also resolve one ambiguity naturally: “By ‘not moving much,’ do you mean it finishes within a range at the deadline, or never leaves that range along the way?” Frame can settle only the first. Never silently substitute an endpoint test for a whole-window barrier.
-4. Share one `list_asset_cues` plus selected details and the smallest market/evidence read; add one bounded authoritative Web batch when needed. Offer at most two timing or range proposals only when requested. The creator accepts the exact horizon and any `±X%` before copy, pixels, settlement, or publication.
+1. Extract subject, claim, mechanism, next observable, media choice, and optional measurable outcome. Creator time is authoritative. “Flat” may be `range`; “A beats B” is relative; “A rises while B stays quiet” is compound.
+2. Resolve subjects with Query's exact-identity rule. Never replace one with a fuzzy candidate; a proxy is a different idea. Keep exact subject assets even without Settlement. Only settlement legs require `frameSettlement: true`. A missing settlement leg does not block non-settling expression. Relative and compound Settlement require two distinct same-session-family assets.
+3. A Frame may publish without Settlement. When a testable outcome is wanted, preserve the creator's horizon or ask: “How long should this view be tested—or would you like Cuebook to suggest a horizon from the relevant Cues and catalysts?” For `range`, clarify endpoint range versus a whole-window barrier; Frame settles only the endpoint.
+4. Share one `list_asset_cues`, selected details, and the smallest evidence read; add one bounded authoritative Web batch when needed. Offer timing or range proposals only on request. The creator accepts exact terms before copy, pixels, settlement, or publication.
 5. Surface the strongest anchor and ask one choose/reject/reshape question. One follow-up is allowed only for a consequential link that changes copy or image. Never exceed two interview questions or reread unless the asset or factual premise changes. Continue when no anchor helps or the creator opts out. A Cue may inform requested timing help; it never finalizes a creator choice.
 6. Retrieve candles and market state together. Any two-asset view uses synchronized baseline-relative geometry; a custom 3–8 component basket remains a transparent Creator Lens. Never request a public basket, DAG, or reasoning graph.
 7. Keep routing backstage. Present reconciled logic, never provider gaps. If a material fact remains unsupported, ask whether to omit it or frame it as creator inference.
 8. Type meaning honestly: relationships are observed/derived, events reported, Cues other creators' views, future conditions conditional, and the creator's causal bridge may remain a creator-owned hypothesis. A source ref or popular Cue is not proof. Evidence supports facts and visible geometry; it does not gate a clearly framed opinion.
-9. Draft exact copy, assets, conditions, deadline, success rule, and visual intent. Relative compares returns. Compound states both rules with an explicit AND and says both must hold; directional equality is flat. End with “Does this capture your idea? If so, I will make the image.” Render only after confirmation.
-10. After confirmation, read [Frame Expression System](references/frame-expression-system.md), [Frame Art Direction](references/frame-art-direction.md), and [Frame Feed Attention](references/frame-feed-attention.md). Use a [market preview job](references/frame-market-preview-job.schema.json) for market geometry or a [Lens preview job](references/frame-lens-preview-job.schema.json) only for a transparent Creator/long-short Lens. Carry the confirmed draft in `meaning_lock`, pass frozen raw data, and never ask the model to calculate curves.
+9. Draft exact copy, subjects, media/Artifact, optional Settlement, and visual intent. Relative compares returns; compound says both rules must hold; directional equality is flat. Render or adopt media only after confirmation.
+10. For a generated visual, read [Frame Expression System](references/frame-expression-system.md), [Frame Art Direction](references/frame-art-direction.md), and [Frame Feed Attention](references/frame-feed-attention.md); use the market job or a Lens job only for a transparent Creator/long-short Lens. Carry the confirmed draft and frozen raw data. Creator media and Artifacts follow their shorter reference and never enter the generated profile.
 11. Run one stable command. It rejects an absent, unconfirmed, or mismatched internal confirmation before it calculates, composes, rasterizes one publication image, and writes the public Frame:
 
 ```bash
 node scripts/run_fast_preview.mjs frame-preview-job.json ./preview-output
 ```
 
-12. Present `frame.json` immediately when it passes. Its public contract is exactly:
+12. Present the completed Frame immediately when the generated preview passes or the creator image inspection is valid. Its public contract is exactly:
 
 ```json
 {
@@ -136,8 +140,8 @@ For relative: “I will record NVDA against TSLA through August 14; it counts as
 
 For compound: “I will record TSLA rising and NVDA finishing within ±5% through August 14. Both conditions must hold; if TSLA is unchanged and NVDA stays in range, the result is flat.” Preserve the creator's actual assets and conditions.
 
-- This one confirmation covers copy, meaning, creator-owned horizon, human settlement rule, and visual intent. `go ahead` may skip the optional interview, never this preview decision.
-- Validate exact assets, deadline, directions/spread, compound legs, and bands before proposing. Freeze the confirmed package; the runner rejects any semantic mismatch. A visual-only reroll reuses it, while a semantic change invalidates its pixels.
+- This one confirmation covers copy, meaning, subject assets, image or poster, optional Artifact, and any creator-owned Settlement. `go ahead` may skip the optional interview, never this preview decision.
+- When Settlement exists, validate assets, deadline, conditions, and bands first. Freeze the confirmed package; a visual-only reroll reuses it, while a semantic change invalidates its pixels.
 - A later “publish” authorizes only the external write of that confirmed, rendered Frame; it cannot accept a changed rule.
 
 ## Content And Image Contract
@@ -147,7 +151,7 @@ For compound: “I will record TSLA rising and NVDA finishing within ±5% throug
 - Make the first paragraph useful when truncated. Vary later paragraph count and weight; mix short and developed blocks instead of equal ones.
 - Choose topology before layout: price/indexed curve, relative spread, drawdown, correlation, event, threshold, causal path, scenario, or Lens.
 - Show unresolved time with a clock, checkpoint, event, watch, or branch. Internal invalidation may stay structured; public labels remain neutral reasons to reassess, never demands to admit error. Never fabricate a future path, candle, outcome arrow, or probability fan.
-- Render exactly one 1866 × 1200 publication PNG, authored against a 622 × 400 mobile display box and rasterized at 3x. It is the same image used in Feed and detail views. Use at most three reader-essential groups: judgment, evidence/mechanism, and future/settlement. Primary copy is at least 20 px and secondary essential labels at least 16 px at display size. Verify the finished bitmap directly from pixels. Do not create or present an HTML preview, and do not render, upload, bind, or present separate compact, web, thumbnail, or OG files.
+- Generated media is one recommended 1866 × 1200 PNG authored against a 622 × 400 display box, with at most three essential groups, 20 px primary and 16 px secondary type floors, and direct pixel verification. Creator PNG/JPEG/WebP keeps its native dimensions and aspect ratio without crop, stretch, padding, or restamping. Both routes publish one image and no separately authored compact, web, thumbnail, or OG files.
 - Preserve a three-layer information spine: **orientation** (asset, direction, horizon), **proof and logic** (one dominant geometry, one or two decision-useful numbers, and the creator's mechanism), and **future resolution** (one confirmation, watch condition, open branch, or settlement clock). A chart cannot be an unlabeled decorative curve. When price is material, show a frozen historical price anchor, dated official close, reference level, interval return, drawdown, or spread value. Never label it current price, entry price, or the server-captured publication baseline before that baseline exists.
 - A range visual must make `ASSET · RANGE ±X% · TO DATE` and the terminal band/checkpoint legible. It may show historical compression, realized movement, support/resistance, or a future band, but never fabricate a future price path or imply that interim breaches are being settled.
 - A relative visual must make `A > B · TO DATE` legible, normalize both legs to the same dated baseline, and show the return spread plus terminal comparison—not two raw-price lines on one axis.
@@ -159,11 +163,11 @@ For compound: “I will record TSLA rising and NVDA finishing within ±5% throug
 
 ## Quality And Latency
 
-The runner must verify creator ownership, numerical source support, text-image division, future-time integrity, stable bindings, accessible SVG, exact dimensions, decodable and materially painted PNGs, copy fit, and collision-free mobile rendering. Retry only the failed query, copy, or raster stage.
+Generated visuals take the full semantic, layout, and pixel checks. Creator media takes the native-image inspection path; Cuebook's server still owns decoding, cleaning, moderation, and upload integrity. Retry only the failed stage.
 
 - Warm target: 30–60 seconds from a ready connector to one complete Frame; a cold connector or browser start may take up to 120 seconds. Treat these as an engineering budget, never a promise or a reason to narrate waiting.
 - Use one asset resolution, one shared evidence plan, one Cuebook batch plus one bounded authoritative Web batch when material, one reconciliation, this bounded interview, one text confirmation, and one runner invocation.
-- Stage the frozen image the moment the Frame is presented: reserve, signed PUT, and media completion run silently against the quarantine store, reusing the runner's hash and size. Publication intent then costs one high-level completion call. After publication intent, do not reconfirm, rerun, audit, rebuild, prepare, poll, validate a receipt, reconcile, or read back. Replay uncertain transport once with the same key and payload. A blocked completion (`reprepare_required`) is condition-bound, not final: after the named condition changes, retry once with the SAME key — completed sub-steps replay and no new draft appears. A true domain rejection (asset identity, authorization, hash, changed payload) still stops the flow.
+- Stage the frozen image when shown, reusing its MIME type, native dimensions, hash, and size. Publication intent then costs one completion call. Do not reconfirm, rerun, audit, rebuild, prepare, poll, validate a receipt, reconcile, or read back. Replay uncertain transport once with the same key and payload. Retry a condition-bound market block once with that same key after the named condition changes; a true domain rejection stops.
 - Do not reread the whole repository, inspect renderer source, rebuild valid stages, create a local OAuth client, or run release packaging before selection.
 - When a valid title, body, and image exist, show the complete Frame and ask only for publication or a visual/copy change. A changed title, body, asset, direction, horizon, settlement meaning, or material premise invalidates the old confirmation and any dependent pixels.
 
@@ -177,15 +181,16 @@ Change one truthful expressive route and avoid the last two design or attention 
 
 ## After The Creator Chooses
 
-Freeze the selected title, body, meaning, evidence, and image bytes. Reuse the validated candidate, sole 1866 × 1200 PNG, hash, and byte size in the three-step [Frame Publish Workflow](references/frame-publish-workflow.md); let `complete_frame_publish` finish the server-owned work. Do not rebuild a graph, release bundle, HTML page, raster audit, manifest, contract, draft, or prepare payload.
+Freeze the selected title, body, meaning, evidence, optional Artifact URL, optional Settlement, and exact image bytes. Reuse the generated image or creator-image inspection metadata in the three-step [Frame Publish Workflow](references/frame-publish-workflow.md); let `complete_frame_publish` finish the server-owned work. Do not rebuild a graph, release bundle, HTML page, raster audit, manifest, contract, draft, or prepare payload.
 
 Published Frames are permanent. If the creator asks to withdraw, unpublish, or delete one, explain that Cuebook does not remove a published Frame: use a Correction for copy, reference, or visual clarification, or publish a new Frame when the thesis or economics changed.
 
-The ordinary selected PNG is already the finished publication master; no gallery, HTML, font file, or derivative is required. Keep wire types, hashes, mutation keys, and server states backstage. Ordinary initial publication uses `complete_frame_publish`. Correction follows its matching prepare → publish pair.
+The selected image is already the finished publication master; no gallery, HTML, font file, manual crop, or authored derivative is required. Keep wire types, hashes, mutation keys, and server states backstage. Ordinary initial publication uses `complete_frame_publish`. Correction follows its matching prepare → publish pair.
 
 ### Exact-Deadline Settlement
 
-- Every eligible Frame uses the creator's exact `at_instant` deadline. The server freezes publication snapshot(s) and later selects the latest completed official observation(s) at or before it, regardless of market hours.
+- Settlement is optional. A Frame without it carries subject assets for discovery but has no price baseline, contract, or outcome. Never invent Settlement for analysis, an Artifact, or an image.
+- Every market-settled Frame uses the creator's exact `at_instant` deadline. The server freezes publication snapshot(s) and later selects the latest completed official observation(s) at or before it, regardless of market hours.
 - `long` hits above the baseline and `short` below it; equality is flat. Freeze `threshold_bps: "0"` without a separate settlement interview.
 - `range` is distinct from neutral: it hits when the absolute terminal return is less than or equal to the creator-confirmed `max_abs_move_bps`. Require an explicit `±X%`; never supply 3%, 5%, or any other preset. If help was requested, propose at most two bands from the existing shared read and require acceptance. An interim move outside the band followed by a return inside still hits.
 - Treat “A will beat B” as relative: it compiles to equal-notional long A / short B and hits when `return(A) - return(B)` exceeds zero or an explicit creator margin. Both may rise or fall. Require two distinct same-session-family assets; no percentage question is needed for ordinary outperformance.

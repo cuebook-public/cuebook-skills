@@ -2,9 +2,9 @@
 
 ## Connection
 
-- Production MCP URL: `https://cuebook.app/mcp`
+- Production MCP URL: `https://cuebook.xyz/mcp`
 - Authentication: OAuth 2.1, PKCE, and dynamic client registration
-- Domain challenge: `https://cuebook.app/.well-known/openai-apps-challenge`
+- Domain challenge: `https://cuebook.xyz/.well-known/openai-apps-challenge`
 - Demo username and password: supplied only through the OpenAI submission portal
 - MFA, email confirmation, SMS confirmation, VPN, and private-network access: not required
 
