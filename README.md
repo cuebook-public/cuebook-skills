@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://cuebook.app">
+  <a href="https://cuebook.xyz">
     <img
       src="https://raw.githubusercontent.com/cuebook-public/cuebook-cli/main/assets/cuebook-cli-logo.png"
       width="200"
@@ -103,7 +103,7 @@ Cuebook has one remote MCP endpoint per distribution channel and three optional 
 | **ChatGPT** | Custom MCP app | MCP direct | Eligible plans only; connector check pending |
 | **Grok** | Custom MCP connector | MCP direct | Team-admin setup; connector check pending |
 
-See the [platform matrix and installation guides](plugins/cuebook/platforms/README.md). Stable releases from `main` use `https://cuebook.app/mcp`; development builds from `dev` use `https://cuebook.xyz/mcp`. A completed browser approval is not proof of readiness; each host must return a normal MCP result before it is marked live-verified.
+See the [platform matrix and installation guides](plugins/cuebook/platforms/README.md). Stable releases from `main` and development builds from `dev` both connect to `https://cuebook.xyz/mcp`; their distribution-channel metadata remains distinct. A completed browser approval is not proof of readiness; each host must return a normal MCP result before it is marked live-verified.
 
 ## Quick Start
 
@@ -276,7 +276,7 @@ Distribution is branch-aware while the Skills and Tool contracts remain shared:
 
 ```bash
 npm run distribution:development # dev → https://cuebook.xyz/mcp
-npm run distribution:production  # main/releases → https://cuebook.app/mcp
+npm run distribution:production  # main/releases → https://cuebook.xyz/mcp
 ```
 
 Both commands regenerate the checked-in public Skill bundles. CI rejects a

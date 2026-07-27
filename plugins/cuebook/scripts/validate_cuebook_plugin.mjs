@@ -303,10 +303,12 @@ export function validate(pluginRoot) {
   );
   check(
     platformIndex.includes(PRODUCTION_MCP_URL)
-      && platformIndex.includes(DEVELOPMENT_MCP_URL),
+      && platformIndex.includes(DEVELOPMENT_MCP_URL)
+      && platformIndex.includes("stable main / production")
+      && platformIndex.includes("dev / development"),
     "PLATFORM_MCP_ENDPOINT",
     "platforms/README.md",
-    "The platform matrix must distinguish the production and development Cuebook MCP endpoints.",
+    "The platform matrix must name both distribution channels and their canonical Cuebook MCP endpoint.",
   );
   check(
     !/[\u3400-\u9fff]/u.test(platformIndex),

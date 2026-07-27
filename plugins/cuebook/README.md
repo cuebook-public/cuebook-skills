@@ -69,9 +69,9 @@ Older connections retain their original immutable scopes. If one lacks Paper or 
 Cuebook ships two layers:
 
 - the self-contained `query-cuebook` and `create-cuebook-content` Agent Skills;
-- one authenticated remote MCP endpoint selected by distribution channel:
-  stable `main` releases use `https://cuebook.app/mcp`, while `dev` builds use
-  `https://cuebook.xyz/mcp`.
+- one authenticated remote MCP endpoint at `https://cuebook.xyz/mcp`; stable
+  `main` releases and `dev` builds retain distinct distribution-channel
+  metadata while using the same endpoint.
 
 Codex, Claude Code, Cursor, Hermes, and OpenClaw can use both layers and are the full creator targets. Claude, Claude Desktop, ChatGPT, and Grok connect directly to MCP; they are useful connector targets, but do not receive the local Cuebook interview and visual-rendering workflow merely by adding the endpoint.
 
