@@ -208,6 +208,13 @@ const FRAME_PUBLICATION_FLOW = {
   published_visual_semantics: "one_visual_attached_to_frame_release",
   client_upload_roles: ["publication"],
   capture_profiles: { publication: { width: 1866, height: 1200 } },
+  native_image_uploads: true,
+  accepted_mime_types: ["image/png", "image/jpeg", "image/webp"],
+  creator_image_policy: "preserve_native_dimensions_and_aspect_ratio",
+  external_artifacts: true,
+  artifact_hosting_policy: "provider_hosted_url_with_immutable_publication_poster",
+  artifact_settlement_independence: true,
+  subject_assets_policy: "discovery_only_independent_from_settlement",
   delivery_resize_policy: "server_generated_web_rendition_only",
   forbidden_tools: [...FORBIDDEN_FRAME_MEDIA_TOOLS],
   initial_publish_sequence: [
@@ -217,6 +224,7 @@ const FRAME_PUBLICATION_FLOW = {
     "complete_frame_publish",
   ],
   initial_settlement_modes: {
+    non_settling: "none_with_subject_assets_and_no_economic_contract",
     directional: "long_or_short_with_zero_bps_at_exact_deadline",
     terminal_range: "range_with_creator_confirmed_max_abs_move_bps_at_exact_deadline",
     relative_outperformance:
@@ -250,7 +258,7 @@ const FRAME_PUBLICATION_FLOW = {
     tool_manifest_sha256:
       "sha256:575c5b27a1cdded6344eaa65fd52a5c8b5a6ce1e158c85f4a530f33d959e072a",
     schema_catalog_sha256:
-      "sha256:0d632a40c1e5b0b101a626cbbd6c69e0abbd1d5bc58dc2b7737b663e706221f8",
+      "sha256:5904eba37c45ede47f7fcbefa0520d0a7313645a4a25f122a46dbdbbcfe2a1ef",
   },
   mutation_idempotency: "distinct_lowercase_uuidv7_per_command",
   replay_policy: "same_key_same_payload_returns_receipt_changed_payload_conflict",

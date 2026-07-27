@@ -897,7 +897,15 @@ test("Frame publish contract contains no withdrawn action-consent fields", () =>
   ]);
   assert.equal(Object.hasOwn(flow, "prepared_publish_omitted_fields"), false);
   assert.equal(Object.hasOwn(flow, "publish_input_omitted_fields"), false);
+  assert.equal(flow.native_image_uploads, true);
+  assert.deepEqual(flow.accepted_mime_types, ["image/png", "image/jpeg", "image/webp"]);
+  assert.equal(flow.creator_image_policy, "preserve_native_dimensions_and_aspect_ratio");
+  assert.equal(flow.external_artifacts, true);
+  assert.equal(flow.artifact_hosting_policy, "provider_hosted_url_with_immutable_publication_poster");
+  assert.equal(flow.artifact_settlement_independence, true);
+  assert.equal(flow.subject_assets_policy, "discovery_only_independent_from_settlement");
   assert.deepEqual(flow.initial_settlement_modes, {
+    non_settling: "none_with_subject_assets_and_no_economic_contract",
     directional: "long_or_short_with_zero_bps_at_exact_deadline",
     terminal_range: "range_with_creator_confirmed_max_abs_move_bps_at_exact_deadline",
     relative_outperformance:
@@ -918,7 +926,7 @@ test("Frame capability map targets the finalized 18-Tool v2 backend contract", (
     tool_manifest_sha256:
       "sha256:575c5b27a1cdded6344eaa65fd52a5c8b5a6ce1e158c85f4a530f33d959e072a",
     schema_catalog_sha256:
-      "sha256:0d632a40c1e5b0b101a626cbbd6c69e0abbd1d5bc58dc2b7737b663e706221f8",
+      "sha256:5904eba37c45ede47f7fcbefa0520d0a7313645a4a25f122a46dbdbbcfe2a1ef",
   });
 });
 
