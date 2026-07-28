@@ -27,7 +27,7 @@ const SUBMISSION_FILES = [
   "reviewer-runbook.md",
   "release-notes.md",
 ];
-const PERMANENT_FRAME_REVIEW_FILES = [
+const IMMUTABLE_FRAME_REVIEW_FILES = [
   "reviewer-runbook.md",
   "tool-annotations.json",
 ];
@@ -85,12 +85,12 @@ export function validateOpenAiSubmission(rootArg = REPO_ROOT) {
       add(`submission/openai/${file}`, "Submission-facing content must be English-only.");
     }
   }
-  for (const file of PERMANENT_FRAME_REVIEW_FILES) {
+  for (const file of IMMUTABLE_FRAME_REVIEW_FILES) {
     const target = path.join(submissionRoot, file);
     if (existsSync(target) && FRAME_WITHDRAWAL_LANGUAGE.test(readFileSync(target, "utf8"))) {
       add(
         `submission/openai/${file}`,
-        "Published Frames are permanent; reviewer instructions and Tool annotations must not expose a withdrawal path.",
+        "Frame releases are immutable; reviewer instructions and Tool annotations must not expose a withdrawal Tool path.",
       );
     }
   }

@@ -36,6 +36,8 @@ Before a Frame conversation begins, silently call `get_frame_capabilities` once 
 - If the connector or entrypoint is absent, do not infer an account problem. If a call fails with an HTTP request, transport-send, DNS, TLS, proxy, socket, or timeout error, do not infer authentication. Preserve the request and say Cuebook is temporarily unreachable; make clear that reinstalling or logging in again is unnecessary. Any normal Cuebook result already returned in the task is decisive evidence that the connector loaded.
 - Never mention the README, missing actions, Tool names, MCP internals, resources, fabrication, or process labels. Do not run a CLI login from this Skill, implement OAuth/DCR, exchange tokens, create a custom client, store credentials, open another task, or retry automatically.
 - A successful readiness result permits local preview. Refresh only for a missing required write, a long-lived task, or an explicit capability change.
+- Initial publish needs MCP v3 with agent-inferred reasoning tags. An older normal result is a
+  capability mismatch: preserve the Frame, request an update, and do not reinstall, log in, or probe.
 
 ## Internal Orchestration
 
@@ -70,7 +72,7 @@ This is the native Frame path. A creator may adopt a TradingView foothold, but e
 6. Retrieve candles and market state together. Any two-asset view uses synchronized baseline-relative geometry; a custom 3–8 component basket remains a transparent Creator Lens. Never request a public basket, DAG, or reasoning graph.
 7. Keep routing backstage. Present reconciled logic, never provider gaps. If a material fact remains unsupported, ask whether to omit it or frame it as creator inference.
 8. Type meaning honestly: relationships are observed/derived, events reported, Cues other creators' views, future conditions conditional, and the creator's causal bridge may remain a creator-owned hypothesis. A source ref or popular Cue is not proof. Evidence supports facts and visible geometry; it does not gate a clearly framed opinion.
-9. Draft exact copy, subjects, media/Artifact, optional Settlement, and visual intent. Relative compares returns; compound says both rules must hold; directional equality is flat. Render or adopt media only after confirmation.
+9. Draft exact copy, subjects, media/Artifact, optional Settlement, and visual intent. Relative compares returns; compound says both rules must hold; directional equality is flat. Silently infer the publish workflow's auxiliary reasoning envelope; never ask, recap, or display it. Render or adopt media only after confirmation.
 10. For a generated visual, read [Frame Expression System](references/frame-expression-system.md), [Frame Art Direction](references/frame-art-direction.md), and [Frame Feed Attention](references/frame-feed-attention.md); use the market job or a Lens job only for a transparent Creator/long-short Lens. Carry the confirmed draft and frozen raw data. Creator media and Artifacts follow their shorter reference and never enter the generated profile.
 11. Run one stable command. It rejects an absent, unconfirmed, or mismatched internal confirmation before it calculates, composes, rasterizes one publication image, and writes the public Frame:
 
@@ -183,7 +185,9 @@ Change one truthful expressive route and avoid the last two design or attention 
 
 Freeze the selected title, body, meaning, evidence, optional Artifact URL, optional Settlement, and exact image bytes. Reuse the generated image or creator-image inspection metadata in the three-step [Frame Publish Workflow](references/frame-publish-workflow.md); let `complete_frame_publish` finish the server-owned work. Do not rebuild a graph, release bundle, HTML page, raster audit, manifest, contract, draft, or prepare payload.
 
-Published Frames are permanent. If the creator asks to withdraw, unpublish, or delete one, explain that Cuebook does not remove a published Frame: use a Correction for copy, reference, or visual clarification, or publish a new Frame when the thesis or economics changed.
+Published releases are immutable; MCP has no author-management action. Send hide/show or possible
+first-hour deletion to Cuebook App. Use a Correction for unchanged-economics copy, references,
+visuals, Artifacts, or reasoning tags; changed thesis or economics needs a new Frame.
 
 The selected image is already the finished publication master; no gallery, HTML, font file, manual crop, or authored derivative is required. Keep wire types, hashes, mutation keys, and server states backstage. Ordinary initial publication uses `complete_frame_publish`. Correction follows its matching prepare → publish pair.
 

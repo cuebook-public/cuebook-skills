@@ -223,7 +223,7 @@ const FRAME_PUBLICATION_FLOW = {
     "complete_frame_media_upload",
     "complete_frame_publish",
   ],
-  initial_settlement_modes: {
+  settlement_semantics: {
     non_settling: "none_with_subject_assets_and_no_economic_contract",
     directional: "long_or_short_with_zero_bps_at_exact_deadline",
     terminal_range: "range_with_creator_confirmed_max_abs_move_bps_at_exact_deadline",
@@ -231,6 +231,35 @@ const FRAME_PUBLICATION_FLOW = {
       "two_distinct_same_session_assets_with_equal_notional_return_spread_at_exact_deadline",
     compound_conditions:
       "two_distinct_same_session_assets_with_independent_all_legs_conditions_at_exact_deadline",
+  },
+  settlement_input: {
+    envelope: "settlement",
+    non_settling: "{mode:none}",
+    market: "{mode:market,settle_at,timezone,claim_text,rule}",
+    rule_kinds: ["single_direction", "single_range", "relative", "compound"],
+  },
+  reasoning_tags: {
+    schema_version: "frame-reasoning-tags.v1",
+    mode: "agent_inferred",
+    frontend_managed: false,
+    release_bound: true,
+    max_primary: 1,
+    max_secondary: 2,
+    values: [
+      "fundamental",
+      "technical",
+      "macro_event",
+      "flow_positioning",
+      "sentiment_narrative",
+    ],
+    honest_empty: true,
+    included_in_content_hash: false,
+    included_in_economic_hash: false,
+  },
+  author_controls: {
+    mcp_managed: false,
+    app_hide_show: true,
+    app_delete_window_seconds: 3600,
   },
   correction_publish_sequence: [
     "prepare_frame_correction_publish",
@@ -252,13 +281,13 @@ const FRAME_PUBLICATION_FLOW = {
     "expected_economic_hash",
   ],
   wire_golden: {
-    contract_version: "frame-mcp-phase-b-v2",
+    contract_version: "frame-mcp-phase-b-v3",
     tool_count: 18,
     sync_status: "synced",
     tool_manifest_sha256:
-      "sha256:575c5b27a1cdded6344eaa65fd52a5c8b5a6ce1e158c85f4a530f33d959e072a",
+      "sha256:416dd4950a9bcbcdc2c73ed9728f7d817ba1d7a574c50b19bbdf88051d648bad",
     schema_catalog_sha256:
-      "sha256:5904eba37c45ede47f7fcbefa0520d0a7313645a4a25f122a46dbdbbcfe2a1ef",
+      "sha256:1b06e0d7ed30da3040f9567b7672791538f82debe51dd727276ea24388138321",
   },
   mutation_idempotency: "distinct_lowercase_uuidv7_per_command",
   replay_policy: "same_key_same_payload_returns_receipt_changed_payload_conflict",
@@ -434,7 +463,7 @@ export function validate(pluginRoot) {
     setEq(frameTools, new Set(FRAME_TOOL_SCOPES.keys())),
     "FRAME_TOOL_SET",
     "mcp-capability-map-v1.json.required_tools",
-    "Frame MCP must expose exactly the 18-Tool v2 family for reads, child notes, upload, draft, permanent publication, and append-only Correction.",
+    "Frame MCP must expose exactly the 18-Tool v3 family for reads, child notes, upload, draft, immutable publication releases, and append-only Correction.",
   );
   check(
     setEq(requiredTools, frameTools),
@@ -476,15 +505,17 @@ export function validate(pluginRoot) {
     deepEqualPy(capabilityMap.frame_publication_flow, FRAME_PUBLICATION_FLOW),
     "FRAME_FLOW_CONTRACT",
     "mcp-capability-map-v1.json.frame_publication_flow",
-    "Frame publication must remain signed-upload-only and permanent; only initial publication and append-only Correction flows are callable.",
+    "Frame publication must remain signed-upload-only with immutable releases, App-only author controls, and only initial publication plus append-only Correction callable through MCP.",
   );
   check(
     tools.get("get_frame_media_status")?.output_contract === "FrameMediaStatusV1"
       && tools.get("create_frame_draft")?.input_contract === "CreateFrameDraftInputV1"
-      && tools.get("update_frame_draft")?.input_contract === "UpdateFrameDraftInputV1",
+      && tools.get("update_frame_draft")?.input_contract === "UpdateFrameDraftInputV1"
+      && tools.get("complete_frame_publish")?.input_contract === "CompleteFramePublishV2"
+      && tools.get("preflight_frame_publish")?.input_contract === "PreflightFramePublishV2",
     "FRAME_DRAFT_INPUT",
     "mcp-capability-map-v1.json.required_tools",
-    "Frame media status and draft Tool contract names must match the generated backend v2 manifest exactly.",
+    "Frame media status, draft, complete-publish, and preflight contract names must match the generated backend v3 manifest exactly.",
   );
 
   const skillToolPolicy = capabilityMap.skill_tool_policy ?? {};

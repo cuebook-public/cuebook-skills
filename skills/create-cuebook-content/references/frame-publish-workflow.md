@@ -8,7 +8,10 @@ An explicit “publish,” “send this version,” or equivalent instruction in
 
 The selected Frame is already complete. Its title, body, alt text, subject assets, evidence refs, optional external Artifact, optional settlement meaning, image bytes, MIME type, native dimensions, encoded SHA-256, and byte size are frozen before the creator says “publish.” Do not reread design references, inspect renderer source, rerender, resize or crop creator media, re-audit pixels, recompute hashes, generate HTML, create local JSON contracts, or manually assemble a manifest or draft after that confirmation.
 
-Reuse the cached `get_frame_capabilities` result from task readiness. It must advertise `begin_frame_media_upload` and `complete_frame_publish`. If either is absent, explain briefly that Cuebook publishing needs an update and stop; never substitute a lower-level compatibility path.
+Reuse the cached `get_frame_capabilities` result from task readiness. It must advertise
+`contract_version: frame-mcp-phase-b-v3`, `reasoning_tags.mode: agent_inferred`,
+`begin_frame_media_upload`, and `complete_frame_publish`. If any is absent, explain briefly that
+Cuebook publishing needs an update and stop; never substitute a lower-level compatibility path.
 
 **Staging (runs silently the moment the rendered Frame is presented, before any publication intent):**
 
@@ -18,26 +21,51 @@ Reuse the cached `get_frame_capabilities` result from task readiness. It must ad
 
 **Publication (after the creator's explicit intent):**
 
-4. Call `complete_frame_publish` once with the staged upload id, a separate fresh lowercase UUIDv7, frozen copy, alt text, `subject_asset_refs`, evidence refs, and explicit `settlement_mode`.
-   - Use `settlement_mode: none` when the creator did not choose a market-settled outcome. Omit every economic field.
-   - Use `settlement_mode: market` only for a confirmed testable outcome. Add focal `asset_ref`, exact deadline, timezone, claim, and condition fields. Map a compound lock's `primary_direction` into Tool `direction`. Add `max_abs_move_bps` only when that focal condition is range. Relative performance adds `pair_asset_ref` and only a creator-stated nonzero `spread_threshold_bps`. Independent conditions add `pair_asset_ref` plus `pair_direction`, and `pair_max_abs_move_bps` only when that leg is range. For directional legs, the server uses zero bps.
+4. Call `complete_frame_publish` once with the staged upload id, a separate fresh lowercase UUIDv7,
+   frozen copy, alt text, `subject_asset_refs`, evidence refs, frozen `reasoning_tags`, and one
+   explicit `settlement` object.
+   - Always send `reasoning_tags` as
+     `{schema_version:"frame-reasoning-tags.v1",primary:<tag|null>,secondary:[...]}`. Infer it
+     silently from the confirmed interaction and evidence; never ask for a tag choice or expose it
+     in the public recap. Use only `fundamental`, `technical`, `macro_event`, `flow_positioning`,
+     and `sentiment_narrative`, with at most one primary and two distinct secondary tags. Honest
+     empty is `{primary:null,secondary:[]}`.
+   - Use `settlement: {mode:"none"}` when the creator did not choose a market-settled outcome.
+     Nothing economic can appear in this branch.
+   - Use `settlement: {mode:"market",settle_at,timezone,claim_text,rule}` only for a confirmed
+     testable outcome. `rule` is exactly one closed variant:
+     `single_direction {asset_ref,direction}`, `single_range {asset_ref,max_abs_move_bps}`,
+     `relative {asset_ref,pair_asset_ref,direction,spread_threshold_bps?}`, or
+     `compound {primary,secondary}` where each condition is
+     `{asset_ref,direction}` and a range condition additionally requires `max_abs_move_bps`.
+     Relative direction is `outperform|underperform`; ordinary direction is `long|short`.
    - Add `external_artifact_url` only when the creator confirmed a public provider-hosted interactive Artifact. The uploaded image remains its immutable poster and fallback.
 
 Validate subject identities, Artifact URL, and any complete settlement meaning before staging; never discover a missing or contradictory second leg after reserving an upload. Artifact and Settlement are independent, so all four combinations are valid.
 
 Publish immediately whenever the creator confirms, including before market open, after market close, on weekends, and on exchange holidays. Frame publication is not order execution and never waits for a trading session. The server freezes the persisted display snapshot for every settlement asset while keeping the creator's exact deadline. Never add another freshness gate. Never tell the creator to return when the market opens.
 
-**Preflight (optional, read-only):** when publishability is genuinely in doubt — a previous attempt was blocked, or the creator asks whether the view can settle — call `preflight_frame_publish` with the same settlement fields. It resolves assets, the schedule, and entry-observation availability without writing anything; a blocked result names the reason, the affected legs, and whether waiting can cure it. Its result is a current snapshot, never a baseline commitment, and never enters Frame copy. Do not preflight routinely before every publish.
+**Preflight (optional, read-only):** when publishability is genuinely in doubt — a previous attempt
+was blocked, or the creator asks whether the view can settle — call `preflight_frame_publish` with
+the same market `settlement` object but omit `claim_text`. It resolves assets, the schedule, and
+entry-observation availability without writing anything; a blocked result names the reason, the
+affected legs, and whether waiting can cure it. Its result is a current snapshot, never a baseline
+commitment, and never enters Frame copy. Do not preflight routinely before every publish.
 
 `complete_frame_publish` owns every server-side step after the signed upload, including validation, optional baseline capture, and atomic publication. Treat it as the only completion call for a new Frame; do not reproduce its work through lower-level compatibility actions or read the Frame back.
 
 A successful `complete_frame_publish` result is final success. Trust the typed MCP result and stop all network work immediately: do not parse or validate a receipt, extract Frame or release IDs, read back the Frame, open a web page, inspect HTML or metadata, probe a canonical URL, or call any follow-up Tool.
 
-## Corrections And Permanent Publication
+## Corrections And App-Only Author Controls
 
 The high-level Tool is for a new initial publication. An explicit correction continues through its correction draft and `prepare_frame_correction_publish` → `publish_frame_correction`.
 
-Published Frames are permanent. If the creator asks to withdraw, unpublish, or delete one, do not look for a removal action. Use a Correction only when the economics are unchanged and the creator is clarifying copy, references, the visual, or the external Artifact binding. A changed thesis, direction, horizon, settlement rule, or other economic meaning requires a new Frame.
+Published releases are immutable, and MCP has no hide, delete, or management action. For author
+hide/show or a possible delete during the first hour after initial publication, direct the creator
+to Cuebook App; never simulate the App action. Use a Correction only when economics are unchanged
+and the creator is clarifying copy, references, the visual, external Artifact binding, or inferred
+reasoning tags. A changed thesis, direction, horizon, settlement rule, or other economic meaning
+requires a new Frame.
 
 ## Failure Budget
 

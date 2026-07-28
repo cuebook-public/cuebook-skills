@@ -71,7 +71,10 @@ Assume the plugin's host authentication is complete. Silently run the smallest r
 - Query may summarize, compare, and show factual tables, curves, or reports; it never produces publish-ready voice, viewpoint graphics, settlement claims, or releases.
 - `creation_handoff` may offer thought anchors but never assign them to the creator. Create requires explicit adoption before a Cue-derived connection, countercase, or rule enters the draft.
 - Query never calls any write, Paper trade, TradingView drawing, Frame mutation, Correction, or publication tool.
-- Published Frames are permanent. If a creator asks to withdraw, unpublish, or delete one, do not construct a Create action: point to a Correction for copy, reference, or visual clarification, or a new Frame when the thesis or economics changed.
+- Published releases are immutable, and Query/MCP has no hide, delete, or management action. If a
+  creator asks to hide or remove a Frame, direct them to Cuebook App, which can hide/show it and
+  may offer delete during the first hour after publication. A copy, reference, visual, Artifact, or
+  reasoning-tag clarification uses a Correction; changed thesis or economics requires a new Frame.
 - Ambiguous requests default here. Posts, viewpoint graphics, settlement, releases, publishing candidates, or confirmed TradingView drawings route to Create; tables, factual charts, and inspection remain Query.
 - A `creation_handoff` is data lineage, not an implicit creation request. It names reusable result refs and warnings without drafting anything.
 - Blocked queries return an ineligible empty handoff. Partial queries hand off only usable results, retain gaps internally, and state supported logic and material uncertainty without connector accounting.

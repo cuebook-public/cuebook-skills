@@ -67,7 +67,7 @@
     },
     {
       "prompt": "This is an interactive market explainer, not a prediction. Publish it with BTC and ETH as subjects.",
-      "route": "preserve the external Artifact URL and one immutable poster, record BTC and ETH as subject assets, and use settlement_mode none without inventing a deadline or economic contract"
+      "route": "preserve the external Artifact URL and one immutable poster, record BTC and ETH as subject assets, send settlement {mode:none}, and infer honest auxiliary reasoning tags without inventing a deadline or economic contract"
     },
     {
       "prompt": "Use my own 1080 x 1350 WebP as the post image.",

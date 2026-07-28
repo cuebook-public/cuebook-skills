@@ -434,7 +434,8 @@ test("relative view keeps natural language outside and a frozen long-short sprea
   assert.match(create, /Both may rise or fall/u);
   assert.match(create, /two distinct same-session-family assets/u);
   assert.match(publish, /pair_asset_ref/u);
-  assert.match(publish, /server uses zero/u);
+  assert.match(publish, /spread_threshold_bps\?/u);
+  assert.match(publish, /outperform\|underperform/u);
 });
 
 test("published Frame projection states all-legs conjunction without a website detour", () => {
@@ -675,7 +676,7 @@ test("Frame publication flow cannot become pull-based", () => {
   });
 });
 
-test("Frame publication is permanent and exposes only initial and correction flows", () => {
+test("Frame releases are immutable and MCP exposes only initial and correction flows", () => {
   const payload = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
   );
@@ -696,6 +697,11 @@ test("Frame publication is permanent and exposes only initial and correction flo
   assert.equal(flow.creator_link_policy, "never_present_canonical_url");
   assert.equal(flow.explicit_frame_query_tool, "get_frame");
   assert.equal(flow.automatic_post_publish_readback, false);
+  assert.deepEqual(flow.author_controls, {
+    mcp_managed: false,
+    app_hide_show: true,
+    app_delete_window_seconds: 3600,
+  });
   assert.ok(!flow.initial_publish_sequence.includes("get_frame"));
   assert.ok(!flow.correction_publish_sequence.includes("get_frame"));
   assert.deepEqual(
@@ -876,7 +882,7 @@ test("ordinary one-preview publish does not reconstruct the advanced release gra
   assert.match(publish, /Do not probe alternate payload shapes/u);
 });
 
-test("Frame publish contract contains no withdrawn action-consent fields", () => {
+test("Frame publish contract carries structural settlement and auxiliary reasoning metadata", () => {
   const payload = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
   );
@@ -904,7 +910,7 @@ test("Frame publish contract contains no withdrawn action-consent fields", () =>
   assert.equal(flow.artifact_hosting_policy, "provider_hosted_url_with_immutable_publication_poster");
   assert.equal(flow.artifact_settlement_independence, true);
   assert.equal(flow.subject_assets_policy, "discovery_only_independent_from_settlement");
-  assert.deepEqual(flow.initial_settlement_modes, {
+  assert.deepEqual(flow.settlement_semantics, {
     non_settling: "none_with_subject_assets_and_no_economic_contract",
     directional: "long_or_short_with_zero_bps_at_exact_deadline",
     terminal_range: "range_with_creator_confirmed_max_abs_move_bps_at_exact_deadline",
@@ -913,20 +919,47 @@ test("Frame publish contract contains no withdrawn action-consent fields", () =>
     compound_conditions:
       "two_distinct_same_session_assets_with_independent_all_legs_conditions_at_exact_deadline",
   });
+  assert.deepEqual(flow.settlement_input, {
+    envelope: "settlement",
+    non_settling: "{mode:none}",
+    market: "{mode:market,settle_at,timezone,claim_text,rule}",
+    rule_kinds: ["single_direction", "single_range", "relative", "compound"],
+  });
+  assert.deepEqual(flow.reasoning_tags, {
+    schema_version: "frame-reasoning-tags.v1",
+    mode: "agent_inferred",
+    frontend_managed: false,
+    release_bound: true,
+    max_primary: 1,
+    max_secondary: 2,
+    values: [
+      "fundamental",
+      "technical",
+      "macro_event",
+      "flow_positioning",
+      "sentiment_narrative",
+    ],
+    honest_empty: true,
+    included_in_content_hash: false,
+    included_in_economic_hash: false,
+  });
+  const tools = new Map(payload.required_tools.map((tool) => [tool.tool, tool]));
+  assert.equal(tools.get("complete_frame_publish").input_contract, "CompleteFramePublishV2");
+  assert.equal(tools.get("preflight_frame_publish").input_contract, "PreflightFramePublishV2");
 });
 
-test("Frame capability map targets the finalized 18-Tool v2 backend contract", () => {
+test("Frame capability map targets the finalized 18-Tool v3 backend contract", () => {
   const payload = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
   );
   assert.deepEqual(payload.frame_publication_flow.wire_golden, {
-    contract_version: "frame-mcp-phase-b-v2",
+    contract_version: "frame-mcp-phase-b-v3",
     tool_count: 18,
     sync_status: "synced",
     tool_manifest_sha256:
-      "sha256:575c5b27a1cdded6344eaa65fd52a5c8b5a6ce1e158c85f4a530f33d959e072a",
+      "sha256:416dd4950a9bcbcdc2c73ed9728f7d817ba1d7a574c50b19bbdf88051d648bad",
     schema_catalog_sha256:
-      "sha256:5904eba37c45ede47f7fcbefa0520d0a7313645a4a25f122a46dbdbbcfe2a1ef",
+      "sha256:1b06e0d7ed30da3040f9567b7672791538f82debe51dd727276ea24388138321",
   });
 });
 
@@ -958,7 +991,7 @@ test("Frame contract rejects a reintroduced withdrawal action", () => {
   });
 });
 
-test("Frame entry skills route withdrawal requests only to Correction or a new Frame", () => {
+test("Frame entry skills keep author controls in App and revisions in Correction or a new Frame", () => {
   const create = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
     "utf-8",
@@ -974,8 +1007,10 @@ test("Frame entry skills route withdrawal requests only to Correction or a new F
   const combined = `${create}\n${query}\n${orchestrate}`;
   assert.match(create, /Ordinary initial publication uses `complete_frame_publish`/u);
   assert.match(orchestrate, /complete_frame_publish/u);
-  assert.match(combined, /Published Frames are permanent/iu);
-  assert.match(combined, /withdraw.*Correction.*new Frame/isu);
+  assert.match(combined, /Published releases are immutable/iu);
+  assert.match(combined, /MCP has no hide, delete, or management/iu);
+  assert.match(combined, /App[\s\S]*hide\/show[\s\S]*first hour/iu);
+  assert.match(combined, /Correction[\s\S]*new Frame/iu);
   assert.doesNotMatch(
     combined,
     /\b(?:get_frame_action_consent|prepare_frame_withdraw|withdraw_frame|frame_withdrawal|withdrawal_consent)\b/u,

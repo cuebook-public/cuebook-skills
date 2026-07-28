@@ -58,7 +58,7 @@ Run this gate only after the target Cuebook server release is confirmed healthy:
 6. With explicit user intent, publish one clearly identified test Frame. Treat the successful `complete_frame_publish` result as terminal; do not parse a receipt or add a web-page, reconciliation, or `get_frame` readback to the creator path.
 7. Record the host version and which gates passed before changing “pending” to “verified.”
 
-The Frame publication contract remains the same on every host. Initial publication and append-only Correction use their declared publish paths. Published Frames are permanent; changed thesis or economics require a new Frame. Image bytes travel to signed upload URLs and are never downloaded back through an MCP media Tool.
+The Frame publication contract remains the same on every host. Initial publication and append-only Correction use their declared publish paths. Frame releases are immutable; MCP has no author-management action, while Cuebook App can hide/show a Frame and may allow deletion during the first hour. Changed thesis or economics require a new Frame. Image bytes travel to signed upload URLs and are never downloaded back through an MCP media Tool.
 
 ## References
 

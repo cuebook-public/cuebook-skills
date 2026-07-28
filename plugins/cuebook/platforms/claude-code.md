@@ -77,7 +77,8 @@ consent, Tool-scope, source-rights, rollback, and Frame rerender boundaries.
 Identical policy to Codex: writes are explicit MCP tools behind user
 authorization. Ordinary initial publication uses one upload reservation, one
 signed PUT, and `complete_frame_publish`; correction keeps its prepare/publish
-path, published Frames are permanent, and query is structurally read-only.
+path, Frame releases are immutable, author hide/delete controls remain App-only,
+and query is structurally read-only.
 
 ### Claude Code permission modes
 

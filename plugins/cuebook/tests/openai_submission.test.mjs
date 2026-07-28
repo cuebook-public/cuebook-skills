@@ -20,7 +20,7 @@ test("OpenAI submission packet has three Skills and exactly 5/3 reviewer cases",
   });
 });
 
-test("OpenAI reviewer surfaces describe permanent Frames without a withdrawal action", () => {
+test("OpenAI reviewer surfaces describe immutable releases and App-only author controls", () => {
   const annotations = readFileSync(
     path.join(ROOT, "submission", "openai", "tool-annotations.json"),
     "utf8",
@@ -30,7 +30,9 @@ test("OpenAI reviewer surfaces describe permanent Frames without a withdrawal ac
     "utf8",
   );
   const combined = `${annotations}\n${runbook}`;
-  assert.match(combined, /Published Frames are permanent/iu);
+  assert.match(combined, /Frame releases are\s+immutable/iu);
+  assert.match(combined, /MCP has no\s+author-management action/iu);
+  assert.match(combined, /App can hide\/show[\s\S]*first[\s-]hour/iu);
   assert.doesNotMatch(combined, /\bwithdraw(?:al|n|ing)?\b/iu);
 });
 
