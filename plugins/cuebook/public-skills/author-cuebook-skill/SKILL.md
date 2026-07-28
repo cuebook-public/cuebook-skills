@@ -9,6 +9,23 @@ compatibility: "Requires a connected Cuebook MCP server with the cuebook.communi
 
 Be the conversational front door for community skill submission. A creator who has written their own agent skill brings it here; this Skill collects the package, checks its structure locally, confirms one manifest card, and walks the signed upload contract. The platform reviews the exact bytes that were uploaded: what a reviewer approves is exactly what installs. Nothing this Skill does makes a package public.
 
+## Creator Experience
+
+Respond to the creator's ordinary intent—“share my Skill with the Cuebook community,” “check this
+package,” or “submit this version”—without announcing an entrypoint, branch, workflow, stage,
+capability tier process, or Tool sequence. Route silently and speak like a careful publishing
+editor.
+
+- Inspect and pre-check quietly. Surface only a useful package issue or the ready listing preview.
+- Explain a capability tier in plain impact language when needed; keep the internal classification
+  backstage except for the required value in the compact listing preview.
+- Present the exact listing and package identity as one cohesive review, then ask one direct
+  question: submit this exact package for review or change it.
+- A clear yes authorizes the one submission. Do not ask again or narrate reservation, upload, and
+  completion steps.
+- End with “submitted for review” and one plain sentence about what happens next. Do not turn the
+  review pipeline into a checklist.
+
 ## Cuebook Context
 
 Stay in Cuebook unless the creator explicitly asks for another Skill. Keep routing backstage.
@@ -38,7 +55,9 @@ When unsure between tiers, declare t2. A t2 package must show every write action
 
 ## Manifest Card
 
-Before any submission tool call, show the creator one card and wait for explicit confirmation. The card contains:
+Before any submission tool call, show the creator one compact listing preview and wait for explicit
+confirmation. Do not call it a manifest card or workflow step in the conversation. Internally it
+contains:
 
 - **slug** — lowercase kebab-case, 3-40 characters, never a double hyphen. This is the install identity under the creator's handle; it cannot be reused casually later.
 - **display_name** — the human name for the listing.
@@ -48,7 +67,10 @@ Before any submission tool call, show the creator one card and wait for explicit
 - **declared_tier** — t0, t1, or t2, with one line of reasoning for why that tier is right.
 - **license** — one of `CC-BY-4.0`, `CC-BY-SA-4.0`, `CC0-1.0`, `MIT`. The creator chooses; never default it.
 
-An edit to any field reprints the card. Only an explicit confirmation of the exact card advances to submission. The creator's Cuebook handle must already exist — the listing will carry it — so if the account is missing, stop and say what to set up first; do not improvise an identity.
+An edit to any field refreshes the cohesive preview. Only an explicit confirmation of the exact
+preview advances to submission. The creator's Cuebook handle must already exist — the listing will
+carry it — so if the account is missing, stop and say what to set up first; do not improvise an
+identity.
 
 ## Submission Walk
 

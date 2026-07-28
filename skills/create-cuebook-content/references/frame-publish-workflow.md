@@ -1,8 +1,13 @@
 # Cuebook Frame Publish Workflow
 
-Read this reference only after the creator has seen one complete Frame and explicitly asks to publish or correct it. Keep every transport field and server state backstage.
+Read this reference when one complete Frame is ready to show. Stage its exact media silently while
+the creator decides; perform no publication write until the creator explicitly asks to publish or
+correct it. Keep every transport field and server state backstage.
 
-An explicit “publish,” “send this version,” or equivalent instruction in any language is the one publication authorization for the already confirmed Frame. Do not restate the copy or settlement, ask “confirm publish?” again, or add a release checklist.
+An explicit “publish,” “send this version,” or equivalent instruction in any language is the one
+publication authorization for the already displayed, unchanged Frame. It both selects that
+copy-to-image pair and authorizes its external write. Do not restate the copy or settlement, ask
+“confirm publish?” again, or add a release checklist.
 
 ## Stage At Preview, Publish In One Call
 
@@ -74,7 +79,7 @@ requires a new Frame.
 - For a market-settled Frame, a blocked completion (`reprepare_required`) is condition-bound, not final: the message names what is missing (a leg's price, pair alignment, or shared observation boundary). After that condition plausibly changes, retry ONCE with the SAME idempotency key — completed sub-steps replay and no new draft is created. Never switch to a fresh key for the same frozen payload. A non-settling Frame has no baseline availability gate.
 - A true domain rejection — asset identity, authorization, hash, or changed payload — stops the flow. Preserve the frozen Frame and explain the useful next step in ordinary language; do not expose Tool names or internal states.
 - Do not manually poll processing in the initial fast lane. The server owns its bounded wait.
-- After a successful result, do not run reconciliation, history updates, analytics, sharing setup, or Paper Trade Tools. Those are separate later actions and each requires its own explicit user request.
+- After a successful result, do not run reconciliation, history updates, analytics, sharing setup, or Paper Trade Tools. A separately qualified end-of-task memory candidate may follow its own proposal discipline; it is never publication verification.
 
 OAuth, scopes, idempotency, server decoding, malware checks, canonical-pixel hashing, prepared-hash recomputation, publish-token validation, and transaction locking remain authoritative server protections. The shorter Skill path does not weaken them.
 
@@ -82,6 +87,12 @@ OAuth, scopes, idempotency, server decoding, malware checks, canonical-pixel has
 
 After success, respond warmly in two or three short sentences. Say that the idea is published and invite the creator to see it in Cuebook App; name the distinctive insight Cuebook Agent helped make clear and, when useful, its future checkpoint. Never show a web URL, Frame or release id, receipt, baseline-engine detail, source eligibility, scope, upload state, or other backend language.
 
-Ask at most one optional next step: share the finished idea from Cuebook App with another AI for a fresh judgment, share another signal or intuition, or—when Paper tools are available—offer to record a separate simulated Paper Trade. An offer is not authorization; after explicit opt-in, call `preview_paper_order` and still require explicit placement intent.
+Choose exactly one natural end action. When the Memory Proposal Discipline qualifies, propose that
+single candidate and offer nothing else. Otherwise choose at most one action that matches the
+creator's evident intent: share the finished idea from Cuebook App with another AI for a fresh
+judgment, continue with another signal or intuition, or—when Paper tools are available—offer to
+record a separate simulated Paper Trade. Omit an end action when none helps. An offer is not
+authorization; after explicit Paper opt-in, call `preview_paper_order` and still require explicit
+placement intent.
 
 The App, not the Skill or publication flow, owns sharing. Its one-sentence share copy is: “Cuebook Agent helped me develop and record this market idea, and I would like your judgment. Open it with Cuebook; if Cuebook is not connected, follow the prompt to install and connect it: <Cuebook share entry>”. The App localizes this copy for the creator and binds that entry to the just-published Frame; the Skill never extracts IDs or fabricates an entry from a web URL.

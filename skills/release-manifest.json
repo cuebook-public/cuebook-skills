@@ -23,7 +23,7 @@
       "references/modules/query-cuebook/references/cuebook-query-request-v1.schema.json",
       "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json"
     ],
-    "cumulative_bytes": 111819,
+    "cumulative_bytes": 109400,
     "maximum_bytes_exclusive": 112000,
     "within_budget": true
   },
@@ -31,7 +31,7 @@
     "files": [
       "references/frame-publish-workflow.md"
     ],
-    "cumulative_bytes": 9728,
+    "cumulative_bytes": 10187,
     "maximum_bytes_exclusive": 40000,
     "within_budget": true
   },

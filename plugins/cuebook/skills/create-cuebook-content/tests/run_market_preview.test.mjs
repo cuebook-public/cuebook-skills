@@ -96,8 +96,8 @@ export function baseMarketJob() {
       },
       meaning_lock: {
         lock_id: "MLOCK_BTC_FAST_MARKET_001",
-        status: "creator_confirmed",
-        confirmed_at: "2026-07-17T08:59:00Z",
+        status: "preview_frozen",
+        frozen_at: "2026-07-17T08:59:00Z",
         title,
         body,
         subject: "BTC",
@@ -611,7 +611,7 @@ test("MARKET renders one confirmed expression at a time", () => {
   assert.ok(result.errors.some((error) => error.code === "SCHEMA_MAX_ITEMS" || error.code === "CANDIDATE_COUNT"));
 });
 
-test("MARKET rejects copy or settlement changed after creator confirmation", () => {
+test("MARKET rejects copy or settlement changed after the preview is frozen", () => {
   const copyChanged = baseMarketJob();
   copyChanged.preview.candidates[0].frame.body += " One more sentence.";
   assert.ok(validateMarketPreviewJob(copyChanged).errors.some((error) => error.code === "MEANING_LOCK_BODY"));
@@ -621,7 +621,7 @@ test("MARKET rejects copy or settlement changed after creator confirmation", () 
   assert.ok(validateMarketPreviewJob(deadlineChanged).errors.some((error) => error.code === "MEANING_LOCK_DEADLINE"));
 });
 
-test("MARKET locks a creator-confirmed terminal range and keeps it visible", () => {
+test("MARKET locks a creator-accepted terminal range and keeps it visible", () => {
   const job = baseMarketJob();
   job.preview.creator_view.direction = "range";
   job.preview.meaning_lock.direction = "range";

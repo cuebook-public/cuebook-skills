@@ -65,8 +65,8 @@ function meaningLock({ caseId, title, body, subject, direction, claim, mechanism
       : ["argument_structure", "mechanism", "future_check"];
   return {
     lock_id: `MLOCK_LAB_${caseId.toUpperCase()}_001`,
-    status: "creator_confirmed",
-    confirmed_at: "2026-07-19T08:59:00Z",
+    status: "preview_frozen",
+    frozen_at: "2026-07-19T08:59:00Z",
     title,
     body,
     subject,

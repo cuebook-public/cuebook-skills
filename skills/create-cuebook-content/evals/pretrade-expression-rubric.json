@@ -19,7 +19,7 @@
     },
     {
       "id": "meaning_lock_integrity",
-      "question": "Were the exact public copy, asset, direction, deadline, human settlement rule, and visual job confirmed before rendering, and do the pixels still match that frozen decision?"
+      "question": "Were the exact public copy, asset, direction, deadline, creator-owned settlement rule, and visual job frozen before rendering, then shown together as one complete Frame for a single publication confirmation?"
     },
     {
       "id": "evidence_logic",
@@ -88,7 +88,7 @@
     "a visual-only reroll differs only by palette or typography while keeping the same reading silhouette",
     "the publication or expanded Frame hides a derived basket's components, weights, basis, coverage, or limitations",
     "the publication master is a dense desktop downscale, needs zoom at 622 x 400, contains more than three competing reader-essential groups, or falls below the 20 px primary / 16 px secondary essential type floors",
-    "pixels are rendered before the exact copy and settlement Meaning Lock is confirmed, or a post-confirmation semantic or deadline change reuses stale pixels",
+    "pixels are rendered before the exact copy and settlement Meaning Lock is internally frozen, the actual image is omitted from publication confirmation, or a semantic or deadline change reuses stale pixels",
     "a layout-only reroll changes facts, evidence, direction, horizon, or claim-state typing",
     "public copy or image prints correction-first headings such as invalidation, falsification condition, I admit I was wrong, or their locale equivalents",
     "the primary relationship cannot be identified within five seconds"

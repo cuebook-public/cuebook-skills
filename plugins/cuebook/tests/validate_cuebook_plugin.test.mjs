@@ -375,7 +375,7 @@ test("creator guidance uses Cues as optional thought anchors rather than proof",
   assert.match(combined, /contrasting.*adjacent/iu);
   assert.match(combined, /not proof/iu);
   assert.match(combined, /creator-owned hypothesis/iu);
-  assert.match(create, /Only adopted additions enter the confirmed draft/iu);
+  assert.match(create, /Only adopted additions enter the frozen draft/iu);
   assert.match(create, /The default interview budget is one thought-anchor question/iu);
   assert.match(create, /A second and final question is allowed only when/iu);
   assert.match(create, /never turn the follow-up into another research round/iu);
@@ -395,23 +395,28 @@ test("creator voice polish is local, silent, and meaning preserving", () => {
   assert.match(create, /never expose bracketed evidence labels/iu);
   assert.match(create, /not visible taxonomy/iu);
   assert.match(create, /Keep sourced fact, creator inference, and another creator's Cue distinct/u);
-  assert.match(create, /If polish changes meaning or attribution, restore the confirmed meaning/u);
+  assert.match(create, /If polish changes meaning or attribution, restore the intended meaning/u);
   assert.doesNotMatch(create, /Humanizer|second rewrite pass|draft audit final/iu);
 });
 
-test("terminal range requires creator-confirmed time and symmetric band", () => {
+test("terminal range requires creator-accepted time and symmetric band", () => {
   const create = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const settlement = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "references", "frame-settlement-authoring.md"),
     "utf-8",
   );
   const intake = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "intake-cuebook-viewpoint", "SKILL.md"),
     "utf-8",
   );
-  assert.match(create, /`range` is distinct from neutral/iu);
-  assert.match(create, /Require an explicit `±X%`/u);
-  assert.match(create, /never supply 3%, 5%, or any other preset/iu);
-  assert.match(create, /absolute terminal return is less than or equal/iu);
+  assert.match(create, /Frame Settlement Authoring/u);
+  assert.match(settlement, /`range` is distinct from neutral/iu);
+  assert.match(settlement, /Require an explicit `±X%`/u);
+  assert.match(settlement, /never supply 3%, 5%, or\s+another preset/iu);
+  assert.match(settlement, /absolute terminal return is less than or equal/iu);
   assert.match(intake, /whole-window barrier/iu);
   assert.match(intake, /range.*exact symmetric band/iu);
 });
@@ -419,6 +424,10 @@ test("terminal range requires creator-confirmed time and symmetric band", () => 
 test("relative view keeps natural language outside and a frozen long-short spread inside", () => {
   const create = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const settlement = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "references", "frame-settlement-authoring.md"),
     "utf-8",
   );
   const intake = fs.readFileSync(
@@ -430,12 +439,50 @@ test("relative view keeps natural language outside and a frozen long-short sprea
     "utf-8",
   );
   assert.match(intake, /A's return should beat B's by the deadline/u);
-  assert.match(create, /equal-notional long A \/ short B/iu);
-  assert.match(create, /Both may rise or fall/u);
+  assert.match(create, /“A beats B” is relative/u);
+  assert.match(settlement, /equal-notional long A \/ short B/iu);
+  assert.match(settlement, /Both may rise or fall/u);
   assert.match(create, /two distinct same-session-family assets/u);
   assert.match(publish, /pair_asset_ref/u);
   assert.match(publish, /spread_threshold_bps\?/u);
   assert.match(publish, /outperform\|underperform/u);
+});
+
+test("public entrypoints route silently and ask once on a complete creator-facing result", () => {
+  const create = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const author = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "author-cuebook-skill", "SKILL.md"),
+    "utf-8",
+  );
+  const architecture = fs.readFileSync(path.join(PLUGIN_ROOT, "ARCHITECTURE.md"), "utf-8");
+
+  assert.match(create, /complete Frame: exact title, body, actual image or\s+poster/iu);
+  assert.match(create, /Do not present a form or ask for a\s+separate pre-render confirmation/iu);
+  assert.match(create, /A clear yes, “publish,” or equivalent reply both selects the displayed\s+copy-to-image pair and authorizes publication/iu);
+  assert.doesNotMatch(create, /## Confirm The Expression Before Rendering/u);
+  assert.match(author, /without announcing an entrypoint, branch, workflow, stage/iu);
+  assert.match(author, /one cohesive review, then ask one direct\s+question/iu);
+  assert.match(author, /Do not ask again or narrate reservation, upload, and\s+completion steps/iu);
+  assert.match(architecture, /implementation boundary, not a conversational menu/iu);
+  assert.match(architecture, /internal branches silently/iu);
+});
+
+test("Frame publication chooses one natural closing action", () => {
+  const publish = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "references", "frame-publish-workflow.md"),
+    "utf-8",
+  );
+  const memory = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "references", "memory-proposal-discipline.md"),
+    "utf-8",
+  );
+  assert.match(publish, /Choose exactly one natural end action/iu);
+  assert.match(publish, /propose that\s+single candidate and offer nothing else/iu);
+  assert.match(memory, /one natural closing action/iu);
+  assert.match(memory, /do not also offer\s+sharing, Paper Trade, another signal/iu);
 });
 
 test("published Frame projection states all-legs conjunction without a website detour", () => {
@@ -770,7 +817,7 @@ test("Frame creator flow never reads back or presents a canonical web link after
   assert.doesNotMatch(combined, /receipt's exact `frame_id \+ release_id`/u);
   assert.match(combined, /successful `complete_frame_publish` result is final success/u);
   assert.match(combined, /do not parse or validate a receipt/iu);
-  assert.match(combined, /Do not restate the copy or settlement, ask “confirm publish\?” again/iu);
+  assert.match(combined, /Do not restate the copy or settlement, ask\s+“confirm publish\?” again/iu);
   assert.match(combined, /do not run reconciliation/iu);
   assert.match(combined, /idea is published.*Cuebook App/isu);
   assert.match(combined, /Never show a web URL/iu);
@@ -811,6 +858,8 @@ test("creator journey feels editorial without exposing a fixed flow", () => {
   assert.match(readme, /The Cuebook Experience/u);
   assert.match(readme, /without taking authorship away/u);
   assert.match(readme, /Internal Tool calls, providers, retries, hashes, and publication mechanics remain backstage/u);
+  assert.match(readme, /shows one complete Frame.*actual image or Artifact poster/isu);
+  assert.match(readme, /there is no earlier copy-only confirmation/iu);
 });
 
 test("creator owns the horizon and Cuebook timing help remains opt-in", () => {
@@ -820,6 +869,10 @@ test("creator owns the horizon and Cuebook timing help remains opt-in", () => {
   );
   const intake = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "intake-cuebook-viewpoint", "SKILL.md"),
+    "utf-8",
+  );
+  const settlement = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "references", "frame-settlement-authoring.md"),
     "utf-8",
   );
   const schema = JSON.parse(fs.readFileSync(
@@ -832,14 +885,14 @@ test("creator owns the horizon and Cuebook timing help remains opt-in", () => {
     ),
     "utf-8",
   ));
-  const combined = `${create}\n${intake}`;
+  const combined = `${create}\n${intake}\n${settlement}`;
   assert.match(combined, /There is no default duration/iu);
   assert.match(combined, /creator-stated horizon always outranks Cuebook inference/iu);
   assert.match(combined, /How long should this view be tested.*Cuebook to suggest a horizon/isu);
   assert.match(combined, /one or two.*proposals/isu);
   assert.match(combined, /must accept or edit/iu);
   assert.match(combined, /A Cue may inform requested timing help; it never finalizes a creator choice/iu);
-  assert.match(combined, /before copy, pixels, settlement, or publication/iu);
+  assert.match(combined, /accepts every\s+economic term before it enters the complete preview/iu);
   assert.doesNotMatch(combined, /48H \/ 30D \/ 90D/u);
   assert.doesNotMatch(create, /Prefer `BTC · 30D LONG`/u);
 

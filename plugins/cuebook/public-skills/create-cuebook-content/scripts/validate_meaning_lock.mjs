@@ -1,4 +1,4 @@
-// Cross-check the creator-confirmed semantic package before any preview pixels are rendered.
+// Cross-check the internally frozen semantic package before any preview pixels are rendered.
 
 function issue(code, issuePath, message) {
   return { code, path: issuePath, message };
@@ -17,8 +17,8 @@ export function validateMeaningLock({ preview, candidates, expressions, route })
   const creatorView = preview?.creator_view;
   if (!lock || !creatorView) return errors;
 
-  if (Date.parse(lock.confirmed_at) > Date.parse(preview.created_at)) {
-    errors.push(issue("MEANING_LOCK_ORDER", "$.preview.meaning_lock.confirmed_at", "The creator must confirm the meaning lock before the preview job is created."));
+  if (Date.parse(lock.frozen_at) > Date.parse(preview.created_at)) {
+    errors.push(issue("MEANING_LOCK_ORDER", "$.preview.meaning_lock.frozen_at", "Meaning must be frozen before the preview job is created."));
   }
 
   for (const field of ["subject", "direction", "horizon", "claim", "mechanism", "next_watch"]) {
@@ -29,10 +29,10 @@ export function validateMeaningLock({ preview, candidates, expressions, route })
 
   candidates.forEach((candidate, index) => {
     if (candidate?.frame?.title !== lock.title) {
-      errors.push(issue("MEANING_LOCK_TITLE", `$.preview.candidates[${index}].frame.title`, "Rendered candidates must use the creator-confirmed title exactly."));
+      errors.push(issue("MEANING_LOCK_TITLE", `$.preview.candidates[${index}].frame.title`, "Rendered candidates must use the internally frozen title exactly."));
     }
     if (candidate?.frame?.body !== lock.body) {
-      errors.push(issue("MEANING_LOCK_BODY", `$.preview.candidates[${index}].frame.body`, "Rendered candidates must use the creator-confirmed body exactly."));
+      errors.push(issue("MEANING_LOCK_BODY", `$.preview.candidates[${index}].frame.body`, "Rendered candidates must use the internally frozen body exactly."));
     }
   });
 
@@ -62,7 +62,7 @@ export function validateMeaningLock({ preview, candidates, expressions, route })
       errors.push(issue("MEANING_LOCK_SETTLEMENT_CLOCK", "$.preview.meaning_lock.visual_intent.required_beats", "A settleable visual lock must retain its deadline clock."));
     }
     if (settlement.direction !== creatorView.direction) {
-      errors.push(issue("MEANING_LOCK_SETTLEMENT_DIRECTION", "$.preview.meaning_lock.settlement.direction", "Settlement direction must match the creator-confirmed direction."));
+      errors.push(issue("MEANING_LOCK_SETTLEMENT_DIRECTION", "$.preview.meaning_lock.settlement.direction", "Settlement direction must match the creator-owned direction."));
     }
     const expectedCondition = {
       long: "above_publication_baseline",
@@ -76,13 +76,13 @@ export function validateMeaningLock({ preview, candidates, expressions, route })
       errors.push(issue("MEANING_LOCK_SETTLEMENT_OUTCOME", "$.preview.meaning_lock.settlement.success_condition", "The success condition must match the confirmed direction."));
     }
     if (settlement.mode === "terminal_range" && !beats.has("settlement_band")) {
-      errors.push(issue("MEANING_LOCK_SETTLEMENT_BAND", "$.preview.meaning_lock.visual_intent.required_beats", "A range visual must retain the creator-confirmed symmetric terminal band."));
+      errors.push(issue("MEANING_LOCK_SETTLEMENT_BAND", "$.preview.meaning_lock.visual_intent.required_beats", "A range visual must retain the creator-accepted symmetric terminal band."));
     }
     if (settlement.mode === "relative_outperformance") {
       const focal = settlement.asset_ref?.trim().toLowerCase().replace(/^asset:/u, "");
       const pair = settlement.pair_asset_ref?.trim().toLowerCase().replace(/^asset:/u, "");
       if (!focal || !pair || focal === pair) {
-        errors.push(issue("MEANING_LOCK_RELATIVE_ASSETS", "$.preview.meaning_lock.settlement.pair_asset_ref", "Relative settlement requires two distinct creator-confirmed assets."));
+        errors.push(issue("MEANING_LOCK_RELATIVE_ASSETS", "$.preview.meaning_lock.settlement.pair_asset_ref", "Relative settlement requires two distinct creator-owned assets."));
       }
       if (!expressions.some((expression) => expression?.market?.benchmark && ["indexed_return", "relative_spread"].includes(expression.market.main_transform))) {
         errors.push(issue("MEANING_LOCK_RELATIVE_GEOMETRY", "$.expressions", "Relative settlement must show both assets through synchronized normalized returns or their return spread."));
@@ -92,7 +92,7 @@ export function validateMeaningLock({ preview, candidates, expressions, route })
       const focal = settlement.asset_ref?.trim().toLowerCase().replace(/^asset:/u, "");
       const pair = settlement.pair_asset_ref?.trim().toLowerCase().replace(/^asset:/u, "");
       if (!focal || !pair || focal === pair) {
-        errors.push(issue("MEANING_LOCK_COMPOUND_ASSETS", "$.preview.meaning_lock.settlement.pair_asset_ref", "Compound settlement requires two distinct creator-confirmed assets."));
+        errors.push(issue("MEANING_LOCK_COMPOUND_ASSETS", "$.preview.meaning_lock.settlement.pair_asset_ref", "Compound settlement requires two distinct creator-owned assets."));
       }
       const directions = [settlement.primary_direction, settlement.pair_direction];
       const hasRange = directions.includes("range");
@@ -117,7 +117,7 @@ export function validateMeaningLock({ preview, candidates, expressions, route })
         errors.push(issue("MEANING_LOCK_COMPOUND_JOIN", "$.preview.meaning_lock.visual_intent.required_beats", "A compound visual must say that both conditions are joined by AND."));
       }
       if (hasRange && !beats.has("settlement_band")) {
-        errors.push(issue("MEANING_LOCK_SETTLEMENT_BAND", "$.preview.meaning_lock.visual_intent.required_beats", "A compound range visual must retain every creator-confirmed symmetric terminal band."));
+        errors.push(issue("MEANING_LOCK_SETTLEMENT_BAND", "$.preview.meaning_lock.visual_intent.required_beats", "A compound range visual must retain every creator-accepted symmetric terminal band."));
       }
       if (!expressions.some((expression) => expression?.market?.benchmark && ["indexed_return", "drawdown"].includes(expression.market.main_transform))) {
         errors.push(issue("MEANING_LOCK_COMPOUND_GEOMETRY", "$.expressions", "A compound visual must show both assets on synchronized baseline-relative geometry."));
@@ -133,11 +133,11 @@ export function validateMeaningLock({ preview, candidates, expressions, route })
     }
     expressions.forEach((expression, index) => {
       if (!sameInstant(settlement.requested_settle_at, expression?.time?.horizon_end)) {
-        errors.push(issue("MEANING_LOCK_DEADLINE", `$.expressions[${index}].time.horizon_end`, "Every rendered expression must use the creator-confirmed exact settlement deadline."));
+        errors.push(issue("MEANING_LOCK_DEADLINE", `$.expressions[${index}].time.horizon_end`, "Every rendered expression must use the creator-accepted exact settlement deadline."));
       }
     });
   } else if (route === "market" && ["long", "short", "range", "outperform", "underperform", "compound"].includes(creatorView.direction)) {
-    errors.push(issue("MEANING_LOCK_SETTLEMENT_REQUIRED", "$.preview.meaning_lock.settlement", "An eligible market preview must freeze its confirmed settlement before rendering."));
+    errors.push(issue("MEANING_LOCK_SETTLEMENT_REQUIRED", "$.preview.meaning_lock.settlement", "An eligible market preview must freeze its complete creator-owned settlement before rendering."));
   }
 
   return errors;

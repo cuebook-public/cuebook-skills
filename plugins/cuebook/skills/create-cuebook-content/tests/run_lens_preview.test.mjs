@@ -84,8 +84,8 @@ export function baseLensJob() {
       },
       meaning_lock: {
         lock_id: "MLOCK_AI_LENS_LENS_001",
-        status: "creator_confirmed",
-        confirmed_at: "2026-07-17T08:59:00Z",
+        status: "preview_frozen",
+        frozen_at: "2026-07-17T08:59:00Z",
         title,
         body,
         subject: "AI infrastructure demand",
@@ -266,7 +266,7 @@ test("LENS rejects an observed sentence contradicted by the computed lens", () =
   assert.ok(result.errors.some((error) => error.code === "OBSERVATION_UNSUPPORTED"));
 });
 
-test("LENS rejects copy changed after creator confirmation", () => {
+test("LENS rejects copy changed after the preview is frozen", () => {
   const job = baseLensJob();
   job.preview.candidate.frame.title = "AI Infrastructure Breadth Needs a Basket Test";
   const result = validateLensPreviewJob(job);

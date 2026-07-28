@@ -12,7 +12,7 @@ these rules need a deliberate edit HERE in the same commit.
 | L0 — MCP server | Tools, scopes, OAuth, schemas | The deployed server registry is the runtime truth; `assets/mcp-capability-map-v1.json` is this repo's audited snapshot of it |
 | L1 — Public entrypoints | `query-cuebook`, `create-cuebook-content`, `author-cuebook-skill` | The ONLY discoverable skills. Everything a host can select routes through these three |
 | L2a — Internal pipeline skills | 36 directories under `skills/` | Routable stages invoked via `$skill-name` or a menu `skill_refs`; each owns its schemas, validators, and tests |
-| L2b — Entry-embedded capability modules | Prose + schema files under the two public skills' `references/` | Consent-gated or optional-connector capabilities bound to one entry's flow (TradingView, decision memory) |
+| L2b — Entry-embedded capability modules | Prose + schema files under a public entry's `references/` | Consent-gated or optional-connector capabilities bound to one entry's flow (TradingView, decision memory) |
 | L3 — Plugin assets | Module registry, menus, intent contract, capability map, index | Machine-readable routing and gating data shared by all skills |
 | L4 — Generated bundles | `public-skills/`, repo-root `skills/`, submission packet | Never edited by hand; `build_release_skills.mjs` output, parity-checked in CI |
 
@@ -22,6 +22,11 @@ Host discovery sees exactly three skills. Growing the public surface requires
 evidence that routing quality measurably improves and a validator update in the
 same change; the default answer is no (adversarial review AR-09). Internal
 capability never justifies discovery growth: it lands as L2a or L2b.
+
+Public entrypoints are an implementation boundary, not a conversational menu. The creator states
+an intent; the host selects the relevant entry and its internal branches silently. User-facing
+language must never announce that Cuebook is entering a Skill, workflow, stage, lane, route, or
+subflow. Each branch should feel like Cuebook naturally understanding the next useful action.
 
 The third entry is the community skill marketplace front door:
 `author-cuebook-skill` (L1) exists solely for community submission — package a
