@@ -56,11 +56,11 @@
     "meaningLock": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["lock_id", "status", "confirmed_at", "title", "body", "subject", "direction", "horizon", "claim", "mechanism", "next_watch", "settlement", "visual_intent"],
+      "required": ["lock_id", "status", "frozen_at", "title", "body", "subject", "direction", "horizon", "claim", "mechanism", "next_watch", "settlement", "visual_intent"],
       "properties": {
         "lock_id": {"type": "string", "pattern": "^MLOCK_[A-Za-z0-9_:-]{6,}$"},
-        "status": {"const": "creator_confirmed"},
-        "confirmed_at": {"type": "string", "format": "date-time"},
+        "status": {"const": "preview_frozen"},
+        "frozen_at": {"type": "string", "format": "date-time"},
         "title": {"type": "string", "minLength": 2, "maxLength": 32},
         "body": {"type": "string", "minLength": 20, "maxLength": 1200},
         "subject": {"type": "string", "minLength": 1, "maxLength": 80},
@@ -457,7 +457,7 @@
         "reader_job": {"enum": ["conviction", "proof", "mechanism", "comparison", "event", "scenario", "trigger"]},
         "analytic_relationship": {"enum": ["change_over_time", "deviation", "relative_value", "correlation", "event_reaction", "trigger_state", "causal_transmission", "scenario_payoff"]},
         "grammar": {"enum": ["curve_story", "relative_divergence", "drawdown_recovery", "correlation_shift", "event_window", "threshold_regime", "scenario_lanes", "causal_spine", "evidence_balance"]},
-        "composition": {"enum": ["curve_stage", "editorial_split", "divergence_field", "timeline_rail", "threshold_field", "scenario_field", "causal_spine", "evidence_balance"]},
+        "composition": {"enum": ["curve_stage", "editorial_split", "divergence_field", "timeline_rail", "threshold_field", "scenario_field", "causal_spine", "causal_cascade", "causal_loop", "evidence_balance"]},
         "surface": {"enum": ["paper_signal", "midnight", "warm_editorial", "cool_mono"]},
         "subject_label": {"type": "string", "minLength": 1, "maxLength": 24},
         "horizon_label": {"type": "string", "minLength": 1, "maxLength": 24},

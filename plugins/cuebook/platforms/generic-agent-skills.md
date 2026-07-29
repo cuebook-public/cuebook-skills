@@ -50,10 +50,12 @@ and audit paths.
 
 ## Write operations
 
-Writes happen only through explicit Cuebook MCP write tools. Initial and
-correction publication go from prepare directly to publish. Published Frames
-are permanent; changed thesis or economics require a new Frame. A client
-without those tools gets read-only behavior.
+Writes happen only through explicit Cuebook MCP write tools. Ordinary initial
+publication stages one signed upload and uses the structural v3 completion
+request; Correction retains its declared prepare/publish pair. Frame releases
+are immutable. MCP has no author-management action; Cuebook App can hide/show a
+Frame and may allow deletion during the first hour. Changed thesis or economics
+requires a new Frame. A client without those tools gets read-only behavior.
 
 ## Known limitations
 

@@ -25,7 +25,7 @@ Codex reads exactly three `SKILL.md` files at startup. Internal capabilities are
 vendored as non-discoverable `references/modules/*.md` resources behind
 `query-cuebook`, `create-cuebook-content`, and `author-cuebook-skill`.
 
-The default marketplace follows stable releases from `main`. Add `--ref v0.9.19`
+The default marketplace follows stable releases from `main`. Add `--ref v0.9.20`
 only for an intentionally frozen install.
 
 ## Update
@@ -115,15 +115,17 @@ Desktop and research servers under distinct host names.
 
 ## Write operations
 
-Frame publication follows the capability-advertised upload → manifest → draft
-→ prepare → publish sequence. A successful typed publish result ends the creator
-flow; Codex does not parse a receipt, reconcile history, call `get_frame`, browse
-a canonical page, or display a web link after publication. Initial and correction
+Ordinary initial Frame publication stages one signed image upload, then sends one
+`complete_frame_publish` v3 request with a closed `settlement` branch and
+agent-inferred `reasoning_tags`. A successful typed result ends the creator flow;
+Codex does not parse a receipt, reconcile history, call `get_frame`, browse a
+canonical page, or display a web link after publication. Initial and correction
 publishing use the active OAuth MCP grant; a first-party Publish action is a
-separate UI authorization path, not an additional MCP gate. Published Frames
-are permanent: unchanged economics may use an append-only Correction, while a
-changed thesis or economic contract requires a new Frame. Every mutation uses a
-separate lowercase UUIDv7. Query never calls writes;
+separate UI authorization path, not an additional MCP gate. Frame releases are
+immutable. MCP has no author-management action; Cuebook App can hide/show a Frame
+and may allow deletion during the first hour. Unchanged economics may use an
+append-only Correction, while a changed thesis or economic contract requires a
+new Frame. Every mutation uses a separate lowercase UUIDv7. Query never calls writes;
 Create never publishes silently, and no standalone media retrieval tool is
 exposed.
 

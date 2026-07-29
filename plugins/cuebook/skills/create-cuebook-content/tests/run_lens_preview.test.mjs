@@ -84,8 +84,8 @@ export function baseLensJob() {
       },
       meaning_lock: {
         lock_id: "MLOCK_AI_LENS_LENS_001",
-        status: "creator_confirmed",
-        confirmed_at: "2026-07-17T08:59:00Z",
+        status: "preview_frozen",
+        frozen_at: "2026-07-17T08:59:00Z",
         title,
         body,
         subject: "AI infrastructure demand",
@@ -213,6 +213,8 @@ test("LENS computes and renders a transparent four-component Creator Lens", asyn
     assert.equal((svg.match(/data-role="compact-component-row"/gu) ?? []).length, 3);
     assert.equal(report.renders[0].audit.single_master, true);
     assert.equal(report.renders[0].audit.mobile_display, "622x400");
+    assert.equal(report.renders[0].audit.layout_version, "mobile-622x400-v2");
+    assert.ok(report.renders[0].audit.vertical_content_max >= report.renders[0].audit.vertical_content_floor);
     assert.ok(report.renders[0].audit.essential_copy_groups <= 3);
     assert.equal(report.renders[0].audit.essential_font_floor, 20);
     assert.equal(report.renders[0].audit.secondary_font_floor, 16);
@@ -266,7 +268,7 @@ test("LENS rejects an observed sentence contradicted by the computed lens", () =
   assert.ok(result.errors.some((error) => error.code === "OBSERVATION_UNSUPPORTED"));
 });
 
-test("LENS rejects copy changed after creator confirmation", () => {
+test("LENS rejects copy changed after the preview is frozen", () => {
   const job = baseLensJob();
   job.preview.candidate.frame.title = "AI Infrastructure Breadth Needs a Basket Test";
   const result = validateLensPreviewJob(job);

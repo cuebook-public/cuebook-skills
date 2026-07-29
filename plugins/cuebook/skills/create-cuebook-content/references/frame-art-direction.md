@@ -7,8 +7,9 @@ Use this reference after the idea topology and evidence relationship are known. 
 Keep these anchors stable across every Frame:
 
 - one 1866 x 1200 publication master, verified at a 622 x 400 phone display size, and the canonical Cuebook wordmark;
+- one 622 x 400 logical coordinate system rasterized at 3x; active composition reaches through the enlarged height instead of preserving the former 622 x 264 geometry inside a taller bitmap;
 - one creator-owned judgment, honest source/as-of/transform language, and a visible observed/future boundary;
-- readable type, one dominant accent, stable bindings, and no fabricated future path.
+- readable type, one dominant semantic contrast, stable bindings, and no fabricated future path.
 
 Vary these when the idea benefits:
 
@@ -25,7 +26,7 @@ Vary these when the idea benefits:
 | `temporal_rail` | event reaction | `timeline_rail` | time and catalyst lead, curve follows |
 | `trigger_poster` | threshold or regime change | `threshold_field` | the decision line is the visual anchor |
 | `branch_map` | conditional macro view | `scenario_field` | one present origin opens into dated branches |
-| `mechanism_path` | transmission hypothesis | `causal_spine` | connected observation, mechanism, and footprint |
+| `mechanism_path` | transmission hypothesis | `causal_spine`, `causal_cascade`, or `causal_loop` | axial path, falling cascade, or open feedback circuit |
 | `evidence_tension` | live support versus countercase | `evidence_balance` | two unequal forces held in visible tension |
 | `lens_ledger` | transparent creator basket | `lens_anatomy` | rebased curve plus component anatomy |
 | `spread_arena` | long/short expression | `contribution_stage` | spread curve plus visibly opposed sleeves |
@@ -38,19 +39,19 @@ Surface is more than color:
 
 | Surface | Display system | Material behavior | Useful tone |
 | --- | --- | --- | --- |
-| `paper_signal` | assertive signal sans | soft stage, medium lines, open paper | clear and direct |
-| `midnight` | high-contrast sans | square stage, heavier series, subdued grid | conviction and tension |
-| `warm_editorial` | editorial serif headline | flat paper, lighter series, low grid | reflective and human |
-| `cool_mono` | precision mono headline | sharp stage, thin series, explicit grid | analytical and exact |
+| `paper_signal` | assertive signal sans | ivory paper, cobalt structure, vermilion signal | clear and direct |
+| `midnight` | high-contrast sans | deep navy field, luminous blue/violet geometry, yellow signal | conviction and tension |
+| `warm_editorial` | editorial serif headline | warm paper, oxblood/teal structure, restrained line | reflective and human |
+| `cool_mono` | precision mono headline | mineral field, blue/indigo geometry, explicit grid | analytical and exact |
 
-Keep paragraph and data type highly legible even when the headline system changes. Surface cannot rescue a poor composition.
+Keep paragraph and data type highly legible even when the headline system changes. Do not bind long to green or short to red; direction belongs to language and settlement, while color carries information roles. Surface cannot rescue a poor composition.
 
 ## Selection sequence
 
 1. Select the reader question and truthful evidence relationship.
 2. Select the design family whose reading path answers that question in five seconds.
 3. Select narrative placement from the composition, not from a universal footer template.
-4. Select a surface that matches the creator's voice and evidence density.
+4. Select a surface that matches the creator's established visual voice when known; otherwise use voice, tension, and evidence density.
 5. Record the fingerprint as `grammar/composition/surface/display_system/narrative_placement`.
 
 Also record `design_family/narrative_placement/grammar/mobile-622` as the phone-scale `attention_signature`. It helps the creator loop and later feed sequencing avoid adjacent identical silhouettes; it is expression metadata, not evidence or a security boundary.
@@ -63,11 +64,12 @@ Offline design evaluation may compare many fixtures across grammars, composition
 
 Fail the visual when:
 
-- only color changed;
+- only color changed, including a reroll that preserves the same grayscale silhouette and reading path;
 - the same headline/chart/three-column-footer silhouette repeats under new names;
 - decorative cards or dashboard chrome replace market geometry;
 - the creator pulse always occupies the same edge regardless of composition;
 - typography changes but hierarchy and reading order do not;
 - novelty makes the evidence harder to identify within five seconds.
 - the publication master needs zoom to understand when displayed at 622 x 400;
+- meaningful geometry and essential copy stop above y=344 in the 622 x 400 display box, leaving an unexplained legacy-height blank band;
 - a layout-only reroll changes the meaning lock, evidence set, direction, or horizon.

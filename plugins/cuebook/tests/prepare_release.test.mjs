@@ -57,6 +57,11 @@ function fixture(root, { unreleased = "- Added one release feature." } = {}) {
       },
     },
   });
+  json(path.join(root, "plugins/cuebook/assets/example-v1.schema.json"), {
+    $schema: "https://json-schema.org/draft/2020-12/schema",
+    $id: "https://cuebook.xyz/schemas/example-v1.schema.json",
+    type: "object",
+  });
   json(path.join(root, "plugins/cuebook/.codex-plugin/plugin.json"), {
     name: "cuebook",
     version: "0.6.0+codex.20260720133237",
@@ -132,6 +137,10 @@ test("prepares every public version surface while preserving catalog version", (
       fs.readFileSync(path.join(root, "plugins/cuebook/assets/mcp-capability-map-v1.json")),
     );
     assert.equal(capabilityMap.server.url, "https://cuebook.app/mcp");
+    const schema = JSON.parse(
+      fs.readFileSync(path.join(root, "plugins/cuebook/assets/example-v1.schema.json")),
+    );
+    assert.equal(schema.$id, "https://cuebook.app/schemas/example-v1.schema.json");
     assert.match(
       fs.readFileSync(path.join(root, "plugins/cuebook/platforms/claude-code.md"), "utf8"),
       /cuebook-skills@v0\.7\.0/u,

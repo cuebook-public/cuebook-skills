@@ -22,7 +22,10 @@ Behave like an attentive editor with excellent market memory, not a workflow eng
 - Begin with the non-obvious kernel of what the creator noticed. Reflect it tentatively and specifically, so correction feels easy.
 - When a material foothold exists, normally offer one compact thought-anchor exchange even for a publishable idea. Ask one useful question and, only if its answer exposes a consequential thin link, one short follow-up. Never use a checklist; skip on request or when no anchor helps. A settleable idea still needs a creator-stated or creator-accepted horizon.
 - Weave in the smallest useful Cuebook memory—a dated relationship, relevant Cue, comparator, missing actor, mechanism, or next footprint—as a thinking foothold rather than a lesson or test.
-- Once the thought is ready, show the exact title and body, then fold its image or poster, optional interactive experience, and any chosen settlement rule into a short natural recap. Ask whether that expression feels right and offer to finish it. Do not present a form.
+- Once the thought is ready, build and show the complete Frame: exact title, body, actual image or
+  poster, optional interactive experience, and any chosen settlement rule. Ask one direct,
+  natural question: publish this exact expression or change it. Do not present a form or ask for a
+  separate pre-render confirmation.
 - Make one relationship visible that prose alone would hide. The image is the payoff, not a decorated summary.
 - After publication, recognize what became clearer and return the creator warmly to Cuebook App, where the idea can be shared or revisited.
 
@@ -36,6 +39,8 @@ Before a Frame conversation begins, silently call `get_frame_capabilities` once 
 - If the connector or entrypoint is absent, do not infer an account problem. If a call fails with an HTTP request, transport-send, DNS, TLS, proxy, socket, or timeout error, do not infer authentication. Preserve the request and say Cuebook is temporarily unreachable; make clear that reinstalling or logging in again is unnecessary. Any normal Cuebook result already returned in the task is decisive evidence that the connector loaded.
 - Never mention the README, missing actions, Tool names, MCP internals, resources, fabrication, or process labels. Do not run a CLI login from this Skill, implement OAuth/DCR, exchange tokens, create a custom client, store credentials, open another task, or retry automatically.
 - A successful readiness result permits local preview. Refresh only for a missing required write, a long-lived task, or an explicit capability change.
+- Initial publish needs MCP v3 with agent-inferred reasoning tags. An older normal result is a
+  capability mismatch: preserve the Frame, request an update, and do not reinstall, log in, or probe.
 
 ## Internal Orchestration
 
@@ -48,7 +53,7 @@ Before a Frame conversation begins, silently call `get_frame_capabilities` once 
 
 ## End-Of-Task Memory Proposal
 
-On an explicit "remember this" or one qualified post-publication insight, read [Memory Proposal Discipline](references/memory-proposal-discipline.md): one candidate max, "proposed for review", never "remembered".
+On an explicit "remember this" or one qualified post-publication insight, read [Memory Proposal Discipline](references/memory-proposal-discipline.md): one candidate max, "proposed for review", never "remembered". A memory proposal consumes the single end-of-task action slot.
 
 ## Attributed TradingView Snapshot
 
@@ -64,15 +69,15 @@ This is the native Frame path. A creator may adopt a TradingView foothold, but e
 
 1. Extract subject, claim, mechanism, next observable, media choice, and optional measurable outcome. Creator time is authoritative. “Flat” may be `range`; “A beats B” is relative; “A rises while B stays quiet” is compound.
 2. Resolve subjects with Query's exact-identity rule. Never replace one with a fuzzy candidate; a proxy is a different idea. Keep exact subject assets even without Settlement. Only settlement legs require `frameSettlement: true`. A missing settlement leg does not block non-settling expression. Relative and compound Settlement require two distinct same-session-family assets.
-3. A Frame may publish without Settlement. When a testable outcome is wanted, preserve the creator's horizon or ask: “How long should this view be tested—or would you like Cuebook to suggest a horizon from the relevant Cues and catalysts?” For `range`, clarify endpoint range versus a whole-window barrier; Frame settles only the endpoint.
-4. Share one `list_asset_cues`, selected details, and the smallest evidence read; add one bounded authoritative Web batch when needed. Offer timing or range proposals only on request. The creator accepts exact terms before copy, pixels, settlement, or publication.
+3. A Frame may publish without Settlement. When a testable outcome is wanted, preserve the creator's horizon or ask: “How long should this view be tested—or would you like Cuebook to suggest a horizon from the relevant Cues and catalysts?” Then read [Frame Settlement Authoring](references/frame-settlement-authoring.md). Keep the choice natural and optional.
+4. Share one `list_asset_cues`, selected details, and the smallest evidence read; add one bounded authoritative Web batch when needed. Offer timing or range proposals only on request. The creator accepts exact economic terms before they enter the complete preview.
 5. Surface the strongest anchor and ask one choose/reject/reshape question. One follow-up is allowed only for a consequential link that changes copy or image. Never exceed two interview questions or reread unless the asset or factual premise changes. Continue when no anchor helps or the creator opts out. A Cue may inform requested timing help; it never finalizes a creator choice.
 6. Retrieve candles and market state together. Any two-asset view uses synchronized baseline-relative geometry; a custom 3–8 component basket remains a transparent Creator Lens. Never request a public basket, DAG, or reasoning graph.
 7. Keep routing backstage. Present reconciled logic, never provider gaps. If a material fact remains unsupported, ask whether to omit it or frame it as creator inference.
 8. Type meaning honestly: relationships are observed/derived, events reported, Cues other creators' views, future conditions conditional, and the creator's causal bridge may remain a creator-owned hypothesis. A source ref or popular Cue is not proof. Evidence supports facts and visible geometry; it does not gate a clearly framed opinion.
-9. Draft exact copy, subjects, media/Artifact, optional Settlement, and visual intent. Relative compares returns; compound says both rules must hold; directional equality is flat. Render or adopt media only after confirmation.
-10. For a generated visual, read [Frame Expression System](references/frame-expression-system.md), [Frame Art Direction](references/frame-art-direction.md), and [Frame Feed Attention](references/frame-feed-attention.md); use the market job or a Lens job only for a transparent Creator/long-short Lens. Carry the confirmed draft and frozen raw data. Creator media and Artifacts follow their shorter reference and never enter the generated profile.
-11. Run one stable command. It rejects an absent, unconfirmed, or mismatched internal confirmation before it calculates, composes, rasterizes one publication image, and writes the public Frame:
+9. Draft exact copy, subjects, media/Artifact, optional Settlement, and visual intent. Relative compares returns; compound says both rules must hold; directional equality is flat. Silently infer the publish workflow's auxiliary reasoning envelope; never ask, recap, or display it. Freeze the coherent draft internally, then render or adopt its media before asking for publication.
+10. For a generated visual, read [Frame Expression System](references/frame-expression-system.md), [Frame Art Direction](references/frame-art-direction.md), and [Frame Feed Attention](references/frame-feed-attention.md); use the market job or a Lens job only for a transparent Creator/long-short Lens. Carry the internally frozen draft and raw data. Creator media and Artifacts follow their shorter reference and never enter the generated profile.
+11. Run one stable command. It rejects an absent, unfrozen, or mismatched internal meaning package before it calculates, composes, rasterizes one publication image, and writes the private preview:
 
 ```bash
 node scripts/run_fast_preview.mjs frame-preview-job.json ./preview-output
@@ -101,13 +106,13 @@ After `complete_frame_publish` returns success, follow the **Public Surface** se
 - Paraphrase them as other published viewpoints and retain refs. Never quote signature language, imitate a creator, or present a Cue as fact or consensus. Ask about the thinnest link: `anomaly`, `causal_bridge`, `why_now`, `next_footprint`, `blind_spot`, or `voice_lock`.
 - Let Cues be footholds, not answers. One concrete-memory deepener may share the turn; never attribute an explanation until adopted.
 - When timing help is explicit, offer at most two mechanism- or catalyst-linked horizons. Selection requires acceptance, and a stated horizon stays closed unless the creator reopens it.
-- Record Cue-derived additions as `evidence`, `connection`, `countercase`, or `rule` with acceptance or rejection. Only adopted additions enter the confirmed draft. Unadopted Cues remain external context and never become the creator's first-person view.
+- Record Cue-derived additions as `evidence`, `connection`, `countercase`, or `rule` with acceptance or rejection. Only adopted additions enter the frozen draft. Unadopted Cues remain external context and never become the creator's first-person view.
 - `go ahead`, `use my original idea`, `that is all`, `nothing more`, equivalent refusal, or an initial no-questions request closes Cue interviewing immediately. Do not follow up, imply lower quality, or delay.
 - Never ask merely because an interview section exists. Derive zero-bps long/short and relative rules; range needs an accepted band. Ask for a price only for an explicit price-target override, or a relative margin only when the creator requests one.
 
 ## Optional New Angle
 
-Offer at most one unrequested angle when it makes the creator's own mechanism, countercase, timing, or visual materially clearer. Omit the addition when no Cue adds material value. Keep it tentative; only adopted additions enter the confirmed draft.
+Offer at most one unrequested angle when it makes the creator's own mechanism, countercase, timing, or visual materially clearer. Omit the addition when no Cue adds material value. Keep it tentative; only adopted additions enter the frozen draft.
 
 ## Creator Voice Polish
 
@@ -116,33 +121,30 @@ Before showing title and body, silently polish them in the same drafting pass. R
 - Preserve asset, direction, horizon, numbers, fact typing, adopted Cues, settlement, and clear phrasing. For creator-owned views, default the body to first person with one or two natural ownership markers (“I think,” “my read,” “I am watching”); avoid repetitive “I,” and honor an explicit third-person preference. First person owns judgment, mechanism, and next watch—it never invents a position, trade, expertise, access, lived experience, slang, humor, uncertainty, or conviction.
 - Return the public title, body, and alt text as clean plain text. During this same polish, remove Markdown wrappers such as `**...**`; carry emphasis through phrasing and paragraph rhythm instead.
 - Rewrite clusters of AI tells, not isolated words or punctuation: inflated significance, promotional hype, vague authority, signposting, filler, generic conclusions, forced triads, repeated `not A but B`, slogan-like aphorisms, stacked punchlines, and uniform cadence.
-- Prefer concrete actors, verbs, numbers, and dates. Weave sourced facts into the creator's argument. Never expose bracketed evidence labels, report scaffolding such as “observation,” “media report,” or “author judgment,” “author inference,” “this view selects long,” or observation/verification/invalidation checklists. Fold useful facts, attribution, judgment, and the next watch into the natural argument instead. Keep sourced fact, creator inference, and another creator's Cue distinct through attribution, not visible taxonomy. If polish changes meaning or attribution, restore the confirmed meaning.
+- Prefer concrete actors, verbs, numbers, and dates. Weave sourced facts into the creator's argument. Never expose bracketed evidence labels, report scaffolding such as “observation,” “media report,” or “author judgment,” “author inference,” “this view selects long,” or observation/verification/invalidation checklists. Fold useful facts, attribution, judgment, and the next watch into the natural argument instead. Keep sourced fact, creator inference, and another creator's Cue distinct through attribution, not visible taxonomy. If polish changes meaning or attribution, restore the intended meaning.
 - Treat uncertainty as changing confidence, not confessing error. Ban public “invalidation,” “falsification,” “I was wrong,” “prove me wrong,” and locale equivalents. If material, say “I will look again if…,” “this loses support if…,” or “what matters by then is…”; omit it when the horizon, rule, or image already holds that tension.
 - Let the idea choose its shape: two uneven paragraphs may carry one mechanism, while a layered view may need four to seven. Vary openings, paragraph weight, sentence rhythm, and endings; never impose one observation → mechanism → risk → deadline cadence.
 
-## Confirm The Expression Before Rendering
+## Complete Preview, One Publication Confirmation
 
-Before spending time on pixels, present the proposed Frame as editorial copy followed by one natural recap—not a process card or trading form:
+Do not ask the creator to approve copy or visual intent before rendering. Build one private complete
+preview first, then present the exact title, body, actual image or poster, whether it opens an
+interactive Artifact, and—only when chosen—the plain-language Settlement meaning in one cohesive
+response. Keep evidence labels, schemas, routing, and internal lock language backstage.
 
-```text
-Title: ...
+Ask one direct question such as: “Should I publish this exact Frame, or would you like me to change
+the expression?” A clear yes, “publish,” or equivalent reply both selects the displayed
+copy-to-image pair and authorizes publication of that exact Frame. Do not ask again. A reply that
+only requests a change authorizes no write; revise, show one complete replacement, and ask the same
+single publication question.
 
-Body: ...
-
-I will record this SPCX long through January 17, the date you chose; it counts as a hit if SPCX is above the publication baseline then. The image will emphasize the issue-price anchor, four infrastructure layers, and that checkpoint without drawing a falsely certain future path.
-
-Does this capture your idea? If so, I will make the image.
-```
-
-For range, the recap is equally plain: “I will record BTC through August 14; it counts as a hit if it finishes within the ±X% range you confirmed. Moves outside that band before then do not decide the result.” Replace X with the accepted value.
-
-For relative: “I will record NVDA against TSLA through August 14; it counts as a hit if NVDA's return from publication is higher, even if both fall.” This is a viewpoint contract, not two orders.
-
-For compound: “I will record TSLA rising and NVDA finishing within ±5% through August 14. Both conditions must hold; if TSLA is unchanged and NVDA stays in range, the result is flat.” Preserve the creator's actual assets and conditions.
-
-- This one confirmation covers copy, meaning, subject assets, image or poster, optional Artifact, and any creator-owned Settlement. `go ahead` may skip the optional interview, never this preview decision.
-- When Settlement exists, validate assets, deadline, conditions, and bands first. Freeze the confirmed package; a visual-only reroll reuses it, while a semantic change invalidates its pixels.
-- A later “publish” authorizes only the external write of that confirmed, rendered Frame; it cannot accept a changed rule.
+- Validate any Settlement assets, deadline, conditions, and bands before rendering so the complete
+  preview is truthful. The creator may keep the Frame non-settling.
+- The confirmation covers exact copy, subject assets, actual media, optional Artifact, optional
+  Settlement, and inferred backstage reasoning tags.
+- A changed title, body, image, Artifact, direction, horizon, or economic rule invalidates the old
+  confirmation. A layout-only reroll preserves meaning but still needs confirmation of the newly
+  displayed complete Frame.
 
 ## Content And Image Contract
 
@@ -157,7 +159,7 @@ For compound: “I will record TSLA rising and NVDA finishing within ±5% throug
 - A relative visual must make `A > B · TO DATE` legible, normalize both legs to the same dated baseline, and show the return spread plus terminal comparison—not two raw-price lines on one axis.
 - A compound visual must make both independent rules and their `AND` join legible. Use synchronized baseline-relative geometry; combine a directional curve with a terminal band when needed, and keep “both conditions must hold” visible without turning the image into a form.
 - Use minimal provenance but enough data semantics to understand the geometry. Keep the source family, as-of date, transform, and any material historical reference level legible. Synthetic fixtures are visibly non-publishable and can never masquerade as market observations.
-- Preserve Cuebook identity while varying reading direction, chart share, geometry, narrative placement, type system, material, density, and light/dark tone. Generate and present one image at a time. A later visual-only reroll must take a materially different truthful route—not merely a new color—while preserving the same confirmed proposal.
+- Preserve Cuebook identity while varying reading direction, chart share, geometry, narrative placement, type system, material, density, and light/dark tone. Generate and present one image at a time. A later visual-only reroll must take a materially different truthful route—not merely a new color—while preserving the same frozen proposal.
 - Emotional value is precision: make the creator's non-obvious intuition feel seen and publication-ready. Do not add generic praise, hype, certainty, or engagement bait.
 - Alt text must describe the selected candidate's actual geometry. Never reuse a price-curve description for a scenario, drawdown, or Lens image.
 
@@ -166,7 +168,7 @@ For compound: “I will record TSLA rising and NVDA finishing within ±5% throug
 Generated visuals take the full semantic, layout, and pixel checks. Creator media takes the native-image inspection path; Cuebook's server still owns decoding, cleaning, moderation, and upload integrity. Retry only the failed stage.
 
 - Warm target: 30–60 seconds from a ready connector to one complete Frame; a cold connector or browser start may take up to 120 seconds. Treat these as an engineering budget, never a promise or a reason to narrate waiting.
-- Use one asset resolution, one shared evidence plan, one Cuebook batch plus one bounded authoritative Web batch when material, one reconciliation, this bounded interview, one text confirmation, and one runner invocation.
+- Use one asset resolution, one shared evidence plan, one Cuebook batch plus one bounded authoritative Web batch when material, one reconciliation, this bounded interview, one complete-preview publication confirmation, and one runner invocation.
 - Stage the frozen image when shown, reusing its MIME type, native dimensions, hash, and size. Publication intent then costs one completion call. Do not reconfirm, rerun, audit, rebuild, prepare, poll, validate a receipt, reconcile, or read back. Replay uncertain transport once with the same key and payload. Retry a condition-bound market block once with that same key after the named condition changes; a true domain rejection stops.
 - Do not reread the whole repository, inspect renderer source, rebuild valid stages, create a local OAuth client, or run release packaging before selection.
 - When a valid title, body, and image exist, show the complete Frame and ask only for publication or a visual/copy change. A changed title, body, asset, direction, horizon, settlement meaning, or material premise invalidates the old confirmation and any dependent pixels.
@@ -175,29 +177,19 @@ After the Frame, give the one-sentence reveal: the preserved edge, visible conne
 
 ## Controlled Variation
 
-Default to one strongest preview. If the creator asks for another version or a different visual direction, reuse the confirmed proposal: title, body, claim, adopted interview signal, exact tested observation, evidence refs, observation window, horizon, direction, settlement, visual requirements, and fact typing. Do not query Cuebook or the Web again for a layout-only reroll; staging the new variant's frozen image (reserve, PUT, media completion) is the one permitted remote touch.
+Default to one strongest preview. If the creator asks for another version or a different visual direction, reuse the frozen proposal: title, body, claim, adopted interview signal, exact tested observation, evidence refs, observation window, horizon, direction, settlement, visual requirements, and fact typing. Do not query Cuebook or the Web again for a layout-only reroll; staging the new variant's frozen image (reserve, PUT, media completion) is the one permitted remote touch.
 
-Change one truthful expressive route and avoid the last two design or attention fingerprints when an equally truthful route exists. Return exactly one new variant at a time, even when the creator wants to explore a range; never turn the response into a gallery. Say the new emphasis in one phrase and ask whether this is the one. Stop offering variants when the creator is satisfied. A changed idea, premise, horizon, direction, or settlement meaning requires a new text confirmation.
+Change one truthful expressive route and avoid the last two design or attention fingerprints when an equally truthful route exists. Return exactly one new variant at a time, even when the creator wants to explore a range; never turn the response into a gallery. Say the new emphasis in one phrase and ask whether to publish this one or change it. Stop offering variants when the creator is satisfied. Every newly displayed complete Frame needs its one publication confirmation.
 
 ## After The Creator Chooses
 
 Freeze the selected title, body, meaning, evidence, optional Artifact URL, optional Settlement, and exact image bytes. Reuse the generated image or creator-image inspection metadata in the three-step [Frame Publish Workflow](references/frame-publish-workflow.md); let `complete_frame_publish` finish the server-owned work. Do not rebuild a graph, release bundle, HTML page, raster audit, manifest, contract, draft, or prepare payload.
 
-Published Frames are permanent. If the creator asks to withdraw, unpublish, or delete one, explain that Cuebook does not remove a published Frame: use a Correction for copy, reference, or visual clarification, or publish a new Frame when the thesis or economics changed.
+Published releases are immutable; MCP has no author-management action. Send hide/show or possible
+first-hour deletion to Cuebook App. Use a Correction for unchanged-economics copy, references,
+visuals, Artifacts, or reasoning tags; changed thesis or economics needs a new Frame.
 
 The selected image is already the finished publication master; no gallery, HTML, font file, manual crop, or authored derivative is required. Keep wire types, hashes, mutation keys, and server states backstage. Ordinary initial publication uses `complete_frame_publish`. Correction follows its matching prepare → publish pair.
-
-### Exact-Deadline Settlement
-
-- Settlement is optional. A Frame without it carries subject assets for discovery but has no price baseline, contract, or outcome. Never invent Settlement for analysis, an Artifact, or an image.
-- Every market-settled Frame uses the creator's exact `at_instant` deadline. The server freezes publication snapshot(s) and later selects the latest completed official observation(s) at or before it, regardless of market hours.
-- `long` hits above the baseline and `short` below it; equality is flat. Freeze `threshold_bps: "0"` without a separate settlement interview.
-- `range` is distinct from neutral: it hits when the absolute terminal return is less than or equal to the creator-confirmed `max_abs_move_bps`. Require an explicit `±X%`; never supply 3%, 5%, or any other preset. If help was requested, propose at most two bands from the existing shared read and require acceptance. An interim move outside the band followed by a return inside still hits.
-- Treat “A will beat B” as relative: it compiles to equal-notional long A / short B and hits when `return(A) - return(B)` exceeds zero or an explicit creator margin. Both may rise or fall. Require two distinct same-session-family assets; no percentage question is needed for ordinary outperformance.
-- Compound A-and-B evaluates two independent conditions at one deadline. Both must hit; any miss is miss, missing data is no_data only when neither leg misses, and directional equality is flat. If either leg is range, freeze its creator-confirmed ± band. Atomic direction legs use zero bps; require two distinct same-session-family assets.
-- If the creator means “never leaves the band,” explain that Frame currently settles the endpoint only. Let them accept endpoint range or keep the thought non-settleable; never fake barrier monitoring.
-- Confirm the human rule once before rendering. “Publish this” then writes it unchanged. Ask only for a missing asset, direction, horizon, range band, or explicit target/margin; never offer session counts or next-close rules.
-- Keep OAuth, scopes, idempotency, tokens, and transaction checks intact; speed comes from the three-step server-owned publish lane, not weaker authority.
 
 ## Non-Negotiable Boundaries
 

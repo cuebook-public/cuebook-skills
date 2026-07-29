@@ -1,6 +1,6 @@
 {
   "schema_version": "cuebook-plugin-index-v1",
-  "plugin_version": "0.9.19",
+  "plugin_version": "0.9.20",
   "catalog_version": "1.30.0",
   "skill_count": 39,
   "default_entrypoint": "query-cuebook",

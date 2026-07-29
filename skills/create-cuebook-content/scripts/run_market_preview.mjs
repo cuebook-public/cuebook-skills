@@ -452,7 +452,7 @@ export function validateMarketPreviewJob(job) {
   const { preview, expressions } = job;
   errors.push(...validateMeaningLock({ preview, candidates: preview.candidates, expressions, route: "market" }));
   if (preview.candidates.length !== 1 || expressions.length !== 1) {
-    errors.push(issue("CANDIDATE_COUNT", "$.expressions", "A confirmed Meaning Lock renders exactly one expression at a time."));
+    errors.push(issue("CANDIDATE_COUNT", "$.expressions", "A frozen Meaning Lock renders exactly one expression at a time."));
   }
   const candidateIds = preview.candidates.map((candidate) => candidate.candidate_id);
   const expressionIds = expressions.map((expression) => expression.candidate_id);

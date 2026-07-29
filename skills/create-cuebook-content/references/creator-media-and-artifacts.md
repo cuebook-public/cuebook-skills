@@ -7,7 +7,8 @@ Read this reference only when the creator supplies an image or a public interact
 A Frame always keeps one title, one body, one publication image, and alt text. Three other facts remain independent:
 
 - `subject_asset_refs` say which assets the Frame is about. They do not create a price test.
-- `settlement_mode` says whether the Frame has a market-settled outcome.
+- `settlement` is either `{mode:"none"}` or a complete `{mode:"market",...}` object and says
+  whether the Frame has a market-settled outcome.
 - `external_artifact_url` adds a provider-hosted interactive experience behind the publication image.
 
 All four Artifact × Settlement combinations are valid. Never invent a settlement merely because an interactive Artifact mentions a market, and never require an Artifact for a settleable view.

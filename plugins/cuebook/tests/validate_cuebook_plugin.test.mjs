@@ -164,6 +164,8 @@ test("distribution channels generate one internally consistent OAuth resource", 
     const devMcp = JSON.parse(fs.readFileSync(path.join(pluginRoot, ".mcp.json"), "utf8"));
     assert.equal(devMcp.mcpServers.cuebook.url, "https://cuebook.xyz/mcp");
     assert.equal(devMcp.mcpServers.cuebook.oauth_resource, "https://cuebook.xyz/mcp");
+    const schemaPath = path.join(pluginRoot, "assets", "creation-menu-v1.schema.json");
+    assert.equal(JSON.parse(fs.readFileSync(schemaPath, "utf8")).$id, "https://cuebook.xyz/schemas/creation-menu-v1.schema.json");
 
     const production = configureDistributionChannel(tmpPath, "production");
     assert.equal(production.channel, "production");
@@ -172,6 +174,7 @@ test("distribution channels generate one internally consistent OAuth resource", 
     const prodMcp = JSON.parse(fs.readFileSync(path.join(pluginRoot, ".mcp.json"), "utf8"));
     assert.equal(prodMcp.mcpServers.cuebook.url, "https://cuebook.app/mcp");
     assert.equal(prodMcp.mcpServers.cuebook.oauth_resource, "https://cuebook.app/mcp");
+    assert.equal(JSON.parse(fs.readFileSync(schemaPath, "utf8")).$id, "https://cuebook.app/schemas/creation-menu-v1.schema.json");
   });
 });
 
@@ -182,6 +185,9 @@ test("distribution validation rejects channel and connector drift", () => {
     fs.cpSync(PLUGIN_ROOT, pluginRoot, { recursive: true });
     rewrite(path.join(pluginRoot, ".mcp.json"), (payload) => {
       payload.mcpServers.cuebook.url = "https://example.com/mcp";
+    });
+    rewrite(path.join(pluginRoot, "assets", "creation-menu-v1.schema.json"), (payload) => {
+      payload.$id = "https://cuebook.xyz/schemas/creation-menu-v1.schema.json";
     });
     assert.ok(collectDistributionIssues(tmpPath, "production").length > 0);
     assert.ok(codes(validate(pluginRoot)).has("DISTRIBUTION_CHANNEL"));
@@ -375,7 +381,7 @@ test("creator guidance uses Cues as optional thought anchors rather than proof",
   assert.match(combined, /contrasting.*adjacent/iu);
   assert.match(combined, /not proof/iu);
   assert.match(combined, /creator-owned hypothesis/iu);
-  assert.match(create, /Only adopted additions enter the confirmed draft/iu);
+  assert.match(create, /Only adopted additions enter the frozen draft/iu);
   assert.match(create, /The default interview budget is one thought-anchor question/iu);
   assert.match(create, /A second and final question is allowed only when/iu);
   assert.match(create, /never turn the follow-up into another research round/iu);
@@ -395,23 +401,28 @@ test("creator voice polish is local, silent, and meaning preserving", () => {
   assert.match(create, /never expose bracketed evidence labels/iu);
   assert.match(create, /not visible taxonomy/iu);
   assert.match(create, /Keep sourced fact, creator inference, and another creator's Cue distinct/u);
-  assert.match(create, /If polish changes meaning or attribution, restore the confirmed meaning/u);
+  assert.match(create, /If polish changes meaning or attribution, restore the intended meaning/u);
   assert.doesNotMatch(create, /Humanizer|second rewrite pass|draft audit final/iu);
 });
 
-test("terminal range requires creator-confirmed time and symmetric band", () => {
+test("terminal range requires creator-accepted time and symmetric band", () => {
   const create = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const settlement = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "references", "frame-settlement-authoring.md"),
     "utf-8",
   );
   const intake = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "intake-cuebook-viewpoint", "SKILL.md"),
     "utf-8",
   );
-  assert.match(create, /`range` is distinct from neutral/iu);
-  assert.match(create, /Require an explicit `±X%`/u);
-  assert.match(create, /never supply 3%, 5%, or any other preset/iu);
-  assert.match(create, /absolute terminal return is less than or equal/iu);
+  assert.match(create, /Frame Settlement Authoring/u);
+  assert.match(settlement, /`range` is distinct from neutral/iu);
+  assert.match(settlement, /Require an explicit `±X%`/u);
+  assert.match(settlement, /never supply 3%, 5%, or\s+another preset/iu);
+  assert.match(settlement, /absolute terminal return is less than or equal/iu);
   assert.match(intake, /whole-window barrier/iu);
   assert.match(intake, /range.*exact symmetric band/iu);
 });
@@ -419,6 +430,10 @@ test("terminal range requires creator-confirmed time and symmetric band", () => 
 test("relative view keeps natural language outside and a frozen long-short spread inside", () => {
   const create = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const settlement = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "references", "frame-settlement-authoring.md"),
     "utf-8",
   );
   const intake = fs.readFileSync(
@@ -430,11 +445,50 @@ test("relative view keeps natural language outside and a frozen long-short sprea
     "utf-8",
   );
   assert.match(intake, /A's return should beat B's by the deadline/u);
-  assert.match(create, /equal-notional long A \/ short B/iu);
-  assert.match(create, /Both may rise or fall/u);
+  assert.match(create, /“A beats B” is relative/u);
+  assert.match(settlement, /equal-notional long A \/ short B/iu);
+  assert.match(settlement, /Both may rise or fall/u);
   assert.match(create, /two distinct same-session-family assets/u);
   assert.match(publish, /pair_asset_ref/u);
-  assert.match(publish, /server uses zero/u);
+  assert.match(publish, /spread_threshold_bps\?/u);
+  assert.match(publish, /outperform\|underperform/u);
+});
+
+test("public entrypoints route silently and ask once on a complete creator-facing result", () => {
+  const create = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const author = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "author-cuebook-skill", "SKILL.md"),
+    "utf-8",
+  );
+  const architecture = fs.readFileSync(path.join(PLUGIN_ROOT, "ARCHITECTURE.md"), "utf-8");
+
+  assert.match(create, /complete Frame: exact title, body, actual image or\s+poster/iu);
+  assert.match(create, /Do not present a form or ask for a\s+separate pre-render confirmation/iu);
+  assert.match(create, /A clear yes, “publish,” or equivalent reply both selects the displayed\s+copy-to-image pair and authorizes publication/iu);
+  assert.doesNotMatch(create, /## Confirm The Expression Before Rendering/u);
+  assert.match(author, /without announcing an entrypoint, branch, workflow, stage/iu);
+  assert.match(author, /one cohesive review, then ask one direct\s+question/iu);
+  assert.match(author, /Do not ask again or narrate reservation, upload, and\s+completion steps/iu);
+  assert.match(architecture, /implementation boundary, not a conversational menu/iu);
+  assert.match(architecture, /internal branches silently/iu);
+});
+
+test("Frame publication chooses one natural closing action", () => {
+  const publish = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "references", "frame-publish-workflow.md"),
+    "utf-8",
+  );
+  const memory = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "references", "memory-proposal-discipline.md"),
+    "utf-8",
+  );
+  assert.match(publish, /Choose exactly one natural end action/iu);
+  assert.match(publish, /propose that\s+single candidate and offer nothing else/iu);
+  assert.match(memory, /one natural closing action/iu);
+  assert.match(memory, /do not also offer\s+sharing, Paper Trade, another signal/iu);
 });
 
 test("published Frame projection states all-legs conjunction without a website detour", () => {
@@ -675,7 +729,7 @@ test("Frame publication flow cannot become pull-based", () => {
   });
 });
 
-test("Frame publication is permanent and exposes only initial and correction flows", () => {
+test("Frame releases are immutable and MCP exposes only initial and correction flows", () => {
   const payload = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
   );
@@ -696,6 +750,11 @@ test("Frame publication is permanent and exposes only initial and correction flo
   assert.equal(flow.creator_link_policy, "never_present_canonical_url");
   assert.equal(flow.explicit_frame_query_tool, "get_frame");
   assert.equal(flow.automatic_post_publish_readback, false);
+  assert.deepEqual(flow.author_controls, {
+    mcp_managed: false,
+    app_hide_show: true,
+    app_delete_window_seconds: 3600,
+  });
   assert.ok(!flow.initial_publish_sequence.includes("get_frame"));
   assert.ok(!flow.correction_publish_sequence.includes("get_frame"));
   assert.deepEqual(
@@ -764,7 +823,7 @@ test("Frame creator flow never reads back or presents a canonical web link after
   assert.doesNotMatch(combined, /receipt's exact `frame_id \+ release_id`/u);
   assert.match(combined, /successful `complete_frame_publish` result is final success/u);
   assert.match(combined, /do not parse or validate a receipt/iu);
-  assert.match(combined, /Do not restate the copy or settlement, ask “confirm publish\?” again/iu);
+  assert.match(combined, /Do not restate the copy or settlement, ask\s+“confirm publish\?” again/iu);
   assert.match(combined, /do not run reconciliation/iu);
   assert.match(combined, /idea is published.*Cuebook App/isu);
   assert.match(combined, /Never show a web URL/iu);
@@ -805,6 +864,8 @@ test("creator journey feels editorial without exposing a fixed flow", () => {
   assert.match(readme, /The Cuebook Experience/u);
   assert.match(readme, /without taking authorship away/u);
   assert.match(readme, /Internal Tool calls, providers, retries, hashes, and publication mechanics remain backstage/u);
+  assert.match(readme, /shows one complete Frame.*actual image or Artifact poster/isu);
+  assert.match(readme, /there is no earlier copy-only confirmation/iu);
 });
 
 test("creator owns the horizon and Cuebook timing help remains opt-in", () => {
@@ -814,6 +875,10 @@ test("creator owns the horizon and Cuebook timing help remains opt-in", () => {
   );
   const intake = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "intake-cuebook-viewpoint", "SKILL.md"),
+    "utf-8",
+  );
+  const settlement = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "references", "frame-settlement-authoring.md"),
     "utf-8",
   );
   const schema = JSON.parse(fs.readFileSync(
@@ -826,14 +891,14 @@ test("creator owns the horizon and Cuebook timing help remains opt-in", () => {
     ),
     "utf-8",
   ));
-  const combined = `${create}\n${intake}`;
+  const combined = `${create}\n${intake}\n${settlement}`;
   assert.match(combined, /There is no default duration/iu);
   assert.match(combined, /creator-stated horizon always outranks Cuebook inference/iu);
   assert.match(combined, /How long should this view be tested.*Cuebook to suggest a horizon/isu);
   assert.match(combined, /one or two.*proposals/isu);
   assert.match(combined, /must accept or edit/iu);
   assert.match(combined, /A Cue may inform requested timing help; it never finalizes a creator choice/iu);
-  assert.match(combined, /before copy, pixels, settlement, or publication/iu);
+  assert.match(combined, /accepts every\s+economic term before it enters the complete preview/iu);
   assert.doesNotMatch(combined, /48H \/ 30D \/ 90D/u);
   assert.doesNotMatch(create, /Prefer `BTC · 30D LONG`/u);
 
@@ -876,7 +941,7 @@ test("ordinary one-preview publish does not reconstruct the advanced release gra
   assert.match(publish, /Do not probe alternate payload shapes/u);
 });
 
-test("Frame publish contract contains no withdrawn action-consent fields", () => {
+test("Frame publish contract carries structural settlement and auxiliary reasoning metadata", () => {
   const payload = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
   );
@@ -904,7 +969,7 @@ test("Frame publish contract contains no withdrawn action-consent fields", () =>
   assert.equal(flow.artifact_hosting_policy, "provider_hosted_url_with_immutable_publication_poster");
   assert.equal(flow.artifact_settlement_independence, true);
   assert.equal(flow.subject_assets_policy, "discovery_only_independent_from_settlement");
-  assert.deepEqual(flow.initial_settlement_modes, {
+  assert.deepEqual(flow.settlement_semantics, {
     non_settling: "none_with_subject_assets_and_no_economic_contract",
     directional: "long_or_short_with_zero_bps_at_exact_deadline",
     terminal_range: "range_with_creator_confirmed_max_abs_move_bps_at_exact_deadline",
@@ -913,20 +978,47 @@ test("Frame publish contract contains no withdrawn action-consent fields", () =>
     compound_conditions:
       "two_distinct_same_session_assets_with_independent_all_legs_conditions_at_exact_deadline",
   });
+  assert.deepEqual(flow.settlement_input, {
+    envelope: "settlement",
+    non_settling: "{mode:none}",
+    market: "{mode:market,settle_at,timezone,claim_text,rule}",
+    rule_kinds: ["single_direction", "single_range", "relative", "compound"],
+  });
+  assert.deepEqual(flow.reasoning_tags, {
+    schema_version: "frame-reasoning-tags.v1",
+    mode: "agent_inferred",
+    frontend_managed: false,
+    release_bound: true,
+    max_primary: 1,
+    max_secondary: 2,
+    values: [
+      "fundamental",
+      "technical",
+      "macro_event",
+      "flow_positioning",
+      "sentiment_narrative",
+    ],
+    honest_empty: true,
+    included_in_content_hash: false,
+    included_in_economic_hash: false,
+  });
+  const tools = new Map(payload.required_tools.map((tool) => [tool.tool, tool]));
+  assert.equal(tools.get("complete_frame_publish").input_contract, "CompleteFramePublishV2");
+  assert.equal(tools.get("preflight_frame_publish").input_contract, "PreflightFramePublishV2");
 });
 
-test("Frame capability map targets the finalized 18-Tool v2 backend contract", () => {
+test("Frame capability map targets the finalized 18-Tool v3 backend contract", () => {
   const payload = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "mcp-capability-map-v1.json"), "utf-8"),
   );
   assert.deepEqual(payload.frame_publication_flow.wire_golden, {
-    contract_version: "frame-mcp-phase-b-v2",
+    contract_version: "frame-mcp-phase-b-v3",
     tool_count: 18,
     sync_status: "synced",
     tool_manifest_sha256:
-      "sha256:575c5b27a1cdded6344eaa65fd52a5c8b5a6ce1e158c85f4a530f33d959e072a",
+      "sha256:416dd4950a9bcbcdc2c73ed9728f7d817ba1d7a574c50b19bbdf88051d648bad",
     schema_catalog_sha256:
-      "sha256:5904eba37c45ede47f7fcbefa0520d0a7313645a4a25f122a46dbdbbcfe2a1ef",
+      "sha256:1b06e0d7ed30da3040f9567b7672791538f82debe51dd727276ea24388138321",
   });
 });
 
@@ -958,7 +1050,7 @@ test("Frame contract rejects a reintroduced withdrawal action", () => {
   });
 });
 
-test("Frame entry skills route withdrawal requests only to Correction or a new Frame", () => {
+test("Frame entry skills keep author controls in App and revisions in Correction or a new Frame", () => {
   const create = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
     "utf-8",
@@ -974,8 +1066,10 @@ test("Frame entry skills route withdrawal requests only to Correction or a new F
   const combined = `${create}\n${query}\n${orchestrate}`;
   assert.match(create, /Ordinary initial publication uses `complete_frame_publish`/u);
   assert.match(orchestrate, /complete_frame_publish/u);
-  assert.match(combined, /Published Frames are permanent/iu);
-  assert.match(combined, /withdraw.*Correction.*new Frame/isu);
+  assert.match(combined, /Published releases are immutable/iu);
+  assert.match(combined, /MCP has no hide, delete, or management/iu);
+  assert.match(combined, /App[\s\S]*hide\/show[\s\S]*first hour/iu);
+  assert.match(combined, /Correction[\s\S]*new Frame/iu);
   assert.doesNotMatch(
     combined,
     /\b(?:get_frame_action_consent|prepare_frame_withdraw|withdraw_frame|frame_withdrawal|withdrawal_consent)\b/u,

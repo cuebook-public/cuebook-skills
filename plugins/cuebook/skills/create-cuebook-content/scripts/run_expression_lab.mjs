@@ -56,8 +56,10 @@ function candidateId(caseId) {
   return `FPREV_CAND_LAB_${caseId.toUpperCase()}_001`;
 }
 
-function meaningLock({ caseId, title, body, subject, direction, claim, mechanism, nextWatch, mode }) {
-  const settleable = mode === "market" && ["long", "short"].includes(direction);
+function meaningLock({ caseId, title, body, subject, direction, claim, mechanism, nextWatch, mode, primary = null, benchmark = null }) {
+  const directional = mode === "market" && ["long", "short"].includes(direction);
+  const relative = mode === "market" && ["outperform", "underperform"].includes(direction) && primary && benchmark;
+  const settleable = directional || relative;
   const requiredBeats = mode === "lens"
     ? ["tested_observation", "mechanism", "future_check", "component_anatomy"]
     : mode === "market"
@@ -65,8 +67,8 @@ function meaningLock({ caseId, title, body, subject, direction, claim, mechanism
       : ["argument_structure", "mechanism", "future_check"];
   return {
     lock_id: `MLOCK_LAB_${caseId.toUpperCase()}_001`,
-    status: "creator_confirmed",
-    confirmed_at: "2026-07-19T08:59:00Z",
+    status: "preview_frozen",
+    frozen_at: "2026-07-19T08:59:00Z",
     title,
     body,
     subject,
@@ -75,15 +77,25 @@ function meaningLock({ caseId, title, body, subject, direction, claim, mechanism
     claim,
     mechanism,
     next_watch: nextWatch,
-    settlement: settleable ? {
+    settlement: directional ? {
       mode: "standard_direction",
       family: "single_asset_direction",
-      asset_ref: `asset:${subject.toLowerCase().replace(/[^a-z0-9]+/gu, "-")}`,
+      asset_ref: `asset:${primary?.ticker?.toLowerCase() ?? subject.toLowerCase().replace(/[^a-z0-9]+/gu, "-")}`,
       direction,
       requested_settle_at: HORIZON_END,
       session_policy: "at_instant",
       threshold_bps: "0",
       success_condition: direction === "long" ? "above_publication_baseline" : "below_publication_baseline",
+    } : relative ? {
+      mode: "relative_outperformance",
+      family: "pair_asset_direction",
+      asset_ref: `asset:${primary.ticker.toLowerCase()}`,
+      pair_asset_ref: `asset:${benchmark.ticker.toLowerCase()}`,
+      direction,
+      requested_settle_at: HORIZON_END,
+      session_policy: "at_instant",
+      spread_threshold_bps: "0",
+      success_condition: direction === "outperform" ? "focal_outperforms_pair" : "focal_underperforms_pair",
     } : {
       mode: mode === "lens" ? "non_settleable" : "not_applicable",
       reason: mode === "lens"
@@ -185,7 +197,7 @@ function marketCase({
           mechanism,
           next_watch: nextWatch,
         },
-        meaning_lock: meaningLock({ caseId, title, body, subject, direction, claim, mechanism, nextWatch, mode: "market" }),
+        meaning_lock: meaningLock({ caseId, title, body, subject, direction, claim, mechanism, nextWatch, mode: "market", primary, benchmark }),
         query_binding: {
           required: true,
           status: "executed",
@@ -578,7 +590,7 @@ const cases = [
     title: "Real strength starts with how an asset absorbs a drawdown",
     body: "BTC's maximum drawdown was shallower than QQQ's over the same window. I am not chasing the biggest gain; I am watching recovery after a stress test. Over the next 30 days, strength deserves to persist only if recovery remains faster.",
     subject: "BTC / QQQ",
-    direction: "outperform",
+    direction: "watch",
     claim: "The strength gap is hiding in post-drawdown recovery",
     mechanism: "A shallower loss path requires less new demand to recover",
     nextWatch: "time for each curve to return from trough to prior high",
@@ -632,7 +644,7 @@ const cases = [
     prompt: "Gold no longer looks like an accessory to risk assets. I want to see whether it is decoupling from technology stocks.",
     persona: "cross-asset macro trader",
     title: "Gold's change is relational, not merely directional",
-    body: "The recent rolling correlation between GLD and QQQ turned negative. I think pricing is moving from shared liquidity toward different macro variables. Over the next 30 days, I will watch whether negative correlation persists across more sessions.",
+    body: "Recent rolling correlation between GLD and QQQ turned negative. I think pricing is moving from shared liquidity toward different macro variables. Over the next 30 days, I will watch whether negative correlation persists across more sessions.",
     subject: "GLD / QQQ",
     direction: "watch",
     claim: "Gold is breaking away from technology's rhythm",
@@ -660,7 +672,7 @@ const cases = [
     prompt: "The stock jumped on earnings and then gave back gains every day. I do not think the market accepted the answer.",
     persona: "event-driven trader",
     title: "Earnings set a high, but the market withheld confirmation",
-    body: "NVDA's cumulative return turned negative after the earnings window. I think the first reaction came from expectation inertia, while the fade reflects repricing. Over the next 30 days, I will watch whether price can reclaim the event-day range.",
+    body: "NVDA's cumulative return turned negative after earnings. I think the first reaction came from expectation inertia, while the fade reflects repricing. Over the next 30 days, I will watch whether price can reclaim the event-day range.",
     subject: "NVDA",
     direction: "short",
     claim: "The spike was not confirmation; the fade exposed the disagreement",
@@ -748,7 +760,7 @@ const cases = [
     relationship: "scenario_payoff",
     futureBeats: [
       beat("macro_scenarios", "confirmation", "Liquidity improves while credit stays stable", "credit spreads do not widen over 10D", "2026-08-02T09:00:00Z"),
-      beat("macro_scenarios", "checkpoint", "Growth is revised lower but credit has not stalled", "growth expectations fall for 2 consecutive weeks", "2026-08-10T09:00:00Z"),
+      beat("macro_scenarios", "checkpoint", "Growth is revised lower but credit has not stalled", "growth expectations < prior week for 2 consecutive weeks", "2026-08-10T09:00:00Z"),
       beat("macro_scenarios", "invalidation", "Credit and growth deteriorate together", "credit spreads break a 20D high", HORIZON_END),
     ],
   }),
@@ -772,7 +784,7 @@ const cases = [
     relationship: "causal_transmission",
     futureBeats: [
       beat("shipping_spine", "checkpoint", "Insurance and spot freight respond first", "both indicators rise over 10D", "2026-08-02T09:00:00Z"),
-      beat("shipping_spine", "confirmation", "Delivery times begin to lengthen", "industry delivery times confirm higher", HORIZON_END),
+      beat("shipping_spine", "confirmation", "Delivery times begin to lengthen", "industry delivery times > prior 20D average", HORIZON_END),
     ],
   }),
   creatorOnlyCase({
@@ -794,8 +806,8 @@ const cases = [
     readerJob: "mechanism",
     relationship: "causal_transmission",
     futureBeats: [
-      beat("ai_capex_balance", "checkpoint", "Orders continue to convert", "order growth stays positive for 2 weeks", "2026-08-02T09:00:00Z"),
-      beat("ai_capex_balance", "invalidation", "New budgets are revised higher", "budget guidance confirms an increase", HORIZON_END),
+      beat("ai_capex_balance", "checkpoint", "Orders continue to convert", "order growth > 0 for 2 weeks", "2026-08-02T09:00:00Z"),
+      beat("ai_capex_balance", "invalidation", "New budgets are revised higher", "budget guidance > prior guidance", HORIZON_END),
     ],
   }),
   lensCase({

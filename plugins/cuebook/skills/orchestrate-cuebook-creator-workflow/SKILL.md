@@ -13,7 +13,10 @@ Operate the advanced release-grade control plane after a creator-facing preview 
 
 For a raw idea whose requested result is simply a Frame, return to the public `create-cuebook-content` entrypoint and use its `preview_fast` route. Before selection, do not create a DAG, normalize a feed, select an opportunity, compose a recipe, build a program, materialize research/semantics/expression/data/post/direction/candidate contracts, render release derivatives, or run release gates. A selected one-preview publish still stays on the public entrypoint's direct Fast Publish lane. Enter this orchestrator only for explicit three-way alternatives, corrections, reproducibility audits, postmortems, or another advanced request that genuinely requires its artifacts.
 
-Published Frames are permanent. If the creator asks to withdraw, unpublish, or delete one, do not create a workflow node: use a Correction for copy, reference, or visual clarification, or publish a new Frame when the thesis or economics changed.
+Published releases are immutable, and MCP has no hide, delete, or management workflow node. Direct
+author hide/show and a possible first-hour delete to Cuebook App. Use a Correction for
+unchanged-economics copy, reference, visual, Artifact, or reasoning-tag clarification; publish a new
+Frame when the thesis or economics changed.
 
 ## Plugin Bootstrap
 

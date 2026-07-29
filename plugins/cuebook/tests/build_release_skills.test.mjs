@@ -189,7 +189,7 @@ test("create bundle polishes creator voice without semantic drift or another pas
     const text = fs.readFileSync(skillPath, "utf-8");
     const newAngle = text.indexOf("## Optional New Angle");
     const polish = text.indexOf("## Creator Voice Polish");
-    const confirmation = text.indexOf("## Confirm The Expression Before Rendering");
+    const confirmation = text.indexOf("## Complete Preview, One Publication Confirmation");
     assert.ok(polish > newAngle, skillPath);
     assert.ok(confirmation > polish, skillPath);
     assert.match(text, /silently polish.*in the same drafting pass/u);
@@ -199,7 +199,7 @@ test("create bundle polishes creator voice without semantic drift or another pas
     assert.match(text, /never expose bracketed evidence labels/iu);
     assert.match(text, /not visible taxonomy/u);
     assert.match(text, /Rewrite clusters of AI tells, not isolated words or punctuation/u);
-    assert.match(text, /If polish changes meaning or attribution, restore the confirmed meaning/u);
+    assert.match(text, /If polish changes meaning or attribution, restore the intended meaning/u);
   });
 });
 
@@ -207,11 +207,12 @@ test("create bundle keeps terminal range creator-owned and visually explicit", (
   withTmpPath((tmpPath) => {
     buildRelease(tmpPath);
     const skillPath = path.join(tmpPath, "release", "create-cuebook-content", "SKILL.md");
-    const text = fs.readFileSync(skillPath, "utf-8");
+    const settlementPath = path.join(tmpPath, "release", "create-cuebook-content", "references", "frame-settlement-authoring.md");
+    const text = `${fs.readFileSync(skillPath, "utf-8")}\n${fs.readFileSync(settlementPath, "utf-8")}`;
     assert.match(text, /`range` is distinct from neutral/iu);
-    assert.match(text, /creator-confirmed `max_abs_move_bps`/u);
-    assert.match(text, /never supply 3%, 5%, or any other preset/iu);
-    assert.match(text, /whole-window barrier/iu);
+    assert.match(text, /creator-accepted `max_abs_move_bps`/u);
+    assert.match(text, /never supply 3%, 5%, or\s+another preset/iu);
+    assert.match(text, /settles.*endpoint\s+only/iu);
     assert.match(text, /ASSET · RANGE ±X% · TO DATE/u);
     assert.match(text, /interim move outside the band followed by a return inside still hits/iu);
   });
@@ -221,13 +222,14 @@ test("create bundle turns relative language into a two-asset outperformance cont
   withTmpPath((tmpPath) => {
     buildRelease(tmpPath);
     const skillPath = path.join(tmpPath, "release", "create-cuebook-content", "SKILL.md");
-    const text = fs.readFileSync(skillPath, "utf-8");
+    const settlementPath = path.join(tmpPath, "release", "create-cuebook-content", "references", "frame-settlement-authoring.md");
+    const text = `${fs.readFileSync(skillPath, "utf-8")}\n${fs.readFileSync(settlementPath, "utf-8")}`;
     assert.match(text, /Treat “A will beat B” as relative/u);
     assert.match(text, /equal-notional long A \/ short B/iu);
     assert.match(text, /return\(A\) - return\(B\)/u);
     assert.match(text, /Both may rise or fall/u);
     assert.match(text, /A > B · TO DATE/u);
-    assert.match(text, /not two orders/u);
+    assert.match(text, /viewpoint contracts, never orders/iu);
   });
 });
 
@@ -263,7 +265,7 @@ test("heuristic interview covers each missing-link route without a generic check
     assert.match(text, /A second and final question is allowed only when/u);
     assert.match(text, /never turn the follow-up into another research round/u);
     assert.match(text, /A source ref or popular Cue is not proof/u);
-    assert.match(text, /Only adopted additions enter the confirmed draft/u);
+    assert.match(text, /Only adopted additions enter the frozen draft/u);
   });
 });
 

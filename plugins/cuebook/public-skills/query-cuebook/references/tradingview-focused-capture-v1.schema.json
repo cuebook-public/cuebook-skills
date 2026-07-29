@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://cuebook.xyz/schemas/tradingview-focused-capture-v1.schema.json",
+  "$id": "https://cuebook.app/schemas/tradingview-focused-capture-v1.schema.json",
   "title": "TradingViewFocusedCaptureV1",
   "type": "object",
   "additionalProperties": false,

@@ -410,13 +410,13 @@
       "authorization_scope": "read:public",
       "phase": "frame_phase_b",
       "access": "read",
-      "purpose": "Read one release-pinned full Frame with its single attached publication visual, settlement, discussion, and canonical URL; never returns media[] or a standalone media result.",
+      "purpose": "Read one release-pinned full Frame with its single attached publication visual, settlement, auxiliary reasoning tags, discussion, and canonical URL; never returns media[] or a standalone media result.",
       "input_contract": "FrameRefV1",
       "output_contract": "FrameMcpViewV1",
       "used_by": [
         "query-cuebook"
       ],
-      "source": "Frame MCP Phase B v2"
+      "source": "Frame MCP Phase B v3"
     },
     {
       "tool": "list_child_frames",
@@ -428,7 +428,7 @@
       "input_contract": "ListChildFramesInputV1",
       "output_contract": "FrameChildNotesPageV1",
       "used_by": [],
-      "source": "Frame MCP Phase B v2"
+      "source": "Frame MCP Phase B v3"
     },
     {
       "tool": "publish_child_frame",
@@ -440,7 +440,7 @@
       "input_contract": "PublishChildFrameInputV1",
       "output_contract": "FrameChildPublicationReceiptV1",
       "used_by": [],
-      "source": "Frame MCP Phase B v2"
+      "source": "Frame MCP Phase B v3"
     },
     {
       "tool": "begin_frame_media_upload",
@@ -462,8 +462,8 @@
       "authorization_scope": "cuebook.frame.publish",
       "phase": "frame_phase_b",
       "access": "write",
-      "purpose": "Finish the uploaded publication master and atomically perform server-owned processing, binding, draft, prepare, and initial publication.",
-      "input_contract": "CompleteFramePublishV1",
+      "purpose": "Finish the uploaded publication master and atomically publish one structurally closed settlement branch plus agent-inferred release-bound reasoning tags.",
+      "input_contract": "CompleteFramePublishV2",
       "output_contract": "FramePublicationReceiptV1",
       "used_by": [
         "create-cuebook-content"
@@ -476,8 +476,8 @@
       "authorization_scope": "cuebook.frame.publish",
       "phase": "frame_phase_b",
       "access": "read",
-      "purpose": "Read-only publishability dry run over one settlement intent: resolves assets, the settlement schedule, and entry-observation availability without writing a draft, upload, or publication.",
-      "input_contract": "PreflightFramePublishV1",
+      "purpose": "Read-only publishability dry run over one structurally closed market settlement object: resolves assets, the schedule, and entry-observation availability without writing a draft, upload, or publication.",
+      "input_contract": "PreflightFramePublishV2",
       "output_contract": "FramePublishPreflightV1",
       "used_by": [
         "create-cuebook-content"
@@ -769,12 +769,46 @@
       "complete_frame_media_upload",
       "complete_frame_publish"
     ],
-    "initial_settlement_modes": {
+    "settlement_semantics": {
       "non_settling": "none_with_subject_assets_and_no_economic_contract",
       "directional": "long_or_short_with_zero_bps_at_exact_deadline",
       "terminal_range": "range_with_creator_confirmed_max_abs_move_bps_at_exact_deadline",
       "relative_outperformance": "two_distinct_same_session_assets_with_equal_notional_return_spread_at_exact_deadline",
       "compound_conditions": "two_distinct_same_session_assets_with_independent_all_legs_conditions_at_exact_deadline"
+    },
+    "settlement_input": {
+      "envelope": "settlement",
+      "non_settling": "{mode:none}",
+      "market": "{mode:market,settle_at,timezone,claim_text,rule}",
+      "rule_kinds": [
+        "single_direction",
+        "single_range",
+        "relative",
+        "compound"
+      ]
+    },
+    "reasoning_tags": {
+      "schema_version": "frame-reasoning-tags.v1",
+      "mode": "agent_inferred",
+      "frontend_managed": false,
+      "release_bound": true,
+      "max_primary": 1,
+      "max_secondary": 2,
+      "values": [
+        "fundamental",
+        "technical",
+        "macro_event",
+        "flow_positioning",
+        "sentiment_narrative"
+      ],
+      "honest_empty": true,
+      "included_in_content_hash": false,
+      "included_in_economic_hash": false
+    },
+    "author_controls": {
+      "mcp_managed": false,
+      "app_hide_show": true,
+      "app_delete_window_seconds": 3600
     },
     "correction_publish_sequence": [
       "prepare_frame_correction_publish",
@@ -796,11 +830,11 @@
       "expected_economic_hash"
     ],
     "wire_golden": {
-      "contract_version": "frame-mcp-phase-b-v2",
+      "contract_version": "frame-mcp-phase-b-v3",
       "tool_count": 18,
       "sync_status": "synced",
-      "tool_manifest_sha256": "sha256:575c5b27a1cdded6344eaa65fd52a5c8b5a6ce1e158c85f4a530f33d959e072a",
-      "schema_catalog_sha256": "sha256:5904eba37c45ede47f7fcbefa0520d0a7313645a4a25f122a46dbdbbcfe2a1ef"
+      "tool_manifest_sha256": "sha256:416dd4950a9bcbcdc2c73ed9728f7d817ba1d7a574c50b19bbdf88051d648bad",
+      "schema_catalog_sha256": "sha256:1b06e0d7ed30da3040f9567b7672791538f82debe51dd727276ea24388138321"
     },
     "mutation_idempotency": "distinct_lowercase_uuidv7_per_command",
     "replay_policy": "same_key_same_payload_returns_receipt_changed_payload_conflict"
@@ -829,5 +863,5 @@
     "source_rights_required_for_creation": true,
     "valuation_comparisons_require_compatible_basis": true
   },
-  "notes": "Skill tool policy is client-side routing, not a claimed MCP profile field. Data-expansion tools with default_enabled=false may return typed unavailable. Superseded legacy writes are absent; planned tools are non-callable. Published Frames are permanent: copy, reference, or visual clarification uses an append-only Correction, while changed thesis or economics require a new Frame. Memory scopes (cuebook.memory.read / cuebook.memory.propose) are requestable via a one-time consent step-up and are never part of the standard or creator bundles; no third-party manage scope exists. Staged initial publish: begin, signed PUT, and complete_frame_media_upload run at preview time against the quarantine store; publication intent costs only complete_frame_publish, and preflight_frame_publish stays a read-only availability check outside the mutation sequence."
+  "notes": "Skill tool policy is client-side routing, not a claimed MCP profile field. Data-expansion tools with default_enabled=false may return typed unavailable. Superseded legacy writes are absent; planned tools are non-callable. Frame releases are immutable; MCP exposes no author-management action, while Cuebook App can hide/show a Frame and may allow deletion during the first hour. Unchanged-economics clarification uses an append-only Correction, while changed thesis or economics require a new Frame. Memory scopes (cuebook.memory.read / cuebook.memory.propose) are requestable via a one-time consent step-up and are never part of the standard or creator bundles; no third-party manage scope exists. Staged initial publish: begin, signed PUT, and complete_frame_media_upload run at preview time against the quarantine store; publication intent costs only complete_frame_publish, and preflight_frame_publish stays a read-only availability check outside the mutation sequence."
 }

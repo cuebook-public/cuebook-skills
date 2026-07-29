@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://cuebook.xyz/schemas/creator-seed-v1.schema.json",
+  "$id": "https://cuebook.app/schemas/creator-seed-v1.schema.json",
   "title": "CreatorSeedV1",
   "type": "object",
   "additionalProperties": false,

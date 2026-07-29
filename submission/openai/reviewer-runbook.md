@@ -19,7 +19,11 @@ The demo account contains sample market context and may create public Frames and
 3. Run the three negative cases and confirm that no prohibited action occurs.
 4. Disconnect Cuebook and confirm that later private calls require authorization again.
 
-Publishing a review Frame is allowed only from the dedicated demo account. Published Frames are permanent, so use an unmistakable test title, include no sensitive data, and expect the test Frame to remain visible. Initial publication and append-only Correction use the active publish grant and the user's explicit action.
+Publishing a review Frame is allowed only from the dedicated demo account. Frame releases are
+immutable, so use an unmistakable test title and include no sensitive data. Cuebook MCP has no
+author-management action; Cuebook App can hide/show a Frame and may offer deletion during the first
+hour under server rules. Initial publication and append-only Correction use the active publish
+grant and the user's explicit action.
 
 ## Product Boundaries
 

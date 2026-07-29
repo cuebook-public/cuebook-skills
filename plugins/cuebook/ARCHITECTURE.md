@@ -12,7 +12,7 @@ these rules need a deliberate edit HERE in the same commit.
 | L0 — MCP server | Tools, scopes, OAuth, schemas | The deployed server registry is the runtime truth; `assets/mcp-capability-map-v1.json` is this repo's audited snapshot of it |
 | L1 — Public entrypoints | `query-cuebook`, `create-cuebook-content`, `author-cuebook-skill` | The ONLY discoverable skills. Everything a host can select routes through these three |
 | L2a — Internal pipeline skills | 36 directories under `skills/` | Routable stages invoked via `$skill-name` or a menu `skill_refs`; each owns its schemas, validators, and tests |
-| L2b — Entry-embedded capability modules | Prose + schema files under the two public skills' `references/` | Consent-gated or optional-connector capabilities bound to one entry's flow (TradingView, decision memory) |
+| L2b — Entry-embedded capability modules | Prose + schema files under a public entry's `references/` | Consent-gated or optional-connector capabilities bound to one entry's flow (TradingView, decision memory) |
 | L3 — Plugin assets | Module registry, menus, intent contract, capability map, index | Machine-readable routing and gating data shared by all skills |
 | L4 — Generated bundles | `public-skills/`, repo-root `skills/`, submission packet | Never edited by hand; `build_release_skills.mjs` output, parity-checked in CI |
 
@@ -22,6 +22,11 @@ Host discovery sees exactly three skills. Growing the public surface requires
 evidence that routing quality measurably improves and a validator update in the
 same change; the default answer is no (adversarial review AR-09). Internal
 capability never justifies discovery growth: it lands as L2a or L2b.
+
+Public entrypoints are an implementation boundary, not a conversational menu. The creator states
+an intent; the host selects the relevant entry and its internal branches silently. User-facing
+language must never announce that Cuebook is entering a Skill, workflow, stage, lane, route, or
+subflow. Each branch should feel like Cuebook naturally understanding the next useful action.
 
 The third entry is the community skill marketplace front door:
 `author-cuebook-skill` (L1) exists solely for community submission — package a
@@ -75,6 +80,28 @@ contradict, the layer above; the validator is the referee.
 4. The two SKILL.md files + `cuebook-intent-v1.schema.json` — behavioral prose
    and runtime normalization. They cite the data above; they never fork it.
 
+## Frame publication metadata boundary
+
+Frame MCP Phase B v3 keeps four concerns independent:
+
+- the Artifact URL and immutable poster describe expression;
+- `settlement` is a closed non-settling or market-economic branch;
+- `subject_asset_refs` support discovery without implying settlement;
+- `reasoning_tags` are release-bound auxiliary metadata inferred by the agent
+  from the confirmed interaction and evidence.
+
+The reasoning registry is closed to `fundamental`, `technical`, `macro_event`,
+`flow_positioning`, and `sentiment_narrative`. An envelope contains at most one
+primary and two distinct secondary tags; honest empty is valid. The creator
+never selects or confirms these tags, and frontend forms, rendering, badges, and
+feed projection do not consume them. They may change on an append-only
+Correction without changing content or economic hashes.
+
+Release immutability and Frame visibility are also separate. MCP publishes
+immutable initial/Correction releases and exposes no author-management action.
+Cuebook App owns hide/show and may offer server-governed deletion during the
+first hour. Skill text must not invent an MCP management path.
+
 ## Dormant capability registry
 
 A capability that is built but not routable MUST be declared in
@@ -114,7 +141,8 @@ stay under the builder's `FAST_PREVIEW_BYTE_LIMIT` (112 000 bytes since
 |---|---|
 | Bundles vs source | `verify:release-bundles` + isolated-rebuild test |
 | Capability map vs validator expectations | scope maps inside `validate_cuebook_plugin.mjs` |
-| Capability map vs the DEPLOYED server | not yet automated — reconcile against the server's `tools/list` during integration passes until a checked-in server-registry snapshot comparison exists (adversarial review AR-04) |
+| Capability map vs backend MCP contract | the exact Phase B v3 contract version plus generated tool-manifest and schema-catalog SHA-256 values are pinned in the map, schema, validator, and tests; refresh them together from the backend generator |
+| Capability map vs the DEPLOYED server | reconcile the pinned backend contract against the server's `tools/list` during integration passes; deployment state remains runtime truth (adversarial review AR-04) |
 | Distribution endpoint vs branch | `distribution:check` in CI: `dev` is development (`cuebook.xyz`), `main` and releases are production (`cuebook.app`) |
 | English-only public text | `validate:english` (multilingual test inputs use `\uXXXX` escapes) |
 | Version surfaces | `release:prepare` single-source bump + `release:check` |
@@ -127,3 +155,21 @@ commit + `release: publish …` commit + tag + GitHub Release. Generated trees
 are never patched directly; installed plugins follow tagged releases.
 `release:prepare` also forces the production distribution channel before it
 regenerates stable bundles.
+
+## Branch distribution invariant
+
+Treat the branch-to-origin mapping as release-critical state, not documentation:
+
+- `dev` and every feature branch targeting `dev` use the development channel:
+  connector URL, OAuth resource, capability server, and generated schema origins
+  are `cuebook.xyz`.
+- `main` and release preparation use the production channel: those same
+  branch-bound surfaces are `cuebook.app`.
+- Production submission files and platform comparison prose may name the
+  production origin while developed on `dev`; they are documentation, not the
+  active branch connector.
+
+Change channels only through `distribution:development`,
+`distribution:production`, or release preparation. The branch-aware CI
+`distribution:check` gate is authoritative; never hand-edit one endpoint in
+isolation.

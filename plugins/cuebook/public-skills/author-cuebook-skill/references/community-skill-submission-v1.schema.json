@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://cuebook.xyz/schemas/community-skill-submission-v1.schema.json",
+  "$id": "https://cuebook.app/schemas/community-skill-submission-v1.schema.json",
   "title": "CommunitySkillSubmissionV1",
   "description": "Frozen record of one community skill submission: the package file listing, the zip identity, the confirmed manifest card, and the confirmation state. Numeric bounds beyond these patterns (file count, zip size, summary and description lengths) are enforced by validate_community_skill_submission.mjs.",
   "type": "object",

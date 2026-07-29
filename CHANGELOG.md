@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.9.20 — 2026-07-29
+
+- Promoted the Frame MCP v3 publishing contract to the stable channel, keeping the one-preview creator path direct while preserving OAuth, prepared-hash, publish-token, idempotency, signed-upload, and immutable-release enforcement.
+- Adapted the full Frame expression system to the 1866 x 1200 publication master and 622 x 400 phone display box, with taller layouts, broader palette and composition diversity, causal topology variants, visible creator-lens labeling, and regression coverage for clipping, directionality, and checkable future criteria.
+- Extended the branch distribution gate to rewrite and validate every Cuebook JSON Schema `$id`, preventing production bundles from retaining development-origin schema identifiers while leaving the `dev` channel pinned to `cuebook.xyz`.
+
 ## 0.9.19 — 2026-07-26
 
 - Removed Frame withdrawal end to end from the Skill/plugin contract. Published Frames are permanent; unchanged copy, references, or visuals use an append-only Correction, while changed thesis or economics require a new Frame. The intent schema, creation actions, platform guides, reviewer runbook, and Tool annotations no longer expose a withdrawal route or consent gate.

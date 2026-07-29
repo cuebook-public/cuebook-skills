@@ -5,6 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 
+import { PALETTES } from "../scripts/render_market_expression.mjs";
 import { runFastPreviewJob } from "../scripts/run_fast_preview.mjs";
 import { validateMarketPreviewJob } from "../scripts/run_market_preview.mjs";
 import { validPaintedPng } from "./png_fixture.mjs";
@@ -12,6 +13,34 @@ import { validPaintedPng } from "./png_fixture.mjs";
 function fakePng() {
   return validPaintedPng();
 }
+
+function relativeLuminance(hex) {
+  const channels = [1, 3, 5].map((index) => Number.parseInt(hex.slice(index, index + 2), 16) / 255);
+  const linear = channels.map((channel) => (
+    channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
+  ));
+  return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+}
+
+function contrastRatio(left, right) {
+  const leftLuminance = relativeLuminance(left);
+  const rightLuminance = relativeLuminance(right);
+  return (Math.max(leftLuminance, rightLuminance) + 0.05) / (Math.min(leftLuminance, rightLuminance) + 0.05);
+}
+
+test("MARKET surfaces keep distinct semantic color signatures and accessible essential colors", () => {
+  const signatures = new Set();
+  for (const [name, palette] of Object.entries(PALETTES)) {
+    signatures.add([palette.canvas, palette.primary, palette.comparison, palette.signal].join("/"));
+    for (const role of ["ink", "muted", "primary", "comparison", "signal", "danger", "conditional"]) {
+      assert.ok(
+        contrastRatio(palette[role], palette.surface) >= 4.5,
+        `${name}.${role} must remain readable on its surface`,
+      );
+    }
+  }
+  assert.equal(signatures.size, Object.keys(PALETTES).length);
+});
 
 async function fakeRasterize(svg, output) {
   assert.match(readFileSync(svg, "utf8"), /<svg\b[^>]*width="1866"[^>]*height="1200"[^>]*viewBox="0 0 622 400"/u);
@@ -96,8 +125,8 @@ export function baseMarketJob() {
       },
       meaning_lock: {
         lock_id: "MLOCK_BTC_FAST_MARKET_001",
-        status: "creator_confirmed",
-        confirmed_at: "2026-07-17T08:59:00Z",
+        status: "preview_frozen",
+        frozen_at: "2026-07-17T08:59:00Z",
         title,
         body,
         subject: "BTC",
@@ -275,6 +304,8 @@ test("MARKET compiles one sourced curve, a derived support panel, and an honest 
     assert.doesNotMatch(svg, /data-series-state="future"/u);
     assert.equal(report.renders[0].audit.single_master, true);
     assert.equal(report.renders[0].audit.mobile_display, "622x400");
+    assert.equal(report.renders[0].audit.layout_version, "mobile-622x400-v2");
+    assert.ok(report.renders[0].audit.vertical_content_max >= report.renders[0].audit.vertical_content_floor);
     assert.ok(report.renders[0].audit.essential_copy_groups <= 3);
     assert.equal(report.renders[0].audit.essential_font_floor, 20);
     assert.equal(report.renders[0].audit.secondary_font_floor, 16);
@@ -532,10 +563,38 @@ test("MARKET renders a creator-owned causal spine without manufacturing a curve"
     const { preview } = await runFastPreviewJob(job, output, { rasterize: fakeRasterize });
     const svg = readFileSync(path.join(output, preview.candidates[0].candidate_id, "frame-preview.svg"), "utf8");
     assert.match(svg, /data-grammar="causal_spine"/u);
+    assert.match(svg, /data-causal-topology="axial"/u);
     assert.doesNotMatch(svg, /data-chart-transform=/u);
   } finally {
     rmSync(output, { recursive: true, force: true });
   }
+});
+
+test("MARKET causal rerolls change topology instead of only changing color", async () => {
+  const signatures = new Set();
+  for (const composition of ["causal_spine", "causal_cascade", "causal_loop"]) {
+    const output = mkdtempSync(path.join(os.tmpdir(), "cuebook-market-"));
+    try {
+      const job = baseMarketJob();
+      const expression = job.expressions[0];
+      expression.reader_job = "mechanism";
+      expression.analytic_relationship = "causal_transmission";
+      expression.grammar = "causal_spine";
+      expression.composition = composition;
+      expression.text_image_division.image_job = "mechanism_and_time";
+      makeCreatorOnly(job, "Risk appetite is looking for a new outlet");
+      const { preview, report } = await runFastPreviewJob(job, output, { rasterize: fakeRasterize });
+      const svg = readFileSync(path.join(output, preview.candidates[0].candidate_id, "frame-preview.svg"), "utf8");
+      const topology = svg.match(/data-causal-topology="([^"]+)"/u)?.[1];
+      assert.ok(topology);
+      signatures.add(topology);
+      assert.ok(report.renders[0].audit.vertical_content_max >= report.renders[0].audit.vertical_content_floor);
+      assert.match(report.renders[0].design_fingerprint, new RegExp(`^causal_spine/${composition}/`, "u"));
+    } finally {
+      rmSync(output, { recursive: true, force: true });
+    }
+  }
+  assert.deepEqual([...signatures].sort(), ["axial", "cascade", "loop"]);
 });
 
 test("MARKET renders one confirmed expression at a time", () => {
@@ -611,7 +670,7 @@ test("MARKET renders one confirmed expression at a time", () => {
   assert.ok(result.errors.some((error) => error.code === "SCHEMA_MAX_ITEMS" || error.code === "CANDIDATE_COUNT"));
 });
 
-test("MARKET rejects copy or settlement changed after creator confirmation", () => {
+test("MARKET rejects copy or settlement changed after the preview is frozen", () => {
   const copyChanged = baseMarketJob();
   copyChanged.preview.candidates[0].frame.body += " One more sentence.";
   assert.ok(validateMarketPreviewJob(copyChanged).errors.some((error) => error.code === "MEANING_LOCK_BODY"));
@@ -621,7 +680,7 @@ test("MARKET rejects copy or settlement changed after creator confirmation", () 
   assert.ok(validateMarketPreviewJob(deadlineChanged).errors.some((error) => error.code === "MEANING_LOCK_DEADLINE"));
 });
 
-test("MARKET locks a creator-confirmed terminal range and keeps it visible", () => {
+test("MARKET locks a creator-accepted terminal range and keeps it visible", () => {
   const job = baseMarketJob();
   job.preview.creator_view.direction = "range";
   job.preview.meaning_lock.direction = "range";

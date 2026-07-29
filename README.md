@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.19"><img alt="Release v0.9.19" src="https://img.shields.io/badge/release-v0.9.19-F6C500?style=flat-square&labelColor=111111"></a>
+  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.20"><img alt="Release v0.9.20" src="https://img.shields.io/badge/release-v0.9.20-F6C500?style=flat-square&labelColor=111111"></a>
   <a href="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml"><img alt="Quality" src="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml/badge.svg?branch=main"></a>
   <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/Node.js-%E2%89%A522-3C873A?style=flat-square&labelColor=111111">
   <img alt="Three public skills" src="https://img.shields.io/badge/public_skills-3-4C6FFF?style=flat-square&labelColor=111111">
@@ -63,7 +63,7 @@ Cuebook Agent is not a research wrapper that replaces the creator's judgment. It
 | --- | --- | --- |
 | **Recognized** | “That is the part I was actually noticing.” | Reflects the non-obvious kernel without claiming it as the agent's idea |
 | **Expanded** | “That connection gives me a better way to think.” | Opens one compact Cue-backed exchange around a relevant relationship, comparator, mechanism, or next footprint, with one follow-up only when it materially deepens the idea |
-| **In control** | “This is exactly the idea I want to put my name on.” | Preserves the creator's stated horizon and, for a range view, exact ± band—or offers Cue-informed proposals only when requested—then confirms the title, reasoning, settlement meaning, and visual intent before drawing |
+| **In control** | “This is exactly the idea I want to put my name on.” | Preserves the creator's stated horizon and, for a range view, exact ± band—or offers Cue-informed proposals only when requested—then shows the complete copy, image, and optional settlement meaning for one publication decision |
 | **Revealed** | “Now I can see the relationship.” | Uses one truthful curve, comparison, mechanism, scenario, or Creator Lens instead of decorating the prose |
 | **Remembered** | “I can come back and judge this later.” | Preserves the unchanged Frame with a future checkpoint, then returns the creator to Cuebook App |
 
@@ -143,7 +143,7 @@ Turn that idea into a Frame.
 > [!NOTE]
 > Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly three public entrypoints; internal modules load only when needed.
 
-For a reproducible, intentionally frozen install, add `--ref v0.9.19` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
+For a reproducible, intentionally frozen install, add `--ref v0.9.20` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
 
 ## Updating
 
@@ -223,19 +223,19 @@ A relative Frame preserves “A should outperform B” as a two-asset viewpoint,
 
 A compound Frame preserves “A rises while B stays within ±X%” as two independent conditions, not a relative spread. Both use separately frozen publication baselines and the same deadline; both must hit. Direction legs use a zero-bps endpoint rule, range legs use the exact creator-confirmed terminal band, and directional equality remains flat. The image shows both synchronized conditions and their AND join. Both assets must be distinct and share a supported session family.
 
-There is no default Settlement, horizon, or range band. Creator-stated terms always win; when Settlement is wanted and a term is missing, Cuebook asks for it and may offer one or two Cue-, catalyst-, history-, or volatility-informed proposals only after the creator requests help. Every proposal must be accepted or edited before rendering. The creator never chooses regular hours, after hours, trading days, or next close. Before media is finalized, Cuebook naturally recaps the exact copy, chosen image or Artifact, and any Settlement meaning for confirmation. A later “publish this” authorizes only the external write.
+There is no default Settlement, horizon, or range band. Creator-stated terms always win; when Settlement is wanted and a term is missing, Cuebook asks for it and may offer one or two Cue-, catalyst-, history-, or volatility-informed proposals only after the creator requests help. Every economic proposal must be accepted or edited before it enters the complete preview. The creator never chooses regular hours, after hours, trading days, or next close. Cuebook then shows one complete Frame—the exact copy, actual image or Artifact poster, and any Settlement meaning—and asks whether to publish that expression or change it. “Publish this” both selects the displayed copy-to-image pair and authorizes its external write; there is no earlier copy-only confirmation.
 
 ## From Intuition To Expression
 
 1. **Recognize the edge.** Preserve the creator's claim, mechanism, desired expression, and next observable. Never invent Settlement, time, or a range band. If the creator wants Settlement and asks for timing help, relevant Cues, catalysts, history, or volatility may support one or two reasoned proposals, but only the creator selects the horizon and any exact ± band. Once the asset is known, at most one aligned and one contrasting or adjacent Cue may become optional thinking anchors for one high-leverage question; skipping them never blocks creation.
 2. **Expand the thought.** Start the smallest Cuebook read batch and, when material current claims require it, one bounded authoritative Web batch from the same evidence plan. Prefer the one relationship, prior viewpoint, comparator, or next footprint that materially improves the thought or its visual expression. Cues remain published viewpoints rather than proof; factual sentences use evidence, while clearly framed creator inference may remain inference.
-3. **Lock the meaning.** Show the exact title, first-person creator body unless another voice was requested, subject assets, chosen image or Artifact, and any human Settlement rule in one natural recap. Facts remain attributed evidence inside the argument rather than becoming visible taxonomy headings. Do not finalize media until the creator confirms it.
-4. **Reveal one relationship.** Render one publication image or preserve the creator's selected native image. A request for another version changes only expression, not the claim, evidence, or Settlement.
-5. **Remember the idea.** Publication happens only after explicit intent and writes the already confirmed Frame. The successful atomic publish result ends the network flow—no second confirmation, receipt parsing, reconciliation, web link, or browser readback. Cuebook Agent recognizes the specific idea that was preserved and returns the creator to Cuebook App. One optional continuation may invite the creator to share it with another AI, share another signal, or explicitly opt into a later simulated Paper Trade.
+3. **Freeze the expression backstage.** Draft the exact title, natural creator body, subject assets, image or Artifact choice, and optional Settlement rule without exposing a lock, stage, or copy-only approval step. Facts remain attributed evidence inside the argument rather than becoming visible taxonomy headings.
+4. **Reveal one relationship.** Render one publication image or preserve the creator's selected native image, then show the complete Frame and ask once whether to publish it or change it. A request for another version changes only expression, not the claim, evidence, or Settlement; every replacement is shown complete.
+5. **Remember the idea.** A clear “publish” selects that displayed Frame and authorizes its external write. The successful atomic publish result ends the network flow—no second confirmation, receipt parsing, reconciliation, web link, or browser readback. Cuebook Agent recognizes the specific idea that was preserved and returns the creator to Cuebook App. It chooses at most one natural continuation: a qualified memory candidate, sharing from the App with another AI, another signal, or explicit opt-in to a later simulated Paper Trade.
 
 The goal is not to lecture the creator or flatten the idea into generic research. Cuebook improves the expression while keeping authorship visible.
 
-Before the creator confirms the copy, Cuebook may naturally surface one or two genuinely new reasoning points from the already retrieved Cues—a missing actor, mechanism, comparator, next footprint, regime condition, or countercase. They are optional additions, never a separate checkpoint or a test the creator must pass. Only what the creator adopts enters the final viewpoint.
+Before the draft is frozen for rendering, Cuebook may naturally surface one or two genuinely new reasoning points from the already retrieved Cues—a missing actor, mechanism, comparator, next footprint, regime condition, or countercase. They are optional additions, never a separate checkpoint or a test the creator must pass. Only what the creator adopts enters the final viewpoint.
 
 ## Designed For The Feed
 
@@ -319,7 +319,7 @@ Validation checks the repository-wide English-only policy, public-entrypoint bou
 Release preparation has one version source and updates every pinned install ref, Plugin manifest, changelog section, and generated Skill bundle together:
 
 ```bash
-npm run release:prepare -- 0.9.19 \
+npm run release:prepare -- 0.9.20 \
   --date 2026-07-21 \
   --codex-build 20260721103045
 

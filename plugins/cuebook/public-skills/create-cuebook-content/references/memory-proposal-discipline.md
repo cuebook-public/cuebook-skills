@@ -2,6 +2,10 @@
 
 Read this reference only at the very end of a creation task, and only when one of two things is true: the creator explicitly asked to remember something, or a published Frame / committed paper plan surfaced ONE insight sharp enough that the creator would want it next time. Ordinary tasks end without any memory write; reading memory belongs to the Query side's Decision Memory Coach.
 
+A qualified proposal is the task's one natural closing action. If it is proposed, do not also offer
+sharing, Paper Trade, another signal, or another optional next step. If it does not qualify, return
+to the ordinary end-action choice without mentioning memory.
+
 ## Hard rules
 
 1. At most ONE `propose_memory` call per task. Never batch, never loop, never propose "while we're at it".

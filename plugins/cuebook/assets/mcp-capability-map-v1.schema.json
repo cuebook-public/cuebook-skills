@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://cuebook.xyz/schemas/cuebook-mcp-capability-map-v1.schema.json",
+  "$id": "https://cuebook.app/schemas/cuebook-mcp-capability-map-v1.schema.json",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -180,7 +180,10 @@
         "delivery_resize_policy",
         "forbidden_tools",
         "initial_publish_sequence",
-        "initial_settlement_modes",
+        "settlement_semantics",
+        "settlement_input",
+        "reasoning_tags",
+        "author_controls",
         "correction_publish_sequence",
         "publish_authorization",
         "prepared_publish_required_fields",
@@ -263,13 +266,53 @@
             "complete_frame_publish"
           ]
         },
-        "initial_settlement_modes": {
+        "settlement_semantics": {
           "const": {
             "non_settling": "none_with_subject_assets_and_no_economic_contract",
             "directional": "long_or_short_with_zero_bps_at_exact_deadline",
             "terminal_range": "range_with_creator_confirmed_max_abs_move_bps_at_exact_deadline",
             "relative_outperformance": "two_distinct_same_session_assets_with_equal_notional_return_spread_at_exact_deadline",
             "compound_conditions": "two_distinct_same_session_assets_with_independent_all_legs_conditions_at_exact_deadline"
+          }
+        },
+        "settlement_input": {
+          "const": {
+            "envelope": "settlement",
+            "non_settling": "{mode:none}",
+            "market": "{mode:market,settle_at,timezone,claim_text,rule}",
+            "rule_kinds": [
+              "single_direction",
+              "single_range",
+              "relative",
+              "compound"
+            ]
+          }
+        },
+        "reasoning_tags": {
+          "const": {
+            "schema_version": "frame-reasoning-tags.v1",
+            "mode": "agent_inferred",
+            "frontend_managed": false,
+            "release_bound": true,
+            "max_primary": 1,
+            "max_secondary": 2,
+            "values": [
+              "fundamental",
+              "technical",
+              "macro_event",
+              "flow_positioning",
+              "sentiment_narrative"
+            ],
+            "honest_empty": true,
+            "included_in_content_hash": false,
+            "included_in_economic_hash": false
+          }
+        },
+        "author_controls": {
+          "const": {
+            "mcp_managed": false,
+            "app_hide_show": true,
+            "app_delete_window_seconds": 3600
           }
         },
         "correction_publish_sequence": {
@@ -311,7 +354,7 @@
           ],
           "properties": {
             "contract_version": {
-              "const": "frame-mcp-phase-b-v2"
+              "const": "frame-mcp-phase-b-v3"
             },
             "tool_count": {
               "const": 18
@@ -320,10 +363,10 @@
               "const": "synced"
             },
             "tool_manifest_sha256": {
-              "const": "sha256:575c5b27a1cdded6344eaa65fd52a5c8b5a6ce1e158c85f4a530f33d959e072a"
+              "const": "sha256:416dd4950a9bcbcdc2c73ed9728f7d817ba1d7a574c50b19bbdf88051d648bad"
             },
             "schema_catalog_sha256": {
-              "const": "sha256:5904eba37c45ede47f7fcbefa0520d0a7313645a4a25f122a46dbdbbcfe2a1ef"
+              "const": "sha256:1b06e0d7ed30da3040f9567b7672791538f82debe51dd727276ea24388138321"
             }
           }
         },
