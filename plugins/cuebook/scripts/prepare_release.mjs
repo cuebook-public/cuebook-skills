@@ -27,6 +27,7 @@ const VERSION_FILES = {
 
 const PINNED_INSTALL_DOCS = [
   "README.md",
+  "README.zh-CN.md",
   "plugins/cuebook/README.md",
   "plugins/cuebook/platforms/codex.md",
   "plugins/cuebook/platforms/claude-code.md",

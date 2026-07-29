@@ -51,3 +51,19 @@ test("repository validation skips tracked files deleted in the working tree", ()
     fs.rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("root Simplified Chinese README is allowed but canonical source remains English-only", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "cuebook-localized-docs-gate-"));
+  try {
+    execFileSync("git", ["init", "-q"], { cwd: root });
+    const han = String.fromCodePoint(0x4e2d);
+    fs.writeFileSync(path.join(root, "README.zh-CN.md"), `${han}\n`);
+    fs.writeFileSync(path.join(root, "SKILL.md"), `${han}\n`);
+    execFileSync("git", ["add", "README.zh-CN.md", "SKILL.md"], { cwd: root });
+    const result = validateEnglishRepo(root);
+    assert.equal(result.valid, false);
+    assert.deepEqual(result.errors.map((item) => item.file), ["SKILL.md"]);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});

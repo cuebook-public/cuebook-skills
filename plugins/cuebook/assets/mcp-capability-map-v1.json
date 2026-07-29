@@ -362,7 +362,7 @@
       "module": "query",
       "authorization_scope": "read:public",
       "access": "read",
-      "purpose": "One published community skill by handle and slug with its reviewed capability disclosure.",
+      "purpose": "One published community Skill by handle and slug; defaults to the current distributed version or resolves an exact publication-time semver with reviewed capabilities, distribution commit, and package sha256.",
       "used_by": [
         "query-cuebook",
         "author-cuebook-skill"
