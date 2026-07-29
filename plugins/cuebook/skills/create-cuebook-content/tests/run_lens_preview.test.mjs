@@ -213,6 +213,8 @@ test("LENS computes and renders a transparent four-component Creator Lens", asyn
     assert.equal((svg.match(/data-role="compact-component-row"/gu) ?? []).length, 3);
     assert.equal(report.renders[0].audit.single_master, true);
     assert.equal(report.renders[0].audit.mobile_display, "622x400");
+    assert.equal(report.renders[0].audit.layout_version, "mobile-622x400-v2");
+    assert.ok(report.renders[0].audit.vertical_content_max >= report.renders[0].audit.vertical_content_floor);
     assert.ok(report.renders[0].audit.essential_copy_groups <= 3);
     assert.equal(report.renders[0].audit.essential_font_floor, 20);
     assert.equal(report.renders[0].audit.secondary_font_floor, 16);

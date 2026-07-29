@@ -161,7 +161,7 @@ Use open editorial columns, tension fields, branches, rails, and contribution st
 
 Render one 1866 x 1200 publication master from the internally frozen Meaning Lock, authored against a 622 x 400 display box and rasterized at 3x. Use one dominant geometry and at most three reader-essential groups: orientation, evidence/mechanism, and future/settlement. Primary essential copy has a 20 px display-size floor and secondary essential labels have a 16 px floor. Preserve one or two material dated values and one future check. Repair the master when it fails; never create a separate compact composition. Preserve diversity through grayscale silhouette and reading direction, not by adding more small labels.
 
-Surface comes after structure. `paper_signal`, `midnight`, `warm_editorial`, and `cool_mono` should change tone, not substitute for a different reading path. Creator-facing generation returns one image at a time. A visual-only reroll needs a different truthful grammar or composition, not merely a different color.
+Surface comes after structure. `paper_signal`, `midnight`, `warm_editorial`, and `cool_mono` change material, type, contrast rhythm, line behavior, and density—not only color. Creator-facing generation returns one image at a time. A visual-only reroll must change at least two truthful expressive axes among grammar/composition, reading direction, narrative placement, surface, type hierarchy, and geometric emphasis. A palette-only reroll fails.
 
 ## 10. Validate Meaning And Pixels Together
 

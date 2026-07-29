@@ -17,7 +17,7 @@
     "event_window": ["timeline_rail", "curve_stage"],
     "threshold_regime": ["threshold_field", "curve_stage"],
     "scenario_lanes": ["scenario_field"],
-    "causal_spine": ["causal_spine"],
+    "causal_spine": ["causal_spine", "causal_cascade", "causal_loop"],
     "evidence_balance": ["evidence_balance"]
   },
   "grammar_relationships": {

@@ -457,7 +457,7 @@
         "reader_job": {"enum": ["conviction", "proof", "mechanism", "comparison", "event", "scenario", "trigger"]},
         "analytic_relationship": {"enum": ["change_over_time", "deviation", "relative_value", "correlation", "event_reaction", "trigger_state", "causal_transmission", "scenario_payoff"]},
         "grammar": {"enum": ["curve_story", "relative_divergence", "drawdown_recovery", "correlation_shift", "event_window", "threshold_regime", "scenario_lanes", "causal_spine", "evidence_balance"]},
-        "composition": {"enum": ["curve_stage", "editorial_split", "divergence_field", "timeline_rail", "threshold_field", "scenario_field", "causal_spine", "evidence_balance"]},
+        "composition": {"enum": ["curve_stage", "editorial_split", "divergence_field", "timeline_rail", "threshold_field", "scenario_field", "causal_spine", "causal_cascade", "causal_loop", "evidence_balance"]},
         "surface": {"enum": ["paper_signal", "midnight", "warm_editorial", "cool_mono"]},
         "subject_label": {"type": "string", "minLength": 1, "maxLength": 24},
         "horizon_label": {"type": "string", "minLength": 1, "maxLength": 24},
