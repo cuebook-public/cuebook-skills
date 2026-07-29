@@ -1,13 +1,13 @@
 {
   "schema_version": "cuebook-release-skills-manifest-v2",
-  "catalog_version": "1.30.0",
+  "catalog_version": "1.31.0",
   "plugin_version": "0.9.20",
   "discovery_budget": {
     "legacy_skill_count": 39,
     "public_skill_count": 3,
-    "legacy_metadata_bytes": 24471,
-    "public_metadata_bytes": 2600,
-    "reduction_percent": 89.4,
+    "legacy_metadata_bytes": 24528,
+    "public_metadata_bytes": 2657,
+    "reduction_percent": 89.2,
     "minimum_reduction_percent": 60
   },
   "frame_fast_preview_budget": {
@@ -23,7 +23,7 @@
       "references/modules/query-cuebook/references/cuebook-query-request-v1.schema.json",
       "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json"
     ],
-    "cumulative_bytes": 110812,
+    "cumulative_bytes": 111597,
     "maximum_bytes_exclusive": 112000,
     "within_budget": true
   },

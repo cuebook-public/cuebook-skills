@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// Keep every tracked, human-readable repository file English-only.
+// Keep canonical source and generated bundles English-only. Root localized
+// documentation is an explicit exception and never enters a Skill bundle.
 
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
@@ -9,6 +10,7 @@ import { fileURLToPath } from "node:url";
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_REPO_ROOT = path.resolve(SCRIPT_DIR, "../../..");
 const DISALLOWED_CJK_PATTERN = /[\u3000-\u303f\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff01-\uff60\uffe0-\uffee]/gu;
+const LOCALIZED_DOCUMENTATION = new Set(["README.zh-CN.md"]);
 
 function isBinary(buffer) {
   return buffer.includes(0);
@@ -57,6 +59,7 @@ export function validateEnglishRepo(repoRoot = DEFAULT_REPO_ROOT) {
     const buffer = readFileSync(absolutePath);
     if (isBinary(buffer)) continue;
     textFileCount += 1;
+    if (LOCALIZED_DOCUMENTATION.has(relativePath)) continue;
     errors.push(...findDisallowedCjkCharacters(buffer.toString("utf8"), relativePath));
   }
 
@@ -83,9 +86,7 @@ function main() {
     return;
   }
 
-  console.log(
-    `English-only repository validation passed (${result.stats.text_file_count} text files).`,
-  );
+  console.log(`English-source validation passed (${result.stats.text_file_count} text files).`);
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -1,6 +1,6 @@
 {
   "schema_version": "creation-menu-v1",
-  "catalog_version": "1.30.0",
+  "catalog_version": "1.31.0",
   "module_id": "create",
   "default_preset": "preset-publish-candidates",
   "steps": [

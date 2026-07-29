@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Query can now discover community Skills and resolve the exact reviewed version frozen into a Frame or handoff. The stable `<handle>--<slug>` identity remains separate from semver; exact reads surface the distribution commit, package sha256, and version-specific capability disclosure without claiming installation. The additive Query route advances the internal Skill catalog to 1.31.0.
+- Added default-English language navigation plus a Simplified Chinese root README for the official and community Skill repositories, while keeping canonical Skill instructions and generated bundles English-only.
+
 ## 0.9.20 — 2026-07-29
 
 - Promoted the Frame MCP v3 publishing contract to the stable channel, keeping the one-preview creator path direct while preserving OAuth, prepared-hash, publish-token, idempotency, signed-upload, and immutable-release enforcement.

@@ -26,7 +26,7 @@ Assume the plugin's host authentication is complete. Silently run the smallest r
 ## Routing
 
 1. Normalize once with `references/modules/query-cuebook/references/cuebook-intent-v1.schema.json`: route by effect, order mixed dependencies, and default ambiguity to one read-only Query answer.
-2. Classify each Query step as `latest_stories`, `story_detail`, `asset_narratives`, `market_state`, `market_evidence`, `fundamentals`, `market_series`, `derived_metrics`, `tradingview_inspect`, `tradingview_capture`, `decision_memory`, `settlement_history`, `published_frame`, `commentator_profile`, `media_format`, or `mixed`.
+2. Classify each Query step as `latest_stories`, `story_detail`, `asset_narratives`, `market_state`, `market_evidence`, `fundamentals`, `market_series`, `derived_metrics`, `tradingview_inspect`, `tradingview_capture`, `decision_memory`, `settlement_history`, `published_frame`, `community_skill`, `commentator_profile`, `media_format`, or `mixed`.
 3. `search_assets` returns ranked candidates, not an existence verdict. Bind only an exact identity (`matchType: exact`). Never substitute a fuzzy candidate, proxy, or nearest carrier. A missing capability is an operation gap, not an identity gap. With no exact result, retain the term; do not claim Cuebook has no knowledge of it or infer lifecycle from a miss.
 4. Query stays read-only. An active TradingView workbench adds only its audited observation subset; live Tool lists remain runtime truth.
 5. Select the smallest query path that answers the request:
@@ -41,6 +41,7 @@ Assume the plugin's host authentication is complete. Silently run the smallest r
    - positioning, calendar, disclosures, or asset events: call only the one matching read tool when the user's premise needs it;
    - settlement outcomes: `list_settlements` and `references/modules/reconcile-market-content-history.md` when a history ledger is requested;
    - published Frames: `get_frame` for one release-pinned Frame, attached visual, settlement state, and discussion entry; never retrieve a rendition separately;
+   - community Skills: `list_community_skills` for discovery, then `get_community_skill` for one exact `<handle>--<slug>` identity. If a Frame or handoff carries its publication-time semver, pass that version to resolve the reviewed historical bytes; otherwise omit it to resolve the current distributed version. Keep `installRef` stable, treat `@cuebook-community` only as the marketplace suffix, and surface `resolvedVersion`, distribution revision, package sha256, and capability disclosure without claiming the Skill was installed;
    - public account or media study: the authorized corpus and distillation skills.
 6. Preserve provider timestamps, sealed/forming state, source identity, metric basis, and capability gaps inside the bundle. A missing backend tool produces a partial result, never an invented value.
 7. For a published Frame, derive one plain settlement sentence from the frozen formula rather than its body. `all_legs` joins every leg with explicit AND and says every condition must hold; `equal_notional_long_short` remains relative return. Never imply OR or invent a threshold.
@@ -64,6 +65,7 @@ Assume the plugin's host authentication is complete. Silently run the smallest r
 ## Query Boundary
 
 - Query may summarize, compare, and show factual tables, curves, or reports; it never produces publish-ready voice, viewpoint graphics, settlement claims, or releases.
+- Query may discover and inspect official or community Skill metadata, but it never installs a Skill or presents a GitHub URL alone as proof that a host loaded it.
 - `creation_handoff` may offer thought anchors but never assign them to the creator. Create requires explicit adoption before a Cue-derived connection, countercase, or rule enters the draft.
 - Query never calls any write, Paper trade, TradingView drawing, Frame mutation, Correction, or publication tool.
 - Published releases are immutable, and Query/MCP has no hide, delete, or management action. If a

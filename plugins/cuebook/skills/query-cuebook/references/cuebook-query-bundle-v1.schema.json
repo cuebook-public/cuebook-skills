@@ -11,7 +11,7 @@
     "query_id": {"type": "string", "pattern": "^QRY_[A-Za-z0-9_-]+$"},
     "state": {"enum": ["complete", "partial", "blocked"]},
     "read_only": {"const": true},
-    "query_type": {"enum": ["latest_stories", "story_detail", "asset_narratives", "market_state", "market_evidence", "fundamentals", "market_series", "derived_metrics", "tradingview_inspect", "tradingview_capture", "settlement_history", "published_frame", "commentator_profile", "media_format", "mixed"]},
+    "query_type": {"enum": ["latest_stories", "story_detail", "asset_narratives", "market_state", "market_evidence", "fundamentals", "market_series", "derived_metrics", "tradingview_inspect", "tradingview_capture", "settlement_history", "published_frame", "community_skill", "commentator_profile", "media_format", "mixed"]},
     "as_of": {"type": "string", "format": "date-time"},
     "request": {
       "type": "object",
@@ -32,7 +32,7 @@
         "required": ["result_id", "kind", "title", "summary", "data_ref", "source_refs", "as_of", "status"],
         "properties": {
           "result_id": {"type": "string", "pattern": "^RES_[A-Za-z0-9_-]+$"},
-          "kind": {"enum": ["asset", "story", "narrative", "market_state", "evidence", "fundamental", "series", "metric", "feed", "settlement", "publication", "profile", "media_format", "analysis", "tradingview_observation", "tradingview_focused_capture"]},
+          "kind": {"enum": ["asset", "story", "narrative", "market_state", "evidence", "fundamental", "series", "metric", "feed", "settlement", "publication", "skill", "profile", "media_format", "analysis", "tradingview_observation", "tradingview_focused_capture"]},
           "title": {"type": "string", "minLength": 1},
           "summary": {"type": ["string", "null"]},
           "data_ref": {"type": ["string", "null"]},
@@ -50,7 +50,7 @@
         "required": ["source_ref", "source_type", "locator", "published_at", "retrieved_at", "retrieved_via", "usage_rights"],
         "properties": {
           "source_ref": {"type": "string", "pattern": "^SRC_[A-Za-z0-9_-]+$"},
-          "source_type": {"enum": ["cuebook_story", "cuebook_narrative", "cuebook_market_state", "news", "issuer_release", "filing", "regulator", "exchange", "market_data", "calculation", "creator_record", "publication_receipt", "public_corpus"]},
+          "source_type": {"enum": ["cuebook_story", "cuebook_narrative", "cuebook_market_state", "community_skill", "news", "issuer_release", "filing", "regulator", "exchange", "market_data", "calculation", "creator_record", "publication_receipt", "public_corpus"]},
           "locator": {"type": "string", "minLength": 1},
           "published_at": {"type": ["string", "null"], "format": "date-time"},
           "retrieved_at": {"type": "string", "format": "date-time"},
