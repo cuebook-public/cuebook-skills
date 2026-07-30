@@ -89,7 +89,7 @@ codex mcp list --json
 如需固定到可复现版本，在 marketplace 命令后加：
 
 ```bash
---ref v0.9.20
+--ref v0.9.21
 ```
 
 固定 tag 后不会自动跟随 `main`，直到你主动更改 ref。

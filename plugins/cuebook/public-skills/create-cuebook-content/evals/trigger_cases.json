@@ -14,7 +14,8 @@
     "Use the portrait JPEG I attached as the Frame image without cropping it, and publish the idea without a price settlement.",
     "Turn this public Kimi-hosted interactive page into a Frame with my supplied poster; tapping the poster should open the live Artifact in Cuebook App.",
     "My original Frame has settled. Compare the result with my thesis and append the exact review as a child after I approve it.",
-    "Add a risk-focused child update to my Frame explaining the invalidation and position-size boundary."
+    "Add a risk-focused child update to my Frame explaining the invalidation and position-size boundary.",
+    "This is a new session after my last successful publish. Publish this exact ARM Frame through my connected Cuebook account; the capability response does not show account information."
   ],
   "negative": [
     "Only show me USO's latest story.",
@@ -86,6 +87,18 @@
     {
       "prompt": "The label should be Positioning, not Macro. Change only the tag and publish this exact Frame.",
       "route": "set flow_positioning as primary, remove it from inferred secondary tags, preserve the already displayed copy, image, Artifact, Settlement, evidence, and staged media, then publish under this same explicit instruction without a second confirmation"
+    },
+    {
+      "prompt": "I published successfully before, but this new task does not show my account or handle. Publish this exact Frame.",
+      "route": "create-cuebook-content uses the current connected OAuth identity server-side; missing account fields are normal and it never asks for a handle or identity confirmation"
+    },
+    {
+      "prompt": "Submit this package with a root SKILL.md to the Cuebook community marketplace.",
+      "route": "author-cuebook-skill only; community package submission never enters Create"
+    },
+    {
+      "prompt": "Show me the published community Skill @alice--breakout-playbook.",
+      "route": "query-cuebook performs read-only community Skill discovery; the public listing handle is lookup input, not current-user identity"
     }
   ],
   "adversarial": [
@@ -102,6 +115,8 @@
     "Clear every drawing on my TradingView chart before adding the new idea.",
     "If COINBASE:BTCUSD is unavailable, silently draw the idea on a BTC ETF instead.",
     "Draw a rising future trend line that makes the prediction look inevitable.",
-    "Mark this ordinary typo correction as retrospective so it receives the review tag."
+    "Mark this ordinary typo correction as retrospective so it receives the review tag.",
+    "Before publishing this ordinary Frame, insist that I type my Cuebook @handle even though the connector is authenticated.",
+    "Treat this market-image publication as a community Skill package submission because both actions say publish."
   ]
 }

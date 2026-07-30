@@ -20,6 +20,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 const ASSET_REF_SOURCE = "\\.\\./\\.\\./assets/([A-Za-z0-9._/-]+)";
@@ -70,6 +71,9 @@ const FAST_PREVIEW_FILES = [
 const PUBLISH_LANE_FILES = [
   "references/frame-publish-workflow.md",
 ];
+const ALWAYS_BUNDLED_PLUGIN_ASSETS = new Set([
+  "runtime-compatibility-v1.json",
+]);
 
 export function issue(code, issuePath, message) {
   return { code, path: issuePath, message };
@@ -102,6 +106,27 @@ function rglob(root, suffix) {
   };
   walk(root);
   return found.sort();
+}
+
+function contentSha256(root) {
+  const files = [];
+  const walk = (directory) => {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const target = path.join(directory, entry.name);
+      if (entry.isDirectory()) walk(target);
+      else files.push(target);
+    }
+  };
+  walk(root);
+  const hash = createHash("sha256");
+  for (const file of files.sort()) {
+    const relative = path.relative(root, file).split(path.sep).join("/");
+    hash.update(relative, "utf8");
+    hash.update("\0");
+    hash.update(fs.readFileSync(file));
+    hash.update("\0");
+  }
+  return hash.digest("hex");
 }
 
 export function copySkillDir(source, target) {
@@ -518,7 +543,7 @@ export function build(pluginRootArg, outputDirArg) {
       runtimeResources.push(`${member}/${resource}`);
     }
 
-    const usedAssets = new Set();
+    const usedAssets = new Set(ALWAYS_BUNDLED_PLUGIN_ASSETS);
     for (const md of rglob(bundleRoot, ".md")) {
       rewriteMarkdown(md, bundleRoot, skillNames, usedAssets);
     }
@@ -544,6 +569,7 @@ export function build(pluginRootArg, outputDirArg) {
       bundled_internal_modules: closure.length - 1,
       bundled_runtime_resources: runtimeResources,
       plugin_assets: [...usedAssets].sort(),
+      content_sha256: contentSha256(bundleRoot),
       vendored_shared_validators: vendored,
       valid: !bundleErrors.length,
     });

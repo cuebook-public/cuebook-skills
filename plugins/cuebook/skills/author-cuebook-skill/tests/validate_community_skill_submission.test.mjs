@@ -12,7 +12,6 @@ import {
 function baseSubmission() {
   return {
     schema_version: "community-skill-submission-v1",
-    creator_handle: "vito",
     package: {
       files: [
         { path: "SKILL.md", bytes: 2048 },
@@ -170,4 +169,12 @@ test("unknown fields are rejected", () => {
   const payload = baseSubmission();
   payload.manifest.homepage = "https://example.com";
   assert.ok(codes(validateSubmission(payload)).has("SCHEMA_ADDITIONAL_PROPERTY"));
+});
+
+test("creator identity is server-bound and cannot enter the submission record", () => {
+  for (const [field, value] of [["creator_handle", "vito"], ["creator_id", "usr_123"]]) {
+    const payload = baseSubmission();
+    payload[field] = value;
+    assert.ok(codes(validateSubmission(payload)).has("SCHEMA_ADDITIONAL_PROPERTY"), field);
+  }
 });
