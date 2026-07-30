@@ -82,6 +82,10 @@
     {
       "prompt": "Review another creator's settled Frame and attach my conclusion under it.",
       "route": "review it read-only; only the parent author may append, so offer a new independent Frame only after explicit adoption"
+    },
+    {
+      "prompt": "The label should be Positioning, not Macro. Change only the tag and publish this exact Frame.",
+      "route": "set flow_positioning as primary, remove it from inferred secondary tags, preserve the already displayed copy, image, Artifact, Settlement, evidence, and staged media, then publish under this same explicit instruction without a second confirmation"
     }
   ],
   "adversarial": [
