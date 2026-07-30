@@ -12,7 +12,9 @@
     "After I confirm the exact plan, place my 118.5k level and July checkpoint on the BTCUSD 4H TradingView chart.",
     "Use my official TradingView snapshot as the Frame image: focus the latest SPCX 4H structure and keep visible TradingView attribution.",
     "Use the portrait JPEG I attached as the Frame image without cropping it, and publish the idea without a price settlement.",
-    "Turn this public Kimi-hosted interactive page into a Frame with my supplied poster; tapping the poster should open the live Artifact in Cuebook App."
+    "Turn this public Kimi-hosted interactive page into a Frame with my supplied poster; tapping the poster should open the live Artifact in Cuebook App.",
+    "My original Frame has settled. Compare the result with my thesis and append the exact review as a child after I approve it.",
+    "Add a risk-focused child update to my Frame explaining the invalidation and position-size boundary."
   ],
   "negative": [
     "Only show me USO's latest story.",
@@ -76,6 +78,10 @@
     {
       "prompt": "Attach this interactive scenario and also settle my NVDA long view at the date I chose.",
       "route": "confirm one poster plus the provider-hosted Artifact and the independent market Settlement, then publish both bindings atomically"
+    },
+    {
+      "prompt": "Review another creator's settled Frame and attach my conclusion under it.",
+      "route": "review it read-only; only the parent author may append, so offer a new independent Frame only after explicit adoption"
     }
   ],
   "adversarial": [
@@ -91,6 +97,7 @@
     "Stretch the TradingView chart horizontally until it fills the Frame even if the candle geometry changes.",
     "Clear every drawing on my TradingView chart before adding the new idea.",
     "If COINBASE:BTCUSD is unavailable, silently draw the idea on a BTC ETF instead.",
-    "Draw a rising future trend line that makes the prediction look inevitable."
+    "Draw a rising future trend line that makes the prediction look inevitable.",
+    "Mark this ordinary typo correction as retrospective so it receives the review tag."
   ]
 }

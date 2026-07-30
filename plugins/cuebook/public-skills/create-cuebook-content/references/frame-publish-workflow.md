@@ -33,8 +33,10 @@ Cuebook publishing needs an update and stop; never substitute a lower-level comp
      `{schema_version:"frame-reasoning-tags.v1",primary:<tag|null>,secondary:[...]}`. Infer it
      silently from the confirmed interaction and evidence; never ask for a tag choice or expose it
      in the public recap. Use only `fundamental`, `technical`, `macro_event`, `flow_positioning`,
-     and `sentiment_narrative`, with at most one primary and two distinct secondary tags. Honest
-     empty is `{primary:null,secondary:[]}`.
+     `sentiment_narrative`, and `risk_management`, with at most one primary and two distinct
+     secondary tags. Use `risk_management` only when the content materially reasons about downside,
+     invalidation, exposure, sizing, liquidity, drawdown, concentration, or another risk boundary;
+     ordinary uncertainty is not enough. Honest empty is `{primary:null,secondary:[]}`.
    - Use `settlement: {mode:"none"}` when the creator did not choose a market-settled outcome.
      Nothing economic can appear in this branch.
    - Use `settlement: {mode:"market",settle_at,timezone,claim_text,rule}` only for a confirmed
@@ -60,6 +62,42 @@ commitment, and never enters Frame copy. Do not preflight routinely before every
 `complete_frame_publish` owns every server-side step after the signed upload, including validation, optional baseline capture, and atomic publication. Treat it as the only completion call for a new Frame; do not reproduce its work through lower-level compatibility actions or read the Frame back.
 
 A successful `complete_frame_publish` result is final success. Trust the typed MCP result and stop all network work immediately: do not parse or validate a receipt, extract Frame or release IDs, read back the Frame, open a web page, inspect HTML or metadata, probe a canonical URL, or call any follow-up Tool.
+
+## Child Follow-Up And Retrospective
+
+A child Frame is an append-only text supplement under one existing parent, not a smaller initial
+publication. It inherits the parent's author, visibility, lifecycle, and moderation and has no
+independent image, Artifact, Settlement, or child-of-child path.
+
+1. On an explicit request to follow up or review a Frame, call `get_frame` for the frozen parent and
+   `list_child_frames` once for its existing supplements. Use the Settlement result or passed
+   deadline as evidence for review, but never rewrite the parent's original claim.
+2. If the creator is adding a follow-up and there is a real original-thesis-versus-later-evidence
+   comparison, offer one compact question: whether to preserve this change as a retrospective
+   under the original Frame. Ask at most once and continue with an ordinary child if they decline.
+   Do not add a redundant prompt when the user already explicitly asked for a retrospective.
+3. Draft and show the exact child title and body. Say plainly that it will be appended under the
+   existing Frame, then ask one natural question: publish this exact supplement or change it. Do
+   not render or stage media. An explicit “append,” “publish this review,” or equivalent for the
+   unchanged text is authorization.
+4. After authorization, call `publish_child_frame` once with the parent reference, exact title,
+   body, language, pinned `skill_refs`, a fresh lowercase UUIDv7, and
+   `reasoning_tags:{schema_version:"frame-child-reasoning-tags.v1",primary:<tag|null>,secondary:[...]}`.
+   Infer at most one primary and two distinct secondary tags from the child itself. The allowed
+   values are the six parent tags plus child-only `retrospective`. Use `retrospective` only for an
+   actual comparison of the original thesis with later evidence or outcome; a correction, new
+   observation, or status update alone does not qualify. Apply `risk_management` under the same
+   material-risk rule as an independent Frame. Honest empty is
+   `{primary:null,secondary:[]}`.
+
+Only the parent author may append. If the server rejects authorship, stop without alternate payloads
+or identity probing. A visitor can continue a read-only review; if they explicitly want to publish
+their own judgment, use the normal new-Frame flow with its full image and publication confirmation,
+not the child path.
+
+A successful child publication result is final. Do not read it back or publish another child. Reply
+briefly that the review or follow-up was added under the original Frame and invite the author to
+revisit it in Cuebook App; keep ids, tags, receipts, and Tool language backstage.
 
 ## Corrections And App-Only Author Controls
 

@@ -150,12 +150,13 @@
     {
       "query_id": "published_frame",
       "label": "Published Frame",
-      "description": "Read a release-pinned Frame, visual semantics, settlement state, and discussion entry point.",
+      "description": "Read a release-pinned Frame, visual semantics, settlement state, child follow-ups, and discussion entry point.",
       "skill_refs": [
         "query-cuebook"
       ],
       "mcp_tools": [
-        "get_frame"
+        "get_frame",
+        "list_child_frames"
       ],
       "availability": "backend_required"
     },

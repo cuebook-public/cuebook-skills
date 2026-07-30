@@ -997,7 +997,9 @@ test("Frame publish contract carries structural settlement and auxiliary reasoni
       "macro_event",
       "flow_positioning",
       "sentiment_narrative",
+      "risk_management",
     ],
+    child_only_values: ["retrospective"],
     honest_empty: true,
     included_in_content_hash: false,
     included_in_economic_hash: false,
@@ -1018,8 +1020,31 @@ test("Frame capability map targets the finalized 18-Tool v3 backend contract", (
     tool_manifest_sha256:
       "sha256:416dd4950a9bcbcdc2c73ed9728f7d817ba1d7a574c50b19bbdf88051d648bad",
     schema_catalog_sha256:
-      "sha256:1b06e0d7ed30da3040f9567b7672791538f82debe51dd727276ea24388138321",
+      "sha256:f4b5adb8349bbde80aa0a9d13b9859e4486b15dbf589c5149115ad2bbf731091",
   });
+});
+
+test("Frame review keeps retrospective child-only and author-owned", () => {
+  const query = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "query-cuebook", "SKILL.md"),
+    "utf-8",
+  );
+  const publish = fs.readFileSync(
+    path.join(
+      PLUGIN_ROOT,
+      "skills",
+      "create-cuebook-content",
+      "references",
+      "frame-publish-workflow.md",
+    ),
+    "utf-8",
+  );
+  assert.match(query, /After resolution or deadline, offer one review question once/);
+  assert.match(query, /Only its author may route an append to Create/);
+  assert.match(publish, /frame-child-reasoning-tags\.v1/);
+  assert.match(publish, /child-only `retrospective`/);
+  assert.match(publish, /Only the parent author may append/);
+  assert.match(publish, /no\s+independent image, Artifact, Settlement, or child-of-child path/);
 });
 
 test("Frame flow rejects reintroduced publish consent", () => {

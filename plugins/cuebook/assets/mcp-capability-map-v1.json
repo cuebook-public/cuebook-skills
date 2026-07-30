@@ -799,7 +799,11 @@
         "technical",
         "macro_event",
         "flow_positioning",
-        "sentiment_narrative"
+        "sentiment_narrative",
+        "risk_management"
+      ],
+      "child_only_values": [
+        "retrospective"
       ],
       "honest_empty": true,
       "included_in_content_hash": false,
@@ -834,7 +838,7 @@
       "tool_count": 18,
       "sync_status": "synced",
       "tool_manifest_sha256": "sha256:416dd4950a9bcbcdc2c73ed9728f7d817ba1d7a574c50b19bbdf88051d648bad",
-      "schema_catalog_sha256": "sha256:1b06e0d7ed30da3040f9567b7672791538f82debe51dd727276ea24388138321"
+      "schema_catalog_sha256": "sha256:f4b5adb8349bbde80aa0a9d13b9859e4486b15dbf589c5149115ad2bbf731091"
     },
     "mutation_idempotency": "distinct_lowercase_uuidv7_per_command",
     "replay_policy": "same_key_same_payload_returns_receipt_changed_payload_conflict"

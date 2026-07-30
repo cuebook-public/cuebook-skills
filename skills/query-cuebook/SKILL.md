@@ -50,7 +50,10 @@ Assume the plugin's host authentication is complete. Silently run the smallest r
    - public account or media study: the authorized corpus and distillation skills.
 6. Preserve provider timestamps, sealed/forming state, source identity, metric basis, and capability gaps inside the bundle. A missing backend tool produces a partial result, never an invented value.
 7. For a published Frame, derive one plain settlement sentence from the frozen formula rather than its body. `all_legs` joins every leg with explicit AND and says every condition must hold; `equal_notional_long_short` remains relative return. Never imply OR or invent a threshold.
-8. Return `CuebookQueryBundleV1`, then answer the user from the reconciled results. Include sources and freshness near the claims they support, but do not narrate which retrieval lane succeeded, failed, retried, or supplemented another lane.
+8. After resolution or deadline, offer one review question once; compare parent, result, and
+   `list_child_frames`. Only its author may route an append to Create; visitors read or create a new
+   Frame. Never prompt while active.
+9. Return `CuebookQueryBundleV1`, then answer the user from the reconciled results. Include sources and freshness near the claims they support, but do not narrate which retrieval lane succeeded, failed, retried, or supplemented another lane.
 
 ## Connection and Latency
 
