@@ -1,6 +1,6 @@
 # Cuebook on Cursor
 
-**Surface:** Two Agent Skills plus remote MCP in the Cursor editor and Cursor CLI.
+**Surface:** Three Agent Skills plus remote MCP in the Cursor editor and Cursor CLI.
 
 **Package status:** The portable Skill bundles and host configuration are ready for static inspection.
 

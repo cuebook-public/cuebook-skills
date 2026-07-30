@@ -5,7 +5,10 @@ import { readFileSync, readdirSync, existsSync, realpathSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { DISTRIBUTION_CHANNELS } from "./configure_distribution_channel.mjs";
+import {
+  CHANNEL_BOUND_PLATFORM_GUIDES,
+  DISTRIBUTION_CHANNELS,
+} from "./configure_distribution_channel.mjs";
 import { validateInstance, pyrepr } from "./validate_json_schema.mjs";
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
@@ -25,6 +28,7 @@ const PLATFORM_GUIDES = new Set([
   "hermes.md",
   "openclaw.md",
 ]);
+const CHANNEL_BOUND_PLATFORM_GUIDE_SET = new Set(CHANNEL_BOUND_PLATFORM_GUIDES);
 
 export function load(filePath) {
   return JSON.parse(readFileSync(filePath, "utf-8"));
@@ -349,12 +353,28 @@ export function validate(pluginRoot) {
     const guidePath = path.join(platformsRoot, guideName);
     if (!existsSync(guidePath)) continue;
     const guide = readFileSync(guidePath, "utf-8");
+    const expectedEndpoint = CHANNEL_BOUND_PLATFORM_GUIDE_SET.has(guideName)
+      ? distribution.mcp_url
+      : PRODUCTION_MCP_URL;
     check(
-      guide.includes(PRODUCTION_MCP_URL),
+      guide.includes(expectedEndpoint),
       "PLATFORM_MCP_ENDPOINT",
       `platforms/${guideName}`,
-      "Every host guide must name the stable production Cuebook MCP endpoint.",
+      CHANNEL_BOUND_PLATFORM_GUIDE_SET.has(guideName)
+        ? `The host guide must use the selected ${distribution.channel} endpoint ${distribution.mcp_url}.`
+        : "The host guide must distinguish the stable production Cuebook MCP endpoint.",
     );
+    if (CHANNEL_BOUND_PLATFORM_GUIDE_SET.has(guideName)) {
+      const otherEndpoint = distribution.channel === "production"
+        ? DEVELOPMENT_MCP_URL
+        : PRODUCTION_MCP_URL;
+      check(
+        !guide.includes(otherEndpoint),
+        "PLATFORM_MCP_ENDPOINT",
+        `platforms/${guideName}`,
+        `The channel-bound host guide must not retain ${otherEndpoint}.`,
+      );
+    }
     check(
       /\*\*Live status:\*\*/u.test(guide),
       "PLATFORM_LIVE_STATUS",

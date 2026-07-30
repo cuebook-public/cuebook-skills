@@ -20,7 +20,7 @@ Team and Enterprise owners add the custom web connector in organization settings
 
 ## Capability boundary
 
-Claude can call the MCP Tools it discovers. It does not load the two JavaScript-backed Cuebook Agent Skills through this connector. Verify queries and existing Frame reads first. Do not claim the complete creator interview, deterministic dual-composition rendering, or publication workflow until a Claude-hosted creator adapter passes those tests.
+Claude can call the MCP Tools it discovers. It does not load the three JavaScript-backed Cuebook Agent Skills through this connector. Verify queries and existing Frame reads first. Do not claim the complete creator interview, deterministic dual-composition rendering, or publication workflow until a Claude-hosted creator adapter passes those tests.
 
 ## Verification
 
