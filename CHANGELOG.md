@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.9.21 — 2026-07-30
+
 - Query can now discover community Skills and resolve the exact reviewed version frozen into a Frame or handoff. Stable install refs are server-owned and separate from creator handle and semver; exact reads surface the distribution commit, package sha256, and version-specific capability disclosure without claiming installation. The additive Query route advances the internal Skill catalog to 1.31.0.
 - Kept creator identity server-bound across Frame and community publication: the connected Cuebook OAuth grant supplies the account, and no public Skill asks for or accepts an account name or handle as authority.
 - Added one machine-readable runtime compatibility contract to the Plugin and all three generated public Skill bundles, including deterministic content hashes, host-owned compatible updates, confirmation for major or capability expansion, session pinning until reload, and an honest OpenClaw host-override boundary for HTTP MCP.
