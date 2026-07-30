@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://cuebook.app/schemas/runtime-compatibility-v1.schema.json",
+  "$id": "https://cuebook.xyz/schemas/runtime-compatibility-v1.schema.json",
   "title": "Cuebook Runtime Compatibility V1",
   "type": "object",
   "additionalProperties": false,
