@@ -1,6 +1,6 @@
 # Cuebook on generic Agent Skills clients
 
-**Surface:** Two self-contained Agent Skills plus the host's native remote MCP connection.
+**Surface:** Three self-contained Agent Skills plus the host's native remote MCP connection.
 
 **Package status:** Bundle structure and reference closure are validated.
 

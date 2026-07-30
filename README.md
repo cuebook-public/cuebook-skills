@@ -126,12 +126,14 @@ codex plugin marketplace add cuebook-public/cuebook-skills \
 
 codex plugin add cuebook@cuebook
 
-codex mcp login cuebook
+codex mcp list --json
 
+# Only when the status is not_logged_in and no login is pending:
+codex mcp login cuebook
 codex mcp list --json
 ```
 
-For a first-time installation, `codex plugin add` installs Cuebook but does not guarantee that the CLI will open a browser. Run `codex mcp login cuebook` once, complete the browser flow, and then inspect the `cuebook` entry in `codex mcp list --json`. If it is already authenticated, skip the login; after the first command succeeds, do not start a second one.
+For a first-time installation, `codex plugin add` installs Cuebook but does not guarantee that the CLI will open a browser. Inspect the `cuebook` entry in `codex mcp list --json`, then run `codex mcp login cuebook` once only when it reports `not_logged_in`. Skip login when Cuebook is already authenticated or a login is pending. If login opens a browser, the approval belongs to the user: wait for them to finish, never approve it yourself, and never restart login while that attempt is pending.
 
 One creator consent covers Cuebook's six explicit authorization domains: public research, private simulated-account reads, simulated Paper Trade actions, and private Frame read, draft, and publication actions. They remain separate server-enforced scopes, and authorization never creates a Frame or simulated order by itself. A Paper Trade still requires terms, a preview, and explicit placement intent; Cuebook never places a real-money order.
 
@@ -184,11 +186,11 @@ Keep authentication in the installation flow:
 
 1. Install the plugin. Its marketplace policy is `ON_INSTALL`, but the CLI install command does not promise a browser popup.
 2. Check `codex mcp list --json`. If Cuebook is already authenticated or the host has an active authentication flow, do not start another one.
-3. On a fresh installation that reports `not_logged_in`, run `codex mcp login cuebook` once. Complete the browser approval and wait for the command to finish.
-4. Check the JSON status again. A browser approval page, an enabled connector, or a public plugin-manager result is not connection proof.
-5. Fully quit and reopen the Codex app, or restart the Codex CLI process. Then open one new task and make a real Cuebook request. A normal MCP result is the final end-to-end proof that Plugin discovery, Tool discovery, and token exchange succeeded.
+3. On a fresh installation that reports `not_logged_in`, run `codex mcp login cuebook` once. If it opens a browser, the approval belongs to the user: wait for them to finish, never approve it yourself, and never restart login while that attempt is pending.
+4. After the login command exits, check the JSON status again and list Cuebook's Tools. A browser approval page, an enabled connector, or Tool discovery alone is not connection proof.
+5. Fully quit and reopen the Codex app, or restart the Codex CLI process. Then open one new task and make one smallest normal read-only Cuebook request. A normal MCP result is the final end-to-end proof that Plugin discovery, Tool discovery, and token exchange succeeded.
 
-If authentication or token exchange fails, stop and report that one failure without retrying, reinstalling, or opening more tasks. This flow uses one installation, at most one install-time host login, and one real task. Preview never publishes; publication still requires explicit intent.
+If authentication or token exchange fails, stop and report that one failure without retrying, reinstalling, or opening more tasks. Retry login only after the host explicitly reports `not_logged_in`, an authorization challenge, or a revoked grant. This flow uses one installation, at most one install-time host login, and one real task. Preview never publishes; publication still requires explicit intent.
 
 Keep authentication failures separate from connectivity failures. Run login only for an explicit `not_logged_in`, authorization challenge, revoked credential, or scope step-up. If Cuebook remains authenticated but a request reports an HTTP, DNS, TLS, proxy, socket, or timeout failure, restore that network path and retry the same request; do not reinstall the Plugin or start another OAuth flow.
 

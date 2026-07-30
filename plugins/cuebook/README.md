@@ -35,16 +35,18 @@ codex plugin marketplace add cuebook-public/cuebook-skills \
 
 codex plugin add cuebook@cuebook
 
-codex mcp login cuebook
+codex mcp list --json
 
+# Only when the status is not_logged_in and no login is pending:
+codex mcp login cuebook
 codex mcp list --json
 ```
 
-Cuebook's marketplace policy is `ON_INSTALL`, but `codex plugin add` does not guarantee that the CLI will open a browser. On a first-time installation, run `codex mcp login cuebook` once, complete the browser flow, and check `codex mcp list --json`. Skip login when Cuebook is already authenticated, and never start a second login after the first succeeds.
+Cuebook's marketplace policy is `ON_INSTALL`, but `codex plugin add` does not guarantee that the CLI will open a browser. On a first-time installation, check `codex mcp list --json`, then run `codex mcp login cuebook` once only when Cuebook reports `not_logged_in`. Skip login when Cuebook is already authenticated or a login is pending. If login opens a browser, the approval belongs to the user: wait for them to finish, never approve it yourself, and never restart login while that attempt is pending.
 
 The creator consent presents all six Cuebook scopes once: public research, private simulated-account reads, simulated Paper Trade actions, and private Frame read, draft, and publication actions. These remain independent server-enforced permissions. Granting them never publishes or trades automatically; every Paper Trade is simulated and still requires a preview plus explicit placement intent.
 
-The installing task owns installation and that one necessary host login. It must not create a background test task, publish a placeholder, or diagnose this local marketplace through a public ChatGPT plugin manager. After Cuebook is enabled and no longer reports `not_logged_in`, fully quit the Codex app with `Cmd+Q` on macOS (or exit it completely on another platform), reopen it, and then enter the real query or market idea in one new task. Codex CLI users should end the current process and start a new one. A new task inside an app process that never restarted can retain the previous Plugin and Tool snapshot. The final readiness proof is a normal MCP result in the restarted host, not a browser approval screen or connector status alone. If authentication fails, stop instead of retrying, reinstalling, or opening more tasks. OAuth credentials stay in the connector, never in a Skill or generated artifact.
+The installing task owns installation and that one necessary host login. It must not create a background test task, publish a placeholder, or diagnose this local marketplace through a public ChatGPT plugin manager. After the login command exits, list Cuebook's Tools, fully quit the Codex app with `Cmd+Q` on macOS (or exit it completely on another platform), reopen it, and then enter the real query or market idea in one new task. Codex CLI users should end the current process and start a new one. A new task inside an app process that never restarted can retain the previous Plugin and Tool snapshot. The final readiness proof is a normal MCP result from one smallest read-only call in the restarted host, not a browser approval screen, connector status, or Tool discovery alone. If authentication fails, retry login only after an explicit `not_logged_in`, authorization challenge, or revoked grant; do not retry for discovery, network, TLS, proxy, or timeout failures. OAuth credentials stay in the connector, never in a Skill or generated artifact.
 
 Use `--ref v0.9.20` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
 
@@ -68,7 +70,8 @@ Older connections retain their original immutable scopes. If one lacks Paper or 
 
 Cuebook ships two layers:
 
-- the self-contained `query-cuebook` and `create-cuebook-content` Agent Skills;
+- the self-contained `query-cuebook`, `create-cuebook-content`, and
+  `author-cuebook-skill` Agent Skills;
 - one authenticated remote MCP endpoint selected by distribution channel:
   stable `main` releases use `https://cuebook.app/mcp`, while `dev` builds use
   `https://cuebook.xyz/mcp`.

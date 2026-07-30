@@ -1,6 +1,6 @@
 # Cuebook on Hermes Agent
 
-**Surface:** Two Agent Skills plus an OAuth-authenticated HTTP MCP server.
+**Surface:** Three Agent Skills plus an OAuth-authenticated HTTP MCP server.
 
 **Package status:** The portable bundles match Hermes' GitHub Skill installation model and its MCP configuration shape.
 

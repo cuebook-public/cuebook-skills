@@ -50,13 +50,14 @@ These hosts can authenticate and call Cuebook Tools. They do not automatically i
 
 Run this gate only after the target Cuebook server release is confirmed healthy:
 
-1. Install or configure the host once.
-2. Start one OAuth flow. If token exchange fails, stop; do not retry in parallel or consume another connection slot.
-3. Require a normal `get_frame_capabilities` result. Browser approval or an “enabled” badge is not enough.
-4. Run one smallest useful read and retain source-linked output.
-5. On a Skill host, create one preview from a real user idea and inspect the sole publication master at its 622 × 400 mobile display size. Preview must not publish.
-6. With explicit user intent, publish one clearly identified test Frame. Treat the successful `complete_frame_publish` result as terminal; do not parse a receipt or add a web-page, reconciliation, or `get_frame` readback to the creator path.
-7. Record the host version and which gates passed before changing “pending” to “verified.”
+1. Install or configure the host once. When a Plugin already provides `cuebook`, do not register a duplicate MCP server.
+2. Inspect the host connection state. If Cuebook is authenticated or a login is pending, do not start another login. Otherwise start exactly one host-native login only for an explicit authentication requirement.
+3. If login opens a browser, the approval belongs to the user. Wait for them to finish, never approve it yourself, and never restart login while the attempt is pending.
+4. After login exits, list Cuebook's Tools, require a normal `get_frame_capabilities` result, and run one smallest useful read with source-linked output. Browser approval, an “enabled” badge, or Tool discovery alone is not enough.
+5. Retry login only after an explicit `not_logged_in`, authorization challenge, or revoked grant. Discovery, HTTP, DNS, TLS, proxy, socket, and timeout failures are not authentication failures.
+6. On a Skill host, create one preview from a real user idea and inspect the sole publication master at its 622 × 400 mobile display size. Preview must not publish.
+7. With explicit user intent, publish one clearly identified test Frame. Treat the successful `complete_frame_publish` result as terminal; do not parse a receipt or add a web-page, reconciliation, or `get_frame` readback to the creator path.
+8. Record the host version and which gates passed before changing “pending” to “verified.”
 
 The Frame publication contract remains the same on every host. Initial publication and append-only Correction use their declared publish paths. Frame releases are immutable; MCP has no author-management action, while Cuebook App can hide/show a Frame and may allow deletion during the first hour. Changed thesis or economics require a new Frame. Image bytes travel to signed upload URLs and are never downloaded back through an MCP media Tool.
 

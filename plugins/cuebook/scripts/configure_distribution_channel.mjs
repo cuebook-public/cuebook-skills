@@ -29,6 +29,17 @@ const FILES = Object.freeze({
   capabilityMap: "plugins/cuebook/assets/mcp-capability-map-v1.json",
 });
 
+export const CHANNEL_BOUND_PLATFORM_GUIDES = Object.freeze([
+  "chatgpt.md",
+  "claude-desktop.md",
+  "cursor.md",
+  "generic-agent-skills.md",
+  "generic-mcp.md",
+  "grok.md",
+  "hermes.md",
+  "openclaw.md",
+]);
+
 const CUEBOOK_SCHEMA_ID = /^https:\/\/cuebook\.(?:app|xyz)\//u;
 const jsonText = (value) => `${JSON.stringify(value, null, 2)}\n`;
 
@@ -95,6 +106,16 @@ export function distributionWrites(rootArg, channelName) {
       throw new Error(`${relativePath} does not contain its parsed $id literal.`);
     }
     writes.set(relativePath, text.replace(currentLiteral, JSON.stringify(nextId)));
+  }
+  for (const guideName of CHANNEL_BOUND_PLATFORM_GUIDES) {
+    const relativePath = `plugins/cuebook/platforms/${guideName}`;
+    const absolutePath = path.join(root, relativePath);
+    if (!fs.existsSync(absolutePath)) continue;
+    let text = fs.readFileSync(absolutePath, "utf8");
+    for (const candidate of Object.values(DISTRIBUTION_CHANNELS)) {
+      text = text.replaceAll(candidate.mcp_url, channel.mcp_url);
+    }
+    writes.set(relativePath, text);
   }
   return writes;
 }
@@ -163,6 +184,26 @@ export function collectDistributionIssues(rootArg, expectedChannel) {
   }
   if (capabilityMap.server?.url !== selected.mcp_url) {
     add(FILES.capabilityMap, `Capability server URL must equal ${selected.mcp_url}.`);
+  }
+  for (const guideName of CHANNEL_BOUND_PLATFORM_GUIDES) {
+    const relativePath = `plugins/cuebook/platforms/${guideName}`;
+    const absolutePath = path.join(root, relativePath);
+    if (!fs.existsSync(absolutePath)) {
+      add(relativePath, "Cannot read the channel-bound platform guide.");
+      continue;
+    }
+    const text = fs.readFileSync(absolutePath, "utf8");
+    if (!text.includes(selected.mcp_url)) {
+      add(relativePath, `Platform guide must use ${selected.mcp_url}.`);
+    }
+    for (const candidate of Object.values(DISTRIBUTION_CHANNELS)) {
+      if (candidate.channel !== selected.channel && text.includes(candidate.mcp_url)) {
+        add(
+          relativePath,
+          `Platform guide must not retain the ${candidate.channel} endpoint ${candidate.mcp_url}.`,
+        );
+      }
+    }
   }
   for (const relativePath of distributionSchemaFiles(root)) {
     let schema;

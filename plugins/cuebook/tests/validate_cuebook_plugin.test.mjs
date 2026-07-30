@@ -6,6 +6,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
+  CHANNEL_BOUND_PLATFORM_GUIDES,
   collectDistributionIssues,
   configureDistributionChannel,
 } from "../scripts/configure_distribution_channel.mjs";
@@ -88,8 +89,15 @@ test("Claude Code marketplace explicitly exposes only the three self-contained S
   assert.equal(manifest.mcpServers, "./.mcp.json");
 });
 
-test("platform guides are English, endpoint-pinned, and explicit about live evidence", () => {
+test("platform guides are English, channel-pinned, and explicit about live evidence", () => {
   const platformsRoot = path.join(PLUGIN_ROOT, "platforms");
+  const distribution = JSON.parse(
+    fs.readFileSync(path.join(PLUGIN_ROOT, "distribution-channel-v1.json"), "utf8"),
+  );
+  const selectedEndpoint = distribution.mcp_url;
+  const otherEndpoint = selectedEndpoint === "https://cuebook.app/mcp"
+    ? "https://cuebook.xyz/mcp"
+    : "https://cuebook.app/mcp";
   const guideNames = fs.readdirSync(platformsRoot)
     .filter((name) => name.endsWith(".md") && name !== "README.md")
     .sort();
@@ -100,7 +108,13 @@ test("platform guides are English, endpoint-pinned, and explicit about live evid
   assert.doesNotMatch(index, /[\u3400-\u9fff]/u);
   for (const guideName of guideNames) {
     const guide = fs.readFileSync(path.join(platformsRoot, guideName), "utf-8");
-    assert.match(guide, /https:\/\/cuebook\.app\/mcp/u, guideName);
+    if (CHANNEL_BOUND_PLATFORM_GUIDES.includes(guideName)) {
+      assert.ok(guide.includes(selectedEndpoint), guideName);
+      assert.ok(!guide.includes(otherEndpoint), guideName);
+    } else {
+      assert.match(guide, /https:\/\/cuebook\.app\/mcp/u, guideName);
+      assert.match(guide, /https:\/\/cuebook\.xyz\/mcp/u, guideName);
+    }
     assert.match(guide, /\*\*Live status:\*\*/u, guideName);
     assert.match(guide, /live verification gate/u, guideName);
     assert.doesNotMatch(guide, /[\u3400-\u9fff]/u, guideName);
@@ -142,10 +156,13 @@ test("platform validation rejects a missing host guide", () => {
 test("platform validation rejects endpoint drift", () => {
   withTmpPath((tmpPath) => {
     const root = copiedPlugin(tmpPath);
+    const distribution = JSON.parse(
+      fs.readFileSync(path.join(root, "distribution-channel-v1.json"), "utf8"),
+    );
     const filePath = path.join(root, "platforms", "cursor.md");
     fs.writeFileSync(
       filePath,
-      fs.readFileSync(filePath, "utf-8").replaceAll("https://cuebook.app/mcp", "https://example.com/mcp"),
+      fs.readFileSync(filePath, "utf-8").replaceAll(distribution.mcp_url, "https://example.com/mcp"),
     );
     assert.ok(codes(validate(root)).has("PLATFORM_MCP_ENDPOINT"));
   });
@@ -164,6 +181,11 @@ test("distribution channels generate one internally consistent OAuth resource", 
     const devMcp = JSON.parse(fs.readFileSync(path.join(pluginRoot, ".mcp.json"), "utf8"));
     assert.equal(devMcp.mcpServers.cuebook.url, "https://cuebook.xyz/mcp");
     assert.equal(devMcp.mcpServers.cuebook.oauth_resource, "https://cuebook.xyz/mcp");
+    for (const guideName of CHANNEL_BOUND_PLATFORM_GUIDES) {
+      const guide = fs.readFileSync(path.join(pluginRoot, "platforms", guideName), "utf8");
+      assert.match(guide, /https:\/\/cuebook\.xyz\/mcp/u, guideName);
+      assert.doesNotMatch(guide, /https:\/\/cuebook\.app\/mcp/u, guideName);
+    }
     const schemaPath = path.join(pluginRoot, "assets", "creation-menu-v1.schema.json");
     assert.equal(JSON.parse(fs.readFileSync(schemaPath, "utf8")).$id, "https://cuebook.xyz/schemas/creation-menu-v1.schema.json");
 
@@ -174,8 +196,22 @@ test("distribution channels generate one internally consistent OAuth resource", 
     const prodMcp = JSON.parse(fs.readFileSync(path.join(pluginRoot, ".mcp.json"), "utf8"));
     assert.equal(prodMcp.mcpServers.cuebook.url, "https://cuebook.app/mcp");
     assert.equal(prodMcp.mcpServers.cuebook.oauth_resource, "https://cuebook.app/mcp");
+    for (const guideName of CHANNEL_BOUND_PLATFORM_GUIDES) {
+      const guide = fs.readFileSync(path.join(pluginRoot, "platforms", guideName), "utf8");
+      assert.match(guide, /https:\/\/cuebook\.app\/mcp/u, guideName);
+      assert.doesNotMatch(guide, /https:\/\/cuebook\.xyz\/mcp/u, guideName);
+    }
     assert.equal(JSON.parse(fs.readFileSync(schemaPath, "utf8")).$id, "https://cuebook.app/schemas/creation-menu-v1.schema.json");
   });
+});
+
+test("platform guides describe all three public Agent Skills", () => {
+  const platformsRoot = path.join(PLUGIN_ROOT, "platforms");
+  for (const guideName of fs.readdirSync(platformsRoot).filter((name) => name.endsWith(".md"))) {
+    const guide = fs.readFileSync(path.join(platformsRoot, guideName), "utf8");
+    assert.doesNotMatch(guide, /\bTwo (?:self-contained )?(?:Cuebook )?Agent Skills\b/u, guideName);
+    assert.doesNotMatch(guide, /\bthe two (?:JavaScript-backed )?Cuebook Agent Skills\b/u, guideName);
+  }
 });
 
 test("distribution validation rejects channel and connector drift", () => {
@@ -274,8 +310,12 @@ test("Codex install docs authenticate once before the first Cuebook task", () =>
     assert.match(text, /codex mcp login cuebook/u);
     assert.match(text, /not_logged_in/u);
     assert.match(text, /browser approval/iu);
+    assert.match(text, /approval belongs to the user/iu);
+    assert.match(text, /login is pending|login while that attempt is pending/iu);
     assert.match(text, /does not\s+guarantee.*browser/isu);
     assert.match(text, /normal MCP result/u);
+    assert.match(text, /Tool discovery alone/u);
+    assert.match(text, /read-only/u);
     assert.doesNotMatch(text, /first Cuebook (?:request|call) may open a browser/iu);
     assert.doesNotMatch(text, /normal connector continuation/u);
   }
