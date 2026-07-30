@@ -43,7 +43,7 @@ If the installed build uses different command names, use its MCP settings UI rat
 
 ## Verification
 
-After the server rollout, run the shared [live verification gate](README.md#live-verification-gate). Confirm that only the three public Skills are discoverable, require a normal `get_frame_capabilities` result, then preview a real idea without publishing. Cursor's host-native image generation is not a substitute for the Skill's exact PNG dimensions, bitmap audit, and manifest hashes.
+After the server rollout, run the shared [live verification gate](../INSTALL.md#live-verification-gate). Confirm that only the three public Skills are discoverable, require a normal `get_frame_capabilities` result, then preview a real idea without publishing. Cursor's host-native image generation is not a substitute for the Skill's exact PNG dimensions, bitmap audit, and manifest hashes.
 
 ## Official host references
 

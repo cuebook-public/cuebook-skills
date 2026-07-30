@@ -24,7 +24,7 @@ Claude can call the MCP Tools it discovers. It does not load the three JavaScrip
 
 ## Verification
 
-After the server rollout, run the MCP-direct portion of the shared [live verification gate](README.md#live-verification-gate): one OAuth flow, a normal `get_frame_capabilities` result, one source-linked read, and one existing `get_frame` read. Do not publish during connector qualification.
+After the server rollout, run the MCP-direct portion of the shared [live verification gate](../INSTALL.md#live-verification-gate): one OAuth flow, a normal `get_frame_capabilities` result, one source-linked read, and one existing `get_frame` read. Do not publish during connector qualification.
 
 ## Official host reference
 

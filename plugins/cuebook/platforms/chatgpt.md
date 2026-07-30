@@ -28,7 +28,7 @@ Write verification must also wait until the ChatGPT workspace exposes modify act
 
 ## Verification
 
-After the server rollout, run the MCP-direct portion of the shared [live verification gate](README.md#live-verification-gate). A successful app scan or browser approval is not sufficient; retain one normal MCP result as the connection proof.
+After the server rollout, run the MCP-direct portion of the shared [live verification gate](../INSTALL.md#live-verification-gate). A successful app scan or browser approval is not sufficient; retain one normal MCP result as the connection proof.
 
 ## Official host reference
 

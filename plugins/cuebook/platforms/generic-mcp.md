@@ -27,7 +27,7 @@ Clients that do not load the three Cuebook Agent Skills should qualify reads fir
 
 ## Verification
 
-After the server rollout, run the MCP-direct portion of the shared [live verification gate](README.md#live-verification-gate). Stop after the first failed OAuth exchange; do not create multiple registrations or concurrent login attempts.
+After the server rollout, run the MCP-direct portion of the shared [live verification gate](../INSTALL.md#live-verification-gate). Stop after the first failed OAuth exchange; do not create multiple registrations or concurrent login attempts.
 
 ## Protocol references
 

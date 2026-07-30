@@ -109,7 +109,7 @@ After the server rollout, require a live probe:
 openclaw mcp doctor cuebook --probe
 ```
 
-Then run the rest of the shared [live verification gate](README.md#live-verification-gate). A static `status` result, bundle inspection, or visible Tool list is useful diagnostics but does not replace the probe and a normal `get_frame_capabilities` result.
+Then run the rest of the shared [live verification gate](../INSTALL.md#live-verification-gate). A static `status` result, bundle inspection, or visible Tool list is useful diagnostics but does not replace the probe and a normal `get_frame_capabilities` result.
 
 ## Official host references
 
