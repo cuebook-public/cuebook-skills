@@ -42,7 +42,8 @@ function rewrite(filePath, mutate) {
 test("valid plugin package", () => {
   const result = validate(PLUGIN_ROOT);
   assert.ok(result.valid, JSON.stringify(result));
-  assert.deepEqual(result.stats.module_skill_counts, { create: 28, query: 11 });
+  assert.deepEqual(result.stats.module_skill_counts, { create: 27, query: 11 });
+  assert.equal(result.stats.standalone_entrypoint_count, 1);
   assert.equal(result.stats.public_skill_count, 3);
   assert.ok(result.stats.discovery_reduction_percent >= 60);
   assert.ok(result.stats.frame_fast_preview_bytes < 112_000);
@@ -53,6 +54,43 @@ test("valid plugin package", () => {
   );
   assert.ok(modules.routing_rules.query_deliverables.includes("factual_chart"));
   assert.ok(modules.routing_rules.create_deliverables.includes("creator_viewpoint_graphic"));
+  assert.equal(
+    modules.routing_rules.community_skill_submission_intents_route_to,
+    "author-cuebook-skill",
+  );
+  assert.deepEqual(modules.standalone_entrypoints, ["author-cuebook-skill"]);
+  assert.ok(!modules.modules.find((item) => item.module_id === "create").skill_refs.includes("author-cuebook-skill"));
+});
+
+test("community package submission remains structurally separate from Create", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, "assets", "cuebook-modules-v1.json");
+    rewrite(filePath, (payload) => {
+      payload.modules.find((item) => item.module_id === "create").skill_refs.push("author-cuebook-skill");
+    });
+    assert.ok(codes(validate(root)).has("STANDALONE_MODULE_OVERLAP"));
+  });
+
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, "assets", "cuebook-modules-v1.json");
+    rewrite(filePath, (payload) => {
+      payload.routing_rules.community_skill_submission_intents_route_to = "create";
+    });
+    assert.ok(codes(validate(root)).has("COMMUNITY_SUBMISSION_ROUTE"));
+  });
+
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, "assets", "mcp-capability-map-v1.json");
+    rewrite(filePath, (payload) => {
+      payload.available_tools
+        .find((item) => item.tool === "search_news")
+        .used_by.push("author-cuebook-skill");
+    });
+    assert.ok(codes(validate(root)).has("TOOL_MODULE_EDGE"));
+  });
 });
 
 test("Claude Code marketplace explicitly exposes only the three self-contained Skills", () => {
@@ -292,6 +330,37 @@ test("public entrypoints distinguish authentication, discovery, and transport fa
   assert.ok(query.indexOf("## Quiet Readiness Check") < query.indexOf("## Routing"));
   assert.match(query, /Silently run the smallest required Cuebook read/u);
   assert.doesNotMatch(create, /## Meaning Lock|## Selection Freeze/u);
+});
+
+test("connected creator identity stays server-bound across Frame and community publication", () => {
+  const create = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const author = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "author-cuebook-skill", "SKILL.md"),
+    "utf-8",
+  );
+  const authorSchema = fs.readFileSync(
+    path.join(
+      PLUGIN_ROOT,
+      "skills",
+      "author-cuebook-skill",
+      "references",
+      "community-skill-submission-v1.schema.json",
+    ),
+    "utf-8",
+  );
+
+  assert.match(create, /`get_frame_capabilities` intentionally has no identity fields/u);
+  assert.match(create, /Any normal result, including in a new task, uses the OAuth-bound server user/u);
+  assert.match(create, /never ask for or accept an account name, `@handle`, or identity confirmation/u);
+  assert.match(create, /Never apply community SKILL\.md package-submission rules to ordinary content/u);
+  assert.match(author, /explicit creator-authored package submission with a root `SKILL\.md`/u);
+  assert.match(author, /Submission identity follows the current Cuebook OAuth grant/u);
+  assert.match(author, /Never ask the creator for an account name, `@handle`, or account confirmation/u);
+  assert.match(author, /Never add a handle to the local submission record or tool input/u);
+  assert.doesNotMatch(authorSchema, /creator_handle/u);
 });
 
 test("Codex install docs authenticate once before the first Cuebook task", () => {

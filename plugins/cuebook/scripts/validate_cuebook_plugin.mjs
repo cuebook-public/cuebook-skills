@@ -622,6 +622,11 @@ export function validate(pluginRoot) {
   }
   const querySource = readFileSync(path.join(pluginRoot, "skills", "query-cuebook", "SKILL.md"), "utf-8");
   const createSource = readFileSync(path.join(pluginRoot, "skills", "create-cuebook-content", "SKILL.md"), "utf-8");
+  const authorSource = readFileSync(path.join(pluginRoot, "skills", "author-cuebook-skill", "SKILL.md"), "utf-8");
+  const communitySubmissionSchemaSource = readFileSync(
+    path.join(pluginRoot, "skills", "author-cuebook-skill", "references", "community-skill-submission-v1.schema.json"),
+    "utf-8",
+  );
   check(
     querySource.includes("ranked candidates, not an existence verdict")
       && querySource.includes("`matchType: exact`")
@@ -635,6 +640,20 @@ export function validate(pluginRoot) {
     "ASSET_EXACT_MATCH_BOUNDARY",
     "skills/query-cuebook/SKILL.md",
     "Named assets must bind an exact identity; capability gaps cannot erase identity, and fuzzy candidates or proxies cannot become substitutes.",
+  );
+  check(
+    createSource.includes("`get_frame_capabilities` intentionally has no identity fields")
+      && createSource.includes("Any normal result, including in a new task, uses the OAuth-bound server user")
+      && createSource.includes("never ask for or accept an account name, `@handle`, or identity confirmation")
+      && createSource.includes("Never apply community SKILL.md package-submission rules to ordinary content")
+      && authorSource.includes("Activate it only for an explicit creator-authored package submission with a root `SKILL.md`")
+      && authorSource.includes("Submission identity follows the current Cuebook OAuth grant")
+      && authorSource.includes("Never ask the creator for an account name, `@handle`, or account confirmation")
+      && authorSource.includes("Never add a handle to the local submission record or tool input")
+      && !communitySubmissionSchemaSource.includes("creator_handle"),
+    "CONNECTED_IDENTITY_BOUNDARY",
+    "skills/create-cuebook-content/SKILL.md",
+    "Connected creator identity must stay server-bound; ordinary publication cannot inherit community package or handle rules.",
   );
 
   const tradingviewFiles = {
@@ -821,6 +840,12 @@ export function validate(pluginRoot) {
   const routing = moduleMap.routing_rules ?? {};
   check(routing.read_intents_route_to === "query", "READ_ROUTE", "routing_rules.read_intents_route_to", "Read intents must route to Query.");
   check(routing.creation_intents_route_to === "create", "CREATE_ROUTE", "routing_rules.creation_intents_route_to", "Creation intents must route to Create.");
+  check(
+    routing.community_skill_submission_intents_route_to === "author-cuebook-skill",
+    "COMMUNITY_SUBMISSION_ROUTE",
+    "routing_rules.community_skill_submission_intents_route_to",
+    "Creator-authored community package submissions must route only to Author.",
+  );
   check(routing.ambiguous_intents_route_to === "query", "AMBIGUOUS_ROUTE", "routing_rules.ambiguous_intents_route_to", "Ambiguous intents must default to Query.");
   check(
     setEq(new Set(routing.query_deliverables ?? []), new Set(["answer", "comparison", "source_bundle", "data_table", "factual_chart", "history_view", "tradingview_observation", "tradingview_focused_capture", "creation_handoff"])),
@@ -851,12 +876,34 @@ export function validate(pluginRoot) {
   }
   const querySkills = moduleSkillSets.get("query") ?? new Set();
   const createSkills = moduleSkillSets.get("create") ?? new Set();
+  const standaloneEntrypoints = new Set((moduleMap.standalone_entrypoints ?? []).map(norm));
   check(!intersects(querySkills, createSkills), "MODULE_SKILL_OVERLAP", "cuebook-modules-v1.json.modules", "A Skill can belong to only one module.");
-  check(setEq(new Set([...querySkills, ...createSkills]), skillDirs), "MODULE_SKILL_COVERAGE", "cuebook-modules-v1.json.modules", "Every packaged Skill must belong to one module.");
+  check(
+    setEq(standaloneEntrypoints, new Set(["author-cuebook-skill"])),
+    "STANDALONE_ENTRYPOINT_SET",
+    "cuebook-modules-v1.json.standalone_entrypoints",
+    "Author must be the only standalone public entrypoint.",
+  );
+  for (const skillId of standaloneEntrypoints) {
+    check(skillDirs.has(skillId), "STANDALONE_ENTRYPOINT_REF", "cuebook-modules-v1.json.standalone_entrypoints", `Unknown standalone entrypoint ${skillId}.`);
+  }
+  check(
+    !intersects(standaloneEntrypoints, querySkills) && !intersects(standaloneEntrypoints, createSkills),
+    "STANDALONE_MODULE_OVERLAP",
+    "cuebook-modules-v1.json",
+    "A standalone entrypoint cannot belong to Query or Create.",
+  );
+  check(
+    setEq(new Set([...querySkills, ...createSkills, ...standaloneEntrypoints]), skillDirs),
+    "MODULE_SKILL_COVERAGE",
+    "cuebook-modules-v1.json",
+    "Every packaged Skill must belong to one module or be an explicit standalone entrypoint.",
+  );
   const skillOwner = new Map();
   for (const [moduleId, refs] of moduleSkillSets) {
     for (const skillId of refs) skillOwner.set(skillId, moduleId);
   }
+  for (const skillId of standaloneEntrypoints) skillOwner.set(skillId, "standalone");
   for (const skillId of [...querySkills].sort()) {
     const body = readFileSync(path.join(pluginRoot, "skills", skillId, "SKILL.md"), "utf-8");
     const invokedSkills = new Set([...body.matchAll(/\$([a-z0-9-]+)/g)].map((match) => match[1]));
@@ -880,7 +927,7 @@ export function validate(pluginRoot) {
     deepEqualPy(index.public_entrypoints, [
       norm(query.entrypoint_skill),
       norm(create.entrypoint_skill),
-      "author-cuebook-skill",
+      ...standaloneEntrypoints,
     ]),
     "PUBLIC_ENTRYPOINT_SET",
     "plugin-index-v1.json.public_entrypoints",
@@ -1032,7 +1079,15 @@ export function validate(pluginRoot) {
       const owner = skillToModule.get(skillId);
       check(owner !== undefined, "TOOL_SKILL_REF", `tools.${toolName}.used_by`, `Unknown Skill ${skillId}.`);
       if (owner !== undefined) {
-        const allowed = owner === moduleId || ((modules.get(owner) ?? {}).may_invoke ?? []).includes(moduleId);
+        const standaloneAllowed = owner === "standalone"
+          && skillId === "author-cuebook-skill"
+          && (
+            COMMUNITY_TOOL_SCOPES.has(toolName)
+            || COMMUNITY_CATALOG_READ_TOOLS.has(toolName)
+          );
+        const allowed = standaloneAllowed
+          || owner === moduleId
+          || ((modules.get(owner) ?? {}).may_invoke ?? []).includes(moduleId);
         check(allowed, "TOOL_MODULE_EDGE", `tools.${toolName}.used_by`, `${owner} Skill ${skillId} cannot use ${moduleId} tool ${toolName}.`);
         if (moduleId === "query" && !COMMUNITY_CATALOG_READ_TOOLS.has(toolName)) check(owner === "query", "CREATE_DIRECT_READ", `tools.${toolName}.used_by`, `Create Skill ${skillId} must consume QueryBundleV1 instead of calling Query tool ${toolName} directly.`);
       }
@@ -1101,6 +1156,14 @@ export function validate(pluginRoot) {
     const surface = (((catalogSkills.get(skillId) ?? {}).ui) ?? {}).surface;
     check(surface !== "query", "CREATE_CATALOG_SURFACE", `catalog.skills.${skillId}.ui.surface`, "Create Skills cannot live on the Query surface.");
   }
+  const authorCatalog = catalogSkills.get("author-cuebook-skill") ?? {};
+  check(
+    authorCatalog.default_enabled === false
+      && authorCatalog.ui?.group === "Community marketplace",
+    "AUTHOR_CATALOG_EXPOSURE",
+    "catalog.skills.author-cuebook-skill",
+    "The standalone Author entry must not be default-enabled inside Create and must use its own marketplace group.",
+  );
 
   const configured = ((mcpConfig.mcpServers ?? {}).cuebook) ?? {};
   const selectedDistribution = DISTRIBUTION_CHANNELS[distribution.channel];
@@ -1167,6 +1230,7 @@ export function validate(pluginRoot) {
       module_skill_counts: Object.fromEntries(
         [...moduleSkillSets.keys()].sort().map((key) => [key, moduleSkillSets.get(key).size]),
       ),
+      standalone_entrypoint_count: standaloneEntrypoints.size,
       query_type_count: (queryMenu.queries ?? []).length,
       creation_step_count: (creationMenu.steps ?? []).length,
       available_mcp_tools: [...availableTools].filter(Boolean).sort(),

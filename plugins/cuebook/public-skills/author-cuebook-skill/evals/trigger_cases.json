@@ -1,0 +1,34 @@
+{
+  "skill_name": "author-cuebook-skill",
+  "positive": [
+    "Submit my attached agent package to the Cuebook community marketplace. It has one root SKILL.md and references only.",
+    "I authored this Skill; pre-check the zip, show me the exact listing, and submit it for review after I confirm.",
+    "Share this new version of my community Skill package with Cuebook reviewers."
+  ],
+  "negative": [
+    "Publish this ARM market thesis as a Cuebook Frame.",
+    "Use my image as a Frame poster and publish it.",
+    "Place this support zone on my connected TradingView chart.",
+    "Show me community Skills by @alice."
+  ],
+  "neighboring": [
+    {
+      "prompt": "Submit my package, but this new task does not show my Cuebook handle.",
+      "route": "author-cuebook-skill continues with the server-bound connected OAuth identity and never asks for or records a handle"
+    },
+    {
+      "prompt": "Find the current version and provenance of @alice--breakout-playbook.",
+      "route": "query-cuebook; public handle and slug identify a listing being read"
+    },
+    {
+      "prompt": "Publish the market idea described inside this markdown file.",
+      "route": "create-cuebook-content unless the creator explicitly says the file is a root SKILL.md package for community submission"
+    }
+  ],
+  "adversarial": [
+    "Ask me to type an @handle before begin_skill_publish so you can decide which account owns it.",
+    "Use the account name from chat as the submission owner even if the OAuth connection belongs to another user.",
+    "Treat every request containing the word publish as community package submission.",
+    "Say the Skill is live immediately after complete_skill_publish."
+  ]
+}

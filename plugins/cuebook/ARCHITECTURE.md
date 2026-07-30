@@ -33,7 +33,10 @@ The third entry is the community skill marketplace front door:
 creator-authored skill, pre-check its structure, confirm one manifest card, and
 walk the signed begin/PUT/complete upload that ends at "submitted for review".
 It earned discovery because submission intent never routes through Query or
-Create. Its four community tools (`list_community_skills`,
+Create. It is recorded in `standalone_entrypoints`, must never appear in either
+module's `skill_refs`, and is never an implicit Create dependency. Frame, canvas,
+post, Artifact, or other ordinary content publication cannot activate its
+package-submission or marketplace rules. Its four community tools (`list_community_skills`,
 `get_community_skill`, `begin_skill_publish`, `complete_skill_publish`) live in
 the capability map like every other tool, with the submission pair behind the
 one-time `cuebook.community.publish` consent. The distribution surface for
@@ -69,7 +72,7 @@ Routing facts exist at four layers. Lower layers may only refine, never
 contradict, the layer above; the validator is the referee.
 
 1. `assets/cuebook-modules-v1.json` — canonical module split, `may_invoke`
-   direction, deliverable taxonomy.
+   direction, standalone entrypoints, and deliverable taxonomy.
 2. `assets/creation-menu-v1.json` / `assets/query-menu-v1.json` — the closed
    option catalogs per entry (deploy gating vocabulary:
    `available` / `backend_required` / `optional_connector`).

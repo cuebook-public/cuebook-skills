@@ -5,9 +5,9 @@
   "discovery_budget": {
     "legacy_skill_count": 39,
     "public_skill_count": 3,
-    "legacy_metadata_bytes": 24528,
-    "public_metadata_bytes": 2657,
-    "reduction_percent": 89.2,
+    "legacy_metadata_bytes": 24085,
+    "public_metadata_bytes": 2214,
+    "reduction_percent": 90.8,
     "minimum_reduction_percent": 60
   },
   "frame_fast_preview_budget": {
@@ -23,7 +23,7 @@
       "references/modules/query-cuebook/references/cuebook-query-request-v1.schema.json",
       "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json"
     ],
-    "cumulative_bytes": 111981,
+    "cumulative_bytes": 111883,
     "maximum_bytes_exclusive": 112000,
     "within_budget": true
   },
