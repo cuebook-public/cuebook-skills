@@ -454,9 +454,13 @@ test("relative view keeps natural language outside and a frozen long-short sprea
   assert.match(publish, /outperform\|underperform/u);
 });
 
-test("public entrypoints route silently and ask once on a complete creator-facing result", () => {
+test("public entrypoints route silently and ask once with an editable primary label", () => {
   const create = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const publish = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "references", "frame-publish-workflow.md"),
     "utf-8",
   );
   const author = fs.readFileSync(
@@ -465,9 +469,12 @@ test("public entrypoints route silently and ask once on a complete creator-facin
   );
   const architecture = fs.readFileSync(path.join(PLUGIN_ROOT, "ARCHITECTURE.md"), "utf-8");
 
-  assert.match(create, /complete Frame: exact title, body, actual image or\s+poster/iu);
-  assert.match(create, /Do not present a form or ask for a\s+separate pre-render confirmation/iu);
+  assert.match(create, /complete Frame: exact title, body, one editable\s+localized primary analysis label when supported, actual image or poster/iu);
+  assert.match(create, /Do not present a form or add a separate tag or pre-render confirmation/iu);
+  assert.match(create, /primary is the most distinctive supported lens/iu);
   assert.match(create, /A clear yes, “publish,” or equivalent reply both selects the displayed\s+copy-to-image pair and authorizes publication/iu);
+  assert.match(publish, /A label-only change never causes research, rewriting, rendering, media\s+staging, or a separate confirmation/iu);
+  assert.match(publish, /both names the replacement and explicitly says to publish/iu);
   assert.doesNotMatch(create, /## Confirm The Expression Before Rendering/u);
   assert.match(author, /without announcing an entrypoint, branch, workflow, stage/iu);
   assert.match(author, /one cohesive review, then ask one direct\s+question/iu);

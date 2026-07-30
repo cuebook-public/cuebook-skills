@@ -19,7 +19,11 @@
     },
     {
       "id": "meaning_lock_integrity",
-      "question": "Were the exact public copy, asset, direction, deadline, creator-owned settlement rule, and visual job frozen before rendering, then shown together as one complete Frame for a single publication confirmation?"
+      "question": "Were the exact public copy, primary analysis label, asset, direction, deadline, creator-owned settlement rule, and visual job shown together as one complete Frame for a single publication confirmation?"
+    },
+    {
+      "id": "primary_analysis_label",
+      "question": "Does one localized primary label capture the Frame's most distinctive supported analytical contribution, remain editable by the creator, and avoid exposing backend enums or secondary tags?"
     },
     {
       "id": "evidence_logic",
@@ -89,6 +93,7 @@
     "the publication or expanded Frame hides a derived basket's components, weights, basis, coverage, or limitations",
     "the publication master is a dense desktop downscale, preserves the old 622 x 264 layout inside the taller canvas, leaves more than 14% unexplained bottom whitespace, needs zoom at 622 x 400, contains more than three competing reader-essential groups, or falls below the 20 px primary / 16 px secondary essential type floors",
     "pixels are rendered before the exact copy and settlement Meaning Lock is internally frozen, the actual image is omitted from publication confirmation, or a semantic or deadline change reuses stale pixels",
+    "a supported primary analysis label is hidden from the complete preview, exposed as a backend enum, confirmed through a separate tag gate, or a label-only change triggers research, rewriting, rendering, or media restaging",
     "a layout-only reroll changes facts, evidence, direction, horizon, or claim-state typing",
     "public copy or image prints correction-first headings such as invalidation, falsification condition, I admit I was wrong, or their locale equivalents",
     "the primary relationship cannot be identified within five seconds"

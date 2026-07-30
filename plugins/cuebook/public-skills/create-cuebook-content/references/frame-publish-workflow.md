@@ -27,16 +27,30 @@ Cuebook publishing needs an update and stop; never substitute a lower-level comp
 **Publication (after the creator's explicit intent):**
 
 4. Call `complete_frame_publish` once with the staged upload id, a separate fresh lowercase UUIDv7,
-   frozen copy, alt text, `subject_asset_refs`, evidence refs, frozen `reasoning_tags`, and one
-   explicit `settlement` object.
+   frozen copy, alt text, `subject_asset_refs`, evidence refs, the confirmed primary analysis label
+   with frozen secondary `reasoning_tags`, and one explicit `settlement` object.
    - Always send `reasoning_tags` as
      `{schema_version:"frame-reasoning-tags.v1",primary:<tag|null>,secondary:[...]}`. Infer it
-     silently from the confirmed interaction and evidence; never ask for a tag choice or expose it
-     in the public recap. Use only `fundamental`, `technical`, `macro_event`, `flow_positioning`,
+     from the confirmed interaction and evidence without making the creator classify the idea from
+     scratch. Primary means the supported lens that best captures the Frame's distinctive
+     analytical contribution—not merely its broad topic, first-mentioned dimension, or a rare
+     category chosen to manufacture diversity. Supporting but less defining lenses remain
+     secondary. Use only `fundamental`, `technical`, `macro_event`, `flow_positioning`,
      `sentiment_narrative`, and `risk_management`, with at most one primary and two distinct
-     secondary tags. Use `risk_management` only when the content materially reasons about downside,
-     invalidation, exposure, sizing, liquidity, drawdown, concentration, or another risk boundary;
-     ordinary uncertainty is not enough. Honest empty is `{primary:null,secondary:[]}`.
+     secondary tags.
+   - Show the primary beside the title and body in the creator's language as one compact,
+     naturally localized product label: `fundamental` = Fundamentals, `technical` = Technicals,
+     `macro_event` = Macro, `flow_positioning` = Positioning, `sentiment_narrative` = Sentiment,
+     and `risk_management` = Risk. Never expose the backend enum or secondary tags. If the creator
+     replaces the label, use that exact supported value as primary, remove it from secondary, and
+     keep at most two still-material secondary tags. A label-only change never causes research, rewriting, rendering, media
+     staging, or a separate confirmation; it joins the existing complete-Frame confirmation. If
+     the same instruction both names the replacement and explicitly says to publish, it confirms
+     that exact label with the unchanged displayed Frame.
+   - Use `risk_management` only when the content materially reasons about downside, invalidation,
+     exposure, sizing, liquidity, drawdown, concentration, or another risk boundary; ordinary
+     uncertainty is not enough. Honest empty is `{primary:null,secondary:[]}` and carries no visible
+     label.
    - Use `settlement: {mode:"none"}` when the creator did not choose a market-settled outcome.
      Nothing economic can appear in this branch.
    - Use `settlement: {mode:"market",settle_at,timezone,claim_text,rule}` only for a confirmed
@@ -76,19 +90,23 @@ independent image, Artifact, Settlement, or child-of-child path.
    comparison, offer one compact question: whether to preserve this change as a retrospective
    under the original Frame. Ask at most once and continue with an ordinary child if they decline.
    Do not add a redundant prompt when the user already explicitly asked for a retrospective.
-3. Draft and show the exact child title and body. Say plainly that it will be appended under the
-   existing Frame, then ask one natural question: publish this exact supplement or change it. Do
-   not render or stage media. An explicit “append,” “publish this review,” or equivalent for the
-   unchanged text is authorization.
+3. Draft and show one localized primary analysis label beside the exact child title and body. Say
+   plainly that it will be appended under the existing Frame, then ask one natural question:
+   publish this exact supplement or change it. Let the creator replace the label under the same
+   label-only rule as an initial Frame; do not render, stage media, or add a separate tag
+   confirmation. An explicit “append,” “publish this review,” or equivalent for the unchanged
+   preview is authorization.
 4. After authorization, call `publish_child_frame` once with the parent reference, exact title,
    body, language, pinned `skill_refs`, a fresh lowercase UUIDv7, and
    `reasoning_tags:{schema_version:"frame-child-reasoning-tags.v1",primary:<tag|null>,secondary:[...]}`.
    Infer at most one primary and two distinct secondary tags from the child itself. The allowed
-   values are the six parent tags plus child-only `retrospective`. Use `retrospective` only for an
-   actual comparison of the original thesis with later evidence or outcome; a correction, new
-   observation, or status update alone does not qualify. Apply `risk_management` under the same
-   material-risk rule as an independent Frame. Honest empty is
-   `{primary:null,secondary:[]}`.
+   values are the six parent tags plus child-only `retrospective`, displayed as a naturally
+   localized Review label.
+   Choose the most distinctive supported analytical contribution as primary, unless the creator
+   selected another allowed label in the preview. Use `retrospective` only for an actual comparison
+   of the original thesis with later evidence or outcome; a correction, new observation, or status
+   update alone does not qualify. Apply `risk_management` under the same material-risk rule as an
+   independent Frame. Honest empty is `{primary:null,secondary:[]}`.
 
 Only the parent author may append. If the server rejects authorship, stop without alternate payloads
 or identity probing. A visitor can continue a read-only review; if they explicitly want to publish
