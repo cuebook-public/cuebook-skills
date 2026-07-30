@@ -13,7 +13,7 @@ Use one server definition:
 ```text
 name: Cuebook
 transport: Streamable HTTP
-url: https://cuebook.app/mcp
+url: https://cuebook.xyz/mcp
 authentication: OAuth using MCP discovery
 ```
 
@@ -23,7 +23,7 @@ The client must support the MCP authorization discovery flow, PKCE, token refres
 
 Tool discovery is a capability surface, not an authorization boundary. The server enforces the user, client, grant, scopes, policy, idempotency, prepared hash, and publish token on every protected operation.
 
-Clients that do not load the two Cuebook Agent Skills should qualify reads first. They may expose Frame Tools, but full creator behavior is not claimed until the host can produce exact PNG roles, upload them over the signed URLs, register honest hashes and alt text, preserve the meaning lock, and complete the ordered publication flow.
+Clients that do not load the three Cuebook Agent Skills should qualify reads first. They may expose Frame Tools, but full creator behavior is not claimed until the host can produce exact PNG roles, upload them over the signed URLs, register honest hashes and alt text, preserve the meaning lock, and complete the ordered publication flow.
 
 ## Verification
 

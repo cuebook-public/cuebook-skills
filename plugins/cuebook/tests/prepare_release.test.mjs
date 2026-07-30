@@ -57,6 +57,11 @@ function fixture(root, { unreleased = "- Added one release feature." } = {}) {
       },
     },
   });
+  json(path.join(root, "plugins/cuebook/assets/example-v1.schema.json"), {
+    $schema: "https://json-schema.org/draft/2020-12/schema",
+    $id: "https://cuebook.xyz/schemas/example-v1.schema.json",
+    type: "object",
+  });
   json(path.join(root, "plugins/cuebook/.codex-plugin/plugin.json"), {
     name: "cuebook",
     version: "0.6.0+codex.20260720133237",
@@ -73,6 +78,7 @@ function fixture(root, { unreleased = "- Added one release feature." } = {}) {
     path.join(root, "README.md"),
     "[Release v0.6.0](https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.6.0)\nrelease-v0.6.0\n`--ref v0.6.0`\nnpm run release:prepare -- 0.6.0\n",
   );
+  text(path.join(root, "README.zh-CN.md"), "Use `--ref v0.6.0`.\n");
   text(path.join(root, "plugins/cuebook/README.md"), "Use `--ref v0.6.0`.\n");
   text(path.join(root, "plugins/cuebook/platforms/codex.md"), "Pin `--ref v0.6.0`.\n");
   text(
@@ -132,6 +138,10 @@ test("prepares every public version surface while preserving catalog version", (
       fs.readFileSync(path.join(root, "plugins/cuebook/assets/mcp-capability-map-v1.json")),
     );
     assert.equal(capabilityMap.server.url, "https://cuebook.app/mcp");
+    const schema = JSON.parse(
+      fs.readFileSync(path.join(root, "plugins/cuebook/assets/example-v1.schema.json")),
+    );
+    assert.equal(schema.$id, "https://cuebook.app/schemas/example-v1.schema.json");
     assert.match(
       fs.readFileSync(path.join(root, "plugins/cuebook/platforms/claude-code.md"), "utf8"),
       /cuebook-skills@v0\.7\.0/u,
@@ -142,6 +152,9 @@ test("prepares every public version surface while preserving catalog version", (
     assert.match(readme, /release-v0\.7\.0/u);
     assert.match(readme, /npm run release:prepare -- 0\.7\.0/u);
     assert.doesNotMatch(readme, /v0\.6\.0/u);
+    const localizedReadme = fs.readFileSync(path.join(root, "README.zh-CN.md"), "utf8");
+    assert.match(localizedReadme, /--ref v0\.7\.0/u);
+    assert.doesNotMatch(localizedReadme, /v0\.6\.0/u);
     const changelog = fs.readFileSync(path.join(root, "CHANGELOG.md"), "utf8");
     assert.match(changelog, /^## Unreleased\n\n## 0\.7\.0 — 2026-07-21$/mu);
     assert.match(changelog, /- Added one release feature\./u);

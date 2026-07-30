@@ -6,6 +6,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
+  CHANNEL_BOUND_PLATFORM_GUIDES,
   collectDistributionIssues,
   configureDistributionChannel,
 } from "../scripts/configure_distribution_channel.mjs";
@@ -88,8 +89,15 @@ test("Claude Code marketplace explicitly exposes only the three self-contained S
   assert.equal(manifest.mcpServers, "./.mcp.json");
 });
 
-test("platform guides are English, endpoint-pinned, and explicit about live evidence", () => {
+test("platform guides are English, channel-pinned, and explicit about live evidence", () => {
   const platformsRoot = path.join(PLUGIN_ROOT, "platforms");
+  const distribution = JSON.parse(
+    fs.readFileSync(path.join(PLUGIN_ROOT, "distribution-channel-v1.json"), "utf8"),
+  );
+  const selectedEndpoint = distribution.mcp_url;
+  const otherEndpoint = selectedEndpoint === "https://cuebook.app/mcp"
+    ? "https://cuebook.xyz/mcp"
+    : "https://cuebook.app/mcp";
   const guideNames = fs.readdirSync(platformsRoot)
     .filter((name) => name.endsWith(".md") && name !== "README.md")
     .sort();
@@ -100,7 +108,13 @@ test("platform guides are English, endpoint-pinned, and explicit about live evid
   assert.doesNotMatch(index, /[\u3400-\u9fff]/u);
   for (const guideName of guideNames) {
     const guide = fs.readFileSync(path.join(platformsRoot, guideName), "utf-8");
-    assert.match(guide, /https:\/\/cuebook\.app\/mcp/u, guideName);
+    if (CHANNEL_BOUND_PLATFORM_GUIDES.includes(guideName)) {
+      assert.ok(guide.includes(selectedEndpoint), guideName);
+      assert.ok(!guide.includes(otherEndpoint), guideName);
+    } else {
+      assert.match(guide, /https:\/\/cuebook\.app\/mcp/u, guideName);
+      assert.match(guide, /https:\/\/cuebook\.xyz\/mcp/u, guideName);
+    }
     assert.match(guide, /\*\*Live status:\*\*/u, guideName);
     assert.match(guide, /live verification gate/u, guideName);
     assert.doesNotMatch(guide, /[\u3400-\u9fff]/u, guideName);
@@ -142,10 +156,13 @@ test("platform validation rejects a missing host guide", () => {
 test("platform validation rejects endpoint drift", () => {
   withTmpPath((tmpPath) => {
     const root = copiedPlugin(tmpPath);
+    const distribution = JSON.parse(
+      fs.readFileSync(path.join(root, "distribution-channel-v1.json"), "utf8"),
+    );
     const filePath = path.join(root, "platforms", "cursor.md");
     fs.writeFileSync(
       filePath,
-      fs.readFileSync(filePath, "utf-8").replaceAll("https://cuebook.app/mcp", "https://example.com/mcp"),
+      fs.readFileSync(filePath, "utf-8").replaceAll(distribution.mcp_url, "https://example.com/mcp"),
     );
     assert.ok(codes(validate(root)).has("PLATFORM_MCP_ENDPOINT"));
   });
@@ -164,6 +181,13 @@ test("distribution channels generate one internally consistent OAuth resource", 
     const devMcp = JSON.parse(fs.readFileSync(path.join(pluginRoot, ".mcp.json"), "utf8"));
     assert.equal(devMcp.mcpServers.cuebook.url, "https://cuebook.xyz/mcp");
     assert.equal(devMcp.mcpServers.cuebook.oauth_resource, "https://cuebook.xyz/mcp");
+    for (const guideName of CHANNEL_BOUND_PLATFORM_GUIDES) {
+      const guide = fs.readFileSync(path.join(pluginRoot, "platforms", guideName), "utf8");
+      assert.match(guide, /https:\/\/cuebook\.xyz\/mcp/u, guideName);
+      assert.doesNotMatch(guide, /https:\/\/cuebook\.app\/mcp/u, guideName);
+    }
+    const schemaPath = path.join(pluginRoot, "assets", "creation-menu-v1.schema.json");
+    assert.equal(JSON.parse(fs.readFileSync(schemaPath, "utf8")).$id, "https://cuebook.xyz/schemas/creation-menu-v1.schema.json");
 
     const production = configureDistributionChannel(tmpPath, "production");
     assert.equal(production.channel, "production");
@@ -172,7 +196,22 @@ test("distribution channels generate one internally consistent OAuth resource", 
     const prodMcp = JSON.parse(fs.readFileSync(path.join(pluginRoot, ".mcp.json"), "utf8"));
     assert.equal(prodMcp.mcpServers.cuebook.url, "https://cuebook.app/mcp");
     assert.equal(prodMcp.mcpServers.cuebook.oauth_resource, "https://cuebook.app/mcp");
+    for (const guideName of CHANNEL_BOUND_PLATFORM_GUIDES) {
+      const guide = fs.readFileSync(path.join(pluginRoot, "platforms", guideName), "utf8");
+      assert.match(guide, /https:\/\/cuebook\.app\/mcp/u, guideName);
+      assert.doesNotMatch(guide, /https:\/\/cuebook\.xyz\/mcp/u, guideName);
+    }
+    assert.equal(JSON.parse(fs.readFileSync(schemaPath, "utf8")).$id, "https://cuebook.app/schemas/creation-menu-v1.schema.json");
   });
+});
+
+test("platform guides describe all three public Agent Skills", () => {
+  const platformsRoot = path.join(PLUGIN_ROOT, "platforms");
+  for (const guideName of fs.readdirSync(platformsRoot).filter((name) => name.endsWith(".md"))) {
+    const guide = fs.readFileSync(path.join(platformsRoot, guideName), "utf8");
+    assert.doesNotMatch(guide, /\bTwo (?:self-contained )?(?:Cuebook )?Agent Skills\b/u, guideName);
+    assert.doesNotMatch(guide, /\bthe two (?:JavaScript-backed )?Cuebook Agent Skills\b/u, guideName);
+  }
 });
 
 test("distribution validation rejects channel and connector drift", () => {
@@ -182,6 +221,9 @@ test("distribution validation rejects channel and connector drift", () => {
     fs.cpSync(PLUGIN_ROOT, pluginRoot, { recursive: true });
     rewrite(path.join(pluginRoot, ".mcp.json"), (payload) => {
       payload.mcpServers.cuebook.url = "https://example.com/mcp";
+    });
+    rewrite(path.join(pluginRoot, "assets", "creation-menu-v1.schema.json"), (payload) => {
+      payload.$id = "https://cuebook.xyz/schemas/creation-menu-v1.schema.json";
     });
     assert.ok(collectDistributionIssues(tmpPath, "production").length > 0);
     assert.ok(codes(validate(pluginRoot)).has("DISTRIBUTION_CHANNEL"));
@@ -268,8 +310,12 @@ test("Codex install docs authenticate once before the first Cuebook task", () =>
     assert.match(text, /codex mcp login cuebook/u);
     assert.match(text, /not_logged_in/u);
     assert.match(text, /browser approval/iu);
+    assert.match(text, /approval belongs to the user/iu);
+    assert.match(text, /login is pending|login while that attempt is pending/iu);
     assert.match(text, /does not\s+guarantee.*browser/isu);
     assert.match(text, /normal MCP result/u);
+    assert.match(text, /Tool discovery alone/u);
+    assert.match(text, /read-only/u);
     assert.doesNotMatch(text, /first Cuebook (?:request|call) may open a browser/iu);
     assert.doesNotMatch(text, /normal connector continuation/u);
   }
@@ -448,9 +494,13 @@ test("relative view keeps natural language outside and a frozen long-short sprea
   assert.match(publish, /outperform\|underperform/u);
 });
 
-test("public entrypoints route silently and ask once on a complete creator-facing result", () => {
+test("public entrypoints route silently and ask once with an editable primary label", () => {
   const create = fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "SKILL.md"),
+    "utf-8",
+  );
+  const publish = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "create-cuebook-content", "references", "frame-publish-workflow.md"),
     "utf-8",
   );
   const author = fs.readFileSync(
@@ -459,9 +509,12 @@ test("public entrypoints route silently and ask once on a complete creator-facin
   );
   const architecture = fs.readFileSync(path.join(PLUGIN_ROOT, "ARCHITECTURE.md"), "utf-8");
 
-  assert.match(create, /complete Frame: exact title, body, actual image or\s+poster/iu);
-  assert.match(create, /Do not present a form or ask for a\s+separate pre-render confirmation/iu);
+  assert.match(create, /complete Frame: exact title, body, one editable\s+localized primary analysis label when supported, actual image or poster/iu);
+  assert.match(create, /Do not present a form or add a separate tag or pre-render confirmation/iu);
+  assert.match(create, /primary is the most distinctive supported lens/iu);
   assert.match(create, /A clear yes, “publish,” or equivalent reply both selects the displayed\s+copy-to-image pair and authorizes publication/iu);
+  assert.match(publish, /A label-only change never causes research, rewriting, rendering, media\s+staging, or a separate confirmation/iu);
+  assert.match(publish, /both names the replacement and explicitly says to publish/iu);
   assert.doesNotMatch(create, /## Confirm The Expression Before Rendering/u);
   assert.match(author, /without announcing an entrypoint, branch, workflow, stage/iu);
   assert.match(author, /one cohesive review, then ask one direct\s+question/iu);
@@ -991,7 +1044,9 @@ test("Frame publish contract carries structural settlement and auxiliary reasoni
       "macro_event",
       "flow_positioning",
       "sentiment_narrative",
+      "risk_management",
     ],
+    child_only_values: ["retrospective"],
     honest_empty: true,
     included_in_content_hash: false,
     included_in_economic_hash: false,
@@ -1012,8 +1067,31 @@ test("Frame capability map targets the finalized 18-Tool v3 backend contract", (
     tool_manifest_sha256:
       "sha256:416dd4950a9bcbcdc2c73ed9728f7d817ba1d7a574c50b19bbdf88051d648bad",
     schema_catalog_sha256:
-      "sha256:1b06e0d7ed30da3040f9567b7672791538f82debe51dd727276ea24388138321",
+      "sha256:f4b5adb8349bbde80aa0a9d13b9859e4486b15dbf589c5149115ad2bbf731091",
   });
+});
+
+test("Frame review keeps retrospective child-only and author-owned", () => {
+  const query = fs.readFileSync(
+    path.join(PLUGIN_ROOT, "skills", "query-cuebook", "SKILL.md"),
+    "utf-8",
+  );
+  const publish = fs.readFileSync(
+    path.join(
+      PLUGIN_ROOT,
+      "skills",
+      "create-cuebook-content",
+      "references",
+      "frame-publish-workflow.md",
+    ),
+    "utf-8",
+  );
+  assert.match(query, /After resolution or deadline, offer one review question once/);
+  assert.match(query, /Only its author may route an append to Create/);
+  assert.match(publish, /frame-child-reasoning-tags\.v1/);
+  assert.match(publish, /child-only `retrospective`/);
+  assert.match(publish, /Only the parent author may append/);
+  assert.match(publish, /no\s+independent image, Artifact, Settlement, or child-of-child path/);
 });
 
 test("Frame flow rejects reintroduced publish consent", () => {

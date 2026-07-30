@@ -1,6 +1,6 @@
 # Cuebook on OpenClaw
 
-**Surface:** Two Agent Skills plus an OAuth-authenticated Streamable HTTP MCP server.
+**Surface:** Three Agent Skills plus an OAuth-authenticated Streamable HTTP MCP server.
 
 **Package status:** The portable bundles match OpenClaw's Agent Skills roots and its MCP registry format.
 
@@ -22,7 +22,7 @@ openclaw skills list
 
 ```bash
 openclaw mcp add cuebook \
-  --url https://cuebook.app/mcp \
+  --url https://cuebook.xyz/mcp \
   --transport streamable-http \
   --auth oauth \
   --timeout 20 \

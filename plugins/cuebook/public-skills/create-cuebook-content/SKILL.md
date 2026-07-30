@@ -22,10 +22,10 @@ Behave like an attentive editor with excellent market memory, not a workflow eng
 - Begin with the non-obvious kernel of what the creator noticed. Reflect it tentatively and specifically, so correction feels easy.
 - When a material foothold exists, normally offer one compact thought-anchor exchange even for a publishable idea. Ask one useful question and, only if its answer exposes a consequential thin link, one short follow-up. Never use a checklist; skip on request or when no anchor helps. A settleable idea still needs a creator-stated or creator-accepted horizon.
 - Weave in the smallest useful Cuebook memory—a dated relationship, relevant Cue, comparator, missing actor, mechanism, or next footprint—as a thinking foothold rather than a lesson or test.
-- Once the thought is ready, build and show the complete Frame: exact title, body, actual image or
-  poster, optional interactive experience, and any chosen settlement rule. Ask one direct,
-  natural question: publish this exact expression or change it. Do not present a form or ask for a
-  separate pre-render confirmation.
+- Once the thought is ready, build and show the complete Frame: exact title, body, one editable
+  localized primary analysis label when supported, actual image or poster, optional interactive
+  experience, and any chosen settlement rule. Ask one direct question: publish this exact
+  expression or change it. Do not present a form or add a separate tag or pre-render confirmation.
 - Make one relationship visible that prose alone would hide. The image is the payoff, not a decorated summary.
 - After publication, recognize what became clearer and return the creator warmly to Cuebook App, where the idea can be shared or revisited.
 
@@ -47,8 +47,9 @@ Before a Frame conversation begins, silently call `get_frame_capabilities` once 
 - Consume Query's validated `CuebookIntentV1`; execute its ordered, explicitly gated Create steps.
 - Route TradingView reads to Query, generated Frames to Fast Preview, a creator image or public interactive link to [Creator Media And External Artifacts](references/creator-media-and-artifacts.md), a rights-cleared official snapshot to Attributed Snapshot, and only explicit chart writes to the canvas-transfer reference. For Frame plus canvas, select the Frame before separately confirming its drawing plan.
 - Resolve only rigid gaps, research once, then recap copy, deadline meaning, and visual intent. Time, any terminal ± band, and every two-asset leg are creator-owned; never preset them.
-- After the creator sees the rendered Frame, preserve the chosen copy, meaning, evidence, settlement, and image bytes unchanged.
 - Publish only after explicit publication intent. The moment a rendered Frame is shown, silently stage its frozen image in the background (reserve, signed PUT, media completion) so server-side processing finishes while the creator decides; staging touches only the quarantine store and is never a publication. Read [Frame Publish Workflow](references/frame-publish-workflow.md) for the staging and publication contract.
+- Existing-Frame review uses the [author-only text child path](references/frame-publish-workflow.md);
+  it has no Settlement, and `retrospective` requires comparison.
 - If an upstream system provides a frozen commitment, evidence refs, mechanism path, and render-safe projection, consume them as truth. Improve expression and design without re-deciding the asset, direction, horizon, or facts. A layout reroll never reopens the thesis.
 
 ## End-Of-Task Memory Proposal
@@ -75,7 +76,7 @@ This is the native Frame path. A creator may adopt a TradingView foothold, but e
 6. Retrieve candles and market state together. Any two-asset view uses synchronized baseline-relative geometry; a custom 3–8 component basket remains a transparent Creator Lens. Never request a public basket, DAG, or reasoning graph.
 7. Keep routing backstage. Present reconciled logic, never provider gaps. If a material fact remains unsupported, ask whether to omit it or frame it as creator inference.
 8. Type meaning honestly: relationships are observed/derived, events reported, Cues other creators' views, future conditions conditional, and the creator's causal bridge may remain a creator-owned hypothesis. A source ref or popular Cue is not proof. Evidence supports facts and visible geometry; it does not gate a clearly framed opinion.
-9. Draft exact copy, subjects, media/Artifact, optional Settlement, and visual intent. Relative compares returns; compound says both rules must hold; directional equality is flat. Silently infer the publish workflow's auxiliary reasoning envelope; never ask, recap, or display it. Freeze the coherent draft internally, then render or adopt its media before asking for publication.
+9. Draft exact copy, subjects, media/Artifact, optional Settlement, and visual intent. Relative compares returns; compound says both rules must hold; directional equality is flat. Infer the reasoning envelope: primary is the most distinctive supported lens. Show its editable localized label beside the copy; keep secondary backstage. Freeze the coherent draft internally, then render or adopt its media before asking for publication.
 10. For a generated visual, read [Frame Expression System](references/frame-expression-system.md), [Frame Art Direction](references/frame-art-direction.md), and [Frame Feed Attention](references/frame-feed-attention.md); use the market job or a Lens job only for a transparent Creator/long-short Lens. Carry the internally frozen draft and raw data. Creator media and Artifacts follow their shorter reference and never enter the generated profile.
 11. Run one stable command. It rejects an absent, unfrozen, or mismatched internal meaning package before it calculates, composes, rasterizes one publication image, and writes the private preview:
 
@@ -83,7 +84,7 @@ This is the native Frame path. A creator may adopt a TradingView foothold, but e
 node scripts/run_fast_preview.mjs frame-preview-job.json ./preview-output
 ```
 
-12. Present the completed Frame immediately when the generated preview passes or the creator image inspection is valid. Its public contract is exactly:
+12. Present the completed Frame immediately when the generated preview passes or the creator image inspection is valid. Its content-and-media contract remains exactly:
 
 ```json
 {
@@ -128,9 +129,10 @@ Before showing title and body, silently polish them in the same drafting pass. R
 ## Complete Preview, One Publication Confirmation
 
 Do not ask the creator to approve copy or visual intent before rendering. Build one private complete
-preview first, then present the exact title, body, actual image or poster, whether it opens an
-interactive Artifact, and—only when chosen—the plain-language Settlement meaning in one cohesive
-response. Keep evidence labels, schemas, routing, and internal lock language backstage.
+preview first, then present the exact title and body with one localized primary analysis label when
+supported, the actual image or poster, whether it opens an interactive Artifact, and—only when
+chosen—the plain-language Settlement meaning in one cohesive response. Keep evidence labels,
+schemas, routing, backend tag enums, secondary tags, and internal lock language backstage.
 
 Ask one direct question such as: “Should I publish this exact Frame, or would you like me to change
 the expression?” A clear yes, “publish,” or equivalent reply both selects the displayed
@@ -140,8 +142,9 @@ single publication question.
 
 - Validate any Settlement assets, deadline, conditions, and bands before rendering so the complete
   preview is truthful. The creator may keep the Frame non-settling.
-- The confirmation covers exact copy, subject assets, actual media, optional Artifact, optional
-  Settlement, and inferred backstage reasoning tags.
+- Confirmation covers the displayed Frame, primary label, and backstage secondary tags.
+- A label-only change updates primary, deduplicates secondary, preserves copy, pixels, Settlement,
+  and staged media, and uses this same confirmation; follow [Frame Publish Workflow](references/frame-publish-workflow.md).
 - A changed title, body, image, Artifact, direction, horizon, or economic rule invalidates the old
   confirmation. A layout-only reroll preserves meaning but still needs confirmation of the newly
   displayed complete Frame.
@@ -171,7 +174,6 @@ Generated visuals take the full semantic, layout, and pixel checks. Creator medi
 - Use one asset resolution, one shared evidence plan, one Cuebook batch plus one bounded authoritative Web batch when material, one reconciliation, this bounded interview, one complete-preview publication confirmation, and one runner invocation.
 - Stage the frozen image when shown, reusing its MIME type, native dimensions, hash, and size. Publication intent then costs one completion call. Do not reconfirm, rerun, audit, rebuild, prepare, poll, validate a receipt, reconcile, or read back. Replay uncertain transport once with the same key and payload. Retry a condition-bound market block once with that same key after the named condition changes; a true domain rejection stops.
 - Do not reread the whole repository, inspect renderer source, rebuild valid stages, create a local OAuth client, or run release packaging before selection.
-- When a valid title, body, and image exist, show the complete Frame and ask only for publication or a visual/copy change. A changed title, body, asset, direction, horizon, settlement meaning, or material premise invalidates the old confirmation and any dependent pixels.
 
 After the Frame, give the one-sentence reveal: the preserved edge, visible connection, and useful future watch. Never provide provider coverage accounting or claim invisible value.
 

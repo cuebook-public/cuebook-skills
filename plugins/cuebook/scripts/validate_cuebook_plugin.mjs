@@ -5,7 +5,10 @@ import { readFileSync, readdirSync, existsSync, realpathSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { DISTRIBUTION_CHANNELS } from "./configure_distribution_channel.mjs";
+import {
+  CHANNEL_BOUND_PLATFORM_GUIDES,
+  DISTRIBUTION_CHANNELS,
+} from "./configure_distribution_channel.mjs";
 import { validateInstance, pyrepr } from "./validate_json_schema.mjs";
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
@@ -25,6 +28,7 @@ const PLATFORM_GUIDES = new Set([
   "hermes.md",
   "openclaw.md",
 ]);
+const CHANNEL_BOUND_PLATFORM_GUIDE_SET = new Set(CHANNEL_BOUND_PLATFORM_GUIDES);
 
 export function load(filePath) {
   return JSON.parse(readFileSync(filePath, "utf-8"));
@@ -251,7 +255,9 @@ const FRAME_PUBLICATION_FLOW = {
       "macro_event",
       "flow_positioning",
       "sentiment_narrative",
+      "risk_management",
     ],
+    child_only_values: ["retrospective"],
     honest_empty: true,
     included_in_content_hash: false,
     included_in_economic_hash: false,
@@ -287,7 +293,7 @@ const FRAME_PUBLICATION_FLOW = {
     tool_manifest_sha256:
       "sha256:416dd4950a9bcbcdc2c73ed9728f7d817ba1d7a574c50b19bbdf88051d648bad",
     schema_catalog_sha256:
-      "sha256:1b06e0d7ed30da3040f9567b7672791538f82debe51dd727276ea24388138321",
+      "sha256:f4b5adb8349bbde80aa0a9d13b9859e4486b15dbf589c5149115ad2bbf731091",
   },
   mutation_idempotency: "distinct_lowercase_uuidv7_per_command",
   replay_policy: "same_key_same_payload_returns_receipt_changed_payload_conflict",
@@ -347,12 +353,28 @@ export function validate(pluginRoot) {
     const guidePath = path.join(platformsRoot, guideName);
     if (!existsSync(guidePath)) continue;
     const guide = readFileSync(guidePath, "utf-8");
+    const expectedEndpoint = CHANNEL_BOUND_PLATFORM_GUIDE_SET.has(guideName)
+      ? distribution.mcp_url
+      : PRODUCTION_MCP_URL;
     check(
-      guide.includes(PRODUCTION_MCP_URL),
+      guide.includes(expectedEndpoint),
       "PLATFORM_MCP_ENDPOINT",
       `platforms/${guideName}`,
-      "Every host guide must name the stable production Cuebook MCP endpoint.",
+      CHANNEL_BOUND_PLATFORM_GUIDE_SET.has(guideName)
+        ? `The host guide must use the selected ${distribution.channel} endpoint ${distribution.mcp_url}.`
+        : "The host guide must distinguish the stable production Cuebook MCP endpoint.",
     );
+    if (CHANNEL_BOUND_PLATFORM_GUIDE_SET.has(guideName)) {
+      const otherEndpoint = distribution.channel === "production"
+        ? DEVELOPMENT_MCP_URL
+        : PRODUCTION_MCP_URL;
+      check(
+        !guide.includes(otherEndpoint),
+        "PLATFORM_MCP_ENDPOINT",
+        `platforms/${guideName}`,
+        `The channel-bound host guide must not retain ${otherEndpoint}.`,
+      );
+    }
     check(
       /\*\*Live status:\*\*/u.test(guide),
       "PLATFORM_LIVE_STATUS",

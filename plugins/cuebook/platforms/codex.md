@@ -15,8 +15,10 @@ codex plugin marketplace add cuebook-public/cuebook-skills \
 
 codex plugin add cuebook@cuebook
 
-codex mcp login cuebook
+codex mcp list --json
 
+# Only when the status is not_logged_in and no login is pending:
+codex mcp login cuebook
 codex mcp list --json
 ```
 
@@ -25,7 +27,7 @@ Codex reads exactly three `SKILL.md` files at startup. Internal capabilities are
 vendored as non-discoverable `references/modules/*.md` resources behind
 `query-cuebook`, `create-cuebook-content`, and `author-cuebook-skill`.
 
-The default marketplace follows stable releases from `main`. Add `--ref v0.9.19`
+The default marketplace follows stable releases from `main`. Add `--ref v0.9.20`
 only for an intentionally frozen install.
 
 ## Update
@@ -57,10 +59,12 @@ restore that network path and retry the same request without reinstalling or
 starting another login.
 
 The marketplace policy is `ON_INSTALL`, but `codex plugin add` does not
-guarantee that the CLI will open a browser. On a first-time installation, run
-`codex mcp login cuebook` once and complete that browser flow, then inspect the
-`cuebook` entry from `codex mcp list --json`. Skip login when it is already
-authenticated; do not start a second login after the first succeeds.
+guarantee that the CLI will open a browser. On a first-time installation,
+inspect the `cuebook` entry from `codex mcp list --json`, then run
+`codex mcp login cuebook` once only when it reports `not_logged_in`. Skip login
+when Cuebook is already authenticated or a login is pending. If login opens a
+browser, the approval belongs to the user: wait for them to finish, never
+approve it yourself, and never restart login while that attempt is pending.
 
 The installing task owns installation and that one necessary host login. It
 must not create a background test task, publish a placeholder idea, or use a
@@ -68,7 +72,10 @@ public ChatGPT plugin manager to diagnose this local marketplace. After
 authentication completes, fully quit and reopen the Codex app (`Cmd+Q` on
 macOS), or restart the Codex CLI process. Only then open one new task so Plugin
 and Tool discovery happen from the installed version with an authenticated
-connector.
+connector. List Cuebook's Tools and make one smallest normal read-only call;
+Tool discovery alone is not proof of readiness. Retry login only after an
+explicit authentication failure, never for discovery, network, TLS, proxy, or
+timeout failures.
 
 ## MCP configuration and auth
 
@@ -125,9 +132,12 @@ separate UI authorization path, not an additional MCP gate. Frame releases are
 immutable. MCP has no author-management action; Cuebook App can hide/show a Frame
 and may allow deletion during the first hour. Unchanged economics may use an
 append-only Correction, while a changed thesis or economic contract requires a
-new Frame. Every mutation uses a separate lowercase UUIDv7. Query never calls writes;
-Create never publishes silently, and no standalone media retrieval tool is
-exposed.
+new Frame. An author may explicitly append one immutable text-only child after
+reviewing the parent and existing children; it carries its own reasoning envelope,
+including child-only `retrospective` when the text actually compares the original
+thesis with later evidence or outcome. Every mutation uses a separate lowercase
+UUIDv7. Query never calls writes; Create never publishes silently, and no
+standalone media retrieval tool is exposed.
 
 ## Known limitations
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Keep the checked-in Cuebook connector aligned with its distribution branch.
-// Skill behavior and Tool contracts are shared; only the OAuth resource origin
-// changes between the stable production channel and the development channel.
+// Skill behavior and Tool contracts are shared; only distribution-bound
+// origins change between the stable production and development channels.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -29,10 +29,39 @@ const FILES = Object.freeze({
   capabilityMap: "plugins/cuebook/assets/mcp-capability-map-v1.json",
 });
 
+export const CHANNEL_BOUND_PLATFORM_GUIDES = Object.freeze([
+  "chatgpt.md",
+  "claude-desktop.md",
+  "cursor.md",
+  "generic-agent-skills.md",
+  "generic-mcp.md",
+  "grok.md",
+  "hermes.md",
+  "openclaw.md",
+]);
+
+const CUEBOOK_SCHEMA_ID = /^https:\/\/cuebook\.(?:app|xyz)\//u;
 const jsonText = (value) => `${JSON.stringify(value, null, 2)}\n`;
 
 function readJson(root, relativePath) {
   return JSON.parse(fs.readFileSync(path.join(root, relativePath), "utf8"));
+}
+
+function distributionSchemaFiles(root) {
+  const pluginRoot = path.join(root, "plugins", "cuebook");
+  if (!fs.existsSync(pluginRoot)) return [];
+  const files = [];
+  const visit = (directory) => {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const target = path.join(directory, entry.name);
+      if (entry.isDirectory()) visit(target);
+      else if (entry.isFile() && entry.name.endsWith(".schema.json")) {
+        files.push(path.relative(root, target).split(path.sep).join("/"));
+      }
+    }
+  };
+  visit(pluginRoot);
+  return files.sort();
 }
 
 export function distributionChannel(name) {
@@ -52,7 +81,7 @@ export function distributionWrites(rootArg, channelName) {
     url: channel.mcp_url,
   };
 
-  return new Map([
+  const writes = new Map([
     [FILES.manifest, jsonText(channel)],
     [FILES.mcp, jsonText({
       mcpServers: {
@@ -65,6 +94,30 @@ export function distributionWrites(rootArg, channelName) {
     })],
     [FILES.capabilityMap, jsonText(capabilityMap)],
   ]);
+  for (const relativePath of distributionSchemaFiles(root)) {
+    const absolutePath = path.join(root, relativePath);
+    const text = fs.readFileSync(absolutePath, "utf8");
+    const schema = JSON.parse(text);
+    if (typeof schema.$id !== "string" || !CUEBOOK_SCHEMA_ID.test(schema.$id)) continue;
+    const schemaUrl = new URL(schema.$id);
+    const nextId = `${channel.web_origin}${schemaUrl.pathname}${schemaUrl.search}${schemaUrl.hash}`;
+    const currentLiteral = JSON.stringify(schema.$id);
+    if (!text.includes(currentLiteral)) {
+      throw new Error(`${relativePath} does not contain its parsed $id literal.`);
+    }
+    writes.set(relativePath, text.replace(currentLiteral, JSON.stringify(nextId)));
+  }
+  for (const guideName of CHANNEL_BOUND_PLATFORM_GUIDES) {
+    const relativePath = `plugins/cuebook/platforms/${guideName}`;
+    const absolutePath = path.join(root, relativePath);
+    if (!fs.existsSync(absolutePath)) continue;
+    let text = fs.readFileSync(absolutePath, "utf8");
+    for (const candidate of Object.values(DISTRIBUTION_CHANNELS)) {
+      text = text.replaceAll(candidate.mcp_url, channel.mcp_url);
+    }
+    writes.set(relativePath, text);
+  }
+  return writes;
 }
 
 export function collectDistributionIssues(rootArg, expectedChannel) {
@@ -131,6 +184,39 @@ export function collectDistributionIssues(rootArg, expectedChannel) {
   }
   if (capabilityMap.server?.url !== selected.mcp_url) {
     add(FILES.capabilityMap, `Capability server URL must equal ${selected.mcp_url}.`);
+  }
+  for (const guideName of CHANNEL_BOUND_PLATFORM_GUIDES) {
+    const relativePath = `plugins/cuebook/platforms/${guideName}`;
+    const absolutePath = path.join(root, relativePath);
+    if (!fs.existsSync(absolutePath)) {
+      add(relativePath, "Cannot read the channel-bound platform guide.");
+      continue;
+    }
+    const text = fs.readFileSync(absolutePath, "utf8");
+    if (!text.includes(selected.mcp_url)) {
+      add(relativePath, `Platform guide must use ${selected.mcp_url}.`);
+    }
+    for (const candidate of Object.values(DISTRIBUTION_CHANNELS)) {
+      if (candidate.channel !== selected.channel && text.includes(candidate.mcp_url)) {
+        add(
+          relativePath,
+          `Platform guide must not retain the ${candidate.channel} endpoint ${candidate.mcp_url}.`,
+        );
+      }
+    }
+  }
+  for (const relativePath of distributionSchemaFiles(root)) {
+    let schema;
+    try {
+      schema = readJson(root, relativePath);
+    } catch (error) {
+      add(relativePath, `Cannot read the JSON Schema: ${error.message}`);
+      continue;
+    }
+    if (typeof schema.$id !== "string" || !CUEBOOK_SCHEMA_ID.test(schema.$id)) continue;
+    if (new URL(schema.$id).origin !== selected.web_origin) {
+      add(relativePath, `Schema $id must use ${selected.web_origin}.`);
+    }
   }
 
   return issues;

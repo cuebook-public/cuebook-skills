@@ -8,6 +8,10 @@
   </a>
 </p>
 
+<p align="center">
+  <strong>English</strong> · <a href="README.zh-CN.md">&#x7B80;&#x4F53;&#x4E2D;&#x6587;</a>
+</p>
+
 <h1 align="center">Cuebook Skills — market expression for AI agents</h1>
 
 <p align="center"><strong>Give a market intuition structure, evidence, and a future checkpoint—without taking authorship away.</strong></p>
@@ -17,7 +21,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.19"><img alt="Release v0.9.19" src="https://img.shields.io/badge/release-v0.9.19-F6C500?style=flat-square&labelColor=111111"></a>
+  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.20"><img alt="Release v0.9.20" src="https://img.shields.io/badge/release-v0.9.20-F6C500?style=flat-square&labelColor=111111"></a>
   <a href="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml"><img alt="Quality" src="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml/badge.svg?branch=main"></a>
   <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/Node.js-%E2%89%A522-3C873A?style=flat-square&labelColor=111111">
   <img alt="Three public skills" src="https://img.shields.io/badge/public_skills-3-4C6FFF?style=flat-square&labelColor=111111">
@@ -43,7 +47,7 @@
   <a href="#quick-start">Quick Start</a> ·
   <a href="#updating">Updating</a> ·
   <a href="#install-time-connection">Connection</a> ·
-  <a href="#two-skills-one-boundary">Skills</a> ·
+  <a href="#three-public-skills-clear-boundaries">Skills</a> ·
   <a href="#one-frame-four-fields">Frame</a> ·
   <a href="#designed-for-the-feed">Visuals</a> ·
   <a href="#architecture">Architecture</a> ·
@@ -80,25 +84,31 @@ Both surfaces connect to Cuebook MCP. The server remains authoritative for avail
 
 ## One Query Surface, Many Intents
 
-`query-cuebook` recognizes twelve top-level request families without making an agent load twelve separate Skills: latest Cues, Cue detail, asset narratives, market state, market evidence, fundamentals, market series, derived metrics, settlement history, published Frames, commentator profiles, and media formats. Mixed questions can compose several families in one plan.
+`query-cuebook` recognizes fifteen top-level request families without making an agent load fifteen separate Skills: latest Cues, Cue detail, asset narratives, market state, market evidence, fundamentals, market series, derived metrics, local TradingView inspection and capture, settlement history, published Frames, community Skills, commentator profiles, and media formats. Mixed questions can compose several families in one plan.
 
-Behind that one natural-language surface, Cuebook can combine published Cues and their timelines with persisted market snapshots, sealed OHLCV, news clusters, filings, disclosures, positioning, asset events, market calendars, prediction markets, market briefings, themes, reasoning graphs, settlements, and published Frames. Seven output modes cover concise answers, comparisons, source bundles, data tables, factual charts, history views, and handoff into Frame creation.
+Behind that one natural-language surface, Cuebook can combine published Cues and their timelines with persisted market snapshots, sealed OHLCV, news clusters, filings, disclosures, positioning, asset events, market calendars, prediction markets, market briefings, themes, reasoning graphs, settlements, published Frames, and reviewed community Skill metadata. Nine output modes cover concise answers, comparisons, source bundles, data tables, factual charts, history views, two optional TradingView observations, and handoff into Frame creation.
 
 When separately configured by the creator, two optional TradingView connectors can join those same two Skills without adding another entrypoint. Query may inspect the open chart, make one high-density latest-structure capture, or run one bounded outside research check. Create may place an exact, separately confirmed set of levels, zones, checkpoints, notes, or historical segments on that local chart. Existing drawings are preserved. Raw screenshots and provider data remain restricted; Frame defaults to Cuebook-native rerendering. An explicitly selected official snapshot can use the finished-bitmap route only with visible TradingView attribution, known overlay rights, an applicable price lock, undistorted geometry, and image audit. See [Optional TradingView Connectors](plugins/cuebook/references/tradingview-optional-connectors.md).
 
 The public Skills are a context-efficiency boundary, not a capability limit. Specialized routing, research, metrics, visual design, and publication modules remain available on demand without competing in the host's first-turn Skill discovery budget. A third public entrypoint, `author-cuebook-skill`, packages a creator-authored agent skill and submits it to the Cuebook community skill marketplace for review; every successful walk ends at "submitted for review", and approved packages are distributed separately through `github.com/cuebook-public/cuebook-community-skills`.
 
+### Community Skill handoff
+
+Cuebook MCP catalogs both official product capabilities and reviewed community Skill metadata, but it is not a cross-host installer. Query can discover a community Skill, resolve `<handle>--<slug>`, inspect its capability disclosure, and—when a Frame or handoff includes a semver—resolve the exact approved version, distribution commit, and package sha256.
+
+The install ref remains `<handle>--<slug>`. In Claude-compatible marketplace syntax, `@cuebook-community` identifies the marketplace; it is not a version. The receiving host decides how to install or import the reviewed package. A GitHub URL or MCP lookup proves discoverability and provenance, not that the Skill has already loaded in Codex, Claude Code, Hermes, or another host.
+
 ## Platform Support
 
-Cuebook has one remote MCP endpoint per distribution channel and three optional Agent Skills. Hosts that load both layers can run the complete creator workflow; MCP-only hosts can connect to Cuebook Tools, but do not automatically inherit the interview, evidence-selection, rendering, and publication orchestration encoded in the Skills.
+Cuebook has one remote MCP endpoint per distribution channel and three public Agent Skills. Hosts that load both layers can run the complete creator workflow; MCP-only hosts can connect to Cuebook Tools, but do not automatically inherit the interview, evidence-selection, rendering, and publication orchestration encoded in the Skills.
 
 | Host | Distribution | Intended surface | Live status |
 | --- | --- | --- | --- |
 | **Codex app and Codex CLI** | Cuebook Plugin | Skills + MCP | OAuth, preview, and publication live-verified on 2026-07-20 |
 | **Claude Code** | Native Claude Code marketplace | Skills + MCP | OAuth, upload, and atomic publication live-verified on 2026-07-21 |
-| **Cursor editor and CLI** | Two Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
-| **Hermes Agent** | Two Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
-| **OpenClaw** | Two Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
+| **Cursor editor and CLI** | Three Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
+| **Hermes Agent** | Three Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
+| **OpenClaw** | Three Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
 | **Claude and Claude Desktop** | Custom remote connector | MCP direct | Connector check pending; no Skill parity claim |
 | **ChatGPT** | Custom MCP app | MCP direct | Eligible plans only; connector check pending |
 | **Grok** | Custom MCP connector | MCP direct | Team-admin setup; connector check pending |
@@ -116,12 +126,14 @@ codex plugin marketplace add cuebook-public/cuebook-skills \
 
 codex plugin add cuebook@cuebook
 
-codex mcp login cuebook
+codex mcp list --json
 
+# Only when the status is not_logged_in and no login is pending:
+codex mcp login cuebook
 codex mcp list --json
 ```
 
-For a first-time installation, `codex plugin add` installs Cuebook but does not guarantee that the CLI will open a browser. Run `codex mcp login cuebook` once, complete the browser flow, and then inspect the `cuebook` entry in `codex mcp list --json`. If it is already authenticated, skip the login; after the first command succeeds, do not start a second one.
+For a first-time installation, `codex plugin add` installs Cuebook but does not guarantee that the CLI will open a browser. Inspect the `cuebook` entry in `codex mcp list --json`, then run `codex mcp login cuebook` once only when it reports `not_logged_in`. Skip login when Cuebook is already authenticated or a login is pending. If login opens a browser, the approval belongs to the user: wait for them to finish, never approve it yourself, and never restart login while that attempt is pending.
 
 One creator consent covers Cuebook's six explicit authorization domains: public research, private simulated-account reads, simulated Paper Trade actions, and private Frame read, draft, and publication actions. They remain separate server-enforced scopes, and authorization never creates a Frame or simulated order by itself. A Paper Trade still requires terms, a preview, and explicit placement intent; Cuebook never places a real-money order.
 
@@ -143,7 +155,7 @@ Turn that idea into a Frame.
 > [!NOTE]
 > Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly three public entrypoints; internal modules load only when needed.
 
-For a reproducible, intentionally frozen install, add `--ref v0.9.19` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
+For a reproducible, intentionally frozen install, add `--ref v0.9.20` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
 
 ## Updating
 
@@ -174,28 +186,30 @@ Keep authentication in the installation flow:
 
 1. Install the plugin. Its marketplace policy is `ON_INSTALL`, but the CLI install command does not promise a browser popup.
 2. Check `codex mcp list --json`. If Cuebook is already authenticated or the host has an active authentication flow, do not start another one.
-3. On a fresh installation that reports `not_logged_in`, run `codex mcp login cuebook` once. Complete the browser approval and wait for the command to finish.
-4. Check the JSON status again. A browser approval page, an enabled connector, or a public plugin-manager result is not connection proof.
-5. Fully quit and reopen the Codex app, or restart the Codex CLI process. Then open one new task and make a real Cuebook request. A normal MCP result is the final end-to-end proof that Plugin discovery, Tool discovery, and token exchange succeeded.
+3. On a fresh installation that reports `not_logged_in`, run `codex mcp login cuebook` once. If it opens a browser, the approval belongs to the user: wait for them to finish, never approve it yourself, and never restart login while that attempt is pending.
+4. After the login command exits, check the JSON status again and list Cuebook's Tools. A browser approval page, an enabled connector, or Tool discovery alone is not connection proof.
+5. Fully quit and reopen the Codex app, or restart the Codex CLI process. Then open one new task and make one smallest normal read-only Cuebook request. A normal MCP result is the final end-to-end proof that Plugin discovery, Tool discovery, and token exchange succeeded.
 
-If authentication or token exchange fails, stop and report that one failure without retrying, reinstalling, or opening more tasks. This flow uses one installation, at most one install-time host login, and one real task. Preview never publishes; publication still requires explicit intent.
+If authentication or token exchange fails, stop and report that one failure without retrying, reinstalling, or opening more tasks. Retry login only after the host explicitly reports `not_logged_in`, an authorization challenge, or a revoked grant. This flow uses one installation, at most one install-time host login, and one real task. Preview never publishes; publication still requires explicit intent.
 
 Keep authentication failures separate from connectivity failures. Run login only for an explicit `not_logged_in`, authorization challenge, revoked credential, or scope step-up. If Cuebook remains authenticated but a request reports an HTTP, DNS, TLS, proxy, socket, or timeout failure, restore that network path and retry the same request; do not reinstall the Plugin or start another OAuth flow.
 
-## Two Skills, One Boundary
+## Three Public Skills, Clear Boundaries
 
 | Skill | Purpose | Write access |
 | --- | --- | --- |
 | `query-cuebook` | Search and explain source-linked Cuebook intelligence | Never writes |
 | `create-cuebook-content` | Turn a creator's market idea into one publishable Frame | Drafts or publishes only with explicit intent |
+| `author-cuebook-skill` | Package and submit one creator-authored Skill for marketplace review | Submits only after explicit confirmation; never claims approval |
 
 Create may call Query for evidence. Query never calls Create.
 
 ```text
-market question  ──▶  query-cuebook  ──▶  sourced answer
-creator idea     ──▶  create-cuebook-content  ──▶  Frame
-                              ▲
-                              └── minimal evidence from Query
+market question   ──▶  query-cuebook           ──▶  sourced answer
+creator idea      ──▶  create-cuebook-content  ──▶  Frame
+skill package     ──▶  author-cuebook-skill    ──▶  review submission
+                               ▲
+                               └── minimal evidence from Query
 ```
 
 ## One Frame, Four Fields
@@ -258,12 +272,16 @@ The generated master is authored against its 622 × 400 phone display box and ra
 ```text
 Agent Skills host
 ├── query-cuebook                 public, read-only
-└── create-cuebook-content        public, creator workflow
+├── create-cuebook-content        public, creator workflow
     ├── on-demand reference modules
     ├── deterministic JavaScript renderers
     └── Cuebook MCP
         ├── typed, source-linked reads
         └── authorized Frame mutations
+└── author-cuebook-skill          public, review submission
+    └── Cuebook MCP
+        ├── community Skill discovery
+        └── authorized package submission
 ```
 
 The Skill remains a thin orchestrator. Cuebook MCP supplies authenticated data and enforces authorization; local deterministic code adapts frozen results and renders pixels. Internal graphs, algorithm stages, credentials, and publication mechanics are not part of the creator-facing object.
@@ -319,7 +337,7 @@ Validation checks the repository-wide English-only policy, public-entrypoint bou
 Release preparation has one version source and updates every pinned install ref, Plugin manifest, changelog section, and generated Skill bundle together:
 
 ```bash
-npm run release:prepare -- 0.9.19 \
+npm run release:prepare -- 0.9.20 \
   --date 2026-07-21 \
   --codex-build 20260721103045
 

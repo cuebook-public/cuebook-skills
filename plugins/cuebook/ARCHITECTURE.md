@@ -90,12 +90,15 @@ Frame MCP Phase B v3 keeps four concerns independent:
 - `reasoning_tags` are release-bound auxiliary metadata inferred by the agent
   from the confirmed interaction and evidence.
 
-The reasoning registry is closed to `fundamental`, `technical`, `macro_event`,
-`flow_positioning`, and `sentiment_narrative`. An envelope contains at most one
-primary and two distinct secondary tags; honest empty is valid. The creator
-never selects or confirms these tags, and frontend forms, rendering, badges, and
-feed projection do not consume them. They may change on an append-only
-Correction without changing content or economic hashes.
+The parent reasoning registry is closed to `fundamental`, `technical`,
+`macro_event`, `flow_positioning`, `sentiment_narrative`, and
+`risk_management`. An envelope contains at most one primary and two distinct
+secondary tags; honest empty is valid. The creator never selects or confirms
+these tags, and frontend forms, rendering, badges, and feed projection do not
+consume them. They may change on an append-only Correction without changing
+content or economic hashes. Author-only child Frames use their own envelope and
+may additionally carry child-only `retrospective`; that tag is frozen into the
+child content hash and never changes the parent release.
 
 Release immutability and Frame visibility are also separate. MCP publishes
 immutable initial/Correction releases and exposes no author-management action.

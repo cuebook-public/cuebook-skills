@@ -1,6 +1,6 @@
 {
   "schema_version": "query-menu-v1",
-  "catalog_version": "1.30.0",
+  "catalog_version": "1.31.0",
   "module_id": "query",
   "default_query": "latest_stories",
   "queries": [
@@ -150,14 +150,28 @@
     {
       "query_id": "published_frame",
       "label": "Published Frame",
-      "description": "Read a release-pinned Frame, visual semantics, settlement state, and discussion entry point.",
+      "description": "Read a release-pinned Frame, visual semantics, settlement state, child follow-ups, and discussion entry point.",
       "skill_refs": [
         "query-cuebook"
       ],
       "mcp_tools": [
-        "get_frame"
+        "get_frame",
+        "list_child_frames"
       ],
       "availability": "backend_required"
+    },
+    {
+      "query_id": "community_skill",
+      "label": "Community Skill",
+      "description": "Discover a reviewed community Skill or resolve the exact version frozen into a Frame handoff.",
+      "skill_refs": [
+        "query-cuebook"
+      ],
+      "mcp_tools": [
+        "list_community_skills",
+        "get_community_skill"
+      ],
+      "availability": "available"
     },
     {
       "query_id": "commentator_profile",
