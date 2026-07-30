@@ -29,6 +29,9 @@ test("Codex, Claude, and OpenClaw share one canonical portable plugin root", () 
     path.join(PLUGIN_ROOT, ".claude-plugin", "plugin.json"),
   );
   const mcp = loadJson(path.join(PLUGIN_ROOT, ".mcp.json"));
+  const distributionChannel = loadJson(
+    path.join(PLUGIN_ROOT, "distribution-channel-v1.json"),
+  );
   const skillDirs = fs.readdirSync(path.join(PLUGIN_ROOT, "public-skills"), {
     withFileTypes: true,
   })
@@ -50,10 +53,10 @@ test("Codex, Claude, and OpenClaw share one canonical portable plugin root", () 
     );
   }
   assert.deepEqual(Object.keys(mcp.mcpServers), ["cuebook"]);
-  assert.equal(mcp.mcpServers.cuebook.url, "https://cuebook.app/mcp");
+  assert.equal(mcp.mcpServers.cuebook.url, distributionChannel.mcp_url);
   assert.equal(
     mcp.mcpServers.cuebook.oauth_resource,
-    "https://cuebook.app/mcp",
+    distributionChannel.mcp_url,
   );
   assert.equal(mcp.mcpServers.cuebook.headers, undefined);
 });
