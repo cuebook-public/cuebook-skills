@@ -125,9 +125,12 @@ separate UI authorization path, not an additional MCP gate. Frame releases are
 immutable. MCP has no author-management action; Cuebook App can hide/show a Frame
 and may allow deletion during the first hour. Unchanged economics may use an
 append-only Correction, while a changed thesis or economic contract requires a
-new Frame. Every mutation uses a separate lowercase UUIDv7. Query never calls writes;
-Create never publishes silently, and no standalone media retrieval tool is
-exposed.
+new Frame. An author may explicitly append one immutable text-only child after
+reviewing the parent and existing children; it carries its own reasoning envelope,
+including child-only `retrospective` when the text actually compares the original
+thesis with later evidence or outcome. Every mutation uses a separate lowercase
+UUIDv7. Query never calls writes; Create never publishes silently, and no
+standalone media retrieval tool is exposed.
 
 ## Known limitations
 

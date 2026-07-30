@@ -49,6 +49,8 @@ Before a Frame conversation begins, silently call `get_frame_capabilities` once 
 - Resolve only rigid gaps, research once, then recap copy, deadline meaning, and visual intent. Time, any terminal ± band, and every two-asset leg are creator-owned; never preset them.
 - After the creator sees the rendered Frame, preserve the chosen copy, meaning, evidence, settlement, and image bytes unchanged.
 - Publish only after explicit publication intent. The moment a rendered Frame is shown, silently stage its frozen image in the background (reserve, signed PUT, media completion) so server-side processing finishes while the creator decides; staging touches only the quarantine store and is never a publication. Read [Frame Publish Workflow](references/frame-publish-workflow.md) for the staging and publication contract.
+- Existing-Frame review uses the [author-only text child path](references/frame-publish-workflow.md);
+  it has no Settlement, and `retrospective` requires comparison.
 - If an upstream system provides a frozen commitment, evidence refs, mechanism path, and render-safe projection, consume them as truth. Improve expression and design without re-deciding the asset, direction, horizon, or facts. A layout reroll never reopens the thesis.
 
 ## End-Of-Task Memory Proposal
