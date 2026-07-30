@@ -50,8 +50,10 @@
       "bundled_runtime_resources": [],
       "plugin_assets": [
         "cuebook-modules-v1.json",
-        "query-menu-v1.json"
+        "query-menu-v1.json",
+        "runtime-compatibility-v1.json"
       ],
+      "content_sha256": "95d0fc06d9173167125a75312cbb06f8fe2fef65e282ec6752ac7a0f4fcac157",
       "vendored_shared_validators": [
         "references/modules/build-market-research-pack/scripts/validate_research_pack.mjs",
         "references/modules/reconcile-market-content-history/scripts/validate_content_history.mjs",
@@ -85,8 +87,10 @@
       ],
       "plugin_assets": [
         "cuebook-modules-v1.json",
-        "query-menu-v1.json"
+        "query-menu-v1.json",
+        "runtime-compatibility-v1.json"
       ],
+      "content_sha256": "63c09ef24039933b24f1fa006f932e7fef52323e505d826e69f774aeea89c576",
       "vendored_shared_validators": [
         "references/modules/build-market-research-pack/scripts/validate_research_pack.mjs",
         "references/modules/query-cuebook/scripts/validate_cuebook_intent.mjs",
@@ -114,7 +118,10 @@
       ],
       "bundled_internal_modules": 0,
       "bundled_runtime_resources": [],
-      "plugin_assets": [],
+      "plugin_assets": [
+        "runtime-compatibility-v1.json"
+      ],
+      "content_sha256": "977a97275c8de40172e7af2e586fadd8805538d5d5031ae7d72c8585a2823220",
       "vendored_shared_validators": [
         "scripts/validate_community_skill_submission.mjs"
       ],

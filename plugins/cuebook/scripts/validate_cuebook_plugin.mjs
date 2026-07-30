@@ -315,6 +315,9 @@ export function validate(pluginRoot) {
   const queryMenu = load(path.resolve(assetsRoot, index.query_menu_ref));
   const creationMenu = load(path.resolve(assetsRoot, index.creation_menu_ref));
   const capabilityMap = load(path.resolve(assetsRoot, index.mcp_capability_map_ref));
+  const runtimeCompatibility = load(
+    path.resolve(assetsRoot, index.runtime_compatibility_ref),
+  );
   const catalogPath = path.resolve(assetsRoot, index.canonical_catalog_ref);
   const catalog = load(catalogPath);
 
@@ -436,6 +439,11 @@ export function validate(pluginRoot) {
     ["query-menu-v1.json", queryMenu, "query-menu-v1.schema.json"],
     ["creation-menu-v1.json", creationMenu, "creation-menu-v1.schema.json"],
     ["mcp-capability-map-v1.json", capabilityMap, "mcp-capability-map-v1.schema.json"],
+    [
+      "runtime-compatibility-v1.json",
+      runtimeCompatibility,
+      "runtime-compatibility-v1.schema.json",
+    ],
   ]) {
     const schema = load(path.join(assetsRoot, schemaName));
     for (const schemaError of validateInstance(payload, schema)) {
@@ -799,6 +807,74 @@ export function validate(pluginRoot) {
     "plugin-index-v1.json.plugin_version",
     "Plugin index and manifest release versions differ.",
   );
+  check(
+    runtimeCompatibility.plugin_version === manifestVersion
+      && runtimeCompatibility.catalog_version === index.catalog_version,
+    "RUNTIME_COMPATIBILITY_VERSION",
+    "runtime-compatibility-v1.json",
+    "Runtime compatibility metadata must match the Plugin and catalog versions.",
+  );
+  check(
+    runtimeCompatibility.public_skills?.count === 3
+      && runtimeCompatibility.public_skills?.version_source === "plugin_bundle"
+      && runtimeCompatibility.public_skills?.active_session === "pinned"
+      && runtimeCompatibility.public_skills?.updated_package === "next_host_reload",
+    "RUNTIME_SKILL_ACTIVATION",
+    "runtime-compatibility-v1.json.public_skills",
+    "Public Skills must inherit the Plugin version and activate only after the host reloads.",
+  );
+  check(
+    runtimeCompatibility.updates?.actor === "host"
+      && runtimeCompatibility.updates?.agent_exposure === "metadata_only"
+      && runtimeCompatibility.updates?.compatible_package === "host_managed"
+      && runtimeCompatibility.updates?.capability_expansion === "user_confirmation"
+      && runtimeCompatibility.updates?.major_version_change === "user_confirmation"
+      && runtimeCompatibility.updates?.silent_reauthentication === false,
+    "RUNTIME_UPDATE_POLICY",
+    "runtime-compatibility-v1.json.updates",
+    "Updates are host-owned; permission expansion and major changes require confirmation and never silent reauthentication.",
+  );
+  check(
+    runtimeCompatibility.hosts?.openclaw?.bundle_discovers_skills === true
+      && runtimeCompatibility.hosts?.openclaw?.bundle_discovers_mcp_descriptor === true
+      && runtimeCompatibility.hosts?.openclaw?.bundle_http_mcp_runtime
+        === "host_override_required",
+    "OPENCLAW_RUNTIME_BOUNDARY",
+    "runtime-compatibility-v1.json.hosts.openclaw",
+    "OpenClaw bundle discovery must not be represented as direct HTTP MCP runtime support.",
+  );
+  const runtimeAssetNames = ["runtime-compatibility-v1.json"];
+  for (const bundle of publicReleaseManifest.bundles ?? []) {
+    check(
+      /^[0-9a-f]{64}$/u.test(bundle.content_sha256 ?? ""),
+      "PUBLIC_BUNDLE_CONTENT_HASH",
+      `public-skills/release-manifest.json.bundles.${bundle.skill}.content_sha256`,
+      "Every generated public Skill bundle must carry a deterministic content sha256.",
+    );
+    for (const assetName of runtimeAssetNames) {
+      const bundledAssetPath = path.join(
+        publicSkillsRoot,
+        bundle.skill,
+        "assets",
+        "plugin",
+        assetName,
+      );
+      check(
+        (bundle.plugin_assets ?? []).includes(assetName) && existsSync(bundledAssetPath),
+        "PUBLIC_BUNDLE_RUNTIME_METADATA",
+        `public-skills/${bundle.skill}/assets/plugin/${assetName}`,
+        "Every generated public Skill must carry the runtime compatibility metadata and schema.",
+      );
+      if (assetName === "runtime-compatibility-v1.json" && existsSync(bundledAssetPath)) {
+        check(
+          deepEqualPy(load(bundledAssetPath), runtimeCompatibility),
+          "PUBLIC_BUNDLE_RUNTIME_DRIFT",
+          `public-skills/${bundle.skill}/assets/plugin/${assetName}`,
+          "Bundled runtime compatibility metadata differs from the canonical Plugin asset.",
+        );
+      }
+    }
+  }
   const catalogVersion = catalog.catalog_version;
   for (const [name, payload] of [
     ["plugin-index-v1.json", index],

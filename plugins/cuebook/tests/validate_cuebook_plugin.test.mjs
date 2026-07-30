@@ -101,18 +101,16 @@ test("Claude Code marketplace explicitly exposes only the three self-contained S
   assert.equal(marketplace.name, "cuebook");
   assert.equal(marketplace.plugins.length, 1);
   assert.equal(marketplace.plugins[0].name, "cuebook");
-  assert.equal(marketplace.plugins[0].source, "./");
+  assert.equal(marketplace.plugins[0].source, "./plugins/cuebook");
   assert.equal(marketplace.plugins[0].strict, false);
-  assert.deepEqual(marketplace.plugins[0].skills, [
-    "./skills/query-cuebook",
-    "./skills/create-cuebook-content",
-    "./skills/author-cuebook-skill",
-  ]);
-  for (const skillRoot of marketplace.plugins[0].skills) {
-    assert.ok(fs.existsSync(path.join(repositoryRoot, skillRoot, "SKILL.md")), skillRoot);
-  }
-  assert.equal(marketplace.plugins[0].mcpServers, "./plugins/cuebook/.mcp.json");
-  assert.ok(fs.existsSync(path.join(repositoryRoot, marketplace.plugins[0].mcpServers)));
+  assert.ok(
+    fs.existsSync(path.join(repositoryRoot, marketplace.plugins[0].source, ".claude-plugin", "plugin.json")),
+  );
+  assert.ok(
+    fs.existsSync(path.join(repositoryRoot, marketplace.plugins[0].source, ".mcp.json")),
+  );
+  assert.equal(marketplace.plugins[0].skills, undefined);
+  assert.equal(marketplace.plugins[0].mcpServers, undefined);
 
   const manifest = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, ".claude-plugin", "plugin.json"), "utf-8"),
@@ -125,6 +123,42 @@ test("Claude Code marketplace explicitly exposes only the three self-contained S
   assert.equal(manifest.version.split("+")[0], expectedVersion);
   assert.equal(manifest.skills, "./public-skills/");
   assert.equal(manifest.mcpServers, "./.mcp.json");
+});
+
+test("runtime compatibility metadata is versioned once and vendored into every public Skill", () => {
+  const runtime = JSON.parse(
+    fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "runtime-compatibility-v1.json"), "utf8"),
+  );
+  const index = JSON.parse(
+    fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "plugin-index-v1.json"), "utf8"),
+  );
+  const release = JSON.parse(
+    fs.readFileSync(path.join(PLUGIN_ROOT, "public-skills", "release-manifest.json"), "utf8"),
+  );
+  assert.equal(runtime.plugin_version, index.plugin_version);
+  assert.equal(runtime.catalog_version, index.catalog_version);
+  assert.equal(runtime.updates.actor, "host");
+  assert.equal(runtime.updates.agent_exposure, "metadata_only");
+  assert.equal(runtime.hosts.openclaw.bundle_http_mcp_runtime, "host_override_required");
+  for (const bundle of release.bundles) {
+    assert.match(bundle.content_sha256, /^[0-9a-f]{64}$/u);
+    assert.deepEqual(
+      JSON.parse(
+        fs.readFileSync(
+          path.join(
+            PLUGIN_ROOT,
+            "public-skills",
+            bundle.skill,
+            "assets",
+            "plugin",
+            "runtime-compatibility-v1.json",
+          ),
+          "utf8",
+        ),
+      ),
+      runtime,
+    );
+  }
 });
 
 test("platform guides are English, channel-pinned, and explicit about live evidence", () => {

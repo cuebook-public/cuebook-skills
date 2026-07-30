@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-- Query can now discover community Skills and resolve the exact reviewed version frozen into a Frame or handoff. The stable `<handle>--<slug>` identity remains separate from semver; exact reads surface the distribution commit, package sha256, and version-specific capability disclosure without claiming installation. The additive Query route advances the internal Skill catalog to 1.31.0.
+- Query can now discover community Skills and resolve the exact reviewed version frozen into a Frame or handoff. Stable install refs are server-owned and separate from creator handle and semver; exact reads surface the distribution commit, package sha256, and version-specific capability disclosure without claiming installation. The additive Query route advances the internal Skill catalog to 1.31.0.
+- Kept creator identity server-bound across Frame and community publication: the connected Cuebook OAuth grant supplies the account, and no public Skill asks for or accepts an account name or handle as authority.
+- Added one machine-readable runtime compatibility contract to the Plugin and all three generated public Skill bundles, including deterministic content hashes, host-owned compatible updates, confirmation for major or capability expansion, session pinning until reload, and an honest OpenClaw host-override boundary for HTTP MCP.
+- Pointed the Claude marketplace entry at the real `plugins/cuebook` bundle root so Claude Code and compatible OpenClaw discovery see the same three Skills and canonical MCP descriptor without duplicating Skill prose.
 - Added default-English language navigation plus a Simplified Chinese root README for the official and community Skill repositories, while keeping canonical Skill instructions and generated bundles English-only.
 
 ## 0.9.20 — 2026-07-29
