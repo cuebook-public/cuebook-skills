@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://cuebook.app/schemas/cuebook-mcp-capability-map-v1.schema.json",
+  "$id": "https://cuebook.xyz/schemas/cuebook-mcp-capability-map-v1.schema.json",
   "type": "object",
   "additionalProperties": false,
   "required": [

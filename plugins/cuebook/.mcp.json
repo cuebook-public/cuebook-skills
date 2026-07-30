@@ -2,8 +2,8 @@
   "mcpServers": {
     "cuebook": {
       "type": "http",
-      "url": "https://cuebook.app/mcp",
-      "oauth_resource": "https://cuebook.app/mcp"
+      "url": "https://cuebook.xyz/mcp",
+      "oauth_resource": "https://cuebook.xyz/mcp"
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://cuebook.app/schemas/tradingview-canvas-transfer-v1.schema.json",
+  "$id": "https://cuebook.xyz/schemas/tradingview-canvas-transfer-v1.schema.json",
   "title": "TradingViewCanvasTransferV1",
   "type": "object",
   "additionalProperties": false,

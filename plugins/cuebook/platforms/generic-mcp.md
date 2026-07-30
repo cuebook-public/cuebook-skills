@@ -13,7 +13,7 @@ Use one server definition:
 ```text
 name: Cuebook
 transport: Streamable HTTP
-url: https://cuebook.app/mcp
+url: https://cuebook.xyz/mcp
 authentication: OAuth using MCP discovery
 ```
 
