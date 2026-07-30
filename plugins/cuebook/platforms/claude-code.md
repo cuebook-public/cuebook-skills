@@ -120,4 +120,4 @@ node --test 'plugins/cuebook/**/*.test.mjs'
 
 Also run `claude plugin validate . --strict` from a checkout of this repository, confirm `claude plugin details cuebook@cuebook` reports exactly three Skills, and confirm `claude mcp list` contains `plugin:cuebook:cuebook`.
 
-Run the shared [live verification gate](README.md#live-verification-gate). Ask `What changed around USO recently?` and confirm routing to `query-cuebook` with a normal source-linked MCP result and no write-tool calls.
+Run the shared [live verification gate](../INSTALL.md#live-verification-gate). Ask `What changed around USO recently?` and confirm routing to `query-cuebook` with a normal source-linked MCP result and no write-tool calls.

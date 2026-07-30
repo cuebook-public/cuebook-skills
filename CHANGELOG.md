@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added one branch-aware `INSTALL.md` entrypoint for AI-led installation across Plugin, Agent Skills, and MCP-only hosts. It routes to named or generic platform adapters, centralizes authentication and readiness gates, and lets clients copy a stable document link instead of embedding the full installation policy.
+
 ## 0.9.21 — 2026-07-30
 
 - Query can now discover community Skills and resolve the exact reviewed version frozen into a Frame or handoff. Stable install refs are server-owned and separate from creator handle and semver; exact reads surface the distribution commit, package sha256, and version-specific capability disclosure without claiming installation. The additive Query route advances the internal Skill catalog to 1.31.0.

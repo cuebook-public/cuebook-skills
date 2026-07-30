@@ -12,6 +12,7 @@
 </p>
 
 <p align="center">
+  <strong><a href="INSTALL.md">Install with an AI agent</a></strong> ·
   <a href="#install">Install</a> ·
   <a href="#update">Update</a> ·
   <a href="#platforms">Platforms</a> ·
@@ -27,6 +28,11 @@
 The Cuebook Plugin gives AI agents a memory and expression layer for pre-trade thinking. Cuebook Agent recognizes the creator's edge, adds the smallest useful Cue or market relationship, confirms the intended expression naturally, and turns it into one title, one reasoned body, and one editorial image.
 
 ## Install
+
+For Agent-led installation on Codex, Claude Code, Cursor, Hermes, OpenClaw,
+ChatGPT, Grok, or another compatible host, begin with the canonical
+[installation entrypoint](INSTALL.md). The platform-specific instructions
+below remain useful for manual Codex installation.
 
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \

@@ -322,6 +322,10 @@ export function validate(pluginRoot) {
   const catalog = load(catalogPath);
 
   const platformsRoot = path.join(pluginRoot, "platforms");
+  const installGuidePath = path.join(pluginRoot, "INSTALL.md");
+  const installGuide = existsSync(installGuidePath)
+    ? readFileSync(installGuidePath, "utf-8")
+    : "";
   const platformIndexPath = path.join(platformsRoot, "README.md");
   const platformIndex = existsSync(platformIndexPath)
     ? readFileSync(platformIndexPath, "utf-8")
@@ -338,6 +342,39 @@ export function validate(pluginRoot) {
     "PLATFORM_DOC_SET",
     "platforms",
     "Platform documentation must contain exactly the ten supported host guides plus its README index.",
+  );
+  check(
+    existsSync(installGuidePath),
+    "INSTALL_ENTRYPOINT",
+    "INSTALL.md",
+    "The Plugin must expose one canonical AI-agent installation entrypoint.",
+  );
+  check(
+    installGuide.includes("(distribution-channel-v1.json)")
+      && installGuide.includes("(platforms/README.md)"),
+    "INSTALL_ENTRYPOINT",
+    "INSTALL.md",
+    "The installation entrypoint must bind to the current distribution manifest and platform matrix.",
+  );
+  check(
+    installGuide.includes("login is pending")
+      && installGuide.includes("approval belongs to the user")
+      && installGuide.includes("one smallest useful read"),
+    "INSTALL_VERIFICATION_GATE",
+    "INSTALL.md",
+    "The installation entrypoint must own the shared login, user-approval, and read-verification gates.",
+  );
+  check(
+    !/[\u3400-\u9fff]/u.test(installGuide),
+    "PLATFORM_DOC_LANGUAGE",
+    "INSTALL.md",
+    "The canonical installation entrypoint must remain English-only.",
+  );
+  check(
+    platformIndex.includes("(../INSTALL.md)"),
+    "INSTALL_ENTRYPOINT",
+    "platforms/README.md",
+    "The platform matrix must link back to the canonical installation entrypoint.",
   );
   check(
     platformIndex.includes(PRODUCTION_MCP_URL)
@@ -391,6 +428,12 @@ export function validate(pluginRoot) {
       "Every host guide must route to the shared evidence-based live verification gate.",
     );
     check(
+      guide.includes("(../INSTALL.md#live-verification-gate)"),
+      "PLATFORM_VERIFICATION_GATE",
+      `platforms/${guideName}`,
+      "Every host guide must use the canonical installation entrypoint's live verification gate.",
+    );
+    check(
       !/[\u3400-\u9fff]/u.test(guide),
       "PLATFORM_DOC_LANGUAGE",
       `platforms/${guideName}`,
@@ -401,6 +444,12 @@ export function validate(pluginRoot) {
       "PLATFORM_INDEX_LINK",
       "platforms/README.md",
       `The platform matrix must link ${guideName}.`,
+    );
+    check(
+      installGuide.includes(`(platforms/${guideName})`),
+      "INSTALL_PLATFORM_ROUTE",
+      "INSTALL.md",
+      `The installation entrypoint must route ${guideName}.`,
     );
   }
 
@@ -1199,6 +1248,7 @@ export function validate(pluginRoot) {
 
   const withdrawalFreeSurfaces = [
     "README.md",
+    "INSTALL.md",
     ".codex-plugin/plugin.json",
     "assets/mcp-capability-map-v1.schema.json",
     "skills/create-cuebook-content/SKILL.md",
