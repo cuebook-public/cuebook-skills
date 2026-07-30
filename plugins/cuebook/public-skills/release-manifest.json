@@ -53,7 +53,7 @@
         "query-menu-v1.json",
         "runtime-compatibility-v1.json"
       ],
-      "content_sha256": "c3f6010b5d97db5b9aff05452b0a5e4577ed807e461aab5bca68bb2adf7bff07",
+      "content_sha256": "3acf00d1c21a73a41bfe568e13ec56a439892413839cf780bc355bd410747d0a",
       "vendored_shared_validators": [
         "references/modules/build-market-research-pack/scripts/validate_research_pack.mjs",
         "references/modules/reconcile-market-content-history/scripts/validate_content_history.mjs",
@@ -90,7 +90,7 @@
         "query-menu-v1.json",
         "runtime-compatibility-v1.json"
       ],
-      "content_sha256": "582d6b4396c852fcbf4abafd970d7f6e17ce8bd3fc0a3a6ea8795118bcbecaf8",
+      "content_sha256": "d78f40d2d0089aafd0f41367e37ef407fe632c6a2ba3889b1e2070038f6d3686",
       "vendored_shared_validators": [
         "references/modules/build-market-research-pack/scripts/validate_research_pack.mjs",
         "references/modules/query-cuebook/scripts/validate_cuebook_intent.mjs",
@@ -121,7 +121,7 @@
       "plugin_assets": [
         "runtime-compatibility-v1.json"
       ],
-      "content_sha256": "8e1dbc27de03b296002a30e7cc26aa82189aa8d6e11b15b9e1642cda9ef7e571",
+      "content_sha256": "96e7c70657884fe5ef98b9d8f5cba557bb6ddb6910c17fa8d7903d5363980468",
       "vendored_shared_validators": [
         "scripts/validate_community_skill_submission.mjs"
       ],
