@@ -66,7 +66,7 @@ requires a new Frame. A client without those tools gets read-only behavior.
 
 For known host recipes, use the [platform matrix](README.md). Do not install the source modules as separate public Skills.
 
-After the target server rollout, each client must pass the shared [live verification gate](README.md#live-verification-gate) before its behavior is described as verified.
+After the target server rollout, each client must pass the shared [live verification gate](../INSTALL.md#live-verification-gate) before its behavior is described as verified.
 
 ## Smoke test
 

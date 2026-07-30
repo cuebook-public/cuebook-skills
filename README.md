@@ -40,6 +40,11 @@
 </p>
 
 <p align="center">
+  <strong><a href="plugins/cuebook/INSTALL.md">Install with an AI agent</a></strong> ·
+  <a href="plugins/cuebook/platforms/README.md">Choose a platform</a>
+</p>
+
+<p align="center">
   <a href="#cuebook-surfaces">Surfaces</a> ·
   <a href="#one-query-surface-many-intents">Data</a> ·
   <a href="#the-cuebook-experience">Experience</a> ·
@@ -116,6 +121,11 @@ Cuebook has one remote MCP endpoint per distribution channel and three public Ag
 See the [platform matrix and installation guides](plugins/cuebook/platforms/README.md). Stable releases from `main` use `https://cuebook.app/mcp`; development builds from `dev` use `https://cuebook.xyz/mcp`. A completed browser approval is not proof of readiness; each host must return a normal MCP result before it is marked live-verified.
 
 ## Quick Start
+
+For Agent-led installation on any supported host, start with the canonical
+[installation entrypoint](plugins/cuebook/INSTALL.md). It selects the current
+distribution branch, routes to the appropriate host adapter, and owns the
+shared authentication and readiness rules.
 
 Install the current stable release from `main`:
 

@@ -163,6 +163,7 @@ test("runtime compatibility metadata is versioned once and vendored into every p
 
 test("platform guides are English, channel-pinned, and explicit about live evidence", () => {
   const platformsRoot = path.join(PLUGIN_ROOT, "platforms");
+  const install = fs.readFileSync(path.join(PLUGIN_ROOT, "INSTALL.md"), "utf-8");
   const distribution = JSON.parse(
     fs.readFileSync(path.join(PLUGIN_ROOT, "distribution-channel-v1.json"), "utf8"),
   );
@@ -177,7 +178,14 @@ test("platform guides are English, channel-pinned, and explicit about live evide
   const index = fs.readFileSync(path.join(platformsRoot, "README.md"), "utf-8");
   assert.match(index, /stable main \/ production: https:\/\/cuebook\.app\/mcp/u);
   assert.match(index, /dev \/ development:\s+https:\/\/cuebook\.xyz\/mcp/u);
+  assert.match(index, /\(\.\.\/INSTALL\.md\)/u);
   assert.doesNotMatch(index, /[\u3400-\u9fff]/u);
+  assert.match(install, /\(distribution-channel-v1\.json\)/u);
+  assert.match(install, /\(platforms\/README\.md\)/u);
+  assert.match(install, /login is pending/u);
+  assert.match(install, /approval belongs to the user/u);
+  assert.match(install, /one smallest useful read/u);
+  assert.doesNotMatch(install, /[\u3400-\u9fff]/u);
   for (const guideName of guideNames) {
     const guide = fs.readFileSync(path.join(platformsRoot, guideName), "utf-8");
     if (CHANNEL_BOUND_PLATFORM_GUIDES.includes(guideName)) {
@@ -189,9 +197,25 @@ test("platform guides are English, channel-pinned, and explicit about live evide
     }
     assert.match(guide, /\*\*Live status:\*\*/u, guideName);
     assert.match(guide, /live verification gate/u, guideName);
+    assert.match(guide, /\(\.\.\/INSTALL\.md#live-verification-gate\)/u, guideName);
     assert.doesNotMatch(guide, /[\u3400-\u9fff]/u, guideName);
     assert.ok(index.includes(`(${guideName})`), guideName);
+    assert.ok(install.includes(`(platforms/${guideName})`), guideName);
   }
+});
+
+test("plugin and repository readmes route AI-led installation to the canonical entrypoint", () => {
+  const repositoryRoot = path.resolve(PLUGIN_ROOT, "..", "..");
+  const repositoryReadme = fs.readFileSync(path.join(repositoryRoot, "README.md"), "utf-8");
+  const chineseReadme = fs.readFileSync(
+    path.join(repositoryRoot, "README.zh-CN.md"),
+    "utf-8",
+  );
+  const pluginReadme = fs.readFileSync(path.join(PLUGIN_ROOT, "README.md"), "utf-8");
+
+  assert.match(repositoryReadme, /\(plugins\/cuebook\/INSTALL\.md\)/u);
+  assert.match(chineseReadme, /\(plugins\/cuebook\/INSTALL\.md\)/u);
+  assert.match(pluginReadme, /\(INSTALL\.md\)/u);
 });
 
 test("repository header links every named host badge to its platform guide", () => {
@@ -222,6 +246,27 @@ test("platform validation rejects a missing host guide", () => {
     const root = copiedPlugin(tmpPath);
     fs.rmSync(path.join(root, "platforms", "grok.md"));
     assert.ok(codes(validate(root)).has("PLATFORM_DOC_SET"));
+  });
+});
+
+test("platform validation rejects a missing canonical installation entrypoint", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    fs.rmSync(path.join(root, "INSTALL.md"));
+    assert.ok(codes(validate(root)).has("INSTALL_ENTRYPOINT"));
+  });
+});
+
+test("platform validation rejects a host guide that bypasses the canonical gate", () => {
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const filePath = path.join(root, "platforms", "grok.md");
+    fs.writeFileSync(
+      filePath,
+      fs.readFileSync(filePath, "utf-8")
+        .replace("../INSTALL.md#live-verification-gate", "README.md#live-verification-gate"),
+    );
+    assert.ok(codes(validate(root)).has("PLATFORM_VERIFICATION_GATE"));
   });
 });
 

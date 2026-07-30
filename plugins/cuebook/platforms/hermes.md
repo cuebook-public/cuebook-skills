@@ -86,7 +86,7 @@ if an update declares a major, permission, or capability-tier change.
 
 ## Verification
 
-After the server rollout, run the shared [live verification gate](README.md#live-verification-gate). Confirm the three Skills with `hermes skills list --source hub`, retain one normal `get_frame_capabilities` result, exercise one no-op `skills check`, and preview a real idea before any explicit test publication.
+After the server rollout, run the shared [live verification gate](../INSTALL.md#live-verification-gate). Confirm the three Skills with `hermes skills list --source hub`, retain one normal `get_frame_capabilities` result, exercise one no-op `skills check`, and preview a real idea before any explicit test publication.
 
 ## Official host references
 

@@ -16,6 +16,11 @@
 
 <p align="center"><strong>为市场直觉补上结构、证据和未来检查点，同时保留创作者本人的判断与署名。</strong></p>
 
+<p align="center">
+  <strong><a href="plugins/cuebook/INSTALL.md">让 AI Agent 安装</a></strong> ·
+  <a href="plugins/cuebook/platforms/README.md">选择平台</a>
+</p>
+
 Cuebook 是一套面向交易前思考的记忆与表达基础设施。它帮助创作者把直觉整理成清晰、可回看、可结算的 Frame；市场数据、授权、幂等与发布规则由 Cuebook MCP 统一执行。
 
 ## 三个公开 Skill
@@ -70,6 +75,10 @@ Cuebook MCP 可以查询已经审核并发布的社区 Skill：
 
 ## Codex 快速安装
 
+让 AI Agent 在任意受支持平台完成安装时，请从统一的
+[Agent 安装入口](plugins/cuebook/INSTALL.md)开始。该入口负责选择当前分发分支、
+路由到具体平台，并统一维护身份验证与可用性验证规则。
+
 从 `main` 安装当前稳定版：
 
 ```bash
@@ -78,6 +87,9 @@ codex plugin marketplace add cuebook-public/cuebook-skills \
   --sparse plugins/cuebook
 
 codex plugin add cuebook@cuebook
+
+# 仅当状态为 not_logged_in 且没有登录正在进行时：
+codex mcp list --json
 codex mcp login cuebook
 codex mcp list --json
 ```

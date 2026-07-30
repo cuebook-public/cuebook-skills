@@ -22,7 +22,7 @@ This connection exposes MCP Tools only. Qualify `get_frame_capabilities`, source
 
 ## Verification
 
-After the server rollout, run the MCP-direct portion of the shared [live verification gate](README.md#live-verification-gate). Do not use publication as the first connectivity test.
+After the server rollout, run the MCP-direct portion of the shared [live verification gate](../INSTALL.md#live-verification-gate). Do not use publication as the first connectivity test.
 
 ## Official host reference
 

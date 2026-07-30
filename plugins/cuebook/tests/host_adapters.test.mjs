@@ -113,7 +113,8 @@ test("Hermes adapter installs, authenticates, and updates all public Skills", ()
   assert.doesNotMatch(guide, /\*\*Surface:\*\* Two Agent Skills/u);
 });
 
-test("platform matrix distinguishes native, compatible-bundle, and direct-Skill adapters", () => {
+test("installation entrypoint and platform matrix govern every host adapter", () => {
+  const install = fs.readFileSync(path.join(PLUGIN_ROOT, "INSTALL.md"), "utf-8");
   const matrix = readPlatform("README.md");
 
   assert.match(matrix, /Codex-compatible Cuebook bundle/u);
@@ -125,6 +126,6 @@ test("platform matrix distinguishes native, compatible-bundle, and direct-Skill 
     matrix,
     /major, permission, or capability-tier\s+change requires explicit review/u,
   );
-  assert.match(matrix, /host-native update path once/u);
-  assert.match(matrix, /without a second OAuth grant/u);
+  assert.match(install, /host-native update path once/u);
+  assert.match(install, /without a second OAuth grant/u);
 });

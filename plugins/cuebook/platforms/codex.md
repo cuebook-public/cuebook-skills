@@ -151,4 +151,4 @@ standalone media retrieval tool is exposed.
 node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook
 ```
 
-For a new release, run the shared [live verification gate](README.md#live-verification-gate). In a fresh Codex task, ask `What changed around USO recently?` and confirm the answer routes through `query-cuebook` and returns a normal source-linked MCP result with no write-tool calls. Then use a real creator idea for preview; never publish a placeholder idea.
+For a new release, run the shared [live verification gate](../INSTALL.md#live-verification-gate). In a fresh Codex task, ask `What changed around USO recently?` and confirm the answer routes through `query-cuebook` with a normal source-linked MCP result and no write-tool calls. Then use a real creator idea for preview; never publish a placeholder idea.
