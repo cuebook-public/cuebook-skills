@@ -2326,7 +2326,7 @@
       "visibility": "selectable",
       "execution": "installed",
       "user_selectable": true,
-      "default_enabled": true,
+      "default_enabled": false,
       "capabilities": [
         "author-cuebook-skill"
       ],
@@ -2343,7 +2343,7 @@
       ],
       "ui": {
         "surface": "creator",
-        "group": "Create",
+        "group": "Community marketplace",
         "order": 41,
         "control_type": "single_select",
         "icon": "package-plus",

@@ -2,6 +2,9 @@
   "schema_version": "cuebook-modules-v1",
   "catalog_version": "1.31.0",
   "default_module": "query",
+  "standalone_entrypoints": [
+    "author-cuebook-skill"
+  ],
   "modules": [
     {
       "module_id": "query",
@@ -28,7 +31,7 @@
     {
       "module_id": "create",
       "label": "Create",
-      "description": "Strengthen a user's trading view into a native or rights-cleared attributed-snapshot Frame, or an explicitly confirmed local TradingView canvas projection; keep evidence and optional settlement backstage.",
+      "description": "Strengthen a user's trading view into a native or rights-cleared attributed-snapshot Frame, or an explicitly confirmed local TradingView canvas projection; keep evidence and optional settlement backstage. Community skill-package submission is a separate standalone entrypoint.",
       "entrypoint_skill": "create-cuebook-content",
       "menu_ref": "./creation-menu-v1.json",
       "access": "compose_with_authorized_writes",
@@ -62,14 +65,14 @@
         "assemble-cuebook-viewpoint-card",
         "prepare-market-content-release",
         "orchestrate-cuebook-creator-workflow",
-        "intake-cuebook-viewpoint",
-        "author-cuebook-skill"
+        "intake-cuebook-viewpoint"
       ]
     }
   ],
   "routing_rules": {
     "read_intents_route_to": "query",
     "creation_intents_route_to": "create",
+    "community_skill_submission_intents_route_to": "author-cuebook-skill",
     "ambiguous_intents_route_to": "query",
     "query_deliverables": [
       "answer",

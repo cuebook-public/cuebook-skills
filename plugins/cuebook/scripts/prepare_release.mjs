@@ -20,6 +20,7 @@ const VERSION_FILES = {
   package: "package.json",
   lock: "package-lock.json",
   index: "plugins/cuebook/assets/plugin-index-v1.json",
+  runtime: "plugins/cuebook/assets/runtime-compatibility-v1.json",
   codex: "plugins/cuebook/.codex-plugin/plugin.json",
   claude: "plugins/cuebook/.claude-plugin/plugin.json",
   claudeMarketplace: ".claude-plugin/marketplace.json",
@@ -101,6 +102,12 @@ export function collectReleaseIssues(rootArg) {
       return payload.version === version && payload.packages?.[""]?.version === version;
     }, "Root and package-lock workspace versions differ."],
     [VERSION_FILES.index, () => readJson(root, VERSION_FILES.index).plugin_version === version, "Plugin index version differs."],
+    [VERSION_FILES.runtime, () => {
+      const payload = readJson(root, VERSION_FILES.runtime);
+      const index = readJson(root, VERSION_FILES.index);
+      return payload.plugin_version === version
+        && payload.catalog_version === index.catalog_version;
+    }, "Runtime compatibility version differs."],
     [VERSION_FILES.codex, () => baseVersion(readJson(root, VERSION_FILES.codex).version) === version, "Codex manifest version differs."],
     [VERSION_FILES.claude, () => baseVersion(readJson(root, VERSION_FILES.claude).version) === version, "Claude manifest version differs."],
     [VERSION_FILES.claudeMarketplace, () => {
@@ -253,6 +260,11 @@ export function prepareRelease(rootArg, options) {
   const index = readJson(root, VERSION_FILES.index);
   index.plugin_version = version;
   writes.set(VERSION_FILES.index, jsonText(index));
+
+  const runtime = readJson(root, VERSION_FILES.runtime);
+  runtime.plugin_version = version;
+  runtime.catalog_version = index.catalog_version;
+  writes.set(VERSION_FILES.runtime, jsonText(runtime));
 
   const codex = readJson(root, VERSION_FILES.codex);
   codex.version = `${version}+codex.${codexBuild}`;

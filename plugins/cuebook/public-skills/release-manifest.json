@@ -1,13 +1,13 @@
 {
   "schema_version": "cuebook-release-skills-manifest-v2",
   "catalog_version": "1.31.0",
-  "plugin_version": "0.9.20",
+  "plugin_version": "0.9.21",
   "discovery_budget": {
     "legacy_skill_count": 39,
     "public_skill_count": 3,
-    "legacy_metadata_bytes": 24528,
-    "public_metadata_bytes": 2657,
-    "reduction_percent": 89.2,
+    "legacy_metadata_bytes": 24085,
+    "public_metadata_bytes": 2214,
+    "reduction_percent": 90.8,
     "minimum_reduction_percent": 60
   },
   "frame_fast_preview_budget": {
@@ -23,7 +23,7 @@
       "references/modules/query-cuebook/references/cuebook-query-request-v1.schema.json",
       "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json"
     ],
-    "cumulative_bytes": 111981,
+    "cumulative_bytes": 111883,
     "maximum_bytes_exclusive": 112000,
     "within_budget": true
   },
@@ -50,8 +50,10 @@
       "bundled_runtime_resources": [],
       "plugin_assets": [
         "cuebook-modules-v1.json",
-        "query-menu-v1.json"
+        "query-menu-v1.json",
+        "runtime-compatibility-v1.json"
       ],
+      "content_sha256": "c3f6010b5d97db5b9aff05452b0a5e4577ed807e461aab5bca68bb2adf7bff07",
       "vendored_shared_validators": [
         "references/modules/build-market-research-pack/scripts/validate_research_pack.mjs",
         "references/modules/reconcile-market-content-history/scripts/validate_content_history.mjs",
@@ -85,8 +87,10 @@
       ],
       "plugin_assets": [
         "cuebook-modules-v1.json",
-        "query-menu-v1.json"
+        "query-menu-v1.json",
+        "runtime-compatibility-v1.json"
       ],
+      "content_sha256": "582d6b4396c852fcbf4abafd970d7f6e17ce8bd3fc0a3a6ea8795118bcbecaf8",
       "vendored_shared_validators": [
         "references/modules/build-market-research-pack/scripts/validate_research_pack.mjs",
         "references/modules/query-cuebook/scripts/validate_cuebook_intent.mjs",
@@ -114,7 +118,10 @@
       ],
       "bundled_internal_modules": 0,
       "bundled_runtime_resources": [],
-      "plugin_assets": [],
+      "plugin_assets": [
+        "runtime-compatibility-v1.json"
+      ],
+      "content_sha256": "8e1dbc27de03b296002a30e7cc26aa82189aa8d6e11b15b9e1642cda9ef7e571",
       "vendored_shared_validators": [
         "scripts/validate_community_skill_submission.mjs"
       ],

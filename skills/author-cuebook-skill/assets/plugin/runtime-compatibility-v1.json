@@ -1,0 +1,52 @@
+{
+  "schema_version": "cuebook-runtime-compatibility-v1",
+  "plugin_version": "0.9.21",
+  "catalog_version": "1.31.0",
+  "public_skills": {
+    "count": 3,
+    "version_source": "plugin_bundle",
+    "active_session": "pinned",
+    "updated_package": "next_host_reload"
+  },
+  "mcp": {
+    "server_id": "cuebook",
+    "minimum_server_version": "0.1.0",
+    "runtime_metadata": {
+      "extension_id": "app.cuebook/runtime",
+      "introduced_server_version": "0.2.0",
+      "required": false
+    },
+    "oauth_session_reuse": true
+  },
+  "updates": {
+    "actor": "host",
+    "agent_exposure": "metadata_only",
+    "compatible_package": "host_managed",
+    "capability_expansion": "user_confirmation",
+    "major_version_change": "user_confirmation",
+    "silent_reauthentication": false
+  },
+  "hosts": {
+    "codex": {
+      "manifest": ".codex-plugin/plugin.json",
+      "marketplace": ".agents/plugins/marketplace.json",
+      "bundle_mcp": "supported"
+    },
+    "claude_code": {
+      "manifest": ".claude-plugin/plugin.json",
+      "marketplace": ".claude-plugin/marketplace.json",
+      "bundle_mcp": "supported",
+      "version_bump_required_for_refresh": true
+    },
+    "openclaw": {
+      "bundle_format": "codex",
+      "bundle_discovers_skills": true,
+      "bundle_discovers_mcp_descriptor": true,
+      "bundle_http_mcp_runtime": "host_override_required"
+    },
+    "hermes": {
+      "skills_distribution": "github_path_or_tap",
+      "mcp_runtime": "native_host_config"
+    }
+  }
+}

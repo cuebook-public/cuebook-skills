@@ -23,11 +23,11 @@ Those layers are related but not interchangeable. MCP provides typed Cuebook dat
 
 | Host | Agent Skills | Remote MCP | Distribution | Current evidence |
 | --- | --- | --- | --- | --- |
-| [Codex app and Codex CLI](codex.md) | Yes | Yes | Cuebook Plugin | Package validated; live OAuth recheck pending |
+| [Codex app and Codex CLI](codex.md) | Yes | Yes | Cuebook Plugin | OAuth, read, preview, and publication live-verified on 2026-07-20 |
 | [Claude Code](claude-code.md) | Yes | Yes | Native Claude Code marketplace | OAuth, upload, and atomic publication live-verified on 2026-07-21 |
 | [Cursor editor and CLI](cursor.md) | Yes | Yes | Built Skill bundles + Cursor MCP config | Static setup ready; live check pending |
-| [Hermes Agent](hermes.md) | Yes | Yes | Built Skill bundles + Hermes MCP config | Static setup ready; live check pending |
-| [OpenClaw](openclaw.md) | Yes | Yes | Built Skill bundles + OpenClaw MCP registry | Static setup ready; live check pending |
+| [Hermes Agent](hermes.md) | Yes | Yes | GitHub Skill paths + Hermes MCP config | Static install/update contract ready; live check pending |
+| [OpenClaw](openclaw.md) | Yes | Yes | Codex-compatible Cuebook bundle | Current CLI local bundle and MCP config verified; marketplace OAuth/live check pending |
 | [Claude and Claude Desktop](claude-desktop.md) | No bundled Skill path | Yes | Custom connector | Documented; live check pending |
 | [ChatGPT](chatgpt.md) | No | Yes | Custom MCP app | Eligible plans only; live check pending |
 | [Grok](grok.md) | No | Yes | Custom MCP connector | Team-admin setup; live check pending |
@@ -35,6 +35,23 @@ Those layers are related but not interchangeable. MCP provides typed Cuebook dat
 | [Generic MCP clients](generic-mcp.md) | No | Yes | Streamable HTTP | Protocol-compatible; behavior host-dependent |
 
 “Package validated” means local manifests, public Skill count, resource closure, and release bundles passed deterministic checks. It does not mean OAuth or a live Tool call succeeded on that host.
+
+## Host adapter contract
+
+`plugins/cuebook/` is the canonical portable Plugin root. It owns the generated
+`public-skills/` directory, the single `.mcp.json` definition, and the native
+Codex and Claude manifests. Codex and Claude install that root directly.
+OpenClaw consumes the same directory as a Codex-compatible bundle. Hermes
+installs the three generated repository-root `skills/` bundles and configures
+the same remote MCP endpoint through its native registry.
+
+An adapter must never copy or fork the canonical Skill source. It must expose
+exactly the three public entrypoints, keep internal `plugins/cuebook/skills/`
+modules undiscoverable, register at most one `cuebook` production MCP server,
+and leave OAuth credentials in the host. A compatible same-major update uses
+the host's normal update and reload path without reinstalling the connector or
+asking for another grant. A declared major, permission, or capability-tier
+change requires explicit review before activation.
 
 ## Capability boundary
 
@@ -57,7 +74,8 @@ Run this gate only after the target Cuebook server release is confirmed healthy:
 5. Retry login only after an explicit `not_logged_in`, authorization challenge, or revoked grant. Discovery, HTTP, DNS, TLS, proxy, socket, and timeout failures are not authentication failures.
 6. On a Skill host, create one preview from a real user idea and inspect the sole publication master at its 622 × 400 mobile display size. Preview must not publish.
 7. With explicit user intent, publish one clearly identified test Frame. Treat the successful `complete_frame_publish` result as terminal; do not parse a receipt or add a web-page, reconciliation, or `get_frame` readback to the creator path.
-8. Record the host version and which gates passed before changing “pending” to “verified.”
+8. Exercise the host-native update path once. After reload, require exactly the same three public Skills, one `cuebook` production MCP server, and a normal read without a second OAuth grant. Stop for explicit review if the update declares a major, permission, or capability-tier change.
+9. Record the host and package versions and which gates passed before changing “pending” to “verified.”
 
 The Frame publication contract remains the same on every host. Initial publication and append-only Correction use their declared publish paths. Frame releases are immutable; MCP has no author-management action, while Cuebook App can hide/show a Frame and may allow deletion during the first hour. Changed thesis or economics require a new Frame. Image bytes travel to signed upload URLs and are never downloaded back through an MCP media Tool.
 
