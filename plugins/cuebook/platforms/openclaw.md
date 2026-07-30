@@ -50,7 +50,7 @@ Streamable HTTP and retains credentials independently of package updates:
 
 ```bash
 openclaw mcp set cuebook \
-  '{"url":"https://cuebook.app/mcp","transport":"streamable-http","auth":"oauth","requestTimeoutMs":20000,"connectionTimeoutMs":5000,"supportsParallelToolCalls":false}'
+  '{"url":"https://cuebook.xyz/mcp","transport":"streamable-http","auth":"oauth","requestTimeoutMs":20000,"connectionTimeoutMs":5000,"supportsParallelToolCalls":false}'
 
 openclaw mcp status --verbose
 openclaw mcp login cuebook

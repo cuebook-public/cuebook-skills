@@ -39,7 +39,7 @@ Add Cuebook to `~/.hermes/config.yaml`:
 ```yaml
 mcp_servers:
   cuebook:
-    url: "https://cuebook.app/mcp"
+    url: "https://cuebook.xyz/mcp"
     auth: oauth
     timeout: 20
     connect_timeout: 5

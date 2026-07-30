@@ -2,7 +2,7 @@
   "schema_version": "cuebook-mcp-capability-map-v1",
   "server": {
     "id": "cuebook",
-    "url": "https://cuebook.app/mcp",
+    "url": "https://cuebook.xyz/mcp",
     "transport": "http",
     "authentication": "oauth"
   },
