@@ -17,6 +17,14 @@ claude plugin marketplace add cuebook-public/cuebook-skills \
 claude plugin install cuebook@cuebook
 ```
 
+`claude plugin marketplace add` clones over the network. It attempts SSH first
+and falls back to HTTPS, so a logged SSH failure is part of the normal path. If
+the HTTPS attempt also fails with a TLS, DNS, proxy, socket, or timeout error,
+the package source was never reached and nothing is wrong with the package.
+Report that transport failure and let the user decide how their network reaches
+GitHub. Do not change their Git or proxy configuration and do not substitute
+another install source.
+
 Start a new Claude Code session, or run `/reload-plugins`. The marketplace
 installs the sanitized `plugins/runtime/cuebook` root. Its conventional
 `skills/` directory contains only `query-cuebook`, `create-cuebook-content`,
@@ -61,10 +69,24 @@ the user's current project checkout.
 ## MCP configuration and auth
 
 Stable `main` releases ship `.mcp.json` with `https://cuebook.app/mcp`;
-development builds from `dev` use `https://cuebook.xyz/mcp`. Do not register
-the selected endpoint a second time. In Claude Code, open `/mcp`, select
-Cuebook, and complete one browser authentication flow. OAuth credentials stay
-in the host connector.
+development builds from `dev` use `https://cuebook.xyz/mcp`, under their own
+server name. Do not register the selected endpoint a second time. In Claude
+Code, open `/mcp`, select Cuebook, and complete one browser authentication
+flow. OAuth credentials stay in the host connector.
+
+Read the connection state from `claude mcp list`, which reports the Cuebook
+server as either connected or `Needs authentication`. Do not infer it from a
+stored credential. The health check that `claude mcp list` performs itself
+completes discovery and dynamic client registration, leaving behind a
+credential record that holds no access token, so a record is not proof of
+authentication and a missing record is not proof that login is required.
+
+`/mcp` requires an interactive Claude Code session. `claude mcp login
+plugin:cuebook:cuebook` is the equivalent CLI path and needs a TTY; without one
+it exits with `stdin isn't a terminal`. An agent running non-interactively must
+hand authentication back to the user instead of working around the missing
+terminal. Reporting that the user has to finish login is the correct outcome
+there, not a failure, and the browser prompt is never approved on their behalf.
 
 If authentication or token exchange fails, stop after that one result. Do not add another server name, reinstall the plugin, or launch parallel logins.
 

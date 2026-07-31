@@ -27,10 +27,14 @@ current project or any unrelated local checkout.
    version is older, update once. If the current version still exposes more or
    fewer than three Skills, report `package_inventory_defect` and stop; do not
    retry installation or authentication.
-5. Inspect the connection state. If Cuebook is authenticated or login is
-   pending, do not start another login. Otherwise start exactly one host-native
-   login when authentication is required. Browser approval belongs to the
-   user; wait for them to finish and never restart a pending attempt.
+5. Inspect the connection state through the host's own connection report, not
+   through stored-credential presence. A host completes endpoint discovery and
+   client registration before any token exists, so a stored credential record
+   alone never proves authentication, and its absence never proves that login
+   is required. If Cuebook is authenticated or login is pending, do not start
+   another login. Otherwise start exactly one host-native login when
+   authentication is required. Browser approval belongs to the user; wait for
+   them to finish and never restart a pending attempt.
 6. Finish with one smallest useful read and a source-linked result. Tool
    discovery, an enabled badge, or browser approval alone is not proof that the
    connection works. A normal user install does not require a preview,
@@ -39,6 +43,16 @@ current project or any unrelated local checkout.
 If this file, the distribution manifest, or the selected host guide cannot be
 read, stop and tell the user which document is unavailable. Do not guess
 commands or fall back to remembered instructions.
+
+If an install command itself fails, classify the failure before acting again. A
+transport failure — TLS handshake, DNS, proxy, socket, or timeout while
+reaching the package source — is not a package, version, inventory, or
+authentication problem, and no amount of reinstalling repairs it. Report the
+failing command and its exact error, name transport as the suspected cause, and
+let the user decide how their network reaches the source. Retry once only when
+the error shows the failure was transient. Never invent a workaround, never
+edit the user's Git, proxy, or TLS configuration, and never substitute a
+different install source.
 
 ## Choose the current platform
 
@@ -68,7 +82,12 @@ verification evidence, and the adapter contract for every supported host.
 - On an MCP-only host, configure the connector but do not claim the creator
   interview, local rendering, or publication orchestration supplied by the
   Agent Skills.
-- Keep exactly one MCP server named `cuebook` for this distribution channel.
+- Keep exactly one MCP server for this distribution channel, under the server
+  name that this channel's `.mcp.json` declares. Channels declare distinct
+  server names on purpose. A host that keys stored credentials by server name
+  plus endpoint will otherwise hold two same-named grants at once, and its
+  logout, which resolves the currently configured endpoint, can never reach the
+  other one. Never rename a channel's server to match another channel's.
   OAuth credentials belong to the host connector, never to a Skill,
   repository file, generated artifact, or copied bearer header.
 
