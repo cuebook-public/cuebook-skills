@@ -11,11 +11,12 @@
 Install from the repository's native Claude Code marketplace:
 
 ```bash
-claude plugin marketplace add cuebook-public/cuebook-skills \
-  --sparse .claude-plugin plugins/runtime/cuebook
-
-claude plugin install cuebook@cuebook
+claude plugin marketplace add cuebook-public/cuebook-skills && claude plugin install cuebook@cuebook
 ```
+
+The whole repository is about 7 MB, so this clones in full and needs no sparse
+checkout. The root marketplace manifest already points at
+`./plugins/runtime/cuebook`, and the installed plugin is that root either way.
 
 `claude plugin marketplace add` clones over the network. It attempts SSH first
 and falls back to HTTPS, so a logged SSH failure is part of the normal path. If

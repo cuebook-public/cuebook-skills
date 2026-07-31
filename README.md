@@ -127,7 +127,20 @@ For Agent-led installation on any supported host, start with the canonical
 distribution branch, routes to the appropriate host adapter, and owns the
 shared authentication and readiness rules.
 
-Install the current stable release from `main`:
+Install the current stable release from `main`.
+
+Claude Code, in one line:
+
+```bash
+claude plugin marketplace add cuebook-public/cuebook-skills && claude plugin install cuebook@cuebook
+```
+
+Then restart Claude Code, or run `/reload-plugins`, and complete one browser
+authentication from `/mcp`. The
+[Claude Code guide](plugins/cuebook/platforms/claude-code.md) covers
+verification, update, and failure handling.
+
+Codex:
 
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \

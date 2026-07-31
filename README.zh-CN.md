@@ -73,6 +73,17 @@ Cuebook MCP 可以查询已经审核并发布的社区 Skill：
 
 具体安装方式见 [平台说明](plugins/cuebook/platforms/README.md)。
 
+## Claude Code 快速安装
+
+一行完成安装：
+
+```bash
+claude plugin marketplace add cuebook-public/cuebook-skills && claude plugin install cuebook@cuebook
+```
+
+随后重启 Claude Code 或运行 `/reload-plugins`，再从 `/mcp` 完成一次浏览器授权。
+验证、更新与失败处理见 [Claude Code 指南](plugins/cuebook/platforms/claude-code.md)。
+
 ## Codex 快速安装
 
 让 AI Agent 在任意受支持平台完成安装时，请从统一的
