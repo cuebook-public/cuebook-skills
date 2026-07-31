@@ -122,21 +122,41 @@ See the [platform matrix and installation guides](plugins/cuebook/platforms/READ
 
 ## Quick Start
 
-Cuebook installs the same way on every supported host. Give your agent one
-line and let it route itself:
+For Agent-led installation on any supported host, start with the canonical
+[installation entrypoint](plugins/cuebook/INSTALL.md). It selects the current
+distribution branch, routes to the appropriate host adapter, and owns the
+shared authentication and readiness rules.
 
-> Read https://github.com/cuebook-public/cuebook-skills/blob/main/plugins/cuebook/INSTALL.md
-> and install Cuebook for this platform.
+Install the current stable release from `main`.
 
-That entrypoint is host-neutral. It reads the distribution manifest for the
-channel it was fetched from, selects the guide for whichever host the agent is
-actually running on, and owns the shared authentication and readiness rules.
-Per-host commands live in those guides, so no single host's syntax becomes the
-default for everyone.
+Claude Code, in one line:
 
-Installing by hand instead? Open the
-[platform matrix](plugins/cuebook/platforms/README.md) and follow the guide for
-your host.
+```bash
+claude plugin marketplace add cuebook-public/cuebook-skills && claude plugin install cuebook@cuebook
+```
+
+Then restart Claude Code, or run `/reload-plugins`, and complete one browser
+authentication from `/mcp`. The
+[Claude Code guide](plugins/cuebook/platforms/claude-code.md) covers
+verification, update, and failure handling.
+
+Codex:
+
+```bash
+codex plugin marketplace add cuebook-public/cuebook-skills \
+  --sparse .agents/plugins \
+  --sparse plugins/runtime/cuebook
+
+codex plugin add cuebook@cuebook
+
+codex mcp list --json
+
+# Only when the status is not_logged_in and no login is pending:
+codex mcp login cuebook
+codex mcp list --json
+```
+
+For a first-time installation, `codex plugin add` installs Cuebook but does not guarantee that the CLI will open a browser. Inspect the `cuebook` entry in `codex mcp list --json`, then run `codex mcp login cuebook` once only when it reports `not_logged_in`. Skip login when Cuebook is already authenticated or a login is pending. If login opens a browser, the approval belongs to the user: wait for them to finish, never approve it yourself, and never restart login while that attempt is pending.
 
 One creator consent covers Cuebook's six explicit authorization domains: public research, private simulated-account reads, simulated Paper Trade actions, and private Frame read, draft, and publication actions. They remain separate server-enforced scopes, and authorization never creates a Frame or simulated order by itself. A Paper Trade still requires terms, a preview, and explicit placement intent; Cuebook never places a real-money order.
 
@@ -158,13 +178,28 @@ Turn that idea into a Frame.
 > [!NOTE]
 > Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly three public entrypoints; internal modules load only when needed.
 
-For a reproducible, intentionally frozen install, pin the marketplace to a release tag. Each platform guide names the flag its own host uses. A tag-pinned marketplace stays on that tag until you change it; the default `main` install receives stable releases.
+For a reproducible, intentionally frozen install, add `--ref v0.9.22` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
 
 ## Updating
 
-Update through your host's own update path, named in that host's [platform guide](plugins/cuebook/platforms/README.md).
+Update the configured marketplace snapshot and refresh the installed Plugin in place:
 
-Do not uninstall the Plugin, duplicate its MCP entry, or repeat OAuth during a normal update. Existing connector credentials remain host-owned. Log in again only when the connector explicitly reports that Cuebook is not authenticated, returns an authorization challenge that requires step-up, or the stored grant has been revoked. After a version-changing refresh, fully restart the host and then open one new task. A new task alone may retain the old in-memory Plugin snapshot.
+```bash
+codex plugin marketplace upgrade cuebook
+codex plugin add cuebook@cuebook
+codex mcp list --json
+```
+
+That first command applies only to a Git-backed marketplace created by `codex plugin marketplace add`. If `codex plugin marketplace list` points `cuebook` at a local checkout, skip the marketplace upgrade command, update that checkout yourself, and run only:
+
+```bash
+codex plugin add cuebook@cuebook
+codex mcp list --json
+```
+
+`codex plugin marketplace upgrade cuebook` intentionally rejects a local checkout because it is not a Git marketplace managed by Codex.
+
+Do not uninstall the Plugin, duplicate its MCP entry, or repeat OAuth during a normal update. Existing connector credentials remain host-owned. Log in again only when the connector explicitly reports `not_logged_in`, returns an authorization challenge that requires step-up, or the stored grant has been revoked. After a version-changing refresh, fully quit and reopen the Codex app (or restart the Codex CLI process), then open one new task. A new task alone may retain the old in-memory Plugin snapshot.
 
 Connections created before the complete creator consent was introduced keep their original immutable scope snapshot. The first Paper Trade or Frame write may therefore request one transparent OAuth step-up; after approval, the same connection covers the complete Cuebook workflow. This is a one-time permission update, not a reinstall.
 

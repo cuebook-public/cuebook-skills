@@ -29,36 +29,44 @@ The Cuebook Plugin gives AI agents a memory and expression layer for pre-trade t
 
 ## Install
 
-Give your agent one line and let it route itself:
+For Agent-led installation on Codex, Claude Code, Cursor, Hermes, OpenClaw,
+ChatGPT, Grok, or another compatible host, begin with the canonical
+[installation entrypoint](INSTALL.md). The platform-specific instructions
+below remain useful for manual Codex installation.
 
-> Read https://github.com/cuebook-public/cuebook-skills/blob/main/plugins/cuebook/INSTALL.md
-> and install Cuebook for this platform.
+```bash
+codex plugin marketplace add cuebook-public/cuebook-skills \
+  --sparse .agents/plugins \
+  --sparse plugins/runtime/cuebook
 
-That entrypoint covers Codex, Claude Code, Cursor, Hermes, OpenClaw, ChatGPT,
-Grok, and any other compatible host. It reads the distribution manifest for its
-own channel, routes to that host's guide, and owns the shared authentication and
-readiness rules. Per-host commands live in the
-[platform guides](platforms/README.md), so no single host's syntax becomes the
-default for everyone.
+codex plugin add cuebook@cuebook
 
-Installation never opens a browser on its own. On a first-time installation,
-read the host's own connection report, then start one login only when it reports
-that Cuebook is not authenticated. Skip login when Cuebook is already
-authenticated or a login is pending. If login opens a browser, the approval
-belongs to the user: wait for them to finish, never approve it yourself, and
-never restart login while that attempt is pending.
+codex mcp list --json
+
+# Only when the status is not_logged_in and no login is pending:
+codex mcp login cuebook
+codex mcp list --json
+```
+
+Cuebook's marketplace policy is `ON_INSTALL`, but `codex plugin add` does not guarantee that the CLI will open a browser. On a first-time installation, check `codex mcp list --json`, then run `codex mcp login cuebook` once only when Cuebook reports `not_logged_in`. Skip login when Cuebook is already authenticated or a login is pending. If login opens a browser, the approval belongs to the user: wait for them to finish, never approve it yourself, and never restart login while that attempt is pending.
 
 The creator consent presents all six Cuebook scopes once: public research, private simulated-account reads, simulated Paper Trade actions, and private Frame read, draft, and publication actions. These remain independent server-enforced permissions. Granting them never publishes or trades automatically; every Paper Trade is simulated and still requires a preview plus explicit placement intent.
 
-The installing task owns installation and that one necessary host login. It must not create a background test task, publish a placeholder, or diagnose this local marketplace through a public ChatGPT plugin manager. After login exits, list Cuebook's Tools, fully restart the host rather than only opening a new conversation inside it, and then enter the real query or market idea in one new task. Each platform guide names its own restart step. A new task inside an app process that never restarted can retain the previous Plugin and Tool snapshot. The final readiness proof is a normal MCP result from one smallest read-only call in the restarted host, not a browser approval screen, connector status, or Tool discovery alone. If authentication fails, retry login only after an explicit `not_logged_in`, authorization challenge, or revoked grant; do not retry for discovery, network, TLS, proxy, or timeout failures. OAuth credentials stay in the connector, never in a Skill or generated artifact.
+The installing task owns installation and that one necessary host login. It must not create a background test task, publish a placeholder, or diagnose this local marketplace through a public ChatGPT plugin manager. After the login command exits, list Cuebook's Tools, fully quit the Codex app with `Cmd+Q` on macOS (or exit it completely on another platform), reopen it, and then enter the real query or market idea in one new task. Codex CLI users should end the current process and start a new one. A new task inside an app process that never restarted can retain the previous Plugin and Tool snapshot. The final readiness proof is a normal MCP result from one smallest read-only call in the restarted host, not a browser approval screen, connector status, or Tool discovery alone. If authentication fails, retry login only after an explicit `not_logged_in`, authorization challenge, or revoked grant; do not retry for discovery, network, TLS, proxy, or timeout failures. OAuth credentials stay in the connector, never in a Skill or generated artifact.
 
-Pin the marketplace to a release tag only when you intentionally want a frozen install; each platform guide names the flag its host uses. The default `main` marketplace follows stable releases.
+Use `--ref v0.9.22` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
 
 ## Update
 
-Update through your host's own update path, named in that host's [platform guide](platforms/README.md).
+```bash
+codex plugin marketplace upgrade cuebook
+codex plugin add cuebook@cuebook
+codex mcp list --json
+```
 
-A normal update needs no uninstall, duplicate MCP configuration, or repeated OAuth. After a version-changing refresh, fully restart the host rather than only opening a new conversation inside it, so it loads the updated Skills and Tool snapshot. Authenticate again only when the connector explicitly reports that Cuebook is not authenticated, requires scope step-up, or its grant has been revoked.
+The marketplace upgrade command is for a Git-backed marketplace. When `codex plugin marketplace list` points `cuebook` at a local checkout, update that checkout yourself, skip `marketplace upgrade`, and run only `codex plugin add cuebook@cuebook` plus `codex mcp list --json`. Codex intentionally rejects `marketplace upgrade` for a local checkout because Codex does not own that repository's Git state.
+
+A normal update needs no uninstall, duplicate MCP configuration, or repeated OAuth. After a version-changing refresh, fully quit and reopen the Codex app (or restart the Codex CLI process), then open one new task so it loads the updated Skills and Tool snapshot. Authenticate again only when the connector explicitly reports `not_logged_in`, requires scope step-up, or its grant has been revoked.
 
 An HTTP, DNS, TLS, proxy, socket, or timeout failure is a connectivity problem, not evidence that authentication was lost. When Cuebook still reports an authenticated connection, restore the network path and retry the same request without reinstalling or starting another OAuth flow.
 
