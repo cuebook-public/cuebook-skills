@@ -143,9 +143,7 @@ verification, update, and failure handling.
 Codex:
 
 ```bash
-codex plugin marketplace add cuebook-public/cuebook-skills \
-  --sparse .agents/plugins \
-  --sparse plugins/runtime/cuebook
+codex plugin marketplace add cuebook-public/cuebook-skills
 
 codex plugin add cuebook@cuebook
 

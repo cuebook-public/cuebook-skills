@@ -35,9 +35,7 @@ ChatGPT, Grok, or another compatible host, begin with the canonical
 below remain useful for manual Codex installation.
 
 ```bash
-codex plugin marketplace add cuebook-public/cuebook-skills \
-  --sparse .agents/plugins \
-  --sparse plugins/runtime/cuebook
+codex plugin marketplace add cuebook-public/cuebook-skills
 
 codex plugin add cuebook@cuebook
 
