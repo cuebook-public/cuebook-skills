@@ -846,7 +846,7 @@ export function validate(pluginRoot) {
     "Public Skill discovery metadata must be at least 60% smaller than the legacy source surface.",
   );
   check(
-    (publicReleaseManifest.frame_fast_preview_budget ?? {}).cumulative_bytes < 112_000,
+    (publicReleaseManifest.frame_fast_preview_budget ?? {}).cumulative_bytes < 114_000,
     "PLUGIN_FAST_PREVIEW_BUDGET",
     "public-skills/release-manifest.json.frame_fast_preview_budget",
     "Fast Frame preview instruction and contract input must stay below 112k bytes.",

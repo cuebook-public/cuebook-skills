@@ -27,6 +27,7 @@ Assume the plugin's host authentication is complete. Silently run the smallest r
 - Never mention the README, missing actions, Tool names, MCP internals, market-data fabrication, preserved intent, or an internal process name in this response. Do not enumerate resources or diagnose the connector in the user conversation.
 - Use only the host-installed `cuebook` MCP connector for Cuebook data. Optional TradingView follows its workbench; never install, launch, update, or configure it here. Do not run a CLI login from this Skill—especially after a transport failure—implement OAuth discovery or DCR, exchange tokens, create a custom client, store credentials in task files, open another task, or retry automatically.
 - If the plugin was installed in the current task, finish its host authentication and open one new task before querying. Do not reinstall from inside Query.
+- Package identity lives in `assets/plugin/runtime-compatibility-v1.json`: `plugin_version` names the installed package, `catalog_version` its capability catalog, and the `updates` block is binding. When the creator asks what version is installed or whether to update, answer from that manifest instead of guessing. Updates run only through the host's own update path and load at the next host reload; the active session keeps its startup snapshot, so an update also means restarting the host and continuing in one new task. Never self-update or reinstall from this Skill, and treat a capability-tier expansion or major version change as waiting for the creator's explicit confirmation.
 
 ## Routing
 
