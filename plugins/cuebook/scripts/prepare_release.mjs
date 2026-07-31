@@ -10,6 +10,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { build } from "./build_release_skills.mjs";
+import { buildRuntimeBundle } from "./build_runtime_bundle.mjs";
 import { distributionWrites } from "./configure_distribution_channel.mjs";
 
 const STABLE_SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/u;
@@ -21,8 +22,8 @@ const VERSION_FILES = {
   lock: "package-lock.json",
   index: "plugins/cuebook/assets/plugin-index-v1.json",
   runtime: "plugins/cuebook/assets/runtime-compatibility-v1.json",
-  codex: "plugins/cuebook/.codex-plugin/plugin.json",
-  claude: "plugins/cuebook/.claude-plugin/plugin.json",
+  codex: "plugins/cuebook/runtime-template/.codex-plugin/plugin.json",
+  claude: "plugins/cuebook/runtime-template/.claude-plugin/plugin.json",
   claudeMarketplace: ".claude-plugin/marketplace.json",
 };
 
@@ -36,7 +37,7 @@ const PINNED_INSTALL_DOCS = [
 
 const GENERATED_MANIFESTS = [
   "skills/release-manifest.json",
-  "plugins/cuebook/public-skills/release-manifest.json",
+  "plugins/runtime/cuebook/skills/release-manifest.json",
 ];
 
 export class ReleasePreparationError extends Error {
@@ -350,10 +351,21 @@ function main() {
   }
 
   const prepared = prepareRelease(root, options);
-  const outputs = [path.join(root, "skills"), path.join(root, "plugins/cuebook/public-skills")];
-  const manifests = outputs.map((output) => build(path.join(root, "plugins/cuebook"), output));
-  if (manifests.some((manifest) => !manifest.valid)) {
-    throw new ReleasePreparationError("Generated Skill bundles failed validation.", manifests.flatMap((item) => item.errors));
+  const sourceRoot = path.join(root, "plugins/cuebook");
+  const outputs = [
+    path.join(root, "skills"),
+    path.join(root, "plugins/runtime/cuebook"),
+  ];
+  const skillsManifest = build(sourceRoot, outputs[0]);
+  const runtimeBundle = buildRuntimeBundle(sourceRoot, outputs[1]);
+  if (!skillsManifest.valid || !runtimeBundle.valid) {
+    throw new ReleasePreparationError(
+      "Generated runtime bundles failed validation.",
+      [
+        ...(skillsManifest.errors ?? []),
+        ...(runtimeBundle.skill_manifest?.errors ?? []),
+      ],
+    );
   }
   assertReleaseConsistent(root);
   process.stdout.write(`${JSON.stringify({ ...prepared, generated_bundles: outputs, next: "Review the diff, then run npm run release:verify. This command did not commit, tag, push, publish, or deploy." }, null, 2)}\n`);

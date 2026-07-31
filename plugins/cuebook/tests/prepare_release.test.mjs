@@ -52,7 +52,7 @@ function fixture(root, { unreleased = "- Added one release feature." } = {}) {
     web_origin: "https://cuebook.xyz",
     mcp_url: "https://cuebook.xyz/mcp",
   });
-  json(path.join(root, "plugins/cuebook/.mcp.json"), {
+  json(path.join(root, "plugins/cuebook/runtime-template/.mcp.json"), {
     mcpServers: {
       cuebook: {
         type: "http",
@@ -66,11 +66,11 @@ function fixture(root, { unreleased = "- Added one release feature." } = {}) {
     $id: "https://cuebook.xyz/schemas/example-v1.schema.json",
     type: "object",
   });
-  json(path.join(root, "plugins/cuebook/.codex-plugin/plugin.json"), {
+  json(path.join(root, "plugins/cuebook/runtime-template/.codex-plugin/plugin.json"), {
     name: "cuebook",
     version: "0.6.0+codex.20260720133237",
   });
-  json(path.join(root, "plugins/cuebook/.claude-plugin/plugin.json"), {
+  json(path.join(root, "plugins/cuebook/runtime-template/.claude-plugin/plugin.json"), {
     name: "cuebook",
     version: "0.6.0",
   });
@@ -124,11 +124,11 @@ test("prepares every public version surface while preserving catalog version", (
     assert.equal(runtime.plugin_version, "0.7.0");
     assert.equal(runtime.catalog_version, "1.29.0");
     assert.equal(
-      JSON.parse(fs.readFileSync(path.join(root, "plugins/cuebook/.codex-plugin/plugin.json"))).version,
+      JSON.parse(fs.readFileSync(path.join(root, "plugins/cuebook/runtime-template/.codex-plugin/plugin.json"))).version,
       "0.7.0+codex.20260721103045",
     );
     assert.equal(
-      JSON.parse(fs.readFileSync(path.join(root, "plugins/cuebook/.claude-plugin/plugin.json"))).version,
+      JSON.parse(fs.readFileSync(path.join(root, "plugins/cuebook/runtime-template/.claude-plugin/plugin.json"))).version,
       "0.7.0",
     );
     assert.equal(
@@ -140,7 +140,9 @@ test("prepares every public version surface while preserving catalog version", (
     );
     assert.equal(distribution.channel, "production");
     assert.equal(distribution.mcp_url, "https://cuebook.app/mcp");
-    const mcp = JSON.parse(fs.readFileSync(path.join(root, "plugins/cuebook/.mcp.json")));
+    const mcp = JSON.parse(
+      fs.readFileSync(path.join(root, "plugins/cuebook/runtime-template/.mcp.json")),
+    );
     assert.equal(mcp.mcpServers.cuebook.url, "https://cuebook.app/mcp");
     assert.equal(mcp.mcpServers.cuebook.oauth_resource, "https://cuebook.app/mcp");
     const capabilityMap = JSON.parse(

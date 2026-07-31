@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const PLUGIN_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const REPOSITORY_ROOT = path.resolve(PLUGIN_ROOT, "..", "..");
+const RUNTIME_ROOT = path.join(REPOSITORY_ROOT, "plugins", "runtime", "cuebook");
 const PLATFORM_ROOT = path.join(PLUGIN_ROOT, "platforms");
 const PUBLIC_SKILLS = [
   "author-cuebook-skill",
@@ -23,16 +24,16 @@ function readPlatform(name) {
 
 test("Codex, Claude, and OpenClaw share one canonical portable plugin root", () => {
   const codexManifest = loadJson(
-    path.join(PLUGIN_ROOT, ".codex-plugin", "plugin.json"),
+    path.join(RUNTIME_ROOT, ".codex-plugin", "plugin.json"),
   );
   const claudeManifest = loadJson(
-    path.join(PLUGIN_ROOT, ".claude-plugin", "plugin.json"),
+    path.join(RUNTIME_ROOT, ".claude-plugin", "plugin.json"),
   );
-  const mcp = loadJson(path.join(PLUGIN_ROOT, ".mcp.json"));
+  const mcp = loadJson(path.join(RUNTIME_ROOT, ".mcp.json"));
   const distributionChannel = loadJson(
     path.join(PLUGIN_ROOT, "distribution-channel-v1.json"),
   );
-  const skillDirs = fs.readdirSync(path.join(PLUGIN_ROOT, "public-skills"), {
+  const skillDirs = fs.readdirSync(path.join(RUNTIME_ROOT, "skills"), {
     withFileTypes: true,
   })
     .filter((entry) => entry.isDirectory())
@@ -41,14 +42,14 @@ test("Codex, Claude, and OpenClaw share one canonical portable plugin root", () 
 
   assert.equal(codexManifest.name, "cuebook");
   assert.equal(claudeManifest.name, "cuebook");
-  assert.equal(codexManifest.skills, "./public-skills/");
-  assert.equal(claudeManifest.skills, "./public-skills/");
+  assert.equal(codexManifest.skills, "./skills/");
+  assert.equal(claudeManifest.skills, "./skills/");
   assert.equal(codexManifest.mcpServers, "./.mcp.json");
   assert.equal(claudeManifest.mcpServers, "./.mcp.json");
   assert.deepEqual(skillDirs, PUBLIC_SKILLS);
   for (const skillName of PUBLIC_SKILLS) {
     assert.ok(
-      fs.existsSync(path.join(PLUGIN_ROOT, "public-skills", skillName, "SKILL.md")),
+      fs.existsSync(path.join(RUNTIME_ROOT, "skills", skillName, "SKILL.md")),
       skillName,
     );
   }
@@ -69,7 +70,7 @@ test("OpenClaw adapter uses the compatible bundle lifecycle", () => {
     guide,
     /openclaw plugins install cuebook[\s\\]+--marketplace cuebook-public\/cuebook-skills/u,
   );
-  assert.match(guide, /marketplace entry must resolve to `\.\/plugins\/cuebook`/u);
+  assert.match(guide, /marketplace entry must resolve to `\.\/plugins\/runtime\/cuebook`/u);
   assert.match(guide, /openclaw plugins inspect cuebook --json/u);
   assert.match(guide, /openclaw skills list --json/u);
   assert.match(guide, /Bundle discovery proves that the MCP descriptor shipped/u);
@@ -83,7 +84,7 @@ test("OpenClaw adapter uses the compatible bundle lifecycle", () => {
   assert.match(guide, /skips `plugins update` for a local-path source/u);
   assert.match(
     guide,
-    /openclaw plugins install \.\/cuebook-skills\/plugins\/cuebook --force/u,
+    /openclaw plugins install \.\/cuebook-skills\/plugins\/runtime\/cuebook --force/u,
   );
   assert.match(guide, /openclaw gateway restart/u);
   assert.doesNotMatch(guide, /Copy the generated `skills\//u);
@@ -120,7 +121,7 @@ test("installation entrypoint and platform matrix govern every host adapter", ()
   assert.match(matrix, /Codex-compatible Cuebook bundle/u);
   assert.match(matrix, /Current CLI local bundle and MCP config verified/u);
   assert.match(matrix, /GitHub Skill paths \+ Hermes MCP config/u);
-  assert.match(matrix, /`plugins\/cuebook\/` is the canonical portable Plugin root/u);
+  assert.match(matrix, /`plugins\/runtime\/cuebook\/` is the canonical portable Plugin root/u);
   assert.match(matrix, /exactly the three public entrypoints/u);
   assert.match(
     matrix,
@@ -128,4 +129,11 @@ test("installation entrypoint and platform matrix govern every host adapter", ()
   );
   assert.match(install, /host-native update path once/u);
   assert.match(install, /without a second OAuth grant/u);
+  assert.match(install, /Ordinary user quick path/u);
+  assert.match(install, /package_inventory_defect/u);
+  assert.match(
+    install,
+    /not\s+an instruction to inspect, switch, or modify the Git branch/u,
+  );
+  assert.match(install, /Live verification gate \(maintainers only\)/u);
 });

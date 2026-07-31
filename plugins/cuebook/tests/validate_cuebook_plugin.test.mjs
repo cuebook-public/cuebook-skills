@@ -10,9 +10,16 @@ import {
   collectDistributionIssues,
   configureDistributionChannel,
 } from "../scripts/configure_distribution_channel.mjs";
+import { buildRuntimeBundle } from "../scripts/build_runtime_bundle.mjs";
 import { validate } from "../scripts/validate_cuebook_plugin.mjs";
 
 const PLUGIN_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const REPOSITORY_ROOT = path.resolve(PLUGIN_ROOT, "..", "..");
+const RUNTIME_ROOT = path.join(REPOSITORY_ROOT, "plugins", "runtime", "cuebook");
+
+function runtimeRootFor(sourceRoot) {
+  return path.resolve(sourceRoot, "..", "runtime", "cuebook");
+}
 
 function codes(result) {
   return new Set(result.errors.map((error) => error.code));
@@ -28,8 +35,11 @@ function withTmpPath(fn) {
 }
 
 function copiedPlugin(tmpPath) {
-  const target = path.join(tmpPath, "cuebook");
+  const target = path.join(tmpPath, "plugins", "cuebook");
+  fs.mkdirSync(path.dirname(target), { recursive: true });
   fs.cpSync(PLUGIN_ROOT, target, { recursive: true });
+  fs.mkdirSync(path.dirname(runtimeRootFor(target)), { recursive: true });
+  fs.cpSync(RUNTIME_ROOT, runtimeRootFor(target), { recursive: true });
   return target;
 }
 
@@ -94,15 +104,15 @@ test("community package submission remains structurally separate from Create", (
 });
 
 test("Claude Code marketplace explicitly exposes only the three self-contained Skills", () => {
-  const repositoryRoot = path.resolve(PLUGIN_ROOT, "..", "..");
+  const repositoryRoot = REPOSITORY_ROOT;
   const marketplace = JSON.parse(
     fs.readFileSync(path.join(repositoryRoot, ".claude-plugin", "marketplace.json"), "utf-8"),
   );
   assert.equal(marketplace.name, "cuebook");
   assert.equal(marketplace.plugins.length, 1);
   assert.equal(marketplace.plugins[0].name, "cuebook");
-  assert.equal(marketplace.plugins[0].source, "./plugins/cuebook");
-  assert.equal(marketplace.plugins[0].strict, false);
+  assert.equal(marketplace.plugins[0].source, "./plugins/runtime/cuebook");
+  assert.equal(marketplace.plugins[0].strict, true);
   assert.ok(
     fs.existsSync(path.join(repositoryRoot, marketplace.plugins[0].source, ".claude-plugin", "plugin.json")),
   );
@@ -113,7 +123,7 @@ test("Claude Code marketplace explicitly exposes only the three self-contained S
   assert.equal(marketplace.plugins[0].mcpServers, undefined);
 
   const manifest = JSON.parse(
-    fs.readFileSync(path.join(PLUGIN_ROOT, ".claude-plugin", "plugin.json"), "utf-8"),
+    fs.readFileSync(path.join(RUNTIME_ROOT, ".claude-plugin", "plugin.json"), "utf-8"),
   );
   const expectedVersion = JSON.parse(
     fs.readFileSync(path.resolve(PLUGIN_ROOT, "..", "..", "package.json"), "utf-8"),
@@ -121,7 +131,7 @@ test("Claude Code marketplace explicitly exposes only the three self-contained S
   assert.equal(marketplace.plugins[0].version, expectedVersion);
   assert.equal(manifest.name, "cuebook");
   assert.equal(manifest.version.split("+")[0], expectedVersion);
-  assert.equal(manifest.skills, "./public-skills/");
+  assert.equal(manifest.skills, "./skills/");
   assert.equal(manifest.mcpServers, "./.mcp.json");
 });
 
@@ -133,7 +143,7 @@ test("runtime compatibility metadata is versioned once and vendored into every p
     fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "plugin-index-v1.json"), "utf8"),
   );
   const release = JSON.parse(
-    fs.readFileSync(path.join(PLUGIN_ROOT, "public-skills", "release-manifest.json"), "utf8"),
+    fs.readFileSync(path.join(RUNTIME_ROOT, "skills", "release-manifest.json"), "utf8"),
   );
   assert.equal(runtime.plugin_version, index.plugin_version);
   assert.equal(runtime.catalog_version, index.catalog_version);
@@ -146,8 +156,8 @@ test("runtime compatibility metadata is versioned once and vendored into every p
       JSON.parse(
         fs.readFileSync(
           path.join(
-            PLUGIN_ROOT,
-            "public-skills",
+            RUNTIME_ROOT,
+            "skills",
             bundle.skill,
             "assets",
             "plugin",
@@ -292,10 +302,13 @@ test("distribution channels generate one internally consistent OAuth resource", 
     fs.cpSync(PLUGIN_ROOT, pluginRoot, { recursive: true });
 
     const development = configureDistributionChannel(tmpPath, "development");
+    buildRuntimeBundle(pluginRoot, runtimeRootFor(pluginRoot));
     assert.equal(development.channel, "development");
     assert.deepEqual(collectDistributionIssues(tmpPath, "development"), []);
     assert.ok(validate(pluginRoot).valid);
-    const devMcp = JSON.parse(fs.readFileSync(path.join(pluginRoot, ".mcp.json"), "utf8"));
+    const devMcp = JSON.parse(
+      fs.readFileSync(path.join(runtimeRootFor(pluginRoot), ".mcp.json"), "utf8"),
+    );
     assert.equal(devMcp.mcpServers.cuebook.url, "https://cuebook.xyz/mcp");
     assert.equal(devMcp.mcpServers.cuebook.oauth_resource, "https://cuebook.xyz/mcp");
     for (const guideName of CHANNEL_BOUND_PLATFORM_GUIDES) {
@@ -307,10 +320,13 @@ test("distribution channels generate one internally consistent OAuth resource", 
     assert.equal(JSON.parse(fs.readFileSync(schemaPath, "utf8")).$id, "https://cuebook.xyz/schemas/creation-menu-v1.schema.json");
 
     const production = configureDistributionChannel(tmpPath, "production");
+    buildRuntimeBundle(pluginRoot, runtimeRootFor(pluginRoot));
     assert.equal(production.channel, "production");
     assert.deepEqual(collectDistributionIssues(tmpPath, "production"), []);
     assert.ok(validate(pluginRoot).valid);
-    const prodMcp = JSON.parse(fs.readFileSync(path.join(pluginRoot, ".mcp.json"), "utf8"));
+    const prodMcp = JSON.parse(
+      fs.readFileSync(path.join(runtimeRootFor(pluginRoot), ".mcp.json"), "utf8"),
+    );
     assert.equal(prodMcp.mcpServers.cuebook.url, "https://cuebook.app/mcp");
     assert.equal(prodMcp.mcpServers.cuebook.oauth_resource, "https://cuebook.app/mcp");
     for (const guideName of CHANNEL_BOUND_PLATFORM_GUIDES) {
@@ -336,9 +352,12 @@ test("distribution validation rejects channel and connector drift", () => {
     const pluginRoot = path.join(tmpPath, "plugins", "cuebook");
     fs.mkdirSync(path.dirname(pluginRoot), { recursive: true });
     fs.cpSync(PLUGIN_ROOT, pluginRoot, { recursive: true });
-    rewrite(path.join(pluginRoot, ".mcp.json"), (payload) => {
+    fs.mkdirSync(path.dirname(runtimeRootFor(pluginRoot)), { recursive: true });
+    fs.cpSync(RUNTIME_ROOT, runtimeRootFor(pluginRoot), { recursive: true });
+    rewrite(path.join(pluginRoot, "runtime-template", ".mcp.json"), (payload) => {
       payload.mcpServers.cuebook.url = "https://example.com/mcp";
     });
+    buildRuntimeBundle(pluginRoot, runtimeRootFor(pluginRoot));
     rewrite(path.join(pluginRoot, "assets", "creation-menu-v1.schema.json"), (payload) => {
       payload.$id = "https://cuebook.xyz/schemas/creation-menu-v1.schema.json";
     });
@@ -350,9 +369,13 @@ test("distribution validation rejects channel and connector drift", () => {
 test("Claude Code plugin cannot expose the internal Skill tree", () => {
   withTmpPath((tmpPath) => {
     const root = copiedPlugin(tmpPath);
-    const filePath = path.join(root, ".claude-plugin", "plugin.json");
+    const filePath = path.join(
+      runtimeRootFor(root),
+      ".claude-plugin",
+      "plugin.json",
+    );
     rewrite(filePath, (payload) => {
-      payload.skills = "./skills/";
+      payload.skills = "./internal-skills/";
     });
     assert.ok(codes(validate(root)).has("CLAUDE_PLUGIN_PUBLIC_SKILL_ROOT"));
   });
@@ -490,10 +513,10 @@ test("Codex update docs distinguish Git marketplaces from local checkouts", () =
 
 test("plugin discovery points only at the three generated public Skills", () => {
   const manifest = JSON.parse(
-    fs.readFileSync(path.join(PLUGIN_ROOT, ".codex-plugin", "plugin.json"), "utf-8"),
+    fs.readFileSync(path.join(RUNTIME_ROOT, ".codex-plugin", "plugin.json"), "utf-8"),
   );
-  assert.equal(manifest.skills, "./public-skills/");
-  const publicRoot = path.join(PLUGIN_ROOT, "public-skills");
+  assert.equal(manifest.skills, "./skills/");
+  const publicRoot = path.join(RUNTIME_ROOT, "skills");
   const skillDocs = [];
   const walk = (directory) => {
     for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
@@ -779,7 +802,7 @@ test("asset resolution keeps capability gaps separate and forbids implicit proxi
 });
 
 test("TradingView stays optional behind the two public Cuebook entrypoints", () => {
-  const mcp = JSON.parse(fs.readFileSync(path.join(PLUGIN_ROOT, ".mcp.json"), "utf-8"));
+  const mcp = JSON.parse(fs.readFileSync(path.join(RUNTIME_ROOT, ".mcp.json"), "utf-8"));
   assert.deepEqual(Object.keys(mcp.mcpServers), ["cuebook"]);
   const desktop = JSON.parse(fs.readFileSync(
     path.join(PLUGIN_ROOT, "skills", "query-cuebook", "references", "tradingview-tool-policy-v1.json"),
@@ -804,7 +827,7 @@ test("TradingView stays optional behind the two public Cuebook entrypoints", () 
     ["create-cuebook-content", "references", "tradingview-canvas-transfer.md"],
     ["create-cuebook-content", "scripts", "validate_tradingview_canvas_transfer.mjs"],
   ]) {
-    assert.ok(fs.existsSync(path.join(PLUGIN_ROOT, "public-skills", ...relative)), relative.join("/"));
+    assert.ok(fs.existsSync(path.join(RUNTIME_ROOT, "skills", ...relative)), relative.join("/"));
   }
 });
 
@@ -823,7 +846,7 @@ test("TradingView canvas policy cannot reintroduce clear-all or Frame pixels", (
 test("Cuebook package cannot silently install an optional TradingView server", () => {
   withTmpPath((tmpPath) => {
     const root = copiedPlugin(tmpPath);
-    const filePath = path.join(root, ".mcp.json");
+    const filePath = path.join(runtimeRootFor(root), ".mcp.json");
     rewrite(filePath, (payload) => {
       payload.mcpServers.tradingview_desktop = { command: "node", args: ["/tmp/server.js"] };
     });
@@ -1104,7 +1127,7 @@ test("creator owns the horizon and Cuebook timing help remains opt-in", () => {
   assert.equal(instant.properties.session_policy.const, "at_instant");
 
   const codex = JSON.parse(fs.readFileSync(
-    path.join(PLUGIN_ROOT, ".codex-plugin", "plugin.json"),
+    path.join(RUNTIME_ROOT, ".codex-plugin", "plugin.json"),
     "utf-8",
   ));
   assert.ok(codex.interface.defaultPrompt.some((prompt) => /ask for my horizon|help me choose/iu.test(prompt)));

@@ -1,6 +1,6 @@
 {
   "name": "cuebook",
-  "version": "0.9.21+codex.20260730132308",
+  "version": "0.9.22+codex.20260731020840",
   "description": "Use Cuebook memory and market data to sharpen a creator-owned idea and express it as one editorial Frame.",
   "author": {
     "name": "Cuebook",
@@ -16,7 +16,7 @@
     "content-creation",
     "market-data"
   ],
-  "skills": "./public-skills/",
+  "skills": "./skills/",
   "interface": {
     "displayName": "Cuebook",
     "shortDescription": "Sharpen a market idea and make its logic visible",

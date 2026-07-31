@@ -44,6 +44,6 @@ test("checked-in bundles match an isolated rebuild", () => {
   assert.ok(result.valid, JSON.stringify(result));
   assert.deepEqual(result.results.map((item) => item.target), [
     "skills",
-    "plugins/cuebook/public-skills",
+    "plugins/runtime/cuebook",
   ]);
 });
