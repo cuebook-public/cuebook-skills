@@ -10,9 +10,9 @@
   "plugins": [
     {
       "name": "cuebook",
-      "source": "./plugins/cuebook",
-      "version": "0.9.21",
-      "strict": false,
+      "source": "./plugins/runtime/cuebook",
+      "version": "0.9.22",
+      "strict": true,
       "description": "Query Cuebook market intelligence or turn a creator-owned market idea into a sourced editorial Frame",
       "category": "Finance",
       "tags": [

@@ -1,7 +1,7 @@
 {
   "schema_version": "cuebook-release-skills-manifest-v2",
   "catalog_version": "1.31.0",
-  "plugin_version": "0.9.21",
+  "plugin_version": "0.9.22",
   "discovery_budget": {
     "legacy_skill_count": 39,
     "public_skill_count": 3,
@@ -53,7 +53,7 @@
         "query-menu-v1.json",
         "runtime-compatibility-v1.json"
       ],
-      "content_sha256": "3acf00d1c21a73a41bfe568e13ec56a439892413839cf780bc355bd410747d0a",
+      "content_sha256": "e1c708d44fb0d2a6f965a9fadef6d90502f90d5140d09b7c273507d6486185da",
       "vendored_shared_validators": [
         "references/modules/build-market-research-pack/scripts/validate_research_pack.mjs",
         "references/modules/reconcile-market-content-history/scripts/validate_content_history.mjs",
@@ -90,7 +90,7 @@
         "query-menu-v1.json",
         "runtime-compatibility-v1.json"
       ],
-      "content_sha256": "d78f40d2d0089aafd0f41367e37ef407fe632c6a2ba3889b1e2070038f6d3686",
+      "content_sha256": "ce31719e2f468a35f6d1bddf583f5f736a0568e081a9296cc2fcbe6cdbdd9ed7",
       "vendored_shared_validators": [
         "references/modules/build-market-research-pack/scripts/validate_research_pack.mjs",
         "references/modules/query-cuebook/scripts/validate_cuebook_intent.mjs",
@@ -121,7 +121,7 @@
       "plugin_assets": [
         "runtime-compatibility-v1.json"
       ],
-      "content_sha256": "96e7c70657884fe5ef98b9d8f5cba557bb6ddb6910c17fa8d7903d5363980468",
+      "content_sha256": "10ce9c363011a43f9360fc69a5906fd7e23eda8d77a27a9972fe25f60ce9a5e6",
       "vendored_shared_validators": [
         "scripts/validate_community_skill_submission.mjs"
       ],

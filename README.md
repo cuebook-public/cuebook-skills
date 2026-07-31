@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.21"><img alt="Release v0.9.21" src="https://img.shields.io/badge/release-v0.9.21-F6C500?style=flat-square&labelColor=111111"></a>
+  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.22"><img alt="Release v0.9.22" src="https://img.shields.io/badge/release-v0.9.22-F6C500?style=flat-square&labelColor=111111"></a>
   <a href="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml"><img alt="Quality" src="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml/badge.svg?branch=main"></a>
   <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/Node.js-%E2%89%A522-3C873A?style=flat-square&labelColor=111111">
   <img alt="Three public skills" src="https://img.shields.io/badge/public_skills-3-4C6FFF?style=flat-square&labelColor=111111">
@@ -132,7 +132,7 @@ Install the current stable release from `main`:
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \
   --sparse .agents/plugins \
-  --sparse plugins/cuebook
+  --sparse plugins/runtime/cuebook
 
 codex plugin add cuebook@cuebook
 
@@ -165,7 +165,7 @@ Turn that idea into a Frame.
 > [!NOTE]
 > Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly three public entrypoints; internal modules load only when needed.
 
-For a reproducible, intentionally frozen install, add `--ref v0.9.21` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
+For a reproducible, intentionally frozen install, add `--ref v0.9.22` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
 
 ## Updating
 
@@ -316,9 +316,9 @@ development connector on `main` and a production connector on `dev`.
 ```text
 .agents/plugins/marketplace.json  Marketplace entry
 .claude-plugin/marketplace.json   Claude Code marketplace entry
-plugins/cuebook/                  Plugin package and canonical Skill sources
+plugins/cuebook/                  Canonical Skill sources and build tooling
 plugins/cuebook/skills/           Development modules
-plugins/cuebook/public-skills/    Generated Codex public bundles
+plugins/runtime/cuebook/          Generated three-Skill host runtime bundle
 plugins/cuebook/assets/           Catalog and capability contracts
 plugins/cuebook/scripts/          Validators and release builder
 skills/                           Generated self-contained Agent Skills bundles
@@ -329,7 +329,8 @@ skills/                           Generated self-contained Agent Skills bundles
 <details>
 <summary><strong>Build and validate</strong></summary>
 
-Generated bundles come from the canonical plugin sources. Do not edit `skills/` or `plugins/cuebook/public-skills/` by hand.
+Generated bundles come from the canonical plugin sources. Do not edit `skills/`
+or `plugins/runtime/cuebook/` by hand.
 
 ```bash
 npm ci
@@ -347,7 +348,7 @@ Validation checks the repository-wide English-only policy, public-entrypoint bou
 Release preparation has one version source and updates every pinned install ref, Plugin manifest, changelog section, and generated Skill bundle together:
 
 ```bash
-npm run release:prepare -- 0.9.21 \
+npm run release:prepare -- 0.9.22 \
   --date 2026-07-21 \
   --codex-build 20260721103045
 

@@ -37,7 +37,7 @@ below remain useful for manual Codex installation.
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \
   --sparse .agents/plugins \
-  --sparse plugins/cuebook
+  --sparse plugins/runtime/cuebook
 
 codex plugin add cuebook@cuebook
 
@@ -54,7 +54,7 @@ The creator consent presents all six Cuebook scopes once: public research, priva
 
 The installing task owns installation and that one necessary host login. It must not create a background test task, publish a placeholder, or diagnose this local marketplace through a public ChatGPT plugin manager. After the login command exits, list Cuebook's Tools, fully quit the Codex app with `Cmd+Q` on macOS (or exit it completely on another platform), reopen it, and then enter the real query or market idea in one new task. Codex CLI users should end the current process and start a new one. A new task inside an app process that never restarted can retain the previous Plugin and Tool snapshot. The final readiness proof is a normal MCP result from one smallest read-only call in the restarted host, not a browser approval screen, connector status, or Tool discovery alone. If authentication fails, retry login only after an explicit `not_logged_in`, authorization challenge, or revoked grant; do not retry for discovery, network, TLS, proxy, or timeout failures. OAuth credentials stay in the connector, never in a Skill or generated artifact.
 
-Use `--ref v0.9.21` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
+Use `--ref v0.9.22` only when you intentionally want a tag-pinned install. The default `main` marketplace follows stable releases.
 
 ## Update
 

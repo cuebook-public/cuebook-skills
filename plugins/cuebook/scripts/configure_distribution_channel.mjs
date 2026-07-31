@@ -25,7 +25,7 @@ export const DISTRIBUTION_CHANNELS = Object.freeze({
 
 const FILES = Object.freeze({
   manifest: "plugins/cuebook/distribution-channel-v1.json",
-  mcp: "plugins/cuebook/.mcp.json",
+  mcp: "plugins/cuebook/runtime-template/.mcp.json",
   capabilityMap: "plugins/cuebook/assets/mcp-capability-map-v1.json",
 });
 

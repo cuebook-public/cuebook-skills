@@ -1,7 +1,7 @@
 {
   "name": "cuebook",
   "displayName": "Cuebook",
-  "version": "0.9.21",
+  "version": "0.9.22",
   "description": "Use Cuebook memory and market data to sharpen a creator-owned idea and express it as one editorial Frame.",
   "author": {
     "name": "Cuebook",
@@ -16,6 +16,6 @@
     "agent-skills",
     "mcp"
   ],
-  "skills": "./public-skills/",
+  "skills": "./skills/",
   "mcpServers": "./.mcp.json"
 }

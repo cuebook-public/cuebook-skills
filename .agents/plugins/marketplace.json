@@ -8,7 +8,7 @@
       "name": "cuebook",
       "source": {
         "source": "local",
-        "path": "./plugins/cuebook"
+        "path": "./plugins/runtime/cuebook"
       },
       "policy": {
         "installation": "AVAILABLE",

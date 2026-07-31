@@ -84,7 +84,7 @@ Cuebook MCP 可以查询已经审核并发布的社区 Skill：
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \
   --sparse .agents/plugins \
-  --sparse plugins/cuebook
+  --sparse plugins/runtime/cuebook
 
 codex plugin add cuebook@cuebook
 
@@ -101,7 +101,7 @@ codex mcp list --json
 如需固定到可复现版本，在 marketplace 命令后加：
 
 ```bash
---ref v0.9.21
+--ref v0.9.22
 ```
 
 固定 tag 后不会自动跟随 `main`，直到你主动更改 ref。
@@ -128,7 +128,8 @@ codex mcp list --json
 
 ## 开发与验证
 
-规范源位于 `plugins/cuebook/skills/`；`skills/` 和 `plugins/cuebook/public-skills/` 是生成结果，不应手工编辑。
+规范源位于 `plugins/cuebook/skills/`；`skills/` 和
+`plugins/runtime/cuebook/` 是生成结果，不应手工编辑。
 
 ```bash
 npm ci

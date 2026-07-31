@@ -69,6 +69,7 @@ export function validateOpenAiSubmission(rootArg = REPO_ROOT) {
   const issues = [];
   const add = (file, message) => issues.push({ file, message });
   const pluginRoot = path.join(root, "plugins", "cuebook");
+  const runtimeRoot = path.join(root, "plugins", "runtime", "cuebook");
   const submissionRoot = path.join(root, "submission", "openai");
   const pluginResult = validate(pluginRoot);
   if (!pluginResult.valid) {
@@ -99,7 +100,7 @@ export function validateOpenAiSubmission(rootArg = REPO_ROOT) {
   let listing;
   let cases;
   try {
-    manifest = json(path.join(pluginRoot, ".codex-plugin", "plugin.json"));
+    manifest = json(path.join(runtimeRoot, ".codex-plugin", "plugin.json"));
     listing = json(path.join(submissionRoot, "listing.json"));
     cases = json(path.join(submissionRoot, "test-cases.json"));
   } catch (error) {
@@ -109,7 +110,7 @@ export function validateOpenAiSubmission(rootArg = REPO_ROOT) {
   if (manifest && listing) {
     const prompts = manifest.interface?.defaultPrompt ?? [];
     if (prompts.length !== 3 || prompts.some((prompt) => HAN.test(prompt))) {
-      add("plugins/cuebook/.codex-plugin/plugin.json", "Provide exactly three English starter prompts.");
+      add("plugins/runtime/cuebook/.codex-plugin/plugin.json", "Provide exactly three English starter prompts.");
     }
     if (JSON.stringify(prompts) !== JSON.stringify(listing.starter_prompts)) {
       add("submission/openai/listing.json", "Starter prompts must match the Plugin manifest.");
@@ -121,7 +122,7 @@ export function validateOpenAiSubmission(rootArg = REPO_ROOT) {
     };
     for (const [field, expected] of Object.entries(expectedUrls)) {
       if (!expected?.startsWith("https://") || manifest.interface?.[field] !== expected) {
-        add("plugins/cuebook/.codex-plugin/plugin.json", `${field} must match the HTTPS listing URL.`);
+        add("plugins/runtime/cuebook/.codex-plugin/plugin.json", `${field} must match the HTTPS listing URL.`);
       }
     }
     if (listing.urls?.support !== "https://cuebook.app/support") {
@@ -151,13 +152,13 @@ export function validateOpenAiSubmission(rootArg = REPO_ROOT) {
     }
   }
 
-  const publicRoot = path.join(pluginRoot, "public-skills");
+  const publicRoot = path.join(runtimeRoot, "skills");
   const skillDirs = readdirSync(publicRoot, { withFileTypes: true })
     .filter((entry) => entry.isDirectory() && existsSync(path.join(publicRoot, entry.name, "SKILL.md")))
     .map((entry) => entry.name)
     .sort();
   if (JSON.stringify(skillDirs) !== JSON.stringify([...PUBLIC_SKILLS].sort())) {
-    add("plugins/cuebook/public-skills", `Expected only ${PUBLIC_SKILLS.join(" and ")} as public Skills.`);
+    add("plugins/runtime/cuebook/skills", `Expected only ${PUBLIC_SKILLS.join(" and ")} as public Skills.`);
   }
 
   if (issues.length > 0) throw new SubmissionValidationError(issues);
@@ -175,7 +176,7 @@ export function prepareOpenAiSubmission(rootArg = REPO_ROOT, outputArg) {
 
   for (const skill of PUBLIC_SKILLS) {
     cpSync(
-      path.join(root, "plugins", "cuebook", "public-skills", skill),
+      path.join(root, "plugins", "runtime", "cuebook", "skills", skill),
       path.join(stage, skill),
       { recursive: true, dereference: true },
     );

@@ -11,7 +11,7 @@
 ```bash
 codex plugin marketplace add cuebook-public/cuebook-skills \
   --sparse .agents/plugins \
-  --sparse plugins/cuebook
+  --sparse plugins/runtime/cuebook
 
 codex plugin add cuebook@cuebook
 
@@ -22,12 +22,12 @@ codex mcp login cuebook
 codex mcp list --json
 ```
 
-Skills are discovered from the plugin's generated `public-skills/` directory.
+Skills are discovered from the plugin runtime's generated `skills/` directory.
 Codex reads exactly three `SKILL.md` files at startup. Internal capabilities are
 vendored as non-discoverable `references/modules/*.md` resources behind
 `query-cuebook`, `create-cuebook-content`, and `author-cuebook-skill`.
 
-The default marketplace follows stable releases from `main`. Add `--ref v0.9.21`
+The default marketplace follows stable releases from `main`. Add `--ref v0.9.22`
 only for an intentionally frozen install.
 
 ## Update
@@ -145,10 +145,10 @@ standalone media retrieval tool is exposed.
   they do not fall back to approximate output.
 - Trial fonts are evaluation-only and never enter a release artifact.
 
-## Smoke test
+## Maintainer smoke test
 
 ```bash
 node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook
 ```
 
-For a new release, run the shared [live verification gate](../INSTALL.md#live-verification-gate). In a fresh Codex task, ask `What changed around USO recently?` and confirm the answer routes through `query-cuebook` with a normal source-linked MCP result and no write-tool calls. Then use a real creator idea for preview; never publish a placeholder idea.
+Release maintainers run the shared [live verification gate](../INSTALL.md#live-verification-gate). An ordinary install ends after a fresh Codex task answers `What changed around USO recently?` through `query-cuebook` with a normal source-linked MCP result and no write-tool calls. Preview and publication checks belong to release verification; never publish a placeholder idea.

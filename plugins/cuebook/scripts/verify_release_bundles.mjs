@@ -10,6 +10,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { build } from "./build_release_skills.mjs";
+import { buildRuntimeBundle } from "./build_runtime_bundle.mjs";
 
 function filesUnder(root) {
   const files = [];
@@ -46,20 +47,25 @@ export function verifyReleaseBundles(rootArg) {
   const pluginRoot = path.join(root, "plugins/cuebook");
   const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "cuebook-release-verify-"));
   try {
-    const targets = [
-      { name: "skills", actual: path.join(root, "skills"), expected: path.join(tempRoot, "skills") },
+    const expectedSkills = path.join(tempRoot, "skills");
+    const skillsManifest = build(pluginRoot, expectedSkills);
+    const expectedRuntime = path.join(tempRoot, "cuebook-runtime");
+    const runtimeBundle = buildRuntimeBundle(pluginRoot, expectedRuntime);
+    const results = [
       {
-        name: "plugins/cuebook/public-skills",
-        actual: path.join(pluginRoot, "public-skills"),
-        expected: path.join(tempRoot, "public-skills"),
+        target: "skills",
+        manifest_valid: skillsManifest.valid,
+        ...compareTrees(expectedSkills, path.join(root, "skills")),
+      },
+      {
+        target: "plugins/runtime/cuebook",
+        manifest_valid: runtimeBundle.valid,
+        ...compareTrees(
+          expectedRuntime,
+          path.join(root, "plugins", "runtime", "cuebook"),
+        ),
       },
     ];
-    const results = [];
-    for (const target of targets) {
-      const manifest = build(pluginRoot, target.expected);
-      const comparison = compareTrees(target.expected, target.actual);
-      results.push({ target: target.name, manifest_valid: manifest.valid, ...comparison });
-    }
     return { valid: results.every((result) => result.manifest_valid && result.valid), results };
   } finally {
     fs.rmSync(tempRoot, { recursive: true, force: true });
