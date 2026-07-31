@@ -73,59 +73,29 @@ Cuebook MCP 可以查询已经审核并发布的社区 Skill：
 
 具体安装方式见 [平台说明](plugins/cuebook/platforms/README.md)。
 
-## Claude Code 快速安装
+## 快速安装
 
-一行完成安装：
+在任意受支持平台上，安装方式都是同一种：给你的 Agent 一行话，让它自己判断平台。
 
-```bash
-claude plugin marketplace add cuebook-public/cuebook-skills && claude plugin install cuebook@cuebook
-```
+> 阅读 https://github.com/cuebook-public/cuebook-skills/blob/main/plugins/cuebook/INSTALL.md
+> 并在当前平台上安装 Cuebook。
 
-随后重启 Claude Code 或运行 `/reload-plugins`，再从 `/mcp` 完成一次浏览器授权。
-验证、更新与失败处理见 [Claude Code 指南](plugins/cuebook/platforms/claude-code.md)。
+该入口与平台无关。它会读取自身所在分发渠道的清单，路由到 Agent 实际运行平台所对应的
+指南，并统一维护身份验证与可用性验证规则。各平台的具体命令留在各自的指南里，任何单一
+平台的命令都不会变成所有人的默认。
 
-## Codex 快速安装
+想手动安装，就打开[平台矩阵](plugins/cuebook/platforms/README.md)，按你的平台选指南。
 
-让 AI Agent 在任意受支持平台完成安装时，请从统一的
-[Agent 安装入口](plugins/cuebook/INSTALL.md)开始。该入口负责选择当前分发分支、
-路由到具体平台，并统一维护身份验证与可用性验证规则。
+首次安装时，仅在宿主明确返回未登录或授权挑战时执行一次登录。浏览器授权页打开并不等于
+连接成功；宿主报告的连接状态，加上新任务里的一次正常 MCP 结果，才是端到端可用证明。
 
-从 `main` 安装当前稳定版：
-
-```bash
-codex plugin marketplace add cuebook-public/cuebook-skills \
-  --sparse .agents/plugins \
-  --sparse plugins/runtime/cuebook
-
-codex plugin add cuebook@cuebook
-
-# 仅当状态为 not_logged_in 且没有登录正在进行时：
-codex mcp list --json
-codex mcp login cuebook
-codex mcp list --json
-```
-
-首次安装时，仅在宿主明确返回 `not_logged_in` 或授权挑战时执行一次登录。浏览器授权页打开并不等于连接成功；`codex mcp list --json` 的状态和新任务中的一次正常 MCP 结果，才是端到端可用证明。
-
-安装或版本更新后，请彻底退出并重启 Codex App，再打开一个新任务。只新建对话但不重启宿主，可能继续使用旧的 Plugin 和 Tool 快照。
-
-如需固定到可复现版本，在 marketplace 命令后加：
-
-```bash
---ref v0.9.22
-```
-
-固定 tag 后不会自动跟随 `main`，直到你主动更改 ref。
+安装或版本更新后，请彻底重启宿主再开新任务。只新建对话但不重启宿主，可能继续使用旧的
+Plugin 和 Tool 快照。
 
 ## 更新
 
-```bash
-codex plugin marketplace upgrade cuebook
-codex plugin add cuebook@cuebook
-codex mcp list --json
-```
-
-正常更新不需要卸载 Plugin，也不需要重复 OAuth。只有连接器明确报告未登录、授权被撤销或需要 scope step-up 时，才重新登录。
+更新命令同样在各平台指南里。正常更新不需要卸载 Plugin，也不需要重复 OAuth。只有连接器
+明确报告未登录、授权被撤销或需要 scope step-up 时，才重新登录。
 
 ## 版本分别代表什么
 

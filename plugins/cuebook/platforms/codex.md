@@ -38,6 +38,17 @@ codex plugin add cuebook@cuebook
 codex mcp list --json
 ```
 
+`codex plugin marketplace upgrade` applies only to a Git-backed marketplace
+created by `codex plugin marketplace add`. If `codex plugin marketplace list`
+points `cuebook` at a local checkout, it intentionally rejects the upgrade
+because that checkout is not a Git marketplace managed by Codex. Update the
+checkout yourself and run only:
+
+```bash
+codex plugin add cuebook@cuebook
+codex mcp list --json
+```
+
 Use `marketplace upgrade` only for a Git-backed marketplace. If
 `codex plugin marketplace list` points `cuebook` at a local checkout, update
 that checkout yourself, skip the marketplace upgrade command, and run only
