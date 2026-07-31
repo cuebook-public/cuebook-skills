@@ -470,12 +470,19 @@ test("Codex install docs authenticate once before the first Cuebook task", () =>
   const marketplace = JSON.parse(
     fs.readFileSync(path.join(repositoryRoot, ".agents", "plugins", "marketplace.json"), "utf-8"),
   );
+  const marketplaceAdd = "codex plugin marketplace add cuebook-public/cuebook-skills";
+  const chineseReadme = fs.readFileSync(
+    path.join(repositoryRoot, "README.zh-CN.md"),
+    "utf-8",
+  );
   const docs = [
     fs.readFileSync(path.join(repositoryRoot, "README.md"), "utf-8"),
     fs.readFileSync(path.join(PLUGIN_ROOT, "README.md"), "utf-8"),
     fs.readFileSync(path.join(PLUGIN_ROOT, "platforms", "codex.md"), "utf-8"),
   ];
   for (const text of docs) {
+    assert.ok(text.includes(marketplaceAdd));
+    assert.doesNotMatch(text, /--sparse/u);
     assert.match(text, /background test task/u);
     assert.match(text, /codex mcp list --json/u);
     assert.match(text, /codex mcp login cuebook/u);
@@ -492,6 +499,8 @@ test("Codex install docs authenticate once before the first Cuebook task", () =>
   }
   assert.match(docs[0], /After installation and authentication are complete, fully restart the host before testing/u);
   assert.match(docs[2], /Authentication belongs to installation/u);
+  assert.ok(chineseReadme.includes(marketplaceAdd));
+  assert.doesNotMatch(chineseReadme, /--sparse/u);
   assert.equal(marketplace.plugins[0].policy.authentication, "ON_INSTALL");
 });
 

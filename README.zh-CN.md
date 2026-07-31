@@ -93,9 +93,7 @@ claude plugin marketplace add cuebook-public/cuebook-skills && claude plugin ins
 从 `main` 安装当前稳定版：
 
 ```bash
-codex plugin marketplace add cuebook-public/cuebook-skills \
-  --sparse .agents/plugins \
-  --sparse plugins/runtime/cuebook
+codex plugin marketplace add cuebook-public/cuebook-skills
 
 codex plugin add cuebook@cuebook
 
