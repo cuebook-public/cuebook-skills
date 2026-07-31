@@ -1,0 +1,228 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cuebook.xyz/schemas/runtime-compatibility-v1.schema.json",
+  "title": "Cuebook Runtime Compatibility V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "plugin_version",
+    "catalog_version",
+    "public_skills",
+    "mcp",
+    "updates",
+    "hosts"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "cuebook-runtime-compatibility-v1"
+    },
+    "plugin_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+    },
+    "catalog_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+    },
+    "public_skills": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "count",
+        "version_source",
+        "active_session",
+        "updated_package"
+      ],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "version_source": {
+          "const": "plugin_bundle"
+        },
+        "active_session": {
+          "const": "pinned"
+        },
+        "updated_package": {
+          "const": "next_host_reload"
+        }
+      }
+    },
+    "mcp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "server_id",
+        "minimum_server_version",
+        "runtime_metadata",
+        "oauth_session_reuse"
+      ],
+      "properties": {
+        "server_id": {
+          "const": "cuebook"
+        },
+        "minimum_server_version": {
+          "type": "string"
+        },
+        "runtime_metadata": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "extension_id",
+            "introduced_server_version",
+            "required"
+          ],
+          "properties": {
+            "extension_id": {
+              "const": "app.cuebook/runtime"
+            },
+            "introduced_server_version": {
+              "type": "string"
+            },
+            "required": {
+              "const": false
+            }
+          }
+        },
+        "oauth_session_reuse": {
+          "const": true
+        }
+      }
+    },
+    "updates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor",
+        "agent_exposure",
+        "compatible_package",
+        "capability_expansion",
+        "major_version_change",
+        "silent_reauthentication"
+      ],
+      "properties": {
+        "actor": {
+          "const": "host"
+        },
+        "agent_exposure": {
+          "const": "metadata_only"
+        },
+        "compatible_package": {
+          "const": "host_managed"
+        },
+        "capability_expansion": {
+          "const": "user_confirmation"
+        },
+        "major_version_change": {
+          "const": "user_confirmation"
+        },
+        "silent_reauthentication": {
+          "const": false
+        }
+      }
+    },
+    "hosts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "codex",
+        "claude_code",
+        "openclaw",
+        "hermes"
+      ],
+      "properties": {
+        "codex": {
+          "$ref": "#/$defs/bundleHost"
+        },
+        "claude_code": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/bundleHost"
+            },
+            {
+              "type": "object",
+              "required": [
+                "version_bump_required_for_refresh"
+              ],
+              "properties": {
+                "version_bump_required_for_refresh": {
+                  "const": true
+                }
+              }
+            }
+          ]
+        },
+        "openclaw": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "bundle_format",
+            "bundle_discovers_skills",
+            "bundle_discovers_mcp_descriptor",
+            "bundle_http_mcp_runtime"
+          ],
+          "properties": {
+            "bundle_format": {
+              "enum": [
+                "codex",
+                "claude"
+              ]
+            },
+            "bundle_discovers_skills": {
+              "const": true
+            },
+            "bundle_discovers_mcp_descriptor": {
+              "const": true
+            },
+            "bundle_http_mcp_runtime": {
+              "const": "host_override_required"
+            }
+          }
+        },
+        "hermes": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "skills_distribution",
+            "mcp_runtime"
+          ],
+          "properties": {
+            "skills_distribution": {
+              "const": "github_path_or_tap"
+            },
+            "mcp_runtime": {
+              "const": "native_host_config"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "bundleHost": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest",
+        "marketplace",
+        "bundle_mcp"
+      ],
+      "properties": {
+        "manifest": {
+          "type": "string"
+        },
+        "marketplace": {
+          "type": "string"
+        },
+        "bundle_mcp": {
+          "const": "supported"
+        },
+        "version_bump_required_for_refresh": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 **Surface:** One compatible bundle with three Agent Skills and an OAuth-authenticated Streamable HTTP MCP server.
 
-**Package status:** `plugins/cuebook/` is a Codex-compatible bundle. It contains both host manifests, exactly three generated public Skills, and one remote MCP descriptor. OpenClaw 2026.7.1-2 local-directory installation and the host-owned MCP configuration below were statically verified on 2026-07-30.
+**Package status:** `plugins/runtime/cuebook/` is a sanitized Codex-compatible bundle. It contains both host manifests, exactly three generated public Skills, and one remote MCP descriptor. OpenClaw 2026.7.1-2 local-directory installation and the host-owned MCP configuration below were statically verified on 2026-07-30.
 
 **Live status:** Marketplace installation, OAuth, Tool probe, preview, update, and publication are pending host verification.
 
@@ -19,7 +19,7 @@ openclaw plugins inspect cuebook --json
 openclaw skills list --json
 ```
 
-The marketplace entry must resolve to `./plugins/cuebook`, not the repository
+The marketplace entry must resolve to `./plugins/runtime/cuebook`, not the repository
 root. Inspection must report `Format: bundle`, the Codex bundle subtype, the
 `skills` and `mcpServers` bundle capabilities, and one MCP descriptor named
 `cuebook`. The Skill inventory must contain the three eligible Cuebook Skills:
@@ -30,13 +30,13 @@ same canonical directory:
 
 ```bash
 git clone https://github.com/cuebook-public/cuebook-skills.git
-openclaw plugins install ./cuebook-skills/plugins/cuebook
+openclaw plugins install ./cuebook-skills/plugins/runtime/cuebook
 openclaw plugins inspect cuebook --json
 openclaw skills list --json
 ```
 
 Do not install the repository root and do not copy the three Skills manually.
-The root is a marketplace container, while `plugins/cuebook/` is the portable
+The root is a marketplace container, while `plugins/runtime/cuebook/` is the portable
 bundle. Never point discovery at `plugins/cuebook/skills/`; those are internal
 on-demand modules.
 
@@ -90,7 +90,7 @@ skips `plugins update` for a local-path source. For the local review install,
 update the checkout explicitly, then refresh the reviewed directory:
 
 ```bash
-openclaw plugins install ./cuebook-skills/plugins/cuebook --force
+openclaw plugins install ./cuebook-skills/plugins/runtime/cuebook --force
 openclaw plugins inspect cuebook --json
 openclaw gateway restart
 ```

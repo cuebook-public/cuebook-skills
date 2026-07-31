@@ -43,10 +43,10 @@ Those layers are related but not interchangeable. MCP provides typed Cuebook dat
 
 ## Host adapter contract
 
-`plugins/cuebook/` is the canonical portable Plugin root. It owns the generated
-`public-skills/` directory, the single `.mcp.json` definition, and the native
-Codex and Claude manifests. Codex and Claude install that root directly.
-OpenClaw consumes the same directory as a Codex-compatible bundle. Hermes
+`plugins/runtime/cuebook/` is the canonical portable Plugin root. It owns the
+generated `skills/` directory, the single `.mcp.json` definition, and the
+native Codex and Claude manifests. Codex and Claude install that root directly.
+OpenClaw consumes the same sanitized directory as a Codex-compatible bundle. Hermes
 installs the three generated repository-root `skills/` bundles and configures
 the same remote MCP endpoint through its native registry.
 
@@ -71,8 +71,8 @@ These hosts can authenticate and call Cuebook Tools. They do not automatically i
 ## Live verification gate
 
 The canonical [live verification gate](../INSTALL.md#live-verification-gate)
-applies to every named and generic host adapter. Platform guides add only the
-host-specific checks needed on top of that shared contract.
+applies to maintainers qualifying a named or generic host adapter. Ordinary
+user installation ends at the quick path in `INSTALL.md`.
 
 ## References
 

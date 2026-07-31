@@ -3,9 +3,11 @@
 This is Cuebook's canonical, host-neutral installation entrypoint. Read it
 before changing MCP configuration, installing Skills, or starting
 authentication. The Git branch containing this file selects the Cuebook
-distribution channel; stay on that branch throughout installation.
+distribution channel. That branch belongs to this installation URL; it is not
+an instruction to inspect, switch, or modify the Git branch of the user's
+current project or any unrelated local checkout.
 
-## Installation contract
+## Ordinary user quick path
 
 1. Read the [distribution manifest](distribution-channel-v1.json) from this
    same branch. Its `mcp_url` is the only Cuebook endpoint for this install.
@@ -13,12 +15,26 @@ distribution channel; stay on that branch throughout installation.
    credentials across endpoints.
 2. Identify the current host and open the most specific guide in the table
    below. Use a generic guide only when no named host matches.
-3. Read that host guide completely before acting. Use its host-native Plugin,
-   Skill, MCP, authentication, reload, and update paths; do not invent a
-   parallel installer or connector.
-4. Complete the shared [live verification gate](#live-verification-gate).
-   Repository access, package installation, browser approval, an enabled
-   badge, or Tool discovery alone is not proof that Cuebook is ready.
+3. Before changing anything, inspect whether Cuebook is already installed and
+   record its marketplace/source and version. If it comes from this same
+   source, use the host-native update path once. If it comes from a different
+   source, explain the one-time migration and obtain confirmation before
+   replacing it. Never ask the user to switch a project branch, provide a
+   Cuebook handle, or reinstall repeatedly.
+4. Install or update once, then reload the host or open the one new session
+   required by its guide. On Plugin hosts, the resolved inventory must contain
+   exactly three public Skills and one `cuebook` MCP server. If the installed
+   version is older, update once. If the current version still exposes more or
+   fewer than three Skills, report `package_inventory_defect` and stop; do not
+   retry installation or authentication.
+5. Inspect the connection state. If Cuebook is authenticated or login is
+   pending, do not start another login. Otherwise start exactly one host-native
+   login when authentication is required. Browser approval belongs to the
+   user; wait for them to finish and never restart a pending attempt.
+6. Finish with one smallest useful read and a source-linked result. Tool
+   discovery, an enabled badge, or browser approval alone is not proof that the
+   connection works. A normal user install does not require a preview,
+   publication, rollback drill, or release audit.
 
 If this file, the distribution manifest, or the selected host guide cannot be
 read, stop and tell the user which document is unavailable. Do not guess
@@ -56,10 +72,11 @@ verification evidence, and the adapter contract for every supported host.
   OAuth credentials belong to the host connector, never to a Skill,
   repository file, generated artifact, or copied bearer header.
 
-## Live verification gate
+## Live verification gate (maintainers only)
 
-Run this gate only after the target Cuebook server release is confirmed
-healthy:
+This full gate is for Cuebook maintainers validating a release or changing a
+platform's verified status. It is not part of the ordinary user quick path.
+Run it only after the target Cuebook server release is confirmed healthy:
 
 1. Install or configure the host once. When a Plugin already provides
    `cuebook`, do not register a duplicate MCP server.

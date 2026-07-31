@@ -14,7 +14,7 @@ these rules need a deliberate edit HERE in the same commit.
 | L2a — Internal pipeline skills | 36 directories under `skills/` | Routable stages invoked via `$skill-name` or a menu `skill_refs`; each owns its schemas, validators, and tests |
 | L2b — Entry-embedded capability modules | Prose + schema files under a public entry's `references/` | Consent-gated or optional-connector capabilities bound to one entry's flow (TradingView, decision memory) |
 | L3 — Plugin assets | Module registry, menus, intent contract, capability map, index | Machine-readable routing and gating data shared by all skills |
-| L4 — Generated bundles | `public-skills/`, repo-root `skills/`, submission packet | Never edited by hand; `build_release_skills.mjs` output, parity-checked in CI |
+| L4 — Generated bundles | `plugins/runtime/cuebook/`, repo-root `skills/`, submission packet | Never edited by hand; one sanitized three-Skill host runtime plus generic bundles, parity-checked in CI |
 
 ## One discovery surface, three entries
 
