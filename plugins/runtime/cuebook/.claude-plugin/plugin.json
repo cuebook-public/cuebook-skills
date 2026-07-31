@@ -1,0 +1,21 @@
+{
+  "name": "cuebook",
+  "displayName": "Cuebook",
+  "version": "0.9.22",
+  "description": "Use Cuebook memory and market data to sharpen a creator-owned idea and express it as one editorial Frame.",
+  "author": {
+    "name": "Cuebook",
+    "url": "https://github.com/cuebook-public"
+  },
+  "homepage": "https://cuebook.app",
+  "repository": "https://github.com/cuebook-public/cuebook-skills",
+  "keywords": [
+    "finance",
+    "market-research",
+    "trading-thesis",
+    "agent-skills",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}

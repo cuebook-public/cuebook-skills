@@ -301,14 +301,16 @@ const FRAME_PUBLICATION_FLOW = {
 
 export function validate(pluginRoot) {
   const errors = [];
+  const repositoryRoot = path.resolve(pluginRoot, "..", "..");
+  const runtimeRoot = path.join(repositoryRoot, "plugins", "runtime", "cuebook");
 
   const check = (condition, code, errorPath, message) => {
     if (!condition) errors.push({ code, path: errorPath, message });
   };
 
   const assetsRoot = path.join(pluginRoot, "assets");
-  const manifest = load(path.join(pluginRoot, ".codex-plugin", "plugin.json"));
-  const mcpConfig = load(path.join(pluginRoot, ".mcp.json"));
+  const manifest = load(path.join(runtimeRoot, ".codex-plugin", "plugin.json"));
+  const mcpConfig = load(path.join(runtimeRoot, ".mcp.json"));
   const distribution = load(path.join(pluginRoot, "distribution-channel-v1.json"));
   const index = load(path.join(assetsRoot, "plugin-index-v1.json"));
   const moduleMap = load(path.resolve(assetsRoot, index.module_map_ref));
@@ -359,10 +361,12 @@ export function validate(pluginRoot) {
   check(
     installGuide.includes("login is pending")
       && installGuide.includes("approval belongs to the user")
-      && installGuide.includes("one smallest useful read"),
+      && installGuide.includes("one smallest useful read")
+      && installGuide.includes("package_inventory_defect")
+      && installGuide.includes("Live verification gate (maintainers only)"),
     "INSTALL_VERIFICATION_GATE",
     "INSTALL.md",
-    "The installation entrypoint must own the shared login, user-approval, and read-verification gates.",
+    "The installation entrypoint must separate the ordinary install inventory, login, approval, and read proof from maintainer release verification.",
   );
   check(
     !/[\u3400-\u9fff]/u.test(installGuide),
@@ -453,7 +457,11 @@ export function validate(pluginRoot) {
     );
   }
 
-  const claudeManifestPath = path.join(pluginRoot, ".claude-plugin", "plugin.json");
+  const claudeManifestPath = path.join(
+    runtimeRoot,
+    ".claude-plugin",
+    "plugin.json",
+  );
   check(
     existsSync(claudeManifestPath),
     "CLAUDE_PLUGIN_MANIFEST",
@@ -464,10 +472,10 @@ export function validate(pluginRoot) {
     const claudeManifest = load(claudeManifestPath);
     check(claudeManifest.name === "cuebook", "CLAUDE_PLUGIN_NAME", ".claude-plugin/plugin.json.name", "Unexpected Claude Code plugin name.");
     check(
-      claudeManifest.skills === "./public-skills/",
+      claudeManifest.skills === "./skills/",
       "CLAUDE_PLUGIN_PUBLIC_SKILL_ROOT",
       ".claude-plugin/plugin.json.skills",
-      "Claude Code must discover only the two generated public Skills.",
+      "Claude Code must discover only the three generated public Skills.",
     );
     check(
       claudeManifest.mcpServers === "./.mcp.json",
@@ -627,12 +635,12 @@ export function validate(pluginRoot) {
 
   check(manifest.name === "cuebook", "PLUGIN_NAME", "plugin.json.name", "Unexpected plugin name.");
   check(
-    manifest.skills === "./public-skills/",
+    manifest.skills === "./skills/",
     "PLUGIN_PUBLIC_SKILL_ROOT",
     "plugin.json.skills",
-    "Codex must discover only the generated public-skills directory.",
+    "Codex must discover only the generated runtime skills directory.",
   );
-  const publicSkillsRoot = path.join(pluginRoot, "public-skills");
+  const publicSkillsRoot = path.join(runtimeRoot, "skills");
   const publicSkillDocs = findNamedFiles(publicSkillsRoot, "SKILL.md");
   const publicSkillIds = new Set(
     existsSync(publicSkillsRoot)
@@ -798,16 +806,16 @@ export function validate(pluginRoot) {
     "TradingView must remain optional and read-only in Query; raw captures stay restricted, while Create may use only a focused, attributed, rights-reviewed finished bitmap or native rerender.",
   );
   const tradingviewPublicFiles = [
-    path.join(pluginRoot, "public-skills", "query-cuebook", "references", "tradingview-workbench.md"),
-    path.join(pluginRoot, "public-skills", "query-cuebook", "scripts", "validate_tradingview_observation.mjs"),
-    path.join(pluginRoot, "public-skills", "query-cuebook", "references", "tradingview-focused-capture.md"),
-    path.join(pluginRoot, "public-skills", "query-cuebook", "references", "tradingview-focused-capture-v1.schema.json"),
-    path.join(pluginRoot, "public-skills", "query-cuebook", "scripts", "validate_tradingview_focused_capture.mjs"),
-    path.join(pluginRoot, "public-skills", "create-cuebook-content", "references", "tradingview-canvas-transfer.md"),
-    path.join(pluginRoot, "public-skills", "create-cuebook-content", "scripts", "validate_tradingview_canvas_transfer.mjs"),
-    path.join(pluginRoot, "public-skills", "create-cuebook-content", "references", "modules", "query-cuebook", "references", "tradingview-workbench.md"),
-    path.join(pluginRoot, "public-skills", "create-cuebook-content", "references", "modules", "query-cuebook", "references", "tradingview-focused-capture.md"),
-    path.join(pluginRoot, "public-skills", "create-cuebook-content", "references", "modules", "query-cuebook", "scripts", "validate_tradingview_focused_capture.mjs"),
+    path.join(publicSkillsRoot, "query-cuebook", "references", "tradingview-workbench.md"),
+    path.join(publicSkillsRoot, "query-cuebook", "scripts", "validate_tradingview_observation.mjs"),
+    path.join(publicSkillsRoot, "query-cuebook", "references", "tradingview-focused-capture.md"),
+    path.join(publicSkillsRoot, "query-cuebook", "references", "tradingview-focused-capture-v1.schema.json"),
+    path.join(publicSkillsRoot, "query-cuebook", "scripts", "validate_tradingview_focused_capture.mjs"),
+    path.join(publicSkillsRoot, "create-cuebook-content", "references", "tradingview-canvas-transfer.md"),
+    path.join(publicSkillsRoot, "create-cuebook-content", "scripts", "validate_tradingview_canvas_transfer.mjs"),
+    path.join(publicSkillsRoot, "create-cuebook-content", "references", "modules", "query-cuebook", "references", "tradingview-workbench.md"),
+    path.join(publicSkillsRoot, "create-cuebook-content", "references", "modules", "query-cuebook", "references", "tradingview-focused-capture.md"),
+    path.join(publicSkillsRoot, "create-cuebook-content", "references", "modules", "query-cuebook", "scripts", "validate_tradingview_focused_capture.mjs"),
   ];
   check(
     tradingviewPublicFiles.every((filePath) => existsSync(filePath)),

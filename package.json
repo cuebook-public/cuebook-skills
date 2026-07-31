@@ -1,20 +1,21 @@
 {
   "name": "cuebook-skills",
-  "version": "0.9.21",
+  "version": "0.9.22",
   "private": true,
   "description": "Validation and release tooling for the Cuebook Agent Skills distribution.",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
-    "build:release": "node plugins/cuebook/scripts/build_release_skills.mjs plugins/cuebook skills && node plugins/cuebook/scripts/build_release_skills.mjs plugins/cuebook plugins/cuebook/public-skills",
+    "build:release": "node plugins/cuebook/scripts/build_release_skills.mjs plugins/cuebook skills && node plugins/cuebook/scripts/build_runtime_bundle.mjs plugins/cuebook plugins/runtime/cuebook",
     "distribution:development": "node plugins/cuebook/scripts/configure_distribution_channel.mjs development && npm run build:release",
     "distribution:production": "node plugins/cuebook/scripts/configure_distribution_channel.mjs production && npm run build:release",
     "distribution:check": "node plugins/cuebook/scripts/configure_distribution_channel.mjs --check",
     "validate:english": "node plugins/cuebook/scripts/validate_english_repo.mjs",
     "validate:plugin": "node plugins/cuebook/scripts/validate_cuebook_plugin.mjs plugins/cuebook",
+    "validate:runtime": "node plugins/cuebook/scripts/validate_runtime_bundle.mjs plugins/runtime/cuebook",
     "validate:closure": "node plugins/cuebook/scripts/validate_skill_closure.mjs plugins/cuebook",
-    "validate": "npm run validate:english && npm run validate:plugin && npm run validate:closure",
+    "validate": "npm run validate:english && npm run validate:plugin && npm run validate:runtime && npm run validate:closure",
     "test": "node --test 'plugins/cuebook/skills/**/*.test.mjs' 'plugins/cuebook/tests/**/*.test.mjs'",
     "test:ci": "node --test --test-concurrency=1 'plugins/cuebook/skills/**/*.test.mjs' 'plugins/cuebook/tests/**/*.test.mjs'",
     "verify:release-bundles": "node plugins/cuebook/scripts/verify_release_bundles.mjs",

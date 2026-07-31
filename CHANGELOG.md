@@ -2,7 +2,10 @@
 
 ## Unreleased
 
+## 0.9.22 — 2026-07-31
+
 - Added one branch-aware `INSTALL.md` entrypoint for AI-led installation across Plugin, Agent Skills, and MCP-only hosts. It routes to named or generic platform adapters, centralizes authentication and readiness gates, and lets clients copy a stable document link instead of embedding the full installation policy.
+- Split the 39-module authoring tree from one generated `plugins/runtime/cuebook` host bundle, so Codex, Claude Code, and OpenClaw resolve exactly three public Skills plus one Cuebook MCP descriptor; added byte-parity and resolved-inventory gates, and separated the ordinary install quick path from maintainer release verification.
 
 ## 0.9.21 — 2026-07-30
 
