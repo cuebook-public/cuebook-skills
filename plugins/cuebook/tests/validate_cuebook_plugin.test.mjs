@@ -56,7 +56,7 @@ test("valid plugin package", () => {
   assert.equal(result.stats.standalone_entrypoint_count, 1);
   assert.equal(result.stats.public_skill_count, 3);
   assert.ok(result.stats.discovery_reduction_percent >= 60);
-  assert.ok(result.stats.frame_fast_preview_bytes < 112_000);
+  assert.ok(result.stats.frame_fast_preview_bytes < 114_000);
   assert.ok(result.stats.frame_publish_input_bytes < 40_000);
   assert.equal(result.stats.platform_guide_count, 10);
   const modules = JSON.parse(

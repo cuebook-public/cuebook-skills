@@ -54,7 +54,10 @@ const MIN_DISCOVERY_REDUCTION_PERCENT = 60;
 // 2026-07-23: raised 110000 -> 112000 for the decision-memory routing lines in
 // the two public Skills (the coach itself stays in on-demand references). The
 // ceiling remains a hard gate against fast-preview bloat.
-const FAST_PREVIEW_BYTE_LIMIT = 112_000;
+// 2026-07-31: raised 112000 -> 114000 to wire the runtime-compatibility
+// manifest into the public Skills (version identity + host-owned update
+// policy); the manifest itself stays an on-demand asset.
+const FAST_PREVIEW_BYTE_LIMIT = 114_000;
 const PUBLISH_LANE_BYTE_LIMIT = 40_000;
 const FAST_PREVIEW_FILES = [
   "SKILL.md",

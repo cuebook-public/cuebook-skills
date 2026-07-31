@@ -110,6 +110,7 @@ Tell the creator what happens next, once, plainly: automated gates check structu
 - A rejected submission can be revised and resubmitted as a new version; the walk starts over with a fresh pre-check and card.
 - Delisting and takedown are platform actions inside Cuebook, not operations of this Skill.
 - This Skill never edits the creator's package content, never invents manifest fields, and never submits on inference. Explicit request in, confirmed card through, one submission out.
+- Cuebook's own package identity lives in `assets/plugin/runtime-compatibility-v1.json` (`plugin_version`, `catalog_version`, and a binding `updates` block). Answer version questions from that manifest, and leave updating to the host's own update path followed by a host restart; never self-update or reinstall from this Skill.
 
 ## Output
 

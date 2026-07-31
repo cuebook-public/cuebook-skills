@@ -42,6 +42,7 @@ Before a Frame conversation begins, silently call `get_frame_capabilities` once 
 - A successful readiness result permits local preview. Refresh only for a missing required write, a long-lived task, or an explicit capability change.
 - Initial publish needs MCP v3 with agent-inferred reasoning tags. An older normal result is a
   capability mismatch: preserve the Frame, request an update, and do not reinstall, log in, or probe.
+- This package's identity and update policy live in `../../assets/runtime-compatibility-v1.json`: `plugin_version` names the installed package, `catalog_version` its capability catalog, and the `updates` block is binding. When a version or update question arises, answer from that manifest instead of guessing. Updates run only through the host's own update path — never self-update, edit the package, or reinstall from this Skill. An updated package loads at the next host reload while the active session keeps its startup snapshot, so a request for an update also asks the creator to restart the host and continue in one new task. A capability-tier expansion or major version change waits for the creator's explicit confirmation, and re-authentication is never silent.
 
 ## Internal Orchestration
 
