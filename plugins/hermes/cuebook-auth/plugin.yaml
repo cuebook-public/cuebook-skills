@@ -1,5 +1,5 @@
 name: cuebook-auth
-version: 0.3.0
+version: 0.3.1
 description: "Telegram DM OAuth bridge for Cuebook. It normalizes the native OAuth wait, returns a validated approval link, and refreshes MCP Tool discovery after approval."
 author: Cuebook
 kind: standalone
