@@ -134,6 +134,10 @@ test("Hermes adapter installs, authenticates, and updates all public Skills", ()
   assert.doesNotMatch(guide, /^hermes skills inspect /mu);
   assert.doesNotMatch(guide, /^hermes skills install /mu);
   assert.match(guide, /auth: oauth/u);
+  assert.match(guide, /connect_timeout: 315/u);
+  assert.doesNotMatch(guide, /connect_timeout: 5(?:\D|$)/u);
+  assert.match(guide, /retries with a new PKCE state/u);
+  assert.match(guide, /native configuration API/u);
   assert.match(guide, /supports_parallel_tool_calls: false/u);
   assert.match(guide, /HERMES_DASHBOARD_SESSION_TOKEN/u);
   assert.match(guide, /HERMES_DASHBOARD_PUBLIC_URL/u);

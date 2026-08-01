@@ -116,7 +116,7 @@ mcp_servers:
     url: "https://cuebook.xyz/mcp"
     auth: oauth
     timeout: 20
-    connect_timeout: 5
+    connect_timeout: 315
     supports_parallel_tool_calls: false
 ```
 
@@ -124,6 +124,20 @@ Keep exactly one enabled server named `cuebook`. OAuth credentials remain in
 Hermes. Do not mark Cuebook safe for parallel MCP calls: reads may be batched
 where the host permits, but upload, manifest, draft, prepare, and publish
 mutations remain ordered and independently idempotent.
+
+Keep `connect_timeout` at 315 seconds or higher. Hermes Agent 0.19.1 performs
+the browser authorization wait inside MCP initialization; a shorter value
+cancels that wait, retries with a new PKCE state, and invalidates the link
+already sent to Telegram. `timeout: 20` remains the ordinary Tool-call timeout.
+After Hermes confirms that a new OAuth flow is required, the Cuebook bridge
+verifies the same official local entry and idempotently raises only a missing or
+shorter `connect_timeout` to 315 through the native configuration API in the
+source-pinned Hermes 0.19.1 build. If that exact migration cannot be saved and
+read back, the bridge stops before returning an authorization link. This is an
+initial MCP connection limit as well as an authorization limit: healthy connections are
+unaffected, but an unavailable or stalled Cuebook endpoint can take up to 315
+seconds to fail during connection or discovery. The 20-second Tool-call timeout
+does not change.
 
 After an explicitly confirmed channel migration, replace this one `cuebook`
 entry with the endpoint above and start one fresh authorization flow. Never
@@ -241,8 +255,11 @@ the labeled **Open Cuebook to authorize** link.
 On a phone, the HTTPS authorization link can open the installed Cuebook app for
 confirmation. If Telegram keeps the link in a browser, complete approval in the
 web flow. On desktop Telegram, the same link opens the normal browser flow.
-After approval, the plugin asks the running Gateway to rediscover MCP Tools.
-Return to Telegram and continue the conversation; do not start a second login.
+Complete approval within five minutes. After approval, the plugin asks the
+running Gateway to rediscover MCP Tools. Return to Telegram and continue the
+conversation; do not start a second login while that flow is pending. After an
+explicit expiry or flow error, invoke **Connect Cuebook** once for a fresh
+transaction; never reopen an old callback URL.
 
 For a local CLI-only Hermes profile without Telegram, the native manual
 fallback remains:
@@ -276,10 +293,11 @@ hermes skills list --source hub
 Hermes 0.19.1 copies a repository subdirectory without its parent `.git`
 directory, so `hermes plugins update cuebook-auth` cannot update this plugin.
 The exact checkout is therefore pulled first and its subdirectory is
-force-reinstalled. A compatible update does not replace
-`~/.hermes/config.yaml` or its cached OAuth token. Restart the Gateway only
-when the plugin changes. Stop for explicit review if an update declares a
-major, permission, or capability-tier change.
+force-reinstalled. A compatible update leaves the cached OAuth token and every
+unrelated configuration field unchanged; the bridge may only raise Cuebook's
+own `connect_timeout` to the 315-second authorization minimum. Restart the
+Gateway only when the plugin changes. Stop for explicit review if an update
+declares a major, permission, or capability-tier change.
 
 ## Verification
 
