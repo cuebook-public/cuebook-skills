@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Added a fail-closed Hermes OAuth bridge with an explicit Telegram DM
+  `/cuebook-auth` command. It delegates to the native loopback Dashboard OAuth
+  flow, validates the complete Cuebook authorization URL contract, reuses a
+  concurrent flow, and refreshes MCP Tool discovery after approval; the Hermes
+  guide now uses a generated `skills/index.json` and complete self-contained
+  well-known Skill bundles instead of unauthenticated GitHub REST installation.
+
 ## 0.9.22 — 2026-07-31
 
 - Added one branch-aware `INSTALL.md` entrypoint for AI-led installation across Plugin, Agent Skills, and MCP-only hosts. It routes to named or generic platform adapters, centralizes authentication and readiness gates, and lets clients copy a stable document link instead of embedding the full installation policy.

@@ -47,7 +47,7 @@ commands or fall back to remembered instructions.
 | Codex app or Codex CLI | Cuebook Plugin: three Agent Skills plus MCP | [Codex](platforms/codex.md) |
 | Claude Code | Native Claude Code marketplace Plugin: three Agent Skills plus MCP | [Claude Code](platforms/claude-code.md) |
 | Cursor editor or Cursor CLI | Three Agent Skill bundles plus native MCP configuration | [Cursor](platforms/cursor.md) |
-| Hermes Agent | Three Agent Skill bundles plus native MCP configuration | [Hermes](platforms/hermes.md) |
+| Hermes Agent | Three Agent Skill bundles, native MCP, and the thin OAuth bridge | [Hermes](platforms/hermes.md) |
 | OpenClaw | Compatible Cuebook bundle plus native MCP configuration | [OpenClaw](platforms/openclaw.md) |
 | Claude or Claude Desktop | MCP custom connector only | [Claude and Claude Desktop](platforms/claude-desktop.md) |
 | ChatGPT | MCP custom app only | [ChatGPT](platforms/chatgpt.md) |

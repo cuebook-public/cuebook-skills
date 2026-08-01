@@ -112,7 +112,7 @@ Cuebook has one remote MCP endpoint per distribution channel and three public Ag
 | **Codex app and Codex CLI** | Cuebook Plugin | Skills + MCP | OAuth, preview, and publication live-verified on 2026-07-20 |
 | **Claude Code** | Native Claude Code marketplace | Skills + MCP | OAuth, upload, and atomic publication live-verified on 2026-07-21 |
 | **Cursor editor and CLI** | Three Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
-| **Hermes Agent** | Three Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
+| **Hermes Agent** | Three Agent Skills bundles + remote MCP + OAuth bridge | Skills + MCP | Static bridge ready; live check pending |
 | **OpenClaw** | Three Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
 | **Claude and Claude Desktop** | Custom remote connector | MCP direct | Connector check pending; no Skill parity claim |
 | **ChatGPT** | Custom MCP app | MCP direct | Eligible plans only; connector check pending |
