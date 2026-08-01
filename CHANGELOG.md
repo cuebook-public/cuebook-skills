@@ -17,6 +17,8 @@
   `connect_timeout` only after Hermes confirms OAuth is required. The normal
   20-second Tool timeout is preserved; initial connection failures may use the
   longer bound.
+- Recognized the source-pinned Hermes Dashboard background OAuth challenge while
+  continuing to reject similar non-OAuth connection failures.
 
 ## 0.9.23 — 2026-08-01
 
