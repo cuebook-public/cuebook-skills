@@ -147,9 +147,10 @@ export function distributionWrites(rootArg, channelName) {
     if (guideName === "hermes.md") {
       const checkout = HERMES_CHECKOUTS[channelName];
       text = text
-        .replace(/--branch (?:dev|main)/gu, `--branch ${checkout.ref}`)
-        .replace(/origin (?:dev|main)/gu, `origin ${checkout.ref}`)
-        .replace(/origin\/(?:dev|main)/gu, `origin/${checkout.ref}`)
+        .replace(
+          /cuebook_skills_branch="(?:dev|main)"/gu,
+          `cuebook_skills_branch="${checkout.ref}"`,
+        )
         .replace(/cuebook-skills-(?:dev|main)/gu, checkout.directory);
     }
     writes.set(relativePath, text);
@@ -287,10 +288,10 @@ export function collectDistributionIssues(rootArg, expectedChannel) {
       }
       const checkout = HERMES_CHECKOUTS[selected.channel];
       if (
-        !text.includes(`--branch ${checkout.ref}`)
+        !text.includes(`cuebook_skills_branch="${checkout.ref}"`)
         || !text.includes(`/plugin-sources/${checkout.directory}`)
-        || !text.includes(`pull --ff-only origin ${checkout.ref}`)
-        || !text.includes(`rev-parse origin/${checkout.ref}`)
+        || !text.includes('pull --ff-only origin "${cuebook_skills_branch}"')
+        || !text.includes('rev-parse "origin/${cuebook_skills_branch}"')
       ) {
         add(relativePath, `Hermes checkout must use the ${checkout.ref} distribution branch.`);
       }
@@ -298,10 +299,8 @@ export function collectDistributionIssues(rootArg, expectedChannel) {
         if (
           channelName !== selected.channel
           && (
-            text.includes(`--branch ${candidate.ref}`)
+            text.includes(`cuebook_skills_branch="${candidate.ref}"`)
             || text.includes(`/plugin-sources/${candidate.directory}`)
-            || text.includes(`origin ${candidate.ref}`)
-            || text.includes(`origin/${candidate.ref}`)
           )
         ) {
           add(

@@ -112,9 +112,12 @@ test("Hermes adapter installs, authenticates, and updates all public Skills", ()
   assert.match(guide, /remote get-url origin/u);
   assert.match(guide, /branch --show-current/u);
   assert.match(guide, /status --porcelain/u);
-  assert.match(guide, /pull --ff-only origin dev/u);
+  assert.match(guide, /cuebook_skills_branch="dev"/u);
+  assert.match(guide, /pull --ff-only origin "\$\{cuebook_skills_branch\}"/u);
+  assert.match(guide, /--branch "\$\{cuebook_skills_branch\}"/u);
   assert.match(guide, /rev-parse HEAD/u);
-  assert.match(guide, /rev-parse origin\/dev/u);
+  assert.match(guide, /rev-parse "origin\/\$\{cuebook_skills_branch\}"/u);
+  assert.doesNotMatch(guide, /official dev checkout/u);
   assert.doesNotMatch(guide, /^hermes skills inspect /mu);
   assert.doesNotMatch(guide, /^hermes skills install /mu);
   assert.match(guide, /auth: oauth/u);

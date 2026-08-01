@@ -32,24 +32,25 @@ the OAuth plugin later, so this is not a second package source:
 set -eu
 cuebook_skills_checkout="${HOME}/.hermes/plugin-sources/cuebook-skills-dev"
 cuebook_skills_remote="https://github.com/cuebook-public/cuebook-skills.git"
+cuebook_skills_branch="dev"
 mkdir -p "${HOME}/.hermes/plugin-sources"
 if [ -e "${cuebook_skills_checkout}" ]; then
   if [ -L "${cuebook_skills_checkout}" ] \
     || [ ! -d "${cuebook_skills_checkout}/.git" ] \
     || [ "$(git -C "${cuebook_skills_checkout}" remote get-url origin)" != "${cuebook_skills_remote}" ] \
-    || [ "$(git -C "${cuebook_skills_checkout}" branch --show-current)" != "dev" ] \
+    || [ "$(git -C "${cuebook_skills_checkout}" branch --show-current)" != "${cuebook_skills_branch}" ] \
     || [ -n "$(git -C "${cuebook_skills_checkout}" status --porcelain)" ]; then
-    printf '%s\n' 'Existing Cuebook checkout is not the clean official dev checkout.' >&2
+    printf '%s\n' 'Existing Cuebook checkout does not match the clean official distribution branch.' >&2
     exit 1
   fi
-  git -C "${cuebook_skills_checkout}" pull --ff-only origin dev
+  git -C "${cuebook_skills_checkout}" pull --ff-only origin "${cuebook_skills_branch}"
 else
-  git clone --depth 1 --branch dev \
+  git clone --depth 1 --branch "${cuebook_skills_branch}" \
     "${cuebook_skills_remote}" "${cuebook_skills_checkout}"
 fi
 if [ "$(git -C "${cuebook_skills_checkout}" rev-parse HEAD)" \
-  != "$(git -C "${cuebook_skills_checkout}" rev-parse origin/dev)" ]; then
-  printf '%s\n' 'Cuebook checkout does not exactly match origin/dev.' >&2
+  != "$(git -C "${cuebook_skills_checkout}" rev-parse "origin/${cuebook_skills_branch}")" ]; then
+  printf '%s\n' 'Cuebook checkout does not exactly match the official distribution branch.' >&2
   exit 1
 fi
 ```
