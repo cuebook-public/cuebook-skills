@@ -85,10 +85,14 @@ run the same verified installer once with the migration flag:
 
 The flag preflights all three lock records before changing anything. It accepts
 only the exact `cuebook.app` or `cuebook.xyz` well-known identifiers with a
-SAFE verdict, removes the confirmed old-channel bundles through Hermes' native
-uninstall API, and installs the verified target snapshot. Unknown, mixed, or
-locally unmanaged sources still fail closed; never replace them with this
-flag, manual directory deletion, or `--force`.
+SAFE verdict, holds an exclusive Cuebook installer lock, rechecks each
+preflight snapshot before removal, uses Hermes' native uninstall API, and
+installs the verified target snapshot. A stale official old-channel lock whose
+directory is already absent can be removed safely on a repeated run. Any
+unmanaged directory or invalid target-channel bundle stops for explicit review
+instead of being deleted automatically. Unknown, mixed, or locally unmanaged
+sources still fail closed; never replace them with this flag, manual directory
+deletion, or `--force`.
 
 Confirm the resulting inventory after the installer reports all three names:
 
