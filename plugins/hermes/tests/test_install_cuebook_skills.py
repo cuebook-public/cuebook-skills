@@ -8,6 +8,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 
 INSTALLER_PATH = pathlib.Path(__file__).parents[1] / "install_cuebook_skills.py"
@@ -128,6 +129,183 @@ class InstallerTests(unittest.TestCase):
 
     def fetch(self, _url: str):
         return self.index
+
+    def _fetch_response(self, final_url: str):
+        response = mock.MagicMock()
+        response.__enter__.return_value = response
+        response.geturl.return_value = final_url
+        response.read.return_value = json.dumps(self.index).encode()
+        return response
+
+    def _fetch_with_final_url(self, request_url: str, final_url: str):
+        opener = mock.MagicMock()
+        opener.open.return_value = self._fetch_response(final_url)
+        with mock.patch.object(
+            installer.urllib.request,
+            "build_opener",
+            return_value=opener,
+        ) as build_opener:
+            result = installer._fetch_index(request_url)
+        handler = build_opener.call_args.args[0]
+        self.assertIsInstance(handler, installer._IndexRedirectHandler)
+        self.assertEqual(handler.channel_host, installer.urlparse(request_url).hostname)
+        return result
+
+    def _follow_redirects(self, urls: list[str]):
+        handler = installer._IndexRedirectHandler(
+            installer.urlparse(urls[0]).hostname
+        )
+        request = installer.urllib.request.Request(urls[0])
+        for target in urls[1:]:
+            request = handler.redirect_request(
+                request,
+                None,
+                307,
+                "redirect",
+                {},
+                target,
+            )
+        return request
+
+    def test_fetch_index_rejects_production_redirect_to_development(self) -> None:
+        with self.assertRaisesRegex(installer.InstallError, "Unexpected Skill index redirect"):
+            self._follow_redirects(
+                [
+                    "https://cuebook.app/.well-known/skills/index.json",
+                    "https://cuebook.xyz/.well-known/skills/index.json",
+                    "https://raw.githubusercontent.com/cuebook-public/"
+                    "cuebook-skills/main/skills/index.json",
+                ]
+            )
+
+    def test_fetch_index_rejects_development_redirect_to_production(self) -> None:
+        with self.assertRaisesRegex(installer.InstallError, "Unexpected Skill index redirect"):
+            self._follow_redirects(
+                [
+                    "https://cuebook.xyz/.well-known/skills/index.json",
+                    "https://cuebook.app/.well-known/skills/index.json",
+                    "https://raw.githubusercontent.com/cuebook-public/"
+                    "cuebook-skills/0123456789abcdef0123456789abcdef01234567/skills/index.json",
+                ]
+            )
+
+    def test_fetch_index_rejects_the_other_channel_raw_ref(self) -> None:
+        with self.assertRaisesRegex(installer.InstallError, "Unexpected Skill index redirect"):
+            self._follow_redirects(
+                [
+                    "https://cuebook.app/.well-known/skills/index.json",
+                    "https://raw.githubusercontent.com/cuebook-public/"
+                    "cuebook-skills/dev/skills/index.json",
+                ]
+            )
+        with self.assertRaisesRegex(installer.InstallError, "Unexpected Skill index redirect"):
+            self._follow_redirects(
+                [
+                    "https://cuebook.xyz/.well-known/skills/index.json",
+                    "https://raw.githubusercontent.com/cuebook-public/"
+                    "cuebook-skills/main/skills/index.json",
+                ]
+            )
+
+    def test_fetch_index_rejects_noncanonical_initial_urls(self) -> None:
+        urls = [
+            "https://raw.githubusercontent.com/cuebook-public/"
+            "cuebook-skills/main/skills/index.json",
+            "https://cuebook.app:444/.well-known/skills/index.json",
+            "https://user@cuebook.app/.well-known/skills/index.json",
+            "https://cuebook.app/.well-known/skills/index.json?channel=dev",
+            "https://cuebook.app/.well-known/skills/index.json#dev",
+            "https://cuebook.app/.well-known/skills/other.json",
+        ]
+        for url in urls:
+            with self.subTest(url=url):
+                with self.assertRaisesRegex(
+                    installer.InstallError,
+                    "Unexpected Skill index URL",
+                ):
+                    installer._fetch_index(url)
+
+    def test_fetch_index_rejects_noncanonical_release_redirects(self) -> None:
+        production = "https://cuebook.app/.well-known/skills/index.json"
+        development = "https://cuebook.xyz/.well-known/skills/index.json"
+        redirects = [
+            (
+                production,
+                "https://raw.githubusercontent.com/other/cuebook-skills/"
+                "main/skills/index.json",
+            ),
+            (
+                production,
+                "https://raw.githubusercontent.com/cuebook-public/other/"
+                "main/skills/index.json",
+            ),
+            (
+                production,
+                "https://raw.githubusercontent.com/cuebook-public/cuebook-skills/"
+                "main/other/index.json",
+            ),
+            (
+                production,
+                "https://raw.githubusercontent.com:444/cuebook-public/cuebook-skills/"
+                "main/skills/index.json",
+            ),
+            (
+                production,
+                "https://user@raw.githubusercontent.com/cuebook-public/cuebook-skills/"
+                "main/skills/index.json",
+            ),
+            (
+                production,
+                "https://raw.githubusercontent.com/cuebook-public/cuebook-skills/"
+                "main/skills/index.json?channel=dev",
+            ),
+            (
+                development,
+                "https://raw.githubusercontent.com/cuebook-public/cuebook-skills/"
+                "0123456789ABCDEF0123456789ABCDEF01234567/skills/index.json",
+            ),
+            (
+                development,
+                "https://raw.githubusercontent.com/cuebook-public/cuebook-skills/"
+                "01234567/skills/index.json",
+            ),
+        ]
+        for request_url, target_url in redirects:
+            with self.subTest(target_url=target_url):
+                with self.assertRaisesRegex(
+                    installer.InstallError,
+                    "Unexpected Skill index redirect",
+                ):
+                    self._follow_redirects([request_url, target_url])
+
+    def test_fetch_index_rejects_redirects_after_raw_github(self) -> None:
+        with self.assertRaisesRegex(installer.InstallError, "Unexpected Skill index redirect"):
+            self._follow_redirects(
+                [
+                    "https://cuebook.app/.well-known/skills/index.json",
+                    "https://raw.githubusercontent.com/cuebook-public/"
+                    "cuebook-skills/main/skills/index.json",
+                    "https://cuebook.app/.well-known/skills/index.json",
+                ]
+            )
+
+    def test_fetch_index_accepts_the_pinned_official_repository(self) -> None:
+        request_url = "https://cuebook.app/.well-known/skills/index.json"
+        final_url = (
+            "https://raw.githubusercontent.com/cuebook-public/"
+            "cuebook-skills/main/skills/index.json"
+        )
+        self.assertEqual(self._follow_redirects([request_url, final_url]).full_url, final_url)
+        self.assertEqual(self._fetch_with_final_url(request_url, final_url), self.index)
+
+    def test_fetch_index_accepts_the_pinned_development_release(self) -> None:
+        request_url = "https://cuebook.xyz/.well-known/skills/index.json"
+        final_url = (
+            "https://raw.githubusercontent.com/cuebook-public/"
+            "cuebook-skills/0123456789abcdef0123456789abcdef01234567/skills/index.json"
+        )
+        self.assertEqual(self._follow_redirects([request_url, final_url]).full_url, final_url)
+        self.assertEqual(self._fetch_with_final_url(request_url, final_url), self.index)
 
     def test_installs_only_through_the_pinned_well_known_source(self) -> None:
         result = installer.install_all(self.repository, self.api(), self.fetch)

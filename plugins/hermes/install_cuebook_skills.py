@@ -35,10 +35,47 @@ OFFICIAL_SKILLS_BASE_URLS = frozenset(
         "https://cuebook.xyz/.well-known/skills",
     }
 )
+SKILLS_INDEX_PATH = "/.well-known/skills/index.json"
+RAW_INDEX_PATTERN = re.compile(
+    r"^/cuebook-public/cuebook-skills/(?P<ref>[^/]+)/skills/index\.json$"
+)
 
 
 class InstallError(RuntimeError):
     pass
+
+
+def _is_allowed_index_location(channel_host: str, url: str) -> bool:
+    target = urlparse(url)
+    if target.scheme != "https" or target.query or target.fragment:
+        return False
+    if target.netloc == channel_host and target.path == SKILLS_INDEX_PATH:
+        return True
+    if target.netloc != "raw.githubusercontent.com":
+        return False
+    match = RAW_INDEX_PATTERN.fullmatch(target.path)
+    if match is None:
+        return False
+    ref = match.group("ref")
+    if channel_host == "cuebook.app":
+        return ref == "main"
+    if channel_host == "cuebook.xyz":
+        return re.fullmatch(r"[0-9a-f]{40}", ref) is not None
+    return False
+
+
+class _IndexRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def __init__(self, channel_host: str) -> None:
+        self.channel_host = channel_host
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        current = urlparse(req.full_url)
+        if (
+            current.hostname == "raw.githubusercontent.com"
+            or not _is_allowed_index_location(self.channel_host, newurl)
+        ):
+            raise InstallError(f"Unexpected Skill index redirect: {newurl}")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
 @dataclass(frozen=True)
@@ -81,18 +118,20 @@ def _read_json(path: pathlib.Path) -> dict[str, Any]:
 
 
 def _fetch_index(url: str) -> dict[str, Any]:
+    requested = urlparse(url)
+    if requested.hostname not in {"cuebook.app", "cuebook.xyz"} or not _is_allowed_index_location(
+        requested.hostname,
+        url,
+    ):
+        raise InstallError(f"Unexpected Skill index URL: {url}")
     request = urllib.request.Request(
         url,
         headers={"Accept": "application/json", "User-Agent": "cuebook-hermes-installer/1"},
     )
+    opener = urllib.request.build_opener(_IndexRedirectHandler(requested.hostname))
     try:
-        with urllib.request.urlopen(request, timeout=20) as response:
-            final = urlparse(response.geturl())
-            if final.scheme != "https" or final.hostname not in {
-                "cuebook.app",
-                "cuebook.xyz",
-                "raw.githubusercontent.com",
-            }:
+        with opener.open(request, timeout=20) as response:
+            if not _is_allowed_index_location(requested.hostname, response.geturl()):
                 raise InstallError(f"Unexpected Skill index redirect: {response.geturl()}")
             raw = response.read(MAX_INDEX_BYTES + 1)
     except (OSError, urllib.error.URLError) as exc:
@@ -351,8 +390,8 @@ def install_all(
 ) -> list[str]:
     distribution = _read_json(repository_root / "plugins/cuebook/distribution-channel-v1.json")
     base_url = distribution.get("skills_base_url")
-    if not isinstance(base_url, str) or not base_url.startswith("https://"):
-        raise InstallError("Cuebook distribution manifest has no HTTPS Skill endpoint.")
+    if base_url not in OFFICIAL_SKILLS_BASE_URLS:
+        raise InstallError("Cuebook distribution manifest has no official Skill endpoint.")
     local = _release_entries(_read_json(repository_root / "skills/index.json"))
     remote = _release_entries(fetch_index(f"{base_url}/index.json"))
     for name in PUBLIC_SKILLS:
