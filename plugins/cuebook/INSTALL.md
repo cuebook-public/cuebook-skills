@@ -19,8 +19,10 @@ current project or any unrelated local checkout.
    record its marketplace/source and version. If it comes from this same
    source, use the host-native update path once. If it comes from a different
    source, explain the one-time migration and obtain confirmation before
-   replacing it. Never ask the user to switch a project branch, provide a
-   Cuebook handle, or reinstall repeatedly.
+   replacing it. A named host guide may expose an explicit, official-channel
+   migration command only after that confirmation; never use it for an unknown
+   source. Never ask the user to switch a project branch, provide a Cuebook
+   handle, or reinstall repeatedly.
 4. Install or update once, then reload the host or open the one new session
    required by its guide. On Plugin hosts, the resolved inventory must contain
    exactly three public Skills and one `cuebook` MCP server. If the installed

@@ -114,6 +114,11 @@ test("Hermes adapter installs, authenticates, and updates all public Skills", ()
   assert.match(guide, /plugins\/hermes\/install_cuebook_skills\.py/u);
   assert.match(guide, /source_id="well-known"/u);
   assert.match(guide, /force=False/u);
+  assert.match(guide, /--migrate-official-channel/u);
+  assert.match(guide, /other official\s+distribution channel/u);
+  assert.match(guide, /requires fresh OAuth/u);
+  assert.match(guide, /native\s+uninstall API/u);
+  assert.match(guide, /Unknown, mixed, or\s+locally unmanaged sources still fail closed/u);
   assert.ok(guide.includes(distribution.skills_base_url));
   assert.match(guide, /remote get-url origin/u);
   assert.match(guide, /branch --show-current/u);
@@ -174,6 +179,7 @@ test("installation entrypoint and platform matrix govern every host adapter", ()
     /major, permission, or capability-tier\s+change requires explicit review/u,
   );
   assert.match(install, /host-native update path once/u);
+  assert.match(install, /explicit, official-channel\s+migration command/u);
   assert.match(install, /without a second OAuth grant/u);
   assert.match(install, /Ordinary user quick path/u);
   assert.match(install, /package_inventory_defect/u);

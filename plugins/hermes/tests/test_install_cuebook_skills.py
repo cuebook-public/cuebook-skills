@@ -4,6 +4,7 @@ import hashlib
 import importlib.util
 import json
 import pathlib
+import shutil
 import sys
 import tempfile
 import unittest
@@ -73,6 +74,7 @@ class InstallerTests(unittest.TestCase):
         )
         self.installed: dict[str, dict] = {}
         self.calls: list[tuple[str, dict]] = []
+        self.uninstall_calls: list[str] = []
         self.fail_name: str | None = None
 
     def tearDown(self) -> None:
@@ -97,8 +99,17 @@ class InstallerTests(unittest.TestCase):
                 "files": sorted(self.files[name]),
             }
 
+        def uninstall_skill(name: str) -> tuple[bool, str]:
+            self.uninstall_calls.append(name)
+            entry = self.installed.pop(name, None)
+            if entry is None:
+                return False, "not installed"
+            shutil.rmtree(self.skills_dir / entry["install_path"])
+            return True, f"uninstalled {name}"
+
         return installer.HermesApi(
             do_install=do_install,
+            uninstall_skill=uninstall_skill,
             lock_factory=lambda: FakeLock(self.installed),
             skills_dir=self.skills_dir,
         )
@@ -140,6 +151,81 @@ class InstallerTests(unittest.TestCase):
 
         with self.assertRaisesRegex(installer.InstallError, "Refusing to replace"):
             installer.install_all(self.repository, self.api(), self.fetch)
+        self.assertEqual(self.calls, [])
+
+    def test_other_official_channel_requires_explicit_migration(self) -> None:
+        other_base_url = "https://cuebook.app/.well-known/skills"
+        for name in installer.PUBLIC_SKILLS:
+            root = self.skills_dir / name
+            for relative, content in self.files[name].items():
+                target = root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(content)
+            self.installed[name] = {
+                "source": "well-known",
+                "identifier": f"well-known:{other_base_url}/{name}",
+                "install_path": name,
+                "scan_verdict": "safe",
+                "files": sorted(self.files[name]),
+            }
+
+        api = self.api()
+        with self.assertRaisesRegex(installer.InstallError, "Refusing to replace"):
+            installer.install_all(self.repository, api, self.fetch)
+        self.assertEqual(self.uninstall_calls, [])
+        self.assertEqual(self.calls, [])
+
+        result = installer.install_all(
+            self.repository,
+            api,
+            self.fetch,
+            migrate_official_channel=True,
+        )
+
+        self.assertEqual(result, list(installer.PUBLIC_SKILLS))
+        self.assertEqual(self.uninstall_calls, list(installer.PUBLIC_SKILLS))
+        self.assertEqual(len(self.calls), 3)
+        for name in installer.PUBLIC_SKILLS:
+            self.assertEqual(
+                self.installed[name]["identifier"],
+                f"well-known:{self.base_url}/{name}",
+            )
+
+    def test_explicit_migration_never_replaces_an_unknown_source(self) -> None:
+        official_name, unknown_name = installer.PUBLIC_SKILLS[:2]
+        official_root = self.skills_dir / official_name
+        for relative, content in self.files[official_name].items():
+            target = official_root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(content)
+        self.installed[official_name] = {
+            "source": "well-known",
+            "identifier": (
+                "well-known:https://cuebook.app/.well-known/skills/"
+                f"{official_name}"
+            ),
+            "install_path": official_name,
+            "scan_verdict": "safe",
+            "files": sorted(self.files[official_name]),
+        }
+        unknown_root = self.skills_dir / unknown_name
+        unknown_root.mkdir()
+        self.installed[unknown_name] = {
+            "source": "github",
+            "identifier": "github:other/repository",
+            "install_path": unknown_name,
+            "scan_verdict": "safe",
+            "files": [],
+        }
+
+        with self.assertRaisesRegex(installer.InstallError, "non-official or unexpected"):
+            installer.install_all(
+                self.repository,
+                self.api(),
+                self.fetch,
+                migrate_official_channel=True,
+            )
+        self.assertEqual(self.uninstall_calls, [])
         self.assertEqual(self.calls, [])
 
     def test_unlocked_skill_directory_is_never_replaced(self) -> None:
