@@ -76,6 +76,9 @@ class InstallerTests(unittest.TestCase):
         self.calls: list[tuple[str, dict]] = []
         self.uninstall_calls: list[str] = []
         self.fail_name: str | None = None
+        self.corrupt_name: str | None = None
+        self.raise_name: str | None = None
+        self.uninstall_raise_name: str | None = None
 
     def tearDown(self) -> None:
         self.temporary.cleanup()
@@ -91,6 +94,8 @@ class InstallerTests(unittest.TestCase):
                 target = root / relative
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(content)
+            if name == self.raise_name:
+                raise RuntimeError("interrupted after writing files")
             self.installed[name] = {
                 "source": "well-known",
                 "identifier": identifier,
@@ -98,13 +103,20 @@ class InstallerTests(unittest.TestCase):
                 "scan_verdict": "safe",
                 "files": sorted(self.files[name]),
             }
+            if name == self.corrupt_name:
+                (root / "SKILL.md").write_text("corrupt", encoding="utf-8")
 
         def uninstall_skill(name: str) -> tuple[bool, str]:
             self.uninstall_calls.append(name)
-            entry = self.installed.pop(name, None)
+            entry = self.installed.get(name)
             if entry is None:
                 return False, "not installed"
-            shutil.rmtree(self.skills_dir / entry["install_path"])
+            install_path = self.skills_dir / entry["install_path"]
+            if install_path.exists():
+                shutil.rmtree(install_path)
+            if name == self.uninstall_raise_name:
+                raise RuntimeError("interrupted before removing lock")
+            self.installed.pop(name)
             return True, f"uninstalled {name}"
 
         return installer.HermesApi(
@@ -153,8 +165,7 @@ class InstallerTests(unittest.TestCase):
             installer.install_all(self.repository, self.api(), self.fetch)
         self.assertEqual(self.calls, [])
 
-    def test_other_official_channel_requires_explicit_migration(self) -> None:
-        other_base_url = "https://cuebook.app/.well-known/skills"
+    def _seed_official_channel(self, base_url: str) -> None:
         for name in installer.PUBLIC_SKILLS:
             root = self.skills_dir / name
             for relative, content in self.files[name].items():
@@ -163,11 +174,14 @@ class InstallerTests(unittest.TestCase):
                 target.write_bytes(content)
             self.installed[name] = {
                 "source": "well-known",
-                "identifier": f"well-known:{other_base_url}/{name}",
+                "identifier": f"well-known:{base_url}/{name}",
                 "install_path": name,
                 "scan_verdict": "safe",
                 "files": sorted(self.files[name]),
             }
+
+    def test_other_official_channel_requires_explicit_migration(self) -> None:
+        self._seed_official_channel("https://cuebook.app/.well-known/skills")
 
         api = self.api()
         with self.assertRaisesRegex(installer.InstallError, "Refusing to replace"):
@@ -190,6 +204,43 @@ class InstallerTests(unittest.TestCase):
                 self.installed[name]["identifier"],
                 f"well-known:{self.base_url}/{name}",
             )
+
+        self.calls.clear()
+        self.uninstall_calls.clear()
+        rerun = installer.install_all(
+            self.repository,
+            api,
+            self.fetch,
+            migrate_official_channel=True,
+        )
+        self.assertEqual(rerun, list(installer.PUBLIC_SKILLS))
+        self.assertEqual(self.uninstall_calls, [])
+        self.assertEqual(self.calls, [])
+
+    def test_official_channel_migration_accepts_development_to_production(self) -> None:
+        self.base_url = "https://cuebook.app/.well-known/skills"
+        (self.repository / "plugins/cuebook/distribution-channel-v1.json").write_text(
+            json.dumps({"skills_base_url": self.base_url}),
+            encoding="utf-8",
+        )
+        self._seed_official_channel("https://cuebook.xyz/.well-known/skills")
+
+        result = installer.install_all(
+            self.repository,
+            self.api(),
+            self.fetch,
+            migrate_official_channel=True,
+        )
+
+        self.assertEqual(result, list(installer.PUBLIC_SKILLS))
+        self.assertEqual(self.uninstall_calls, list(installer.PUBLIC_SKILLS))
+        self.assertTrue(
+            all(
+                entry["identifier"]
+                == f"well-known:https://cuebook.app/.well-known/skills/{name}"
+                for name, entry in self.installed.items()
+            )
+        )
 
     def test_explicit_migration_never_replaces_an_unknown_source(self) -> None:
         official_name, unknown_name = installer.PUBLIC_SKILLS[:2]
@@ -227,6 +278,135 @@ class InstallerTests(unittest.TestCase):
             )
         self.assertEqual(self.uninstall_calls, [])
         self.assertEqual(self.calls, [])
+
+    def test_migration_preflights_an_unlocked_directory_before_uninstall(self) -> None:
+        first_name, orphan_name, last_name = installer.PUBLIC_SKILLS
+        self._seed_official_channel("https://cuebook.app/.well-known/skills")
+        self.installed.pop(orphan_name)
+        orphan_marker = self.skills_dir / orphan_name / "local-only.txt"
+        shutil.rmtree(self.skills_dir / orphan_name)
+        orphan_marker.parent.mkdir()
+        orphan_marker.write_text("preserve me", encoding="utf-8")
+
+        with self.assertRaisesRegex(installer.InstallError, "without a Hermes Hub lock"):
+            installer.install_all(
+                self.repository,
+                self.api(),
+                self.fetch,
+                migrate_official_channel=True,
+            )
+
+        self.assertEqual(set(self.installed), {first_name, last_name})
+        self.assertEqual(self.uninstall_calls, [])
+        self.assertEqual(self.calls, [])
+        self.assertEqual(orphan_marker.read_text(encoding="utf-8"), "preserve me")
+
+    def test_failed_target_verification_stops_for_explicit_review(self) -> None:
+        self._seed_official_channel("https://cuebook.app/.well-known/skills")
+        failed_name = installer.PUBLIC_SKILLS[1]
+        self.corrupt_name = failed_name
+        api = self.api()
+
+        with self.assertRaisesRegex(installer.InstallError, "digest does not match"):
+            installer.install_all(
+                self.repository,
+                api,
+                self.fetch,
+                migrate_official_channel=True,
+            )
+
+        self.corrupt_name = None
+        uninstall_count = len(self.uninstall_calls)
+        install_count = len(self.calls)
+        with self.assertRaisesRegex(installer.InstallError, "digest does not match"):
+            installer.install_all(
+                self.repository,
+                api,
+                self.fetch,
+                migrate_official_channel=True,
+            )
+        self.assertEqual(len(self.uninstall_calls), uninstall_count)
+        self.assertEqual(len(self.calls), install_count)
+
+    def test_invalid_target_is_never_replaced_by_the_migration_flag(self) -> None:
+        self._seed_official_channel(self.base_url)
+        name = installer.PUBLIC_SKILLS[0]
+        (self.skills_dir / name / "SKILL.md").write_text("corrupt", encoding="utf-8")
+        api = self.api()
+
+        with self.assertRaisesRegex(installer.InstallError, "digest does not match"):
+            installer.install_all(
+                self.repository,
+                api,
+                self.fetch,
+                migrate_official_channel=True,
+            )
+
+        self.assertEqual(self.uninstall_calls, [])
+        self.assertEqual(self.calls, [])
+
+    def test_interrupted_unlocked_target_stops_without_deleting_it(self) -> None:
+        self._seed_official_channel("https://cuebook.app/.well-known/skills")
+        failed_name = installer.PUBLIC_SKILLS[1]
+        self.raise_name = failed_name
+        api = self.api()
+
+        with self.assertRaisesRegex(installer.InstallError, "interrupted after writing files"):
+            installer.install_all(
+                self.repository,
+                api,
+                self.fetch,
+                migrate_official_channel=True,
+            )
+        self.assertIsNone(self.installed.get(failed_name))
+        marker = self.skills_dir / failed_name / "SKILL.md"
+        self.assertTrue(marker.is_file())
+
+        self.raise_name = None
+        with self.assertRaisesRegex(installer.InstallError, "without a Hermes Hub lock"):
+            installer.install_all(
+                self.repository,
+                api,
+                self.fetch,
+                migrate_official_channel=True,
+            )
+        self.assertTrue(marker.is_file())
+
+    def test_interrupted_native_uninstall_can_clear_its_stale_official_lock(self) -> None:
+        self._seed_official_channel("https://cuebook.app/.well-known/skills")
+        failed_name = installer.PUBLIC_SKILLS[0]
+        self.uninstall_raise_name = failed_name
+        api = self.api()
+
+        with self.assertRaisesRegex(installer.InstallError, "interrupted before removing lock"):
+            installer.install_all(
+                self.repository,
+                api,
+                self.fetch,
+                migrate_official_channel=True,
+            )
+        self.assertIsNotNone(self.installed.get(failed_name))
+        self.assertFalse((self.skills_dir / failed_name).exists())
+
+        self.uninstall_raise_name = None
+        result = installer.install_all(
+            self.repository,
+            api,
+            self.fetch,
+            migrate_official_channel=True,
+        )
+
+        self.assertEqual(result, list(installer.PUBLIC_SKILLS))
+
+    def test_a_second_installer_cannot_enter_the_mutation_boundary(self) -> None:
+        api = self.api()
+
+        with installer._installer_lock(api):
+            with self.assertRaisesRegex(installer.InstallError, "already running"):
+                installer.install_all(self.repository, api, self.fetch)
+
+        self.assertEqual(self.calls, [])
+        self.assertEqual(self.uninstall_calls, [])
 
     def test_unlocked_skill_directory_is_never_replaced(self) -> None:
         name = installer.PUBLIC_SKILLS[0]

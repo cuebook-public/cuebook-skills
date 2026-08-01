@@ -118,7 +118,9 @@ test("Hermes adapter installs, authenticates, and updates all public Skills", ()
   assert.match(guide, /other official\s+distribution channel/u);
   assert.match(guide, /requires fresh OAuth/u);
   assert.match(guide, /native\s+uninstall API/u);
-  assert.match(guide, /Unknown, mixed, or\s+locally unmanaged sources still fail closed/u);
+  assert.match(guide, /exclusive Cuebook installer lock/u);
+  assert.match(guide, /invalid target-channel\s+bundle stops for explicit review/u);
+  assert.match(guide, /Unknown,\s+mixed, or\s+locally unmanaged\s+sources still fail closed/u);
   assert.ok(guide.includes(distribution.skills_base_url));
   assert.match(guide, /remote get-url origin/u);
   assert.match(guide, /branch --show-current/u);
