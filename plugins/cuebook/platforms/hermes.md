@@ -4,9 +4,10 @@
 one thin Hermes OAuth bridge.
 
 **Package status:** The public Skills are complete well-known bundles. The
-Hermes plugin adds only the explicit `/cuebook-auth` command; it delegates the
-entire MCP OAuth lifecycle to the native Hermes Dashboard and never implements
-another MCP transport.
+Hermes plugin adds only the explicit **Connect Cuebook** command-menu entry,
+exposed by Telegram as `/cuebook_auth`; it delegates the entire MCP OAuth
+lifecycle to the native Hermes Dashboard and never implements another MCP
+transport.
 
 **Live status:** Hermes 0.19.1 source-pinned installation, Telegram DM command
 registration, callback isolation, and the generated authorization link are
@@ -159,31 +160,61 @@ curl --fail --silent --show-error \
   >/dev/null
 ```
 
-Restart the Gateway after the Dashboard is ready, then verify registration:
+For a manual setup outside the running Gateway, the operator restarts the
+Gateway after the Dashboard is ready, then verifies registration:
 
 ```bash
 hermes plugins list
 ```
 
-## Authorize from Telegram
+An installation requested from a Telegram conversation is different: the
+installing agent must not invoke `hermes gateway restart` from a shell Tool
+inside its own Gateway turn. After the files, configuration, and Dashboard are
+ready, its current reply must end with the following two tap targets in this
+order. The command lines must be plain standalone text without bullets,
+blockquotes, backticks, or a fenced code block:
 
-Send this explicit command in a private Telegram chat with the Hermes bot:
+Restart Hermes
 
-```text
-/cuebook-auth
-```
+/restart
+
+Connect Cuebook after restart
+
+/cuebook_auth
+
+The user taps `/restart` first. After Hermes posts its restart-complete
+notification, the user taps the already-present `/cuebook_auth` line. This
+loads the new plugin before authorization without requiring the user to type
+anything. If the exact plugin version was already loaded and no Gateway-owned
+configuration changed, omit only the restart pair and present the Connect
+Cuebook pair once.
+
+## Connect from Telegram
+
+After the Gateway restart, Hermes registers **Connect Cuebook** in the Telegram
+bot command menu. Open that menu in a private chat and tap **Connect Cuebook**.
+Telegram sends the registered `/cuebook_auth` command immediately, so the user
+does not need to type or remember it.
+
+When installation itself is running through that Telegram chat and
+authorization is required, the installing agent must end its response with the
+label `Connect Cuebook` followed by `/cuebook_auth` on its own line. Emit the
+command as plain text, not inline code or a fenced code block, so Telegram makes
+it tappable. Do not ask the user to type a second command. The standalone
+command remains the compatibility path when a crowded or stale Telegram menu
+does not show the entry.
 
 The command is handled directly by the plugin without an LLM turn. It is
 rejected outside a Telegram direct message. Concurrent invocations reuse the
 same active flow, and the plugin validates the official Cuebook origin, exact
 `/mcp/authorize` path, PKCE parameters, resource, and callback before returning
-the link.
+the labeled **Open Cuebook to authorize** link.
 
-On a phone with Cuebook installed, the HTTPS authorization link opens the
-Cuebook app for confirmation. On desktop Telegram, the same link opens the
-normal browser flow. After approval, the plugin asks the running Gateway to
-rediscover MCP Tools. Return to Telegram and continue the conversation; do not
-start a second login.
+On a phone, the HTTPS authorization link can open the installed Cuebook app for
+confirmation. If Telegram keeps the link in a browser, complete approval in the
+web flow. On desktop Telegram, the same link opens the normal browser flow.
+After approval, the plugin asks the running Gateway to rediscover MCP Tools.
+Return to Telegram and continue the conversation; do not start a second login.
 
 For a local CLI-only Hermes profile without Telegram, the native manual
 fallback remains:
@@ -192,7 +223,7 @@ fallback remains:
 hermes mcp login cuebook
 ```
 
-Do not run it while a `/cuebook-auth` flow is pending.
+Do not run it while a `/cuebook_auth` flow is pending.
 
 ## Update
 

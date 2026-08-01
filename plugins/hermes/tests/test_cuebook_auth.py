@@ -144,6 +144,7 @@ class CuebookAuthTests(unittest.IsolatedAsyncioTestCase):
         plugin.register(context)
         self.assertEqual(set(context.hooks), {"pre_gateway_dispatch"})
         self.assertEqual(set(context.commands), {"cuebook-auth"})
+        self.assertEqual(context.commands["cuebook-auth"][1], "Connect Cuebook")
 
     async def test_command_is_telegram_dm_only(self) -> None:
         for platform, chat_type in (("telegram", "group"), ("discord", "dm")):
@@ -155,7 +156,7 @@ class CuebookAuthTests(unittest.IsolatedAsyncioTestCase):
         self.capture()
         self.assertEqual(
             await plugin._handle_cuebook_auth("again"),
-            "Usage: `/cuebook-auth`",
+            "Usage: `/cuebook_auth`",
         )
 
     async def test_command_returns_validated_native_flow(self) -> None:
@@ -163,7 +164,10 @@ class CuebookAuthTests(unittest.IsolatedAsyncioTestCase):
         flow = plugin._ActiveFlow(FLOW_ID, authorization_url(), time.monotonic() + 60)
         with patch.object(plugin, "_get_or_start_flow", return_value=flow):
             response = await plugin._handle_cuebook_auth("")
-        self.assertIn(authorization_url(), response)
+        self.assertIn(
+            f"[Open Cuebook to authorize]({authorization_url()})",
+            response,
+        )
         self.assertIn("reuses the same authorization flow", response)
 
     def test_requires_a_strong_shared_session_token(self) -> None:

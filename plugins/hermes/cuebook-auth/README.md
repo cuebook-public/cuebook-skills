@@ -1,11 +1,12 @@
 # Cuebook OAuth bridge for Hermes
 
-This thin Hermes plugin adds one explicit `/cuebook-auth` command. It does not
-implement MCP, copy Cuebook credentials, intercept natural-language messages,
-or replace Hermes OAuth. The command calls the native Hermes Dashboard OAuth
-API on `http://127.0.0.1:9119`, returns the server-generated Cuebook approval
-URL to a private Telegram chat, and refreshes MCP Tool discovery after the
-Dashboard reports approval.
+This thin Hermes plugin adds one **Connect Cuebook** command-menu entry, exposed
+by Telegram as `/cuebook_auth`. It does not implement MCP, copy Cuebook
+credentials, intercept natural-language messages, or replace Hermes OAuth. The
+command calls the native Hermes Dashboard OAuth API on
+`http://127.0.0.1:9119`, returns the validated server-generated approval URL as
+a labeled link to a private Telegram chat, and refreshes MCP Tool discovery
+after the Dashboard reports approval.
 
 The bridge deliberately fails closed:
 
