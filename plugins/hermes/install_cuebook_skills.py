@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import inspect
 import json
@@ -25,6 +26,12 @@ PUBLIC_SKILLS = (
 INDEX_SCHEMA = "cuebook-hermes-skills-index-v1"
 SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 MAX_INDEX_BYTES = 2_000_000
+OFFICIAL_SKILLS_BASE_URLS = frozenset(
+    {
+        "https://cuebook.app/.well-known/skills",
+        "https://cuebook.xyz/.well-known/skills",
+    }
+)
 
 
 class InstallError(RuntimeError):
@@ -34,6 +41,7 @@ class InstallError(RuntimeError):
 @dataclass(frozen=True)
 class HermesApi:
     do_install: Callable[..., None]
+    uninstall_skill: Callable[[str], tuple[bool, str]]
     lock_factory: Callable[[], Any]
     skills_dir: pathlib.Path
 
@@ -41,7 +49,7 @@ class HermesApi:
 def _load_hermes_api() -> HermesApi:
     try:
         from hermes_cli.skills_hub import do_install
-        from tools.skills_hub import HubLockFile, SKILLS_DIR
+        from tools.skills_hub import HubLockFile, SKILLS_DIR, uninstall_skill
     except ImportError as exc:
         raise InstallError(
             "Run this file with the Python interpreter from the Hermes virtual environment."
@@ -54,7 +62,7 @@ def _load_hermes_api() -> HermesApi:
             "This Hermes build has no safe source-pinned install API "
             f"(missing: {', '.join(sorted(missing))})."
         )
-    return HermesApi(do_install, HubLockFile, pathlib.Path(SKILLS_DIR))
+    return HermesApi(do_install, uninstall_skill, HubLockFile, pathlib.Path(SKILLS_DIR))
 
 
 def _read_json(path: pathlib.Path) -> dict[str, Any]:
@@ -166,10 +174,57 @@ def _verify_installed(
         raise InstallError(f"Installed Skill digest does not match the release index: {name}.")
 
 
+def _migrate_official_channel(
+    api: HermesApi,
+    base_url: str,
+    releases: dict[str, dict[str, Any]],
+) -> list[str]:
+    if base_url not in OFFICIAL_SKILLS_BASE_URLS:
+        raise InstallError("Channel migration requires an official Cuebook Skill endpoint.")
+
+    queued: list[str] = []
+    for name in PUBLIC_SKILLS:
+        existing = api.lock_factory().get_installed(name)
+        if existing is None:
+            continue
+        target_identifier = f"well-known:{base_url}/{name}"
+        if existing.get("source") == "well-known" and existing.get("identifier") == target_identifier:
+            _verify_installed(api, name, target_identifier, releases[name])
+            continue
+
+        official_identifiers = {
+            f"well-known:{official_base_url}/{name}"
+            for official_base_url in OFFICIAL_SKILLS_BASE_URLS
+            if official_base_url != base_url
+        }
+        if (
+            existing.get("source") != "well-known"
+            or existing.get("identifier") not in official_identifiers
+            or existing.get("scan_verdict") != "safe"
+            or existing.get("install_path") != name
+        ):
+            raise InstallError(
+                f"Refusing to migrate a non-official or unexpected existing Skill: {name}."
+            )
+        install_path = api.skills_dir / name
+        if install_path.is_symlink() or not install_path.is_dir():
+            raise InstallError(f"Existing official Skill has an invalid install path: {name}.")
+        queued.append(name)
+
+    for name in queued:
+        success, message = api.uninstall_skill(name)
+        if not success:
+            raise InstallError(f"Hermes could not uninstall {name}: {message}")
+        if api.lock_factory().get_installed(name) is not None or (api.skills_dir / name).exists():
+            raise InstallError(f"Hermes did not completely uninstall the previous Skill: {name}.")
+    return queued
+
+
 def install_all(
     repository_root: pathlib.Path = REPOSITORY_ROOT,
     api: HermesApi | None = None,
     fetch_index: Callable[[str], dict[str, Any]] = _fetch_index,
+    migrate_official_channel: bool = False,
 ) -> list[str]:
     distribution = _read_json(repository_root / "plugins/cuebook/distribution-channel-v1.json")
     base_url = distribution.get("skills_base_url")
@@ -182,6 +237,8 @@ def install_all(
             raise InstallError(f"The published Skill snapshot does not match this checkout: {name}.")
 
     hermes = api or _load_hermes_api()
+    if migrate_official_channel:
+        _migrate_official_channel(hermes, base_url, remote)
     completed: list[str] = []
     for name in PUBLIC_SKILLS:
         identifier = f"well-known:{base_url}/{name}"
@@ -216,9 +273,18 @@ def install_all(
     return completed
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Install the three verified Cuebook Skill bundles through Hermes."
+    )
+    parser.add_argument(
+        "--migrate-official-channel",
+        action="store_true",
+        help="replace only Skills recorded from Cuebook's other official distribution channel",
+    )
+    args = parser.parse_args(argv)
     try:
-        installed = install_all()
+        installed = install_all(migrate_official_channel=args.migrate_official_channel)
     except InstallError as exc:
         print(f"Cuebook Skill installation failed: {exc}", file=sys.stderr)
         return 1

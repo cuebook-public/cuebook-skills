@@ -8,7 +8,9 @@
   URL contract, returns a labeled tappable approval link, reuses a concurrent
   flow, and refreshes MCP Tool discovery after approval; the Hermes guide now
   uses a generated `skills/index.json` and complete self-contained well-known
-  Skill bundles instead of unauthenticated GitHub REST installation.
+  Skill bundles instead of unauthenticated GitHub REST installation. An
+  explicit migration flag now handles user-confirmed switches between the
+  official development and production channels while refusing unknown sources.
 
 ## 0.9.22 — 2026-07-31
 

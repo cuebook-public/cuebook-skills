@@ -71,6 +71,25 @@ remain mandatory. If the Hermes interpreter or source-pinned API is absent,
 the installer fails immediately; do not switch to the generic CLI, add a
 GitHub token, retry, or use `--force`.
 
+If Hermes records any of the three Skills from Cuebook's other official
+distribution channel, the ordinary installer refuses to replace it. Explain
+that changing channel also changes the MCP resource and requires fresh OAuth,
+then obtain the user's explicit confirmation. Only after that confirmation,
+run the same verified installer once with the migration flag:
+
+```bash
+"${HOME}/.hermes/hermes-agent/venv/bin/python" \
+  "${HOME}/.hermes/plugin-sources/cuebook-skills-dev/plugins/hermes/install_cuebook_skills.py" \
+  --migrate-official-channel
+```
+
+The flag preflights all three lock records before changing anything. It accepts
+only the exact `cuebook.app` or `cuebook.xyz` well-known identifiers with a
+SAFE verdict, removes the confirmed old-channel bundles through Hermes' native
+uninstall API, and installs the verified target snapshot. Unknown, mixed, or
+locally unmanaged sources still fail closed; never replace them with this
+flag, manual directory deletion, or `--force`.
+
 Confirm the resulting inventory after the installer reports all three names:
 
 ```bash
@@ -101,6 +120,11 @@ Keep exactly one enabled server named `cuebook`. OAuth credentials remain in
 Hermes. Do not mark Cuebook safe for parallel MCP calls: reads may be batched
 where the host permits, but upload, manifest, draft, prepare, and publish
 mutations remain ordered and independently idempotent.
+
+After an explicitly confirmed channel migration, replace this one `cuebook`
+entry with the endpoint above and start one fresh authorization flow. Never
+copy or reuse the previous channel's OAuth cache: the resource identifier is
+different even when the same user owns both Cuebook apps.
 
 ## Prepare the loopback Dashboard bridge
 
