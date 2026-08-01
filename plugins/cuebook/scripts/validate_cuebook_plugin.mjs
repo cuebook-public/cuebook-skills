@@ -78,6 +78,22 @@ function findNamedFiles(root, fileName) {
   return found.sort();
 }
 
+function filesUnder(root) {
+  const found = [];
+  const walk = (directory) => {
+    if (!existsSync(directory)) return;
+    for (const entry of readdirSync(directory, { withFileTypes: true })) {
+      const target = path.join(directory, entry.name);
+      if (entry.isDirectory()) walk(target);
+      else if (entry.isFile()) {
+        found.push(path.relative(root, target).split(path.sep).join("/"));
+      }
+    }
+  };
+  walk(root);
+  return found.sort();
+}
+
 const setEq = (a, b) => a.size === b.size && [...a].every((item) => b.has(item));
 const intersects = (a, b) => [...a].some((item) => b.has(item));
 const isSubset = (a, b) => [...a].every((item) => b.has(item));
@@ -856,6 +872,88 @@ export function validate(pluginRoot) {
     "PLUGIN_PUBLISH_INPUT_BUDGET",
     "public-skills/release-manifest.json.frame_publish_input_budget",
     "On-demand Frame publication input must stay below 40k bytes.",
+  );
+  const hermesIndexPath = path.join(publicSkillsRoot, "index.json");
+  const expectedHermesIndexSchemaRef = "./hermes-skills-index-v1.schema.json";
+  const hermesIndexSchemaPath = path.join(
+    assetsRoot,
+    "hermes-skills-index-v1.schema.json",
+  );
+  check(
+    existsSync(hermesIndexPath),
+    "HERMES_INDEX",
+    "public-skills/index.json",
+    "The generated Hermes well-known Skills index is missing.",
+  );
+  check(
+    index.hermes_skills_index_schema_ref === expectedHermesIndexSchemaRef,
+    "HERMES_INDEX_SCHEMA_REF",
+    "assets/plugin-index-v1.json.hermes_skills_index_schema_ref",
+    "The Plugin index must point to the canonical Hermes well-known index schema.",
+  );
+  check(
+    existsSync(hermesIndexSchemaPath),
+    "HERMES_INDEX_SCHEMA",
+    "assets/hermes-skills-index-v1.schema.json",
+    "The Hermes well-known Skills index schema is missing.",
+  );
+  const hermesIndex = existsSync(hermesIndexPath) ? load(hermesIndexPath) : {};
+  if (existsSync(hermesIndexSchemaPath)) {
+    const hermesIndexSchema = load(hermesIndexSchemaPath);
+    for (const schemaError of validateInstance(hermesIndex, hermesIndexSchema)) {
+      errors.push({
+        code: schemaError.code,
+        path: `public-skills/index.json:${schemaError.path}`,
+        message: schemaError.message,
+      });
+    }
+  }
+  const hermesIndexSkills = Array.isArray(hermesIndex.skills) ? hermesIndex.skills : [];
+  check(
+    deepEqualPy(
+      hermesIndexSkills.map((skill) => skill?.name),
+      index.public_entrypoints ?? [],
+    ),
+    "HERMES_INDEX_SKILL_SET",
+    "public-skills/index.json.skills",
+    "The well-known index must preserve the canonical public Skill order and set.",
+  );
+  const releaseBundlesByName = new Map(
+    (publicReleaseManifest.bundles ?? []).map((bundle) => [bundle.skill, bundle]),
+  );
+  for (const skill of hermesIndexSkills) {
+    if (
+      !isDict(skill)
+      || typeof skill.name !== "string"
+      || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(skill.name)
+    ) continue;
+    const bundleRoot = path.join(publicSkillsRoot, skill.name);
+    check(
+      deepEqualPy(skill.files, filesUnder(bundleRoot)),
+      "HERMES_INDEX_FILE_SET",
+      `public-skills/index.json.skills.${skill.name}.files`,
+      "Every well-known Skill entry must enumerate its complete generated bundle.",
+    );
+    check(
+      skill.content_sha256 === releaseBundlesByName.get(skill.name)?.content_sha256,
+      "HERMES_INDEX_CONTENT_HASH",
+      `public-skills/index.json.skills.${skill.name}.content_sha256`,
+      "The well-known Skill digest must match the release manifest.",
+    );
+  }
+  check(
+    publicReleaseManifest.hermes_well_known_index?.schema_version
+      === hermesIndex.schema_version
+      && publicReleaseManifest.hermes_well_known_index?.skill_count
+        === hermesIndexSkills.length
+      && publicReleaseManifest.hermes_well_known_index?.file_count
+        === hermesIndexSkills.reduce(
+          (total, skill) => total + (Array.isArray(skill?.files) ? skill.files.length : 0),
+          0,
+        ),
+    "HERMES_INDEX_MANIFEST",
+    "public-skills/release-manifest.json.hermes_well_known_index",
+    "The release manifest must summarize the generated well-known index exactly.",
   );
   const manifestVersion = String(manifest.version || "").split("+")[0];
   check(

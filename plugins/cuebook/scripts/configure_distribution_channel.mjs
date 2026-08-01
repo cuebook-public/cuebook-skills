@@ -14,19 +14,27 @@ export const DISTRIBUTION_CHANNELS = Object.freeze({
     channel: "development",
     web_origin: "https://cuebook.xyz",
     mcp_url: "https://cuebook.xyz/mcp",
+    skills_base_url: "https://cuebook.xyz/.well-known/skills",
   }),
   production: Object.freeze({
     schema_version: "cuebook-distribution-channel-v1",
     channel: "production",
     web_origin: "https://cuebook.app",
     mcp_url: "https://cuebook.app/mcp",
+    skills_base_url: "https://cuebook.app/.well-known/skills",
   }),
+});
+
+const HERMES_CHECKOUTS = Object.freeze({
+  development: Object.freeze({ ref: "dev", directory: "cuebook-skills-dev" }),
+  production: Object.freeze({ ref: "main", directory: "cuebook-skills-main" }),
 });
 
 const FILES = Object.freeze({
   manifest: "plugins/cuebook/distribution-channel-v1.json",
   mcp: "plugins/cuebook/runtime-template/.mcp.json",
   capabilityMap: "plugins/cuebook/assets/mcp-capability-map-v1.json",
+  hermesOAuthBridge: "plugins/hermes/cuebook-auth/__init__.py",
 });
 
 export const CHANNEL_BOUND_PLATFORM_GUIDES = Object.freeze([
@@ -41,6 +49,8 @@ export const CHANNEL_BOUND_PLATFORM_GUIDES = Object.freeze([
 ]);
 
 const CUEBOOK_SCHEMA_ID = /^https:\/\/cuebook\.(?:app|xyz)\//u;
+const HERMES_MCP_URL_ASSIGNMENT = /_OFFICIAL_MCP_URL = "https:\/\/cuebook\.(?:app|xyz)\/mcp"/u;
+const HERMES_AUTH_HOST_ASSIGNMENT = /_AUTHORIZATION_HOST = "cuebook\.(?:app|xyz)"/u;
 const jsonText = (value) => `${JSON.stringify(value, null, 2)}\n`;
 
 function readJson(root, relativePath) {
@@ -94,6 +104,24 @@ export function distributionWrites(rootArg, channelName) {
     })],
     [FILES.capabilityMap, jsonText(capabilityMap)],
   ]);
+  const hermesBridgePath = path.join(root, FILES.hermesOAuthBridge);
+  if (!fs.existsSync(hermesBridgePath)) {
+    throw new Error(`${FILES.hermesOAuthBridge} is missing.`);
+  }
+  const hermesBridge = fs.readFileSync(hermesBridgePath, "utf8");
+  if (
+    !HERMES_MCP_URL_ASSIGNMENT.test(hermesBridge)
+    || !HERMES_AUTH_HOST_ASSIGNMENT.test(hermesBridge)
+  ) {
+    throw new Error(`${FILES.hermesOAuthBridge} has no channel-bound Cuebook endpoint.`);
+  }
+  const authorizationHost = new URL(channel.mcp_url).hostname;
+  writes.set(
+    FILES.hermesOAuthBridge,
+    hermesBridge
+      .replace(HERMES_MCP_URL_ASSIGNMENT, `_OFFICIAL_MCP_URL = "${channel.mcp_url}"`)
+      .replace(HERMES_AUTH_HOST_ASSIGNMENT, `_AUTHORIZATION_HOST = "${authorizationHost}"`),
+  );
   for (const relativePath of distributionSchemaFiles(root)) {
     const absolutePath = path.join(root, relativePath);
     const text = fs.readFileSync(absolutePath, "utf8");
@@ -114,6 +142,16 @@ export function distributionWrites(rootArg, channelName) {
     let text = fs.readFileSync(absolutePath, "utf8");
     for (const candidate of Object.values(DISTRIBUTION_CHANNELS)) {
       text = text.replaceAll(candidate.mcp_url, channel.mcp_url);
+      text = text.replaceAll(candidate.skills_base_url, channel.skills_base_url);
+    }
+    if (guideName === "hermes.md") {
+      const checkout = HERMES_CHECKOUTS[channelName];
+      text = text
+        .replace(
+          /cuebook_skills_branch="(?:dev|main)"/gu,
+          `cuebook_skills_branch="${checkout.ref}"`,
+        )
+        .replace(/cuebook-skills-(?:dev|main)/gu, checkout.directory);
     }
     writes.set(relativePath, text);
   }
@@ -132,6 +170,7 @@ export function collectDistributionIssues(rootArg, expectedChannel) {
   let manifest;
   let mcp;
   let capabilityMap;
+  let hermesBridge;
   try {
     manifest = readJson(root, FILES.manifest);
   } catch (error) {
@@ -150,13 +189,19 @@ export function collectDistributionIssues(rootArg, expectedChannel) {
     add(FILES.capabilityMap, `Cannot read the capability map: ${error.message}`);
     return issues;
   }
+  try {
+    hermesBridge = fs.readFileSync(path.join(root, FILES.hermesOAuthBridge), "utf8");
+  } catch (error) {
+    add(FILES.hermesOAuthBridge, `Cannot read the Hermes OAuth bridge: ${error.message}`);
+    return issues;
+  }
 
   const selected = DISTRIBUTION_CHANNELS[manifest.channel];
   if (!selected) {
     add(FILES.manifest, `Unsupported channel ${JSON.stringify(manifest.channel)}.`);
     return issues;
   }
-  for (const field of ["schema_version", "channel", "web_origin", "mcp_url"]) {
+  for (const field of ["schema_version", "channel", "web_origin", "mcp_url", "skills_base_url"]) {
     if (manifest[field] !== selected[field]) {
       add(FILES.manifest, `${field} must equal ${JSON.stringify(selected[field])} for ${selected.channel}.`);
     }
@@ -185,6 +230,28 @@ export function collectDistributionIssues(rootArg, expectedChannel) {
   if (capabilityMap.server?.url !== selected.mcp_url) {
     add(FILES.capabilityMap, `Capability server URL must equal ${selected.mcp_url}.`);
   }
+  const expectedHermesMcp = `_OFFICIAL_MCP_URL = "${selected.mcp_url}"`;
+  const expectedHermesHost = `_AUTHORIZATION_HOST = "${new URL(selected.mcp_url).hostname}"`;
+  if (!hermesBridge.includes(expectedHermesMcp)) {
+    add(FILES.hermesOAuthBridge, `Hermes MCP URL must equal ${selected.mcp_url}.`);
+  }
+  if (!hermesBridge.includes(expectedHermesHost)) {
+    add(
+      FILES.hermesOAuthBridge,
+      `Hermes authorization host must equal ${new URL(selected.mcp_url).hostname}.`,
+    );
+  }
+  for (const candidate of Object.values(DISTRIBUTION_CHANNELS)) {
+    if (
+      candidate.channel !== selected.channel
+      && hermesBridge.includes(`_OFFICIAL_MCP_URL = "${candidate.mcp_url}"`)
+    ) {
+      add(
+        FILES.hermesOAuthBridge,
+        `Hermes OAuth bridge must not retain ${candidate.mcp_url}.`,
+      );
+    }
+  }
   for (const guideName of CHANNEL_BOUND_PLATFORM_GUIDES) {
     const relativePath = `plugins/cuebook/platforms/${guideName}`;
     const absolutePath = path.join(root, relativePath);
@@ -202,6 +269,45 @@ export function collectDistributionIssues(rootArg, expectedChannel) {
           relativePath,
           `Platform guide must not retain the ${candidate.channel} endpoint ${candidate.mcp_url}.`,
         );
+      }
+    }
+    if (guideName === "hermes.md") {
+      if (!text.includes(selected.skills_base_url)) {
+        add(relativePath, `Hermes guide must use ${selected.skills_base_url}.`);
+      }
+      for (const candidate of Object.values(DISTRIBUTION_CHANNELS)) {
+        if (
+          candidate.channel !== selected.channel
+          && text.includes(candidate.skills_base_url)
+        ) {
+          add(
+            relativePath,
+            `Hermes guide must not retain the ${candidate.channel} Skill endpoint ${candidate.skills_base_url}.`,
+          );
+        }
+      }
+      const checkout = HERMES_CHECKOUTS[selected.channel];
+      if (
+        !text.includes(`cuebook_skills_branch="${checkout.ref}"`)
+        || !text.includes(`/plugin-sources/${checkout.directory}`)
+        || !text.includes('pull --ff-only origin "${cuebook_skills_branch}"')
+        || !text.includes('rev-parse "origin/${cuebook_skills_branch}"')
+      ) {
+        add(relativePath, `Hermes checkout must use the ${checkout.ref} distribution branch.`);
+      }
+      for (const [channelName, candidate] of Object.entries(HERMES_CHECKOUTS)) {
+        if (
+          channelName !== selected.channel
+          && (
+            text.includes(`cuebook_skills_branch="${candidate.ref}"`)
+            || text.includes(`/plugin-sources/${candidate.directory}`)
+          )
+        ) {
+          add(
+            relativePath,
+            `Hermes checkout must not retain the ${candidate.ref} distribution branch.`,
+          );
+        }
       }
     }
   }

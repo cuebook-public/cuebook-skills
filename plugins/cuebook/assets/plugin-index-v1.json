@@ -1,6 +1,6 @@
 {
   "schema_version": "cuebook-plugin-index-v1",
-  "plugin_version": "0.9.22",
+  "plugin_version": "0.9.23",
   "catalog_version": "1.31.0",
   "skill_count": 39,
   "default_entrypoint": "query-cuebook",
@@ -20,6 +20,7 @@
   "mcp_capability_map_ref": "./mcp-capability-map-v1.json",
   "runtime_compatibility_ref": "./runtime-compatibility-v1.json",
   "runtime_compatibility_schema_ref": "./runtime-compatibility-v1.schema.json",
+  "hermes_skills_index_schema_ref": "./hermes-skills-index-v1.schema.json",
   "validator_ref": "../scripts/validate_cuebook_plugin.mjs",
   "release_profile": {
     "static_visuals": "exact_1866x1200",

@@ -16,6 +16,7 @@ import { validate } from "../scripts/validate_cuebook_plugin.mjs";
 const PLUGIN_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const REPOSITORY_ROOT = path.resolve(PLUGIN_ROOT, "..", "..");
 const RUNTIME_ROOT = path.join(REPOSITORY_ROOT, "plugins", "runtime", "cuebook");
+const HERMES_PLUGIN_ROOT = path.join(REPOSITORY_ROOT, "plugins", "hermes");
 
 function runtimeRootFor(sourceRoot) {
   return path.resolve(sourceRoot, "..", "runtime", "cuebook");
@@ -40,6 +41,7 @@ function copiedPlugin(tmpPath) {
   fs.cpSync(PLUGIN_ROOT, target, { recursive: true });
   fs.mkdirSync(path.dirname(runtimeRootFor(target)), { recursive: true });
   fs.cpSync(RUNTIME_ROOT, runtimeRootFor(target), { recursive: true });
+  fs.cpSync(HERMES_PLUGIN_ROOT, path.join(tmpPath, "plugins", "hermes"), { recursive: true });
   return target;
 }
 
@@ -171,6 +173,36 @@ test("runtime compatibility metadata is versioned once and vendored into every p
   }
 });
 
+test("Hermes well-known index is complete and schema-bound", () => {
+  const index = JSON.parse(
+    fs.readFileSync(path.join(RUNTIME_ROOT, "skills", "index.json"), "utf8"),
+  );
+  const pluginIndex = JSON.parse(
+    fs.readFileSync(path.join(PLUGIN_ROOT, "assets", "plugin-index-v1.json"), "utf8"),
+  );
+  assert.equal(
+    pluginIndex.hermes_skills_index_schema_ref,
+    "./hermes-skills-index-v1.schema.json",
+  );
+  assert.deepEqual(
+    index.skills.map((skill) => skill.name),
+    pluginIndex.public_entrypoints,
+  );
+  for (const skill of index.skills) {
+    assert.ok(skill.files.includes("SKILL.md"), skill.name);
+    assert.match(skill.content_sha256, /^[0-9a-f]{64}$/u, skill.name);
+  }
+
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const indexPath = path.join(runtimeRootFor(root), "skills", "index.json");
+    rewrite(indexPath, (payload) => {
+      payload.skills[0].files.pop();
+    });
+    assert.ok(codes(validate(root)).has("HERMES_INDEX_FILE_SET"));
+  });
+});
+
 test("platform guides are English, channel-pinned, and explicit about live evidence", () => {
   const platformsRoot = path.join(PLUGIN_ROOT, "platforms");
   const install = fs.readFileSync(path.join(PLUGIN_ROOT, "INSTALL.md"), "utf-8");
@@ -293,6 +325,24 @@ test("platform validation rejects endpoint drift", () => {
     );
     assert.ok(codes(validate(root)).has("PLATFORM_MCP_ENDPOINT"));
   });
+
+  withTmpPath((tmpPath) => {
+    const root = copiedPlugin(tmpPath);
+    const distribution = JSON.parse(
+      fs.readFileSync(path.join(root, "distribution-channel-v1.json"), "utf8"),
+    );
+    const filePath = path.join(root, "platforms", "hermes.md");
+    fs.writeFileSync(
+      filePath,
+      fs.readFileSync(filePath, "utf-8").replaceAll(
+        distribution.skills_base_url,
+        "https://example.com/.well-known/skills",
+      ),
+    );
+    assert.ok(
+      collectDistributionIssues(tmpPath).some((issue) => issue.file.endsWith("platforms/hermes.md")),
+    );
+  });
 });
 
 test("distribution channels generate one internally consistent OAuth resource", () => {
@@ -300,6 +350,7 @@ test("distribution channels generate one internally consistent OAuth resource", 
     const pluginRoot = path.join(tmpPath, "plugins", "cuebook");
     fs.mkdirSync(path.dirname(pluginRoot), { recursive: true });
     fs.cpSync(PLUGIN_ROOT, pluginRoot, { recursive: true });
+    fs.cpSync(HERMES_PLUGIN_ROOT, path.join(tmpPath, "plugins", "hermes"), { recursive: true });
 
     const development = configureDistributionChannel(tmpPath, "development");
     buildRuntimeBundle(pluginRoot, runtimeRootFor(pluginRoot));
@@ -316,6 +367,29 @@ test("distribution channels generate one internally consistent OAuth resource", 
       assert.match(guide, /https:\/\/cuebook\.xyz\/mcp/u, guideName);
       assert.doesNotMatch(guide, /https:\/\/cuebook\.app\/mcp/u, guideName);
     }
+    assert.match(
+      fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
+      /https:\/\/cuebook\.xyz\/\.well-known\/skills/u,
+    );
+    assert.match(
+      fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
+      /cuebook_skills_branch="dev"/u,
+    );
+    assert.match(
+      fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
+      /cuebook-skills-dev/u,
+    );
+    assert.doesNotMatch(
+      fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
+      /cuebook_skills_branch="main"|\/plugin-sources\/cuebook-skills-main/u,
+    );
+    assert.match(
+      fs.readFileSync(
+        path.join(tmpPath, "plugins", "hermes", "cuebook-auth", "__init__.py"),
+        "utf8",
+      ),
+      /_OFFICIAL_MCP_URL = "https:\/\/cuebook\.xyz\/mcp"/u,
+    );
     const schemaPath = path.join(pluginRoot, "assets", "creation-menu-v1.schema.json");
     assert.equal(JSON.parse(fs.readFileSync(schemaPath, "utf8")).$id, "https://cuebook.xyz/schemas/creation-menu-v1.schema.json");
 
@@ -334,6 +408,29 @@ test("distribution channels generate one internally consistent OAuth resource", 
       assert.match(guide, /https:\/\/cuebook\.app\/mcp/u, guideName);
       assert.doesNotMatch(guide, /https:\/\/cuebook\.xyz\/mcp/u, guideName);
     }
+    assert.match(
+      fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
+      /https:\/\/cuebook\.app\/\.well-known\/skills/u,
+    );
+    assert.match(
+      fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
+      /cuebook_skills_branch="main"/u,
+    );
+    assert.match(
+      fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
+      /cuebook-skills-main/u,
+    );
+    assert.doesNotMatch(
+      fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
+      /cuebook_skills_branch="dev"|\/plugin-sources\/cuebook-skills-dev/u,
+    );
+    assert.match(
+      fs.readFileSync(
+        path.join(tmpPath, "plugins", "hermes", "cuebook-auth", "__init__.py"),
+        "utf8",
+      ),
+      /_OFFICIAL_MCP_URL = "https:\/\/cuebook\.app\/mcp"/u,
+    );
     assert.equal(JSON.parse(fs.readFileSync(schemaPath, "utf8")).$id, "https://cuebook.app/schemas/creation-menu-v1.schema.json");
   });
 });
@@ -352,6 +449,7 @@ test("distribution validation rejects channel and connector drift", () => {
     const pluginRoot = path.join(tmpPath, "plugins", "cuebook");
     fs.mkdirSync(path.dirname(pluginRoot), { recursive: true });
     fs.cpSync(PLUGIN_ROOT, pluginRoot, { recursive: true });
+    fs.cpSync(HERMES_PLUGIN_ROOT, path.join(tmpPath, "plugins", "hermes"), { recursive: true });
     fs.mkdirSync(path.dirname(runtimeRootFor(pluginRoot)), { recursive: true });
     fs.cpSync(RUNTIME_ROOT, runtimeRootFor(pluginRoot), { recursive: true });
     rewrite(path.join(pluginRoot, "runtime-template", ".mcp.json"), (payload) => {
@@ -363,6 +461,24 @@ test("distribution validation rejects channel and connector drift", () => {
     });
     assert.ok(collectDistributionIssues(tmpPath, "production").length > 0);
     assert.ok(codes(validate(pluginRoot)).has("DISTRIBUTION_CHANNEL"));
+  });
+
+  withTmpPath((tmpPath) => {
+    const pluginRoot = path.join(tmpPath, "plugins", "cuebook");
+    fs.mkdirSync(path.dirname(pluginRoot), { recursive: true });
+    fs.cpSync(PLUGIN_ROOT, pluginRoot, { recursive: true });
+    fs.cpSync(HERMES_PLUGIN_ROOT, path.join(tmpPath, "plugins", "hermes"), { recursive: true });
+    configureDistributionChannel(tmpPath, "production");
+    const bridgePath = path.join(tmpPath, "plugins", "hermes", "cuebook-auth", "__init__.py");
+    fs.writeFileSync(
+      bridgePath,
+      fs.readFileSync(bridgePath, "utf8")
+        .replace("https://cuebook.app/mcp", "https://cuebook.xyz/mcp"),
+    );
+    assert.ok(
+      collectDistributionIssues(tmpPath, "production")
+        .some((issue) => issue.file === "plugins/hermes/cuebook-auth/__init__.py"),
+    );
   });
 });
 

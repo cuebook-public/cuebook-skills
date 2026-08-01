@@ -13,6 +13,10 @@ const PUBLIC_SKILLS = [
   "create-cuebook-content",
   "query-cuebook",
 ];
+const HERMES_CHECKOUTS = {
+  development: { branch: "dev", directory: "cuebook-skills-dev" },
+  production: { branch: "main", directory: "cuebook-skills-main" },
+};
 
 function loadJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf-8"));
@@ -93,24 +97,58 @@ test("OpenClaw adapter uses the compatible bundle lifecycle", () => {
 
 test("Hermes adapter installs, authenticates, and updates all public Skills", () => {
   const guide = readPlatform("hermes.md");
+  const distribution = loadJson(path.join(PLUGIN_ROOT, "distribution-channel-v1.json"));
+  const checkout = HERMES_CHECKOUTS[distribution.channel];
+  const installer = path.join(REPOSITORY_ROOT, "plugins", "hermes", "install_cuebook_skills.py");
 
+  assert.ok(checkout, distribution.channel);
   assert.match(guide, /\*\*Surface:\*\* Three Agent Skills/u);
   for (const skillName of PUBLIC_SKILLS) {
-    const source = `cuebook-public/cuebook-skills/skills/${skillName}`;
-    assert.ok(guide.includes(`hermes skills inspect ${source}`), skillName);
-    assert.ok(guide.includes(`hermes skills install ${source}`), skillName);
     assert.ok(guide.includes(`hermes skills update ${skillName}`), skillName);
     assert.ok(
       fs.existsSync(path.join(REPOSITORY_ROOT, "skills", skillName, "SKILL.md")),
       skillName,
     );
   }
+  assert.ok(fs.existsSync(installer));
+  assert.match(guide, /plugins\/hermes\/install_cuebook_skills\.py/u);
+  assert.match(guide, /source_id="well-known"/u);
+  assert.match(guide, /force=False/u);
+  assert.ok(guide.includes(distribution.skills_base_url));
+  assert.match(guide, /remote get-url origin/u);
+  assert.match(guide, /branch --show-current/u);
+  assert.match(guide, /status --porcelain/u);
+  assert.ok(guide.includes(`cuebook_skills_branch="${checkout.branch}"`));
+  assert.match(guide, /pull --ff-only origin "\$\{cuebook_skills_branch\}"/u);
+  assert.match(guide, /--branch "\$\{cuebook_skills_branch\}"/u);
+  assert.match(guide, /rev-parse HEAD/u);
+  assert.match(guide, /rev-parse "origin\/\$\{cuebook_skills_branch\}"/u);
+  assert.doesNotMatch(guide, /official dev checkout/u);
+  assert.doesNotMatch(guide, /^hermes skills inspect /mu);
+  assert.doesNotMatch(guide, /^hermes skills install /mu);
   assert.match(guide, /auth: oauth/u);
   assert.match(guide, /supports_parallel_tool_calls: false/u);
+  assert.match(guide, /HERMES_DASHBOARD_SESSION_TOKEN/u);
+  assert.match(guide, /HERMES_DASHBOARD_PUBLIC_URL/u);
+  assert.match(guide, /127\.0\.0\.1:9119/u);
+  assert.ok(
+    guide.includes(
+      `"file://\${HOME}/.hermes/plugin-sources/${checkout.directory}#plugins/hermes/cuebook-auth"`,
+    ),
+  );
+  assert.match(guide, /\/cuebook-auth/u);
   assert.match(guide, /hermes mcp login cuebook/u);
-  assert.match(guide, /fresh terminal/u);
   assert.match(guide, /hermes skills check/u);
   assert.match(guide, /hermes skills audit/u);
+  assert.match(guide, /copies a repository subdirectory without its parent `\.git`/u);
+  assert.match(guide, /--force --enable/u);
+  assert.match(guide, /foreground, long-lived process and its command does not\s+return/u);
+  assert.match(guide, /X-Hermes-Session-Token/u);
+  assert.match(guide, /api\/mcp\/servers/u);
+  assert.doesNotMatch(guide, /^hermes plugins update cuebook-auth$/mu);
+  assert.ok(
+    fs.existsSync(path.join(REPOSITORY_ROOT, "plugins", "hermes", "cuebook-auth", "plugin.yaml")),
+  );
   assert.doesNotMatch(guide, /\*\*Surface:\*\* Two Agent Skills/u);
 });
 
@@ -120,7 +158,7 @@ test("installation entrypoint and platform matrix govern every host adapter", ()
 
   assert.match(matrix, /Codex-compatible Cuebook bundle/u);
   assert.match(matrix, /Current CLI local bundle and MCP config verified/u);
-  assert.match(matrix, /GitHub Skill paths \+ Hermes MCP config/u);
+  assert.match(matrix, /Well-known Skill bundles \+ Hermes OAuth bridge/u);
   assert.match(matrix, /`plugins\/runtime\/cuebook\/` is the canonical portable Plugin root/u);
   assert.match(matrix, /exactly the three public entrypoints/u);
   assert.match(
