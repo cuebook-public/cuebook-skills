@@ -66,6 +66,7 @@ _AUTH_REQUIRED_MARKERS = (
     "no cached tokens found",
     "no token found",
     "invalid_token",
+    "mcp oauth requires browser authorization but no interactive session is available",
 )
 
 

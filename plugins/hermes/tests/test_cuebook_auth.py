@@ -97,6 +97,18 @@ def auth_required_payload() -> dict:
     }
 
 
+def background_auth_required_payload() -> dict:
+    return {
+        "ok": False,
+        "error": (
+            "MCP OAuth requires browser authorization but no interactive session is available "
+            "(non-interactive/background context). Run `hermes mcp login <server>` "
+            "interactively to (re)authorize, then restart or reload the gateway."
+        ),
+        "tools": [],
+    }
+
+
 class FakeContext:
     def __init__(self) -> None:
         self.hooks = {}
@@ -323,6 +335,21 @@ class CuebookAuthTests(unittest.IsolatedAsyncioTestCase):
                         callback_url=CALLBACK_URL,
                     )
 
+    def test_background_browser_authorization_is_an_auth_challenge(self) -> None:
+        with patch.object(
+            plugin,
+            "_request_json",
+            return_value=background_auth_required_payload(),
+        ):
+            self.assertFalse(plugin._mcp_is_ready())
+
+    def test_non_oauth_browser_prompt_is_not_an_auth_challenge(self) -> None:
+        payload = background_auth_required_payload()
+        payload["error"] = payload["error"].replace("MCP OAuth", "Connection", 1)
+        with patch.object(plugin, "_request_json", return_value=payload):
+            with self.assertRaisesRegex(plugin.CuebookAuthError, "without an OAuth challenge"):
+                plugin._mcp_is_ready()
+
     def test_concurrent_commands_reuse_one_dashboard_flow(self) -> None:
         calls = []
         first_request_started = threading.Event()
@@ -445,6 +472,27 @@ class CuebookAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNotNone(flow)
         assert flow is not None
         self.assertEqual(flow.expires_at, 160.0 + plugin._FLOW_TTL_SECONDS)
+
+    def test_background_auth_challenge_starts_the_native_oauth_flow(self) -> None:
+        calls = []
+
+        def request(url, method="GET"):
+            calls.append((url, method))
+            if url == plugin._SERVER_LIST_URL:
+                return server_inventory()
+            if url == plugin._SERVER_TEST_URL:
+                return background_auth_required_payload()
+            return start_payload()
+
+        with (
+            patch.object(plugin, "_request_json", side_effect=request),
+            patch.object(plugin, "_ensure_oauth_connect_timeout") as ensure_timeout,
+            patch.object(plugin, "_monitor_flow"),
+        ):
+            flow = plugin._get_or_start_flow()
+        self.assertIsInstance(flow, plugin._ActiveFlow)
+        ensure_timeout.assert_called_once_with(MCP_URL)
+        self.assertEqual(calls.count((plugin._AUTH_START_URL, "POST")), 1)
 
     def test_non_auth_probe_failure_never_starts_oauth(self) -> None:
         calls = []
