@@ -2,5 +2,6 @@
   "schema_version": "cuebook-distribution-channel-v1",
   "channel": "production",
   "web_origin": "https://cuebook.app",
-  "mcp_url": "https://cuebook.app/mcp"
+  "mcp_url": "https://cuebook.app/mcp",
+  "skills_base_url": "https://cuebook.app/.well-known/skills"
 }

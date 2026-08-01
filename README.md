@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.22"><img alt="Release v0.9.22" src="https://img.shields.io/badge/release-v0.9.22-F6C500?style=flat-square&labelColor=111111"></a>
+  <a href="https://github.com/cuebook-public/cuebook-skills/releases/tag/v0.9.23"><img alt="Release v0.9.23" src="https://img.shields.io/badge/release-v0.9.23-F6C500?style=flat-square&labelColor=111111"></a>
   <a href="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml"><img alt="Quality" src="https://github.com/cuebook-public/cuebook-skills/actions/workflows/quality.yml/badge.svg?branch=main"></a>
   <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/Node.js-%E2%89%A522-3C873A?style=flat-square&labelColor=111111">
   <img alt="Three public skills" src="https://img.shields.io/badge/public_skills-3-4C6FFF?style=flat-square&labelColor=111111">
@@ -112,7 +112,7 @@ Cuebook has one remote MCP endpoint per distribution channel and three public Ag
 | **Codex app and Codex CLI** | Cuebook Plugin | Skills + MCP | OAuth, preview, and publication live-verified on 2026-07-20 |
 | **Claude Code** | Native Claude Code marketplace | Skills + MCP | OAuth, upload, and atomic publication live-verified on 2026-07-21 |
 | **Cursor editor and CLI** | Three Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
-| **Hermes Agent** | Three Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
+| **Hermes Agent** | Three Agent Skills bundles + remote MCP + OAuth bridge | Skills + MCP | Static bridge ready; live check pending |
 | **OpenClaw** | Three Agent Skills bundles + remote MCP | Skills + MCP | Static setup ready; live check pending |
 | **Claude and Claude Desktop** | Custom remote connector | MCP direct | Connector check pending; no Skill parity claim |
 | **ChatGPT** | Custom MCP app | MCP direct | Eligible plans only; connector check pending |
@@ -176,7 +176,7 @@ Turn that idea into a Frame.
 > [!NOTE]
 > Do not copy the Cuebook source tree into `~/.codex/skills`. Codex should discover exactly three public entrypoints; internal modules load only when needed.
 
-For a reproducible, intentionally frozen install, add `--ref v0.9.22` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
+For a reproducible, intentionally frozen install, add `--ref v0.9.23` to the marketplace command. A tag-pinned marketplace stays on that tag until you change the ref; the default `main` install receives stable releases.
 
 ## Updating
 
@@ -359,7 +359,7 @@ Validation checks the repository-wide English-only policy, public-entrypoint bou
 Release preparation has one version source and updates every pinned install ref, Plugin manifest, changelog section, and generated Skill bundle together:
 
 ```bash
-npm run release:prepare -- 0.9.22 \
+npm run release:prepare -- 0.9.23 \
   --date 2026-07-21 \
   --codex-build 20260721103045
 

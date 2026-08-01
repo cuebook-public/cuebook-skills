@@ -8,7 +8,7 @@ The transfer carries creator-approved meaning into a local chart. It never turns
 
 1. The local Desktop connector is already available and healthy. Do not install it, launch TradingView with a debug port, update it, or alter account settings on the creator's behalf.
 2. Resolve the Cuebook asset and TradingView symbol exactly, including venue, quote currency, and instrument type. A fuzzy result is only a candidate. Never substitute a proxy unless the creator explicitly chooses it after the difference is explained.
-3. Bind every drawing to a creator-confirmed meaning lock, a Cuebook result, or an adopted TradingView observation. Research-provider `BUY`, `SELL`, score, confidence, unusual-activity, or backtest output is evidence context only.
+3. Bind every drawing to a creator-confirmed meaning lock, a Cuebook result, or an adopted TradingView observation. Research-provider `BUY`, `SELL`, score, confidence, unusual-activity, and backtest results remain evidence only.
 4. A Frame and a TradingView canvas remain separate artifacts. TradingView pixels, raw market data, and Pine source never enter Frame media. If the creator wants the same idea as a Frame, retrieve eligible Cuebook data and rerender the adopted semantic geometry through the normal Fast Preview path.
 
 If the connector is absent, say simply that local TradingView canvas support is unavailable and continue the Cuebook conversation. Do not block research or Frame work.

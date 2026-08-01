@@ -7,8 +7,8 @@ Turn a market question into a reusable research artifact. Keep reported facts, l
 ## Workflow
 
 1. Normalize the request with `references/modules/build-market-research-pack/templates/brief-template.md`. For a selected opportunity and ContentRecipeV1, preserve feed/cutoff, recipe revision, anchor refs, selected ingredients, preparation controls, research requirements, disclosures, and expiry. Record the subject, assets, question, decision use, horizon, `as_of`, freshness window, supplied evidence, and allowed source boundary.
-2. If the input is a Cuebook cue, run `references/modules/validate-cuebook-projection.md` first. Stop on `reject`; preserve every caution and repair in the research gaps.
-3. For a Cuebook cue that is not rejected, run `references/modules/route-cuebook-narrative.md`. Use `event_type`, `reasoning_lenses`, and `required_context` to select research modules; the route does not approve evidence or publication.
+2. If the input is a Cuebook cue, run `references/modules/validate-cuebook-projection/MODULE.md` first. Stop on `reject`; preserve every caution and repair in the research gaps.
+3. For a Cuebook cue that is not rejected, run `references/modules/route-cuebook-narrative/MODULE.md`. Use `event_type`, `reasoning_lenses`, and `required_context` to select research modules; the route does not approve evidence or publication.
 4. Treat selected opportunity status as an editorial decision only. Re-verify every claim. Use trade-history refs solely for declared conflict checks or an authorized postmortem, never as evidence for a fresh thesis.
 5. Read `references/modules/build-market-research-pack/references/research-modules.md` and select only the modules needed for the event, decision use, and recipe preparation. A recipe may request fresh market data or deeper research; it cannot lower source or falsifiability requirements.
 6. Follow `references/modules/build-market-research-pack/references/source-policy.md`. Prefer primary evidence, preserve source identity and timestamps, and treat snippets or inaccessible pages as discovery leads only.
@@ -25,7 +25,7 @@ Proceed with a conditional pack when non-critical fields are missing. Ask a ques
 ## Evidence Routing
 
 - Compile the creator's material current premises once. Start the smallest matching Cuebook reads and one bounded Web batch of at most three targeted searches and three primary or authoritative sources from that shared plan, without waiting for a Cuebook miss. Execute concurrently when the runtime permits; otherwise run back-to-back and reconcile once. Record `retrieved_via`, URL, and retrieval time internally.
-- Use `list_filings` for reported financials and valuation requests. Use `get_market_state` for bounded current quote context and `get_candles` for OHLCV or synchronized returns. Run `references/modules/compute-cuebook-market-indicators.md` locally for declared derived calculations from frozen candle inputs.
+- Use `list_filings` for reported financials and valuation requests. Use `get_market_state` for bounded current quote context and `get_candles` for OHLCV or synchronized returns. Run `references/modules/compute-cuebook-market-indicators/MODULE.md` locally for declared derived calculations from frozen candle inputs.
 - The renderer never calls providers. Research and data assembly resolve, source, and cache the inputs before copy or layout begins.
 - Missing provider capability remains an internal named gap for coverage work. It never changes source identity or becomes invented evidence, but the creator-facing answer does not narrate which lane missed or supplemented another lane; it presents the reconciled fact, source, and material uncertainty.
 

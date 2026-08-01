@@ -47,7 +47,7 @@ than three Skills, stop with `package_inventory_defect`; repeated reinstall,
 cache deletion, or OAuth login will not repair a malformed package inventory.
 An ordinary package refresh does not require a second OAuth grant.
 
-For a reproducible frozen install, use `cuebook-public/cuebook-skills@v0.9.22` in the marketplace command. A tag-pinned marketplace stays on that release until its source is changed.
+For a reproducible frozen install, use `cuebook-public/cuebook-skills@v0.9.23` in the marketplace command. A tag-pinned marketplace stays on that release until its source is changed.
 
 ## Update
 

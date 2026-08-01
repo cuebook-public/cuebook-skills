@@ -16,6 +16,12 @@ these rules need a deliberate edit HERE in the same commit.
 | L3 — Plugin assets | Module registry, menus, intent contract, capability map, index | Machine-readable routing and gating data shared by all skills |
 | L4 — Generated bundles | `plugins/runtime/cuebook/`, repo-root `skills/`, submission packet | Never edited by hand; one sanitized three-Skill host runtime plus generic bundles, parity-checked in CI |
 
+Host adapters live outside this Skill layering. The Hermes adapter at
+`plugins/hermes/cuebook-auth/` may register one explicit slash command and call
+the host's native loopback Dashboard OAuth API. It must not add a fourth Skill,
+copy a Cuebook token, implement an MCP transport, or intercept ordinary
+natural-language turns.
+
 ## One discovery surface, three entries
 
 Host discovery sees exactly three skills. Growing the public surface requires

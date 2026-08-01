@@ -1,7 +1,7 @@
 {
   "schema_version": "cuebook-release-skills-manifest-v2",
   "catalog_version": "1.31.0",
-  "plugin_version": "0.9.22",
+  "plugin_version": "0.9.23",
   "discovery_budget": {
     "legacy_skill_count": 39,
     "public_skill_count": 3,
@@ -19,11 +19,11 @@
       "references/frame-expression-system.md",
       "references/frame-art-direction.md",
       "references/frame-feed-attention.md",
-      "references/modules/query-cuebook.md",
+      "references/modules/query-cuebook/MODULE.md",
       "references/modules/query-cuebook/references/cuebook-query-request-v1.schema.json",
       "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json"
     ],
-    "cumulative_bytes": 113344,
+    "cumulative_bytes": 113368,
     "maximum_bytes_exclusive": 114000,
     "within_budget": true
   },
@@ -34,6 +34,11 @@
     "cumulative_bytes": 14653,
     "maximum_bytes_exclusive": 40000,
     "within_budget": true
+  },
+  "hermes_well_known_index": {
+    "schema_version": "cuebook-hermes-skills-index-v1",
+    "skill_count": 3,
+    "file_count": 165
   },
   "bundles": [
     {
@@ -53,7 +58,7 @@
         "query-menu-v1.json",
         "runtime-compatibility-v1.json"
       ],
-      "content_sha256": "48f06ad4131164ed85b480d43dd06f761d8019fbe539380efdef50e63a63bd31",
+      "content_sha256": "f6e84ad3bce667eeb6837bf2ae45148280ae1466cc1ded43c139269ab264f6c9",
       "vendored_shared_validators": [
         "references/modules/build-market-research-pack/scripts/validate_research_pack.mjs",
         "references/modules/reconcile-market-content-history/scripts/validate_content_history.mjs",
@@ -90,7 +95,7 @@
         "query-menu-v1.json",
         "runtime-compatibility-v1.json"
       ],
-      "content_sha256": "a3feef2877fba67b85da8e5589d787076b9d3404da43c83d50155e2908573feb",
+      "content_sha256": "f48902078cfce7b08c9b9942b41301671fcb2e6d03e0ebd069fa2af2eee8d8d9",
       "vendored_shared_validators": [
         "references/modules/build-market-research-pack/scripts/validate_research_pack.mjs",
         "references/modules/query-cuebook/scripts/validate_cuebook_intent.mjs",
@@ -121,7 +126,7 @@
       "plugin_assets": [
         "runtime-compatibility-v1.json"
       ],
-      "content_sha256": "5809f726904e7fc8d0b72c16113b05644b9aecee884b99a00e963e7cf10bd671",
+      "content_sha256": "e845b3d89bd95abdc1f385c4672c2836aae978e70ea763d8a4b415c1e66f1416",
       "vendored_shared_validators": [
         "scripts/validate_community_skill_submission.mjs"
       ],

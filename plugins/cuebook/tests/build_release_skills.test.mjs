@@ -1,12 +1,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { build, parseFrontmatter, skillRefPattern } from "../scripts/build_release_skills.mjs";
+import { validateInstance } from "../scripts/validate_json_schema.mjs";
 
 const PLUGIN_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -36,6 +38,41 @@ function rglobMd(root) {
   return found;
 }
 
+function filesUnder(root) {
+  const found = [];
+  const walk = (directory) => {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const target = path.join(directory, entry.name);
+      if (entry.isDirectory()) walk(target);
+      else if (entry.isFile()) {
+        found.push(path.relative(root, target).split(path.sep).join("/"));
+      }
+    }
+  };
+  walk(root);
+  return found.sort();
+}
+
+function comparePathComponents(left, right) {
+  const leftParts = left.split("/");
+  const rightParts = right.split("/");
+  for (let index = 0; index < Math.min(leftParts.length, rightParts.length); index += 1) {
+    if (leftParts[index] < rightParts[index]) return -1;
+    if (leftParts[index] > rightParts[index]) return 1;
+  }
+  return leftParts.length - rightParts.length;
+}
+
+function hermesContentHash(root, comparator) {
+  const hash = createHash("sha256");
+  for (const relative of filesUnder(root).sort(comparator)) {
+    hash.update(relative, "utf8");
+    hash.update("\0");
+    hash.update(fs.readFileSync(path.join(root, relative)));
+  }
+  return `sha256:${hash.digest("hex").slice(0, 16)}`;
+}
+
 test("builds every public entrypoint as valid bundle", () => {
   withTmpPath((tmpPath) => {
     const manifest = buildRelease(tmpPath);
@@ -51,7 +88,72 @@ test("builds every public entrypoint as valid bundle", () => {
     assert.ok(manifest.frame_publish_input_budget.cumulative_bytes < 40_000);
     assert.ok(!manifest.frame_fast_preview_budget.files.includes("assets/plugin/mcp-capability-map-v1.json"));
     assert.ok(!manifest.frame_publish_input_budget.files.includes("assets/plugin/mcp-capability-map-v1.json"));
+    assert.equal(
+      manifest.hermes_well_known_index.schema_version,
+      "cuebook-hermes-skills-index-v1",
+    );
+    assert.equal(manifest.hermes_well_known_index.skill_count, 3);
+    assert.ok(manifest.hermes_well_known_index.file_count > 0);
   });
+});
+
+test("builds a complete schema-valid Hermes well-known file index", () => {
+  withTmpPath((tmpPath) => {
+    const manifest = buildRelease(tmpPath);
+    const releaseRoot = path.join(tmpPath, "release");
+    const index = JSON.parse(fs.readFileSync(path.join(releaseRoot, "index.json"), "utf8"));
+    const schema = JSON.parse(fs.readFileSync(
+      path.join(PLUGIN_ROOT, "assets", "hermes-skills-index-v1.schema.json"),
+      "utf8",
+    ));
+
+    assert.deepEqual(validateInstance(index, schema), []);
+    assert.equal(index.catalog_version, manifest.catalog_version);
+    assert.equal(index.plugin_version, manifest.plugin_version);
+    assert.deepEqual(
+      index.skills.map((skill) => skill.name),
+      manifest.bundles.map((bundle) => bundle.skill),
+    );
+    assert.equal(
+      manifest.hermes_well_known_index.file_count,
+      index.skills.reduce((sum, skill) => sum + skill.files.length, 0),
+    );
+    for (const skill of index.skills) {
+      const bundle = manifest.bundles.find((candidate) => candidate.skill === skill.name);
+      const bundleRoot = path.join(releaseRoot, skill.name);
+      assert.ok(skill.description.length > 0, skill.name);
+      assert.deepEqual(skill.files, filesUnder(bundleRoot), skill.name);
+      assert.ok(skill.files.includes("SKILL.md"), skill.name);
+      assert.equal(skill.content_sha256, bundle.content_sha256, skill.name);
+      for (const relativePath of skill.files) {
+        const content = fs.readFileSync(path.join(bundleRoot, relativePath));
+        assert.doesNotThrow(
+          () => new TextDecoder("utf-8", { fatal: true }).decode(content),
+          `${skill.name}/${relativePath}`,
+        );
+      }
+    }
+  });
+});
+
+test("Hermes well-known index schema rejects incomplete and unsafe entries", () => {
+  const schema = JSON.parse(fs.readFileSync(
+    path.join(PLUGIN_ROOT, "assets", "hermes-skills-index-v1.schema.json"),
+    "utf8",
+  ));
+  const invalid = {
+    schema_version: "cuebook-hermes-skills-index-v1",
+    catalog_version: "1.0.0",
+    plugin_version: "1.0.0",
+    skills: [{
+      name: "demo",
+      description: "Demo",
+      files: ["SKILL.md", "../escape"],
+    }],
+  };
+  const errors = validateInstance(invalid, schema);
+  assert.ok(errors.some((error) => error.code === "SCHEMA_REQUIRED"));
+  assert.ok(errors.some((error) => error.code === "SCHEMA_PATTERN"));
 });
 
 test("release discovery exposes exactly three root Skills and ordinary internal modules", () => {
@@ -70,15 +172,35 @@ test("release discovery exposes exactly three root Skills and ordinary internal 
     for (const bundle of manifest.bundles) {
       const modulesRoot = path.join(releaseRoot, bundle.skill, "references", "modules");
       const moduleDocs = fs.existsSync(modulesRoot)
-        ? fs.readdirSync(modulesRoot).filter((name) => name.endsWith(".md"))
+        ? rglobMd(modulesRoot).filter((candidate) => path.basename(candidate) === "MODULE.md")
         : [];
       assert.equal(moduleDocs.length, bundle.bundled_internal_modules);
       for (const moduleDoc of moduleDocs) {
-        const text = fs.readFileSync(path.join(modulesRoot, moduleDoc), "utf-8");
+        const text = fs.readFileSync(moduleDoc, "utf-8");
         assert.doesNotMatch(text, /^---\n/u);
         assert.match(text, /Generated internal module: not a public Agent Skill/u);
+        assert.equal(path.basename(path.dirname(moduleDoc)).length > 0, true);
+      }
+      if (fs.existsSync(modulesRoot)) {
+        assert.equal(
+          fs.readdirSync(modulesRoot, { withFileTypes: true })
+            .some((entry) => entry.isFile() && entry.name.endsWith(".md")),
+          false,
+        );
       }
       assert.ok(!fs.existsSync(path.join(releaseRoot, bundle.skill, "references", "skills")));
+    }
+  });
+});
+
+test("release bundles keep Hermes install and update hashes symmetric", () => {
+  withTmpPath((tmpPath) => {
+    const manifest = buildRelease(tmpPath);
+    for (const bundle of manifest.bundles) {
+      const bundleRoot = path.join(tmpPath, "release", bundle.skill);
+      const bundleOrderHash = hermesContentHash(bundleRoot);
+      const installedPathOrderHash = hermesContentHash(bundleRoot, comparePathComponents);
+      assert.equal(bundleOrderHash, installedPathOrderHash, bundle.skill);
     }
   });
 });

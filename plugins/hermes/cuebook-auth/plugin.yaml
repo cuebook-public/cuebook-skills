@@ -1,0 +1,10 @@
+name: cuebook-auth
+version: 0.1.0
+description: "Telegram DM OAuth bridge for Cuebook. It starts the native Hermes Dashboard MCP OAuth flow through a loopback-only API and refreshes MCP Tool discovery after approval."
+author: Cuebook
+kind: standalone
+requires_env:
+  - HERMES_DASHBOARD_SESSION_TOKEN
+  - HERMES_DASHBOARD_PUBLIC_URL
+hooks:
+  - pre_gateway_dispatch
