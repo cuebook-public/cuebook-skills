@@ -12,7 +12,7 @@ import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from urllib.parse import urlencode
 
 
@@ -63,6 +63,17 @@ def server_inventory() -> dict:
                 "enabled": True,
             }
         ]
+    }
+
+
+def local_server_config(*, connect_timeout: object = 5) -> dict:
+    return {
+        "url": MCP_URL,
+        "auth": "oauth",
+        "timeout": 20,
+        "connect_timeout": connect_timeout,
+        "supports_parallel_tool_calls": False,
+        "future_option": {"preserve": True},
     }
 
 
@@ -196,6 +207,96 @@ class CuebookAuthTests(unittest.IsolatedAsyncioTestCase):
             with self.assertRaisesRegex(plugin.CuebookAuthError, "official Cuebook endpoint"):
                 plugin._configured_mcp_url()
 
+    def test_short_oauth_connect_timeout_is_migrated_with_native_config_api(self) -> None:
+        other_server = {"url": "https://example.com/mcp", "enabled": False}
+        servers = {
+            "cuebook": local_server_config(),
+            "other": other_server,
+        }
+        saved = []
+
+        def save(name: str, config: dict) -> bool:
+            saved.append((name, config))
+            servers[name] = config
+            return True
+
+        with patch.object(
+            plugin,
+            "_load_mcp_config_api",
+            return_value=(lambda: servers, save),
+        ):
+            plugin._ensure_oauth_connect_timeout(MCP_URL)
+
+        self.assertEqual(servers["cuebook"]["connect_timeout"], 315)
+        self.assertEqual(saved[0][0], "cuebook")
+        self.assertEqual(saved[0][1]["timeout"], 20)
+        self.assertFalse(saved[0][1]["supports_parallel_tool_calls"])
+        self.assertEqual(saved[0][1]["future_option"], {"preserve": True})
+        self.assertIs(servers["other"], other_server)
+
+    def test_missing_oauth_connect_timeout_is_migrated(self) -> None:
+        cuebook = local_server_config()
+        cuebook.pop("connect_timeout")
+        servers = {"cuebook": cuebook}
+
+        def save(name: str, config: dict) -> bool:
+            servers[name] = config
+            return True
+
+        with patch.object(
+            plugin,
+            "_load_mcp_config_api",
+            return_value=(lambda: servers, save),
+        ):
+            plugin._ensure_oauth_connect_timeout(MCP_URL)
+        self.assertEqual(servers["cuebook"]["connect_timeout"], 315)
+
+    def test_sufficient_oauth_connect_timeout_is_preserved(self) -> None:
+        servers = {"cuebook": local_server_config(connect_timeout=400)}
+        save = Mock()
+        with patch.object(
+            plugin,
+            "_load_mcp_config_api",
+            return_value=(lambda: servers, save),
+        ):
+            plugin._ensure_oauth_connect_timeout(MCP_URL)
+        save.assert_not_called()
+        self.assertEqual(servers["cuebook"]["connect_timeout"], 400)
+
+    def test_oauth_timeout_migration_fails_closed(self) -> None:
+        cases = [
+            ({}, "not available"),
+            ({"cuebook": local_server_config(connect_timeout="invalid")}, "invalid connect_timeout"),
+            ({"cuebook": local_server_config(connect_timeout=0)}, "invalid connect_timeout"),
+            ({"cuebook": local_server_config(connect_timeout=True)}, "invalid connect_timeout"),
+        ]
+        for servers, message in cases:
+            with self.subTest(message=message):
+                with patch.object(
+                    plugin,
+                    "_load_mcp_config_api",
+                    return_value=(lambda: servers, lambda _name, _config: True),
+                ):
+                    with self.assertRaisesRegex(plugin.CuebookAuthError, message):
+                        plugin._ensure_oauth_connect_timeout(MCP_URL)
+
+        servers = {"cuebook": local_server_config()}
+        with patch.object(
+            plugin,
+            "_load_mcp_config_api",
+            return_value=(lambda: servers, lambda _name, _config: False),
+        ):
+            with self.assertRaisesRegex(plugin.CuebookAuthError, "could not save"):
+                plugin._ensure_oauth_connect_timeout(MCP_URL)
+
+        with patch.object(
+            plugin,
+            "_load_mcp_config_api",
+            return_value=(lambda: servers, lambda _name, _config: True),
+        ):
+            with self.assertRaisesRegex(plugin.CuebookAuthError, "could not verify"):
+                plugin._ensure_oauth_connect_timeout(MCP_URL)
+
     def test_authorization_url_contract_is_strict(self) -> None:
         self.assertEqual(
             plugin._validate_authorization_url(
@@ -238,6 +339,7 @@ class CuebookAuthTests(unittest.IsolatedAsyncioTestCase):
 
         with (
             patch.object(plugin, "_request_json", side_effect=request),
+            patch.object(plugin, "_ensure_oauth_connect_timeout") as ensure_timeout,
             patch.object(plugin, "_monitor_flow"),
         ):
             with ThreadPoolExecutor(max_workers=2) as pool:
@@ -246,6 +348,7 @@ class CuebookAuthTests(unittest.IsolatedAsyncioTestCase):
                 second = pool.submit(plugin._get_or_start_flow)
                 self.assertEqual(first.result(), second.result())
         self.assertEqual(calls.count((plugin._AUTH_START_URL, "POST")), 1)
+        ensure_timeout.assert_called_once_with(MCP_URL)
 
     def test_already_connected_refreshes_tools_without_starting_oauth(self) -> None:
         calls = []
@@ -260,10 +363,12 @@ class CuebookAuthTests(unittest.IsolatedAsyncioTestCase):
 
         with (
             patch.object(plugin, "_request_json", side_effect=request),
+            patch.object(plugin, "_ensure_oauth_connect_timeout") as ensure_timeout,
             patch.object(plugin, "_refresh_mcp_discovery") as discover,
         ):
             self.assertIsNone(plugin._get_or_start_flow())
         discover.assert_called_once_with()
+        ensure_timeout.assert_not_called()
         self.assertNotIn((plugin._AUTH_START_URL, "POST"), calls)
 
     def test_missing_token_starts_the_native_oauth_flow(self) -> None:
@@ -277,13 +382,69 @@ class CuebookAuthTests(unittest.IsolatedAsyncioTestCase):
                 return auth_required_payload()
             return start_payload()
 
+        def ensure_timeout(mcp_url: str) -> None:
+            self.assertEqual(mcp_url, MCP_URL)
+            calls.append(("ensure_timeout", "LOCAL"))
+
         with (
             patch.object(plugin, "_request_json", side_effect=request),
+            patch.object(plugin, "_ensure_oauth_connect_timeout", side_effect=ensure_timeout),
             patch.object(plugin, "_monitor_flow"),
         ):
             flow = plugin._get_or_start_flow()
         self.assertIsInstance(flow, plugin._ActiveFlow)
         self.assertEqual(calls.count((plugin._AUTH_START_URL, "POST")), 1)
+        self.assertEqual(
+            calls,
+            [
+                (plugin._SERVER_LIST_URL, "GET"),
+                (plugin._SERVER_TEST_URL, "POST"),
+                ("ensure_timeout", "LOCAL"),
+                (plugin._AUTH_START_URL, "POST"),
+            ],
+        )
+
+    def test_timeout_migration_failure_never_starts_oauth(self) -> None:
+        calls = []
+
+        def request(url, method="GET"):
+            calls.append((url, method))
+            if url == plugin._SERVER_LIST_URL:
+                return server_inventory()
+            if url == plugin._SERVER_TEST_URL:
+                return auth_required_payload()
+            self.fail(f"unexpected request: {method} {url}")
+
+        with (
+            patch.object(plugin, "_request_json", side_effect=request),
+            patch.object(
+                plugin,
+                "_ensure_oauth_connect_timeout",
+                side_effect=plugin.CuebookAuthError("could not save"),
+            ),
+        ):
+            with self.assertRaisesRegex(plugin.CuebookAuthError, "could not save"):
+                plugin._get_or_start_flow()
+        self.assertNotIn((plugin._AUTH_START_URL, "POST"), calls)
+
+    def test_flow_ttl_starts_after_authorization_url_is_ready(self) -> None:
+        def request(url, method="GET"):
+            if url == plugin._SERVER_LIST_URL:
+                return server_inventory()
+            if url == plugin._SERVER_TEST_URL:
+                return auth_required_payload()
+            return start_payload()
+
+        with (
+            patch.object(plugin, "_request_json", side_effect=request),
+            patch.object(plugin, "_ensure_oauth_connect_timeout"),
+            patch.object(plugin, "_monitor_flow"),
+            patch.object(plugin.time, "monotonic", side_effect=[100.0, 160.0]),
+        ):
+            flow = plugin._get_or_start_flow()
+        self.assertIsNotNone(flow)
+        assert flow is not None
+        self.assertEqual(flow.expires_at, 160.0 + plugin._FLOW_TTL_SECONDS)
 
     def test_non_auth_probe_failure_never_starts_oauth(self) -> None:
         calls = []
@@ -296,7 +457,10 @@ class CuebookAuthTests(unittest.IsolatedAsyncioTestCase):
                 return {"ok": False, "error": "TLS certificate verification failed", "tools": []}
             self.fail(f"unexpected request: {method} {url}")
 
-        with patch.object(plugin, "_request_json", side_effect=request):
+        with (
+            patch.object(plugin, "_request_json", side_effect=request),
+            patch.object(plugin, "_ensure_oauth_connect_timeout"),
+        ):
             with self.assertRaisesRegex(plugin.CuebookAuthError, "without an OAuth challenge"):
                 plugin._get_or_start_flow()
         self.assertNotIn((plugin._AUTH_START_URL, "POST"), calls)

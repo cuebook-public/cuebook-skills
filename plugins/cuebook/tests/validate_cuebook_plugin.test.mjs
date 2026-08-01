@@ -379,6 +379,10 @@ test("distribution channels generate one internally consistent OAuth resource", 
       fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
       /cuebook-skills-dev/u,
     );
+    assert.match(
+      fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
+      /connect_timeout: 315/u,
+    );
     assert.doesNotMatch(
       fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
       /cuebook_skills_branch="main"|\/plugin-sources\/cuebook-skills-main/u,
@@ -419,6 +423,10 @@ test("distribution channels generate one internally consistent OAuth resource", 
     assert.match(
       fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
       /cuebook-skills-main/u,
+    );
+    assert.match(
+      fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
+      /connect_timeout: 315/u,
     );
     assert.doesNotMatch(
       fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),

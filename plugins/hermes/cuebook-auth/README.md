@@ -8,6 +8,16 @@ command calls the native Hermes Dashboard OAuth API on
 a labeled link to a private Telegram chat, and refreshes MCP Tool discovery
 after the Dashboard reports approval.
 
+Hermes Agent 0.19.1 waits for browser approval inside MCP initialization. After
+Hermes confirms that a new OAuth flow is required, the bridge uses the
+source-pinned build's native configuration API to verify the same official
+local `cuebook` entry and idempotently raise only a missing or shorter
+`connect_timeout` to 315 seconds. This prevents Hermes from cancelling the wait
+and replacing the PKCE state behind a link already sent to Telegram. The value
+also bounds ordinary initial connection and discovery failures, so an
+unavailable endpoint can take up to 315 seconds to fail; the Tool-call timeout
+is unchanged.
+
 The bridge deliberately fails closed:
 
 - only Telegram direct messages may invoke the command;
@@ -15,6 +25,7 @@ The bridge deliberately fails closed:
 - the authorization origin, path, PKCE fields, resource, and exact callback
   URI are validated before a URL is returned;
 - Dashboard redirects and non-JSON responses are rejected;
+- the OAuth wait timeout must be saved and read back before a link is returned;
 - concurrent commands reuse one in-process OAuth flow;
 - the Dashboard session secret and authorization URL are never logged.
 
