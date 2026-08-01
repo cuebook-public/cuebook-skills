@@ -174,7 +174,7 @@
         "scripts/validate_memory_proposal.mjs",
         "scripts/validate_tradingview_canvas_transfer.mjs"
       ],
-      "content_sha256": "99c856be10369ad0850bc0bb8674dc4bcc1648553a98dbb73b1ed3fd573dda4d"
+      "content_sha256": "8a47c4b85811ad5e9f782dff4296e8f277ca83099516732bac1b2636d99d34cb"
     },
     {
       "name": "author-cuebook-skill",
