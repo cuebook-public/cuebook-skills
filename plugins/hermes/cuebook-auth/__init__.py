@@ -6,6 +6,7 @@ import asyncio
 import contextvars
 import json
 import logging
+import math
 import os
 import re
 import threading
@@ -55,7 +56,8 @@ _FLOW_ID_PATTERN = re.compile(r"^[A-Za-z0-9_-]{20,128}$")
 _PKCE_PATTERN = re.compile(r"^[A-Za-z0-9_-]{43,128}$")
 _SESSION_TOKEN_PATTERN = re.compile(r"^[A-Za-z0-9_-]{43,4096}$")
 
-_FLOW_TTL_SECONDS = 15 * 60
+_MIN_OAUTH_CONNECT_TIMEOUT_SECONDS = 315
+_FLOW_TTL_SECONDS = 5 * 60
 _POLL_INTERVAL_SECONDS = 2.0
 _MAX_RESPONSE_BYTES = 64 * 1024
 _HTTP_TIMEOUT_SECONDS = 35.0
@@ -227,6 +229,89 @@ def _configured_mcp_url() -> str:
     return str(mcp_url)
 
 
+def _load_mcp_config_api():
+    try:
+        from hermes_cli.mcp_config import _get_mcp_servers, _save_mcp_server
+    except ImportError as exc:
+        raise CuebookAuthError(
+            "This Hermes build cannot apply Cuebook's OAuth wait configuration. "
+            "Use the source-pinned Hermes 0.19.1 build described in the Cuebook guide."
+        ) from exc
+    return _get_mcp_servers, _save_mcp_server
+
+
+def _connect_timeout_seconds(server: dict[str, Any]) -> float | None:
+    raw = server.get("connect_timeout")
+    if raw is None:
+        return None
+    if isinstance(raw, bool):
+        raise CuebookAuthError("The local cuebook MCP entry has an invalid connect_timeout.")
+    try:
+        value = float(raw)
+    except (TypeError, ValueError) as exc:
+        raise CuebookAuthError(
+            "The local cuebook MCP entry has an invalid connect_timeout."
+        ) from exc
+    if not math.isfinite(value) or value <= 0:
+        raise CuebookAuthError("The local cuebook MCP entry has an invalid connect_timeout.")
+    return value
+
+
+def _ensure_oauth_connect_timeout(mcp_url: str) -> None:
+    get_servers, save_server = _load_mcp_config_api()
+    try:
+        servers = get_servers()
+    except Exception as exc:
+        raise CuebookAuthError("The local Hermes MCP configuration is unavailable.") from exc
+    server = servers.get("cuebook") if isinstance(servers, dict) else None
+    if (
+        not isinstance(server, dict)
+        or server.get("url") != mcp_url
+        or server.get("auth") != "oauth"
+        or server.get("enabled", True) is False
+    ):
+        raise CuebookAuthError("The local cuebook MCP configuration is not available.")
+
+    current = _connect_timeout_seconds(server)
+    if current is not None and current >= _MIN_OAUTH_CONNECT_TIMEOUT_SECONDS:
+        return
+
+    updated = dict(server)
+    updated["connect_timeout"] = _MIN_OAUTH_CONNECT_TIMEOUT_SECONDS
+    try:
+        saved = save_server("cuebook", updated)
+    except Exception as exc:
+        raise CuebookAuthError(
+            "Hermes could not save Cuebook's OAuth wait configuration."
+        ) from exc
+    if saved is not True:
+        raise CuebookAuthError("Hermes could not save Cuebook's OAuth wait configuration.")
+
+    try:
+        persisted_servers = get_servers()
+    except Exception as exc:
+        raise CuebookAuthError(
+            "Hermes could not verify Cuebook's OAuth wait configuration."
+        ) from exc
+    persisted = (
+        persisted_servers.get("cuebook") if isinstance(persisted_servers, dict) else None
+    )
+    if not isinstance(persisted, dict):
+        raise CuebookAuthError("Hermes could not verify Cuebook's OAuth wait configuration.")
+    persisted_timeout = _connect_timeout_seconds(persisted)
+    if (
+        persisted.get("url") != mcp_url
+        or persisted.get("auth") != "oauth"
+        or persisted_timeout is None
+        or persisted_timeout < _MIN_OAUTH_CONNECT_TIMEOUT_SECONDS
+    ):
+        raise CuebookAuthError("Hermes could not verify Cuebook's OAuth wait configuration.")
+    _LOG.info(
+        "Raised Cuebook MCP connect_timeout to %s seconds for browser authorization",
+        _MIN_OAUTH_CONNECT_TIMEOUT_SECONDS,
+    )
+
+
 def _mcp_is_ready() -> bool:
     payload = _request_json(_SERVER_TEST_URL, method="POST")
     if payload.get("ok") is True:
@@ -373,6 +458,7 @@ def _get_or_start_flow() -> _ActiveFlow | None:
                     "Cuebook MCP is authorized, but Hermes could not refresh its Tools."
                 ) from exc
             return None
+        _ensure_oauth_connect_timeout(mcp_url)
         callback_url = _expected_callback_url()
         payload = _request_json(_AUTH_START_URL, method="POST")
         flow_id = payload.get("flow_id")
@@ -391,7 +477,7 @@ def _get_or_start_flow() -> _ActiveFlow | None:
         flow = _ActiveFlow(
             flow_id=flow_id,
             authorization_url=authorization_url,
-            expires_at=now + _FLOW_TTL_SECONDS,
+            expires_at=time.monotonic() + _FLOW_TTL_SECONDS,
         )
         _active_flow = flow
         threading.Thread(
@@ -431,8 +517,8 @@ async def _handle_cuebook_auth(raw_args: str) -> str:
         f"[Open Cuebook to authorize]({flow.authorization_url})\n\n"
         "On mobile, this HTTPS link can open the installed Cuebook app. If Telegram keeps it in a "
         "browser, complete approval there. On desktop, it opens the browser.\n\n"
-        "Approve once, then return here. Tapping Connect Cuebook again while this link is active "
-        "reuses the same authorization flow."
+        "Approve once within five minutes, then return here. Tapping Connect Cuebook again while "
+        "this link is active reuses the same authorization flow."
     )
 
 

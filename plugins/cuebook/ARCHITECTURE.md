@@ -18,9 +18,12 @@ these rules need a deliberate edit HERE in the same commit.
 
 Host adapters live outside this Skill layering. The Hermes adapter at
 `plugins/hermes/cuebook-auth/` may register one explicit slash-command menu
-entry, call the host's native loopback Dashboard OAuth API, and return its
-validated approval link. It must not add a fourth Skill, copy a Cuebook token,
-implement an MCP transport, or intercept ordinary natural-language turns.
+entry, normalize only the official Cuebook MCP entry's browser-authorization
+wait through the source-pinned Hermes build's native configuration API only
+after the host confirms OAuth is required, call the host's native loopback
+Dashboard OAuth API, and return its validated approval link. It must not add a
+fourth Skill, copy a Cuebook token, implement an MCP transport, or intercept
+ordinary natural-language turns.
 
 ## One discovery surface, three entries
 
