@@ -4,9 +4,11 @@ import hashlib
 import importlib.util
 import json
 import pathlib
+import shutil
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 
 INSTALLER_PATH = pathlib.Path(__file__).parents[1] / "install_cuebook_skills.py"
@@ -73,7 +75,11 @@ class InstallerTests(unittest.TestCase):
         )
         self.installed: dict[str, dict] = {}
         self.calls: list[tuple[str, dict]] = []
+        self.uninstall_calls: list[str] = []
         self.fail_name: str | None = None
+        self.corrupt_name: str | None = None
+        self.raise_name: str | None = None
+        self.uninstall_raise_name: str | None = None
 
     def tearDown(self) -> None:
         self.temporary.cleanup()
@@ -89,6 +95,8 @@ class InstallerTests(unittest.TestCase):
                 target = root / relative
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(content)
+            if name == self.raise_name:
+                raise RuntimeError("interrupted after writing files")
             self.installed[name] = {
                 "source": "well-known",
                 "identifier": identifier,
@@ -96,15 +104,208 @@ class InstallerTests(unittest.TestCase):
                 "scan_verdict": "safe",
                 "files": sorted(self.files[name]),
             }
+            if name == self.corrupt_name:
+                (root / "SKILL.md").write_text("corrupt", encoding="utf-8")
+
+        def uninstall_skill(name: str) -> tuple[bool, str]:
+            self.uninstall_calls.append(name)
+            entry = self.installed.get(name)
+            if entry is None:
+                return False, "not installed"
+            install_path = self.skills_dir / entry["install_path"]
+            if install_path.exists():
+                shutil.rmtree(install_path)
+            if name == self.uninstall_raise_name:
+                raise RuntimeError("interrupted before removing lock")
+            self.installed.pop(name)
+            return True, f"uninstalled {name}"
 
         return installer.HermesApi(
             do_install=do_install,
+            uninstall_skill=uninstall_skill,
             lock_factory=lambda: FakeLock(self.installed),
             skills_dir=self.skills_dir,
         )
 
     def fetch(self, _url: str):
         return self.index
+
+    def _fetch_response(self, final_url: str):
+        response = mock.MagicMock()
+        response.__enter__.return_value = response
+        response.geturl.return_value = final_url
+        response.read.return_value = json.dumps(self.index).encode()
+        return response
+
+    def _fetch_with_final_url(self, request_url: str, final_url: str):
+        opener = mock.MagicMock()
+        opener.open.return_value = self._fetch_response(final_url)
+        with mock.patch.object(
+            installer.urllib.request,
+            "build_opener",
+            return_value=opener,
+        ) as build_opener:
+            result = installer._fetch_index(request_url)
+        handler = build_opener.call_args.args[0]
+        self.assertIsInstance(handler, installer._IndexRedirectHandler)
+        self.assertEqual(handler.channel_host, installer.urlparse(request_url).hostname)
+        return result
+
+    def _follow_redirects(self, urls: list[str]):
+        handler = installer._IndexRedirectHandler(
+            installer.urlparse(urls[0]).hostname
+        )
+        request = installer.urllib.request.Request(urls[0])
+        for target in urls[1:]:
+            request = handler.redirect_request(
+                request,
+                None,
+                307,
+                "redirect",
+                {},
+                target,
+            )
+        return request
+
+    def test_fetch_index_rejects_production_redirect_to_development(self) -> None:
+        with self.assertRaisesRegex(installer.InstallError, "Unexpected Skill index redirect"):
+            self._follow_redirects(
+                [
+                    "https://cuebook.app/.well-known/skills/index.json",
+                    "https://cuebook.xyz/.well-known/skills/index.json",
+                    "https://raw.githubusercontent.com/cuebook-public/"
+                    "cuebook-skills/main/skills/index.json",
+                ]
+            )
+
+    def test_fetch_index_rejects_development_redirect_to_production(self) -> None:
+        with self.assertRaisesRegex(installer.InstallError, "Unexpected Skill index redirect"):
+            self._follow_redirects(
+                [
+                    "https://cuebook.xyz/.well-known/skills/index.json",
+                    "https://cuebook.app/.well-known/skills/index.json",
+                    "https://raw.githubusercontent.com/cuebook-public/"
+                    "cuebook-skills/0123456789abcdef0123456789abcdef01234567/skills/index.json",
+                ]
+            )
+
+    def test_fetch_index_rejects_the_other_channel_raw_ref(self) -> None:
+        with self.assertRaisesRegex(installer.InstallError, "Unexpected Skill index redirect"):
+            self._follow_redirects(
+                [
+                    "https://cuebook.app/.well-known/skills/index.json",
+                    "https://raw.githubusercontent.com/cuebook-public/"
+                    "cuebook-skills/dev/skills/index.json",
+                ]
+            )
+        with self.assertRaisesRegex(installer.InstallError, "Unexpected Skill index redirect"):
+            self._follow_redirects(
+                [
+                    "https://cuebook.xyz/.well-known/skills/index.json",
+                    "https://raw.githubusercontent.com/cuebook-public/"
+                    "cuebook-skills/main/skills/index.json",
+                ]
+            )
+
+    def test_fetch_index_rejects_noncanonical_initial_urls(self) -> None:
+        urls = [
+            "https://raw.githubusercontent.com/cuebook-public/"
+            "cuebook-skills/main/skills/index.json",
+            "https://cuebook.app:444/.well-known/skills/index.json",
+            "https://user@cuebook.app/.well-known/skills/index.json",
+            "https://cuebook.app/.well-known/skills/index.json?channel=dev",
+            "https://cuebook.app/.well-known/skills/index.json#dev",
+            "https://cuebook.app/.well-known/skills/other.json",
+        ]
+        for url in urls:
+            with self.subTest(url=url):
+                with self.assertRaisesRegex(
+                    installer.InstallError,
+                    "Unexpected Skill index URL",
+                ):
+                    installer._fetch_index(url)
+
+    def test_fetch_index_rejects_noncanonical_release_redirects(self) -> None:
+        production = "https://cuebook.app/.well-known/skills/index.json"
+        development = "https://cuebook.xyz/.well-known/skills/index.json"
+        redirects = [
+            (
+                production,
+                "https://raw.githubusercontent.com/other/cuebook-skills/"
+                "main/skills/index.json",
+            ),
+            (
+                production,
+                "https://raw.githubusercontent.com/cuebook-public/other/"
+                "main/skills/index.json",
+            ),
+            (
+                production,
+                "https://raw.githubusercontent.com/cuebook-public/cuebook-skills/"
+                "main/other/index.json",
+            ),
+            (
+                production,
+                "https://raw.githubusercontent.com:444/cuebook-public/cuebook-skills/"
+                "main/skills/index.json",
+            ),
+            (
+                production,
+                "https://user@raw.githubusercontent.com/cuebook-public/cuebook-skills/"
+                "main/skills/index.json",
+            ),
+            (
+                production,
+                "https://raw.githubusercontent.com/cuebook-public/cuebook-skills/"
+                "main/skills/index.json?channel=dev",
+            ),
+            (
+                development,
+                "https://raw.githubusercontent.com/cuebook-public/cuebook-skills/"
+                "0123456789ABCDEF0123456789ABCDEF01234567/skills/index.json",
+            ),
+            (
+                development,
+                "https://raw.githubusercontent.com/cuebook-public/cuebook-skills/"
+                "01234567/skills/index.json",
+            ),
+        ]
+        for request_url, target_url in redirects:
+            with self.subTest(target_url=target_url):
+                with self.assertRaisesRegex(
+                    installer.InstallError,
+                    "Unexpected Skill index redirect",
+                ):
+                    self._follow_redirects([request_url, target_url])
+
+    def test_fetch_index_rejects_redirects_after_raw_github(self) -> None:
+        with self.assertRaisesRegex(installer.InstallError, "Unexpected Skill index redirect"):
+            self._follow_redirects(
+                [
+                    "https://cuebook.app/.well-known/skills/index.json",
+                    "https://raw.githubusercontent.com/cuebook-public/"
+                    "cuebook-skills/main/skills/index.json",
+                    "https://cuebook.app/.well-known/skills/index.json",
+                ]
+            )
+
+    def test_fetch_index_accepts_the_pinned_official_repository(self) -> None:
+        request_url = "https://cuebook.app/.well-known/skills/index.json"
+        final_url = (
+            "https://raw.githubusercontent.com/cuebook-public/"
+            "cuebook-skills/main/skills/index.json"
+        )
+        self.assertEqual(self._follow_redirects([request_url, final_url]).full_url, final_url)
+        self.assertEqual(self._fetch_with_final_url(request_url, final_url), self.index)
+
+    def test_fetch_index_accepts_the_pinned_development_release(self) -> None:
+        request_url = "https://cuebook.xyz/.well-known/skills/index.json"
+        final_url = (
+            "https://raw.githubusercontent.com/cuebook-public/"
+            "cuebook-skills/0123456789abcdef0123456789abcdef01234567/skills/index.json"
+        )
+        self.assertEqual(self._follow_redirects([request_url, final_url]).full_url, final_url)
+        self.assertEqual(self._fetch_with_final_url(request_url, final_url), self.index)
 
     def test_installs_only_through_the_pinned_well_known_source(self) -> None:
         result = installer.install_all(self.repository, self.api(), self.fetch)
@@ -141,6 +342,249 @@ class InstallerTests(unittest.TestCase):
         with self.assertRaisesRegex(installer.InstallError, "Refusing to replace"):
             installer.install_all(self.repository, self.api(), self.fetch)
         self.assertEqual(self.calls, [])
+
+    def _seed_official_channel(self, base_url: str) -> None:
+        for name in installer.PUBLIC_SKILLS:
+            root = self.skills_dir / name
+            for relative, content in self.files[name].items():
+                target = root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(content)
+            self.installed[name] = {
+                "source": "well-known",
+                "identifier": f"well-known:{base_url}/{name}",
+                "install_path": name,
+                "scan_verdict": "safe",
+                "files": sorted(self.files[name]),
+            }
+
+    def test_other_official_channel_requires_explicit_migration(self) -> None:
+        self._seed_official_channel("https://cuebook.app/.well-known/skills")
+
+        api = self.api()
+        with self.assertRaisesRegex(installer.InstallError, "Refusing to replace"):
+            installer.install_all(self.repository, api, self.fetch)
+        self.assertEqual(self.uninstall_calls, [])
+        self.assertEqual(self.calls, [])
+
+        result = installer.install_all(
+            self.repository,
+            api,
+            self.fetch,
+            migrate_official_channel=True,
+        )
+
+        self.assertEqual(result, list(installer.PUBLIC_SKILLS))
+        self.assertEqual(self.uninstall_calls, list(installer.PUBLIC_SKILLS))
+        self.assertEqual(len(self.calls), 3)
+        for name in installer.PUBLIC_SKILLS:
+            self.assertEqual(
+                self.installed[name]["identifier"],
+                f"well-known:{self.base_url}/{name}",
+            )
+
+        self.calls.clear()
+        self.uninstall_calls.clear()
+        rerun = installer.install_all(
+            self.repository,
+            api,
+            self.fetch,
+            migrate_official_channel=True,
+        )
+        self.assertEqual(rerun, list(installer.PUBLIC_SKILLS))
+        self.assertEqual(self.uninstall_calls, [])
+        self.assertEqual(self.calls, [])
+
+    def test_official_channel_migration_accepts_development_to_production(self) -> None:
+        self.base_url = "https://cuebook.app/.well-known/skills"
+        (self.repository / "plugins/cuebook/distribution-channel-v1.json").write_text(
+            json.dumps({"skills_base_url": self.base_url}),
+            encoding="utf-8",
+        )
+        self._seed_official_channel("https://cuebook.xyz/.well-known/skills")
+
+        result = installer.install_all(
+            self.repository,
+            self.api(),
+            self.fetch,
+            migrate_official_channel=True,
+        )
+
+        self.assertEqual(result, list(installer.PUBLIC_SKILLS))
+        self.assertEqual(self.uninstall_calls, list(installer.PUBLIC_SKILLS))
+        self.assertTrue(
+            all(
+                entry["identifier"]
+                == f"well-known:https://cuebook.app/.well-known/skills/{name}"
+                for name, entry in self.installed.items()
+            )
+        )
+
+    def test_explicit_migration_never_replaces_an_unknown_source(self) -> None:
+        official_name, unknown_name = installer.PUBLIC_SKILLS[:2]
+        official_root = self.skills_dir / official_name
+        for relative, content in self.files[official_name].items():
+            target = official_root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(content)
+        self.installed[official_name] = {
+            "source": "well-known",
+            "identifier": (
+                "well-known:https://cuebook.app/.well-known/skills/"
+                f"{official_name}"
+            ),
+            "install_path": official_name,
+            "scan_verdict": "safe",
+            "files": sorted(self.files[official_name]),
+        }
+        unknown_root = self.skills_dir / unknown_name
+        unknown_root.mkdir()
+        self.installed[unknown_name] = {
+            "source": "github",
+            "identifier": "github:other/repository",
+            "install_path": unknown_name,
+            "scan_verdict": "safe",
+            "files": [],
+        }
+
+        with self.assertRaisesRegex(installer.InstallError, "non-official or unexpected"):
+            installer.install_all(
+                self.repository,
+                self.api(),
+                self.fetch,
+                migrate_official_channel=True,
+            )
+        self.assertEqual(self.uninstall_calls, [])
+        self.assertEqual(self.calls, [])
+
+    def test_migration_preflights_an_unlocked_directory_before_uninstall(self) -> None:
+        first_name, orphan_name, last_name = installer.PUBLIC_SKILLS
+        self._seed_official_channel("https://cuebook.app/.well-known/skills")
+        self.installed.pop(orphan_name)
+        orphan_marker = self.skills_dir / orphan_name / "local-only.txt"
+        shutil.rmtree(self.skills_dir / orphan_name)
+        orphan_marker.parent.mkdir()
+        orphan_marker.write_text("preserve me", encoding="utf-8")
+
+        with self.assertRaisesRegex(installer.InstallError, "without a Hermes Hub lock"):
+            installer.install_all(
+                self.repository,
+                self.api(),
+                self.fetch,
+                migrate_official_channel=True,
+            )
+
+        self.assertEqual(set(self.installed), {first_name, last_name})
+        self.assertEqual(self.uninstall_calls, [])
+        self.assertEqual(self.calls, [])
+        self.assertEqual(orphan_marker.read_text(encoding="utf-8"), "preserve me")
+
+    def test_failed_target_verification_stops_for_explicit_review(self) -> None:
+        self._seed_official_channel("https://cuebook.app/.well-known/skills")
+        failed_name = installer.PUBLIC_SKILLS[1]
+        self.corrupt_name = failed_name
+        api = self.api()
+
+        with self.assertRaisesRegex(installer.InstallError, "digest does not match"):
+            installer.install_all(
+                self.repository,
+                api,
+                self.fetch,
+                migrate_official_channel=True,
+            )
+
+        self.corrupt_name = None
+        uninstall_count = len(self.uninstall_calls)
+        install_count = len(self.calls)
+        with self.assertRaisesRegex(installer.InstallError, "digest does not match"):
+            installer.install_all(
+                self.repository,
+                api,
+                self.fetch,
+                migrate_official_channel=True,
+            )
+        self.assertEqual(len(self.uninstall_calls), uninstall_count)
+        self.assertEqual(len(self.calls), install_count)
+
+    def test_invalid_target_is_never_replaced_by_the_migration_flag(self) -> None:
+        self._seed_official_channel(self.base_url)
+        name = installer.PUBLIC_SKILLS[0]
+        (self.skills_dir / name / "SKILL.md").write_text("corrupt", encoding="utf-8")
+        api = self.api()
+
+        with self.assertRaisesRegex(installer.InstallError, "digest does not match"):
+            installer.install_all(
+                self.repository,
+                api,
+                self.fetch,
+                migrate_official_channel=True,
+            )
+
+        self.assertEqual(self.uninstall_calls, [])
+        self.assertEqual(self.calls, [])
+
+    def test_interrupted_unlocked_target_stops_without_deleting_it(self) -> None:
+        self._seed_official_channel("https://cuebook.app/.well-known/skills")
+        failed_name = installer.PUBLIC_SKILLS[1]
+        self.raise_name = failed_name
+        api = self.api()
+
+        with self.assertRaisesRegex(installer.InstallError, "interrupted after writing files"):
+            installer.install_all(
+                self.repository,
+                api,
+                self.fetch,
+                migrate_official_channel=True,
+            )
+        self.assertIsNone(self.installed.get(failed_name))
+        marker = self.skills_dir / failed_name / "SKILL.md"
+        self.assertTrue(marker.is_file())
+
+        self.raise_name = None
+        with self.assertRaisesRegex(installer.InstallError, "without a Hermes Hub lock"):
+            installer.install_all(
+                self.repository,
+                api,
+                self.fetch,
+                migrate_official_channel=True,
+            )
+        self.assertTrue(marker.is_file())
+
+    def test_interrupted_native_uninstall_can_clear_its_stale_official_lock(self) -> None:
+        self._seed_official_channel("https://cuebook.app/.well-known/skills")
+        failed_name = installer.PUBLIC_SKILLS[0]
+        self.uninstall_raise_name = failed_name
+        api = self.api()
+
+        with self.assertRaisesRegex(installer.InstallError, "interrupted before removing lock"):
+            installer.install_all(
+                self.repository,
+                api,
+                self.fetch,
+                migrate_official_channel=True,
+            )
+        self.assertIsNotNone(self.installed.get(failed_name))
+        self.assertFalse((self.skills_dir / failed_name).exists())
+
+        self.uninstall_raise_name = None
+        result = installer.install_all(
+            self.repository,
+            api,
+            self.fetch,
+            migrate_official_channel=True,
+        )
+
+        self.assertEqual(result, list(installer.PUBLIC_SKILLS))
+
+    def test_a_second_installer_cannot_enter_the_mutation_boundary(self) -> None:
+        api = self.api()
+
+        with installer._installer_lock(api):
+            with self.assertRaisesRegex(installer.InstallError, "already running"):
+                installer.install_all(self.repository, api, self.fetch)
+
+        self.assertEqual(self.calls, [])
+        self.assertEqual(self.uninstall_calls, [])
 
     def test_unlocked_skill_directory_is_never_replaced(self) -> None:
         name = installer.PUBLIC_SKILLS[0]

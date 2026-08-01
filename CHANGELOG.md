@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Updated the fail-closed Hermes OAuth bridge with a **Connect Cuebook** Telegram
+  command-menu entry, exposed as `/cuebook_auth`. It delegates to the native
+  loopback Dashboard OAuth flow, validates the complete Cuebook authorization
+  URL contract, returns a labeled tappable approval link, reuses a concurrent
+  flow, and refreshes MCP Tool discovery after approval; the Hermes guide now
+  uses a generated `skills/index.json` and complete self-contained well-known
+  Skill bundles instead of unauthenticated GitHub REST installation. An
+  explicit migration flag now handles user-confirmed switches between the
+  official development and production channels while refusing unknown sources.
+
 ## 0.9.23 — 2026-08-01
 
 - Added a fail-closed Hermes OAuth bridge with an explicit Telegram DM

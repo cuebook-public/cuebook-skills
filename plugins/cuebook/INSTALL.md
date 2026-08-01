@@ -19,8 +19,10 @@ current project or any unrelated local checkout.
    record its marketplace/source and version. If it comes from this same
    source, use the host-native update path once. If it comes from a different
    source, explain the one-time migration and obtain confirmation before
-   replacing it. Never ask the user to switch a project branch, provide a
-   Cuebook handle, or reinstall repeatedly.
+   replacing it. A named host guide may expose an explicit, official-channel
+   migration command only after that confirmation; never use it for an unknown
+   source. Never ask the user to switch a project branch, provide a Cuebook
+   handle, or reinstall repeatedly.
 4. Install or update once, then reload the host or open the one new session
    required by its guide. On Plugin hosts, the resolved inventory must contain
    exactly three public Skills and one `cuebook` MCP server. If the installed
@@ -32,10 +34,15 @@ current project or any unrelated local checkout.
    client registration before any token exists, so a stored credential record
    alone never proves authentication, and its absence never proves that login
    is required. If Cuebook is authenticated or login is pending, do not start
-   another login. Otherwise start exactly one host-native login when
-   authentication is required. Browser approval belongs to the user; wait for
-   them to finish and never restart a pending attempt.
-6. Finish with one smallest useful read and a source-linked result. Tool
+   another login. Otherwise follow the selected host
+   guide to initiate or present exactly one host-native login when
+   authentication is required. A user-activated handoff is presented once by
+   the installer; presenting it does not authorize the installer to activate
+   it for the user. Browser approval belongs to the user; wait for them to
+   finish and never restart a pending attempt. On Hermes through Telegram,
+   never ask the user to type or remember another command.
+6. After any user-activated handoff is complete, finish with one smallest
+   useful read and a source-linked result. Tool
    discovery, an enabled badge, or browser approval alone is not proof that the
    connection works. A normal user install does not require a preview,
    publication, rollback drill, or release audit.

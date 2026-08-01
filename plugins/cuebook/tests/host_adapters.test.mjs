@@ -114,6 +114,13 @@ test("Hermes adapter installs, authenticates, and updates all public Skills", ()
   assert.match(guide, /plugins\/hermes\/install_cuebook_skills\.py/u);
   assert.match(guide, /source_id="well-known"/u);
   assert.match(guide, /force=False/u);
+  assert.match(guide, /--migrate-official-channel/u);
+  assert.match(guide, /other official\s+distribution channel/u);
+  assert.match(guide, /requires fresh OAuth/u);
+  assert.match(guide, /native\s+uninstall API/u);
+  assert.match(guide, /exclusive Cuebook installer lock/u);
+  assert.match(guide, /invalid target-channel\s+bundle stops for explicit review/u);
+  assert.match(guide, /Unknown,\s+mixed, or\s+locally unmanaged\s+sources still fail closed/u);
   assert.ok(guide.includes(distribution.skills_base_url));
   assert.match(guide, /remote get-url origin/u);
   assert.match(guide, /branch --show-current/u);
@@ -136,7 +143,14 @@ test("Hermes adapter installs, authenticates, and updates all public Skills", ()
       `"file://\${HOME}/.hermes/plugin-sources/${checkout.directory}#plugins/hermes/cuebook-auth"`,
     ),
   );
-  assert.match(guide, /\/cuebook-auth/u);
+  assert.match(guide, /Connect Cuebook/u);
+  assert.match(guide, /\/cuebook_auth/u);
+  assert.match(guide, /Restart Hermes\n\n\/restart/u);
+  assert.match(guide, /Connect Cuebook after restart\n\n\/cuebook_auth/u);
+  assert.match(guide, /must not invoke `hermes gateway restart`/u);
+  assert.match(guide, /Open Cuebook to authorize/u);
+  assert.match(guide, /plain standalone text without bullets/u);
+  assert.doesNotMatch(guide, /^\/cuebook-auth$/mu);
   assert.match(guide, /hermes mcp login cuebook/u);
   assert.match(guide, /hermes skills check/u);
   assert.match(guide, /hermes skills audit/u);
@@ -159,6 +173,7 @@ test("installation entrypoint and platform matrix govern every host adapter", ()
   assert.match(matrix, /Codex-compatible Cuebook bundle/u);
   assert.match(matrix, /Current CLI local bundle and MCP config verified/u);
   assert.match(matrix, /Well-known Skill bundles \+ Hermes OAuth bridge/u);
+  assert.match(install, /A user-activated handoff is presented once by\s+the installer/u);
   assert.match(matrix, /`plugins\/runtime\/cuebook\/` is the canonical portable Plugin root/u);
   assert.match(matrix, /exactly the three public entrypoints/u);
   assert.match(
@@ -166,6 +181,7 @@ test("installation entrypoint and platform matrix govern every host adapter", ()
     /major, permission, or capability-tier\s+change requires explicit review/u,
   );
   assert.match(install, /host-native update path once/u);
+  assert.match(install, /explicit, official-channel\s+migration command/u);
   assert.match(install, /without a second OAuth grant/u);
   assert.match(install, /Ordinary user quick path/u);
   assert.match(install, /package_inventory_defect/u);
