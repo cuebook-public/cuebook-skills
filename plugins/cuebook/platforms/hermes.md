@@ -8,27 +8,68 @@ Hermes plugin adds only the explicit `/cuebook-auth` command; it delegates the
 entire MCP OAuth lifecycle to the native Hermes Dashboard and never implements
 another MCP transport.
 
-**Live status:** Static bundle validation and OAuth-bridge unit coverage are
-complete. Current-version Telegram, mobile-app handoff, browser fallback,
-update, preview, and publication remain pending host verification.
+**Live status:** Hermes 0.19.1 source-pinned installation, Telegram DM command
+registration, callback isolation, and the generated authorization link are
+verified on the development channel. Cuebook App cold-start and background
+HTTPS handoff are verified without approving the grant. Real-device Telegram
+approval, token exchange, preview, and publication remain maintainer-only live
+verification.
 
-## Install the three Skills without the GitHub API
+## Install the three Skills from one pinned source
 
-Inspect and install the official well-known bundles. This path downloads the
-closed file list advertised by Cuebook's index and does not consume the
-unauthenticated GitHub REST API quota:
+Hermes 0.19.1 does not expose its internal source selector on `skills install`.
+Even a `well-known:` identifier is tried against unrelated adapters first, so
+the public CLI can wait on GitHub and emit a misleading 429 before reaching
+Cuebook. `skills inspect` also downloads the complete bundle and makes the
+subsequent install download it again. Do not use either path for this package.
+
+Prepare this guide's distribution checkout. A repeated run accepts only the
+same official remote, branch, and a clean worktree before fast-forwarding it;
+any other existing path fails for explicit review. The same checkout supplies
+the OAuth plugin later, so this is not a second package source:
 
 ```bash
-hermes skills inspect https://cuebook.xyz/.well-known/skills/query-cuebook
-hermes skills inspect https://cuebook.xyz/.well-known/skills/create-cuebook-content
-hermes skills inspect https://cuebook.xyz/.well-known/skills/author-cuebook-skill
-
-hermes skills install https://cuebook.xyz/.well-known/skills/query-cuebook
-hermes skills install https://cuebook.xyz/.well-known/skills/create-cuebook-content
-hermes skills install https://cuebook.xyz/.well-known/skills/author-cuebook-skill
+set -eu
+cuebook_skills_checkout="${HOME}/.hermes/plugin-sources/cuebook-skills-dev"
+cuebook_skills_remote="https://github.com/cuebook-public/cuebook-skills.git"
+mkdir -p "${HOME}/.hermes/plugin-sources"
+if [ -e "${cuebook_skills_checkout}" ]; then
+  if [ -L "${cuebook_skills_checkout}" ] \
+    || [ ! -d "${cuebook_skills_checkout}/.git" ] \
+    || [ "$(git -C "${cuebook_skills_checkout}" remote get-url origin)" != "${cuebook_skills_remote}" ] \
+    || [ "$(git -C "${cuebook_skills_checkout}" branch --show-current)" != "dev" ] \
+    || [ -n "$(git -C "${cuebook_skills_checkout}" status --porcelain)" ]; then
+    printf '%s\n' 'Existing Cuebook checkout is not the clean official dev checkout.' >&2
+    exit 1
+  fi
+  git -C "${cuebook_skills_checkout}" pull --ff-only origin dev
+else
+  git clone --depth 1 --branch dev \
+    "${cuebook_skills_remote}" "${cuebook_skills_checkout}"
+fi
+if [ "$(git -C "${cuebook_skills_checkout}" rev-parse HEAD)" \
+  != "$(git -C "${cuebook_skills_checkout}" rev-parse origin/dev)" ]; then
+  printf '%s\n' 'Cuebook checkout does not exactly match origin/dev.' >&2
+  exit 1
+fi
 ```
 
-Confirm the resulting inventory:
+Run the Cuebook installer with the standard Hermes virtual-environment Python:
+
+```bash
+"${HOME}/.hermes/hermes-agent/venv/bin/python" \
+  "${HOME}/.hermes/plugin-sources/cuebook-skills-dev/plugins/hermes/install_cuebook_skills.py"
+```
+
+The installer calls Hermes' existing native install pipeline with
+`source_id="well-known"`, `force=False`, and the endpoint declared by this
+checkout (`https://cuebook.xyz/.well-known/skills`). Quarantine, security scan,
+lock provenance, complete file inventory, and release digest verification all
+remain mandatory. If the Hermes interpreter or source-pinned API is absent,
+the installer fails immediately; do not switch to the generic CLI, add a
+GitHub token, retry, or use `--force`.
+
+Confirm the resulting inventory after the installer reports all three names:
 
 ```bash
 hermes skills list --source hub
@@ -88,21 +129,11 @@ whose `redirect_uri` differs.
 
 ## Install the Hermes OAuth plugin
 
-The stable branch uses Hermes' native Git clone installer, which also avoids
-the GitHub REST API:
+Install the plugin from the exact checkout already used by the Skill
+installer. This keeps the plugin and MCP endpoint on the same distribution
+channel without another GitHub request:
 
 ```bash
-hermes plugins install cuebook-public/cuebook-skills/plugins/hermes/cuebook-auth --enable
-```
-
-Hermes 0.19.1 resolves a repository subdirectory but clones the repository's
-default branch. Maintainers testing the development channel must therefore
-pin an actual `dev` checkout instead of using a misleading `/tree/dev/` URL:
-
-```bash
-mkdir -p "${HOME}/.hermes/plugin-sources"
-git clone --depth 1 --branch dev https://github.com/cuebook-public/cuebook-skills.git \
-  "${HOME}/.hermes/plugin-sources/cuebook-skills-dev"
 hermes plugins install \
   "file://${HOME}/.hermes/plugin-sources/cuebook-skills-dev#plugins/hermes/cuebook-auth" \
   --enable
@@ -166,6 +197,10 @@ Do not run it while a `/cuebook-auth` flow is pending.
 
 Use the stored well-known and Git provenance:
 
+First rerun the distribution-checkout preparation block above. It verifies the
+official remote, clean target branch, and exact remote commit before any file
+is reused. Then run:
+
 ```bash
 hermes skills check
 hermes skills update query-cuebook
@@ -173,27 +208,18 @@ hermes skills update create-cuebook-content
 hermes skills update author-cuebook-skill
 hermes skills audit
 hermes plugins install \
-  cuebook-public/cuebook-skills/plugins/hermes/cuebook-auth \
+  "file://${HOME}/.hermes/plugin-sources/cuebook-skills-dev#plugins/hermes/cuebook-auth" \
   --force --enable
 hermes skills list --source hub
 ```
 
 Hermes 0.19.1 copies a repository subdirectory without its parent `.git`
 directory, so `hermes plugins update cuebook-auth` cannot update this plugin.
-For a development checkout, update the pinned clone and force-reinstall its
-subdirectory:
-
-```bash
-git -C "${HOME}/.hermes/plugin-sources/cuebook-skills-dev" pull --ff-only
-hermes plugins install \
-  "file://${HOME}/.hermes/plugin-sources/cuebook-skills-dev#plugins/hermes/cuebook-auth" \
-  --force --enable
-```
-
-A compatible update does not replace `~/.hermes/config.yaml` or its cached
-OAuth token. Restart the Gateway only when the plugin changes. Stop for
-explicit review if an update declares a major, permission, or capability-tier
-change.
+The exact checkout is therefore pulled first and its subdirectory is
+force-reinstalled. A compatible update does not replace
+`~/.hermes/config.yaml` or its cached OAuth token. Restart the Gateway only
+when the plugin changes. Stop for explicit review if an update declares a
+major, permission, or capability-tier change.
 
 ## Verification
 

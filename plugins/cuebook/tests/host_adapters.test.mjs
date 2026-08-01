@@ -94,24 +94,35 @@ test("OpenClaw adapter uses the compatible bundle lifecycle", () => {
 test("Hermes adapter installs, authenticates, and updates all public Skills", () => {
   const guide = readPlatform("hermes.md");
   const distribution = loadJson(path.join(PLUGIN_ROOT, "distribution-channel-v1.json"));
+  const installer = path.join(REPOSITORY_ROOT, "plugins", "hermes", "install_cuebook_skills.py");
 
   assert.match(guide, /\*\*Surface:\*\* Three Agent Skills/u);
   for (const skillName of PUBLIC_SKILLS) {
-    const source = `${distribution.skills_base_url}/${skillName}`;
-    assert.ok(guide.includes(`hermes skills inspect ${source}`), skillName);
-    assert.ok(guide.includes(`hermes skills install ${source}`), skillName);
     assert.ok(guide.includes(`hermes skills update ${skillName}`), skillName);
     assert.ok(
       fs.existsSync(path.join(REPOSITORY_ROOT, "skills", skillName, "SKILL.md")),
       skillName,
     );
   }
+  assert.ok(fs.existsSync(installer));
+  assert.match(guide, /plugins\/hermes\/install_cuebook_skills\.py/u);
+  assert.match(guide, /source_id="well-known"/u);
+  assert.match(guide, /force=False/u);
+  assert.ok(guide.includes(distribution.skills_base_url));
+  assert.match(guide, /remote get-url origin/u);
+  assert.match(guide, /branch --show-current/u);
+  assert.match(guide, /status --porcelain/u);
+  assert.match(guide, /pull --ff-only origin dev/u);
+  assert.match(guide, /rev-parse HEAD/u);
+  assert.match(guide, /rev-parse origin\/dev/u);
+  assert.doesNotMatch(guide, /^hermes skills inspect /mu);
+  assert.doesNotMatch(guide, /^hermes skills install /mu);
   assert.match(guide, /auth: oauth/u);
   assert.match(guide, /supports_parallel_tool_calls: false/u);
   assert.match(guide, /HERMES_DASHBOARD_SESSION_TOKEN/u);
   assert.match(guide, /HERMES_DASHBOARD_PUBLIC_URL/u);
   assert.match(guide, /127\.0\.0\.1:9119/u);
-  assert.match(guide, /plugins install cuebook-public\/cuebook-skills\/plugins\/hermes\/cuebook-auth --enable/u);
+  assert.match(guide, /plugins install \\\s+"file:\/\/\$\{HOME\}\/\.hermes\/plugin-sources\/cuebook-skills-dev#plugins\/hermes\/cuebook-auth"/u);
   assert.match(guide, /\/cuebook-auth/u);
   assert.match(guide, /hermes mcp login cuebook/u);
   assert.match(guide, /hermes skills check/u);
