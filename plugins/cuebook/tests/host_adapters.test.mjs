@@ -136,7 +136,14 @@ test("Hermes adapter installs, authenticates, and updates all public Skills", ()
       `"file://\${HOME}/.hermes/plugin-sources/${checkout.directory}#plugins/hermes/cuebook-auth"`,
     ),
   );
-  assert.match(guide, /\/cuebook-auth/u);
+  assert.match(guide, /Connect Cuebook/u);
+  assert.match(guide, /\/cuebook_auth/u);
+  assert.match(guide, /Restart Hermes\n\n\/restart/u);
+  assert.match(guide, /Connect Cuebook after restart\n\n\/cuebook_auth/u);
+  assert.match(guide, /must not invoke `hermes gateway restart`/u);
+  assert.match(guide, /Open Cuebook to authorize/u);
+  assert.match(guide, /plain standalone text without bullets/u);
+  assert.doesNotMatch(guide, /^\/cuebook-auth$/mu);
   assert.match(guide, /hermes mcp login cuebook/u);
   assert.match(guide, /hermes skills check/u);
   assert.match(guide, /hermes skills audit/u);
@@ -159,6 +166,7 @@ test("installation entrypoint and platform matrix govern every host adapter", ()
   assert.match(matrix, /Codex-compatible Cuebook bundle/u);
   assert.match(matrix, /Current CLI local bundle and MCP config verified/u);
   assert.match(matrix, /Well-known Skill bundles \+ Hermes OAuth bridge/u);
+  assert.match(install, /A user-activated handoff is presented once by\s+the installer/u);
   assert.match(matrix, /`plugins\/runtime\/cuebook\/` is the canonical portable Plugin root/u);
   assert.match(matrix, /exactly the three public entrypoints/u);
   assert.match(

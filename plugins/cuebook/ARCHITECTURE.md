@@ -17,10 +17,10 @@ these rules need a deliberate edit HERE in the same commit.
 | L4 — Generated bundles | `plugins/runtime/cuebook/`, repo-root `skills/`, submission packet | Never edited by hand; one sanitized three-Skill host runtime plus generic bundles, parity-checked in CI |
 
 Host adapters live outside this Skill layering. The Hermes adapter at
-`plugins/hermes/cuebook-auth/` may register one explicit slash command and call
-the host's native loopback Dashboard OAuth API. It must not add a fourth Skill,
-copy a Cuebook token, implement an MCP transport, or intercept ordinary
-natural-language turns.
+`plugins/hermes/cuebook-auth/` may register one explicit slash-command menu
+entry, call the host's native loopback Dashboard OAuth API, and return its
+validated approval link. It must not add a fourth Skill, copy a Cuebook token,
+implement an MCP transport, or intercept ordinary natural-language turns.
 
 ## One discovery surface, three entries
 

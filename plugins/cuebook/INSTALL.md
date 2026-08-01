@@ -28,10 +28,15 @@ current project or any unrelated local checkout.
    fewer than three Skills, report `package_inventory_defect` and stop; do not
    retry installation or authentication.
 5. Inspect the connection state. If Cuebook is authenticated or login is
-   pending, do not start another login. Otherwise start exactly one host-native
-   login when authentication is required. Browser approval belongs to the
-   user; wait for them to finish and never restart a pending attempt.
-6. Finish with one smallest useful read and a source-linked result. Tool
+   pending, do not start another login. Otherwise follow the selected host
+   guide to initiate or present exactly one host-native login when
+   authentication is required. A user-activated handoff is presented once by
+   the installer; presenting it does not authorize the installer to activate
+   it for the user. Browser approval belongs to the user; wait for them to
+   finish and never restart a pending attempt. On Hermes through Telegram,
+   never ask the user to type or remember another command.
+6. After any user-activated handoff is complete, finish with one smallest
+   useful read and a source-linked result. Tool
    discovery, an enabled badge, or browser approval alone is not proof that the
    connection works. A normal user install does not require a preview,
    publication, rollback drill, or release audit.
