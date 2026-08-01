@@ -31,7 +31,7 @@ Vary these when the idea benefits:
 | `lens_ledger` | transparent creator basket | `lens_anatomy` | rebased curve plus component anatomy |
 | `spread_arena` | long/short expression | `contribution_stage` | spread curve plus visibly opposed sleeves |
 
-Never choose a family because it has not been used recently if it answers the wrong reader question. Truthful geometry wins. When two families are equally truthful, prefer the one whose fingerprint differs from the last two Frames in the current conversation.
+Never choose a family because it has not been used recently if it answers the wrong reader question. Truthful geometry wins. When two families are equally truthful, prefer the family whose composition signature differs from the last two Frames already discussed.
 
 ## Surface systems
 

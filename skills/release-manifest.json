@@ -23,7 +23,7 @@
       "references/modules/query-cuebook/references/cuebook-query-request-v1.schema.json",
       "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json"
     ],
-    "cumulative_bytes": 111904,
+    "cumulative_bytes": 111907,
     "maximum_bytes_exclusive": 112000,
     "within_budget": true
   },
@@ -95,7 +95,7 @@
         "query-menu-v1.json",
         "runtime-compatibility-v1.json"
       ],
-      "content_sha256": "99c856be10369ad0850bc0bb8674dc4bcc1648553a98dbb73b1ed3fd573dda4d",
+      "content_sha256": "8a47c4b85811ad5e9f782dff4296e8f277ca83099516732bac1b2636d99d34cb",
       "vendored_shared_validators": [
         "references/modules/build-market-research-pack/scripts/validate_research_pack.mjs",
         "references/modules/query-cuebook/scripts/validate_cuebook_intent.mjs",
