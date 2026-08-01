@@ -19,11 +19,11 @@
       "references/frame-expression-system.md",
       "references/frame-art-direction.md",
       "references/frame-feed-attention.md",
-      "references/modules/query-cuebook.md",
+      "references/modules/query-cuebook/MODULE.md",
       "references/modules/query-cuebook/references/cuebook-query-request-v1.schema.json",
       "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json"
     ],
-    "cumulative_bytes": 111883,
+    "cumulative_bytes": 111904,
     "maximum_bytes_exclusive": 112000,
     "within_budget": true
   },
@@ -34,6 +34,11 @@
     "cumulative_bytes": 14653,
     "maximum_bytes_exclusive": 40000,
     "within_budget": true
+  },
+  "hermes_well_known_index": {
+    "schema_version": "cuebook-hermes-skills-index-v1",
+    "skill_count": 3,
+    "file_count": 165
   },
   "bundles": [
     {
@@ -53,7 +58,7 @@
         "query-menu-v1.json",
         "runtime-compatibility-v1.json"
       ],
-      "content_sha256": "e1c708d44fb0d2a6f965a9fadef6d90502f90d5140d09b7c273507d6486185da",
+      "content_sha256": "8fd239283a8a5fe47632145f2de1c49b296860cf3a5bd702db55024ef46e8426",
       "vendored_shared_validators": [
         "references/modules/build-market-research-pack/scripts/validate_research_pack.mjs",
         "references/modules/reconcile-market-content-history/scripts/validate_content_history.mjs",
@@ -90,7 +95,7 @@
         "query-menu-v1.json",
         "runtime-compatibility-v1.json"
       ],
-      "content_sha256": "ce31719e2f468a35f6d1bddf583f5f736a0568e081a9296cc2fcbe6cdbdd9ed7",
+      "content_sha256": "99c856be10369ad0850bc0bb8674dc4bcc1648553a98dbb73b1ed3fd573dda4d",
       "vendored_shared_validators": [
         "references/modules/build-market-research-pack/scripts/validate_research_pack.mjs",
         "references/modules/query-cuebook/scripts/validate_cuebook_intent.mjs",

@@ -31,7 +31,7 @@ Those layers are related but not interchangeable. MCP provides typed Cuebook dat
 | [Codex app and Codex CLI](codex.md) | Yes | Yes | Cuebook Plugin | OAuth, read, preview, and publication live-verified on 2026-07-20 |
 | [Claude Code](claude-code.md) | Yes | Yes | Native Claude Code marketplace | OAuth, upload, and atomic publication live-verified on 2026-07-21 |
 | [Cursor editor and CLI](cursor.md) | Yes | Yes | Built Skill bundles + Cursor MCP config | Static setup ready; live check pending |
-| [Hermes Agent](hermes.md) | Yes | Yes | GitHub Skill paths + Hermes MCP config | Static install/update contract ready; live check pending |
+| [Hermes Agent](hermes.md) | Yes | Yes | Well-known Skill bundles + Hermes OAuth bridge | Static bridge and bundle contract ready; live check pending |
 | [OpenClaw](openclaw.md) | Yes | Yes | Codex-compatible Cuebook bundle | Current CLI local bundle and MCP config verified; marketplace OAuth/live check pending |
 | [Claude and Claude Desktop](claude-desktop.md) | No bundled Skill path | Yes | Custom connector | Documented; live check pending |
 | [ChatGPT](chatgpt.md) | No | Yes | Custom MCP app | Eligible plans only; live check pending |
@@ -46,9 +46,12 @@ Those layers are related but not interchangeable. MCP provides typed Cuebook dat
 `plugins/runtime/cuebook/` is the canonical portable Plugin root. It owns the
 generated `skills/` directory, the single `.mcp.json` definition, and the
 native Codex and Claude manifests. Codex and Claude install that root directly.
-OpenClaw consumes the same sanitized directory as a Codex-compatible bundle. Hermes
-installs the three generated repository-root `skills/` bundles and configures
-the same remote MCP endpoint through its native registry.
+OpenClaw consumes the same sanitized directory as a Codex-compatible bundle.
+Hermes installs the three generated repository-root `skills/` bundles through
+the well-known endpoint and configures the same remote MCP endpoint through its
+native registry. Its separate `plugins/hermes/cuebook-auth/` adapter may expose
+one explicit Telegram DM command that delegates to the native Dashboard OAuth
+flow; it must not implement another MCP client or token store.
 
 An adapter must never copy or fork the canonical Skill source. It must expose
 exactly the three public entrypoints, keep internal `plugins/cuebook/skills/`

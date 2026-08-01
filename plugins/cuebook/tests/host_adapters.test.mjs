@@ -93,10 +93,11 @@ test("OpenClaw adapter uses the compatible bundle lifecycle", () => {
 
 test("Hermes adapter installs, authenticates, and updates all public Skills", () => {
   const guide = readPlatform("hermes.md");
+  const distribution = loadJson(path.join(PLUGIN_ROOT, "distribution-channel-v1.json"));
 
   assert.match(guide, /\*\*Surface:\*\* Three Agent Skills/u);
   for (const skillName of PUBLIC_SKILLS) {
-    const source = `cuebook-public/cuebook-skills/skills/${skillName}`;
+    const source = `${distribution.skills_base_url}/${skillName}`;
     assert.ok(guide.includes(`hermes skills inspect ${source}`), skillName);
     assert.ok(guide.includes(`hermes skills install ${source}`), skillName);
     assert.ok(guide.includes(`hermes skills update ${skillName}`), skillName);
@@ -107,10 +108,23 @@ test("Hermes adapter installs, authenticates, and updates all public Skills", ()
   }
   assert.match(guide, /auth: oauth/u);
   assert.match(guide, /supports_parallel_tool_calls: false/u);
+  assert.match(guide, /HERMES_DASHBOARD_SESSION_TOKEN/u);
+  assert.match(guide, /HERMES_DASHBOARD_PUBLIC_URL/u);
+  assert.match(guide, /127\.0\.0\.1:9119/u);
+  assert.match(guide, /plugins install cuebook-public\/cuebook-skills\/plugins\/hermes\/cuebook-auth --enable/u);
+  assert.match(guide, /\/cuebook-auth/u);
   assert.match(guide, /hermes mcp login cuebook/u);
-  assert.match(guide, /fresh terminal/u);
   assert.match(guide, /hermes skills check/u);
   assert.match(guide, /hermes skills audit/u);
+  assert.match(guide, /copies a repository subdirectory without its parent `\.git`/u);
+  assert.match(guide, /--force --enable/u);
+  assert.match(guide, /foreground, long-lived process and its command does not\s+return/u);
+  assert.match(guide, /X-Hermes-Session-Token/u);
+  assert.match(guide, /api\/mcp\/servers/u);
+  assert.doesNotMatch(guide, /^hermes plugins update cuebook-auth$/mu);
+  assert.ok(
+    fs.existsSync(path.join(REPOSITORY_ROOT, "plugins", "hermes", "cuebook-auth", "plugin.yaml")),
+  );
   assert.doesNotMatch(guide, /\*\*Surface:\*\* Two Agent Skills/u);
 });
 
@@ -120,7 +134,7 @@ test("installation entrypoint and platform matrix govern every host adapter", ()
 
   assert.match(matrix, /Codex-compatible Cuebook bundle/u);
   assert.match(matrix, /Current CLI local bundle and MCP config verified/u);
-  assert.match(matrix, /GitHub Skill paths \+ Hermes MCP config/u);
+  assert.match(matrix, /Well-known Skill bundles \+ Hermes OAuth bridge/u);
   assert.match(matrix, /`plugins\/runtime\/cuebook\/` is the canonical portable Plugin root/u);
   assert.match(matrix, /exactly the three public entrypoints/u);
   assert.match(

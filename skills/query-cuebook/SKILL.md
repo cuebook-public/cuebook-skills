@@ -39,12 +39,12 @@ Assume the plugin's host authentication is complete. Silently run the smallest r
    - narrative library: `list_asset_cues`; reserve `list_themes`, `get_cues_detail`, and `get_reasoning_graph` for explicit focused/deep requests;
    - creator thought scaffolds: resolve the asset, select at most two non-duplicative Cues—normally one aligned and one contrasting or adjacent—and fetch only their details; hand them off without drafting or adoption;
    - current snapshot: `get_market_state`;
-   - evidence or valuation: `search_news`, `list_filings`, and `references/modules/build-market-research-pack.md` when synthesis is requested;
-   - curves or triggers: `get_candles`; preserve its raw frozen envelope for a creation handoff, and invoke `references/modules/compute-cuebook-market-indicators.md` only when a requested indicator is actually needed;
+   - evidence or valuation: `search_news`, `list_filings`, and `references/modules/build-market-research-pack/MODULE.md` when synthesis is requested;
+   - curves or triggers: `get_candles`; preserve its raw frozen envelope for a creation handoff, and invoke `references/modules/compute-cuebook-market-indicators/MODULE.md` only when a requested indicator is actually needed;
    - explicit TradingView inspection/capture/stress test: use the workbench; raw observations never enter direct Frame handoff;
    - explicit decision memory asks: coach module — one `get_decision_context` or `list_memory_items`; obey server claim-support levels;
    - positioning, calendar, disclosures, or asset events: call only the one matching read tool when the user's premise needs it;
-   - settlement outcomes: `list_settlements` and `references/modules/reconcile-market-content-history.md` when a history ledger is requested;
+   - settlement outcomes: `list_settlements` and `references/modules/reconcile-market-content-history/MODULE.md` when a history ledger is requested;
    - published Frames: `get_frame` for one release-pinned Frame, attached visual, settlement state, and discussion entry; never retrieve a rendition separately;
    - community Skills: `list_community_skills` for discovery, then `get_community_skill` for exact `<handle>--<slug>` identity. A handle is lookup input, never authentication. Pass a publication-time semver when available; otherwise resolve the current version. Preserve `installRef`, revision, sha256, and capability disclosure without claiming installation. Submission belongs to Author;
    - public account or media study: the authorized corpus and distillation skills.

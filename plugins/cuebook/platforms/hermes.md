@@ -1,36 +1,44 @@
 # Cuebook on Hermes Agent
 
-**Surface:** Three Agent Skills plus an OAuth-authenticated HTTP MCP server.
+**Surface:** Three Agent Skills, one OAuth-authenticated HTTP MCP server, and
+one thin Hermes OAuth bridge.
 
-**Package status:** The generated repository-root bundles match Hermes' direct GitHub Skill installation model and its MCP configuration shape. Cuebook does not require a Python runtime plugin.
+**Package status:** The public Skills are complete well-known bundles. The
+Hermes plugin adds only the explicit `/cuebook-auth` command; it delegates the
+entire MCP OAuth lifecycle to the native Hermes Dashboard and never implements
+another MCP transport.
 
-**Live status:** Current-version security scan, Skill discovery, OAuth, update, preview, and publication are pending host verification.
+**Live status:** Static bundle validation and OAuth-bridge unit coverage are
+complete. Current-version Telegram, mobile-app handoff, browser fallback,
+update, preview, and publication remain pending host verification.
 
-## Install the three Skills
+## Install the three Skills without the GitHub API
 
-Inspect each community Skill before installation, then install only the public bundles:
+Inspect and install the official well-known bundles. This path downloads the
+closed file list advertised by Cuebook's index and does not consume the
+unauthenticated GitHub REST API quota:
 
 ```bash
-hermes skills inspect cuebook-public/cuebook-skills/skills/query-cuebook
-hermes skills inspect cuebook-public/cuebook-skills/skills/create-cuebook-content
-hermes skills inspect cuebook-public/cuebook-skills/skills/author-cuebook-skill
+hermes skills inspect https://cuebook.xyz/.well-known/skills/query-cuebook
+hermes skills inspect https://cuebook.xyz/.well-known/skills/create-cuebook-content
+hermes skills inspect https://cuebook.xyz/.well-known/skills/author-cuebook-skill
 
-hermes skills install cuebook-public/cuebook-skills/skills/query-cuebook
-hermes skills install cuebook-public/cuebook-skills/skills/create-cuebook-content
-hermes skills install cuebook-public/cuebook-skills/skills/author-cuebook-skill
+hermes skills install https://cuebook.xyz/.well-known/skills/query-cuebook
+hermes skills install https://cuebook.xyz/.well-known/skills/create-cuebook-content
+hermes skills install https://cuebook.xyz/.well-known/skills/author-cuebook-skill
 ```
 
-These direct GitHub installs retain source provenance for `hermes skills
-check` and `hermes skills update`. Confirm the resulting inventory:
+Confirm the resulting inventory:
 
 ```bash
 hermes skills list --source hub
 ```
 
-Do not install `plugins/cuebook/skills/`; those directories are on-demand
-implementation modules, not public entrypoints. A Hermes Python plugin would
-duplicate the remote MCP transport and OAuth lifecycle without adding a
-Cuebook capability.
+Install exactly those three public bundles. Do not install
+`plugins/cuebook/skills/`; those directories are on-demand implementation
+modules, not public entrypoints. Do not replace a complete well-known bundle
+with a direct `SKILL.md` URL because that single-file path omits its declared
+resources.
 
 ## Configure MCP
 
@@ -46,30 +54,117 @@ mcp_servers:
     supports_parallel_tool_calls: false
 ```
 
-After saving the entry, complete one login from a fresh terminal rather than
-from the session that edited `~/.hermes/config.yaml`:
+Keep exactly one enabled server named `cuebook`. OAuth credentials remain in
+Hermes. Do not mark Cuebook safe for parallel MCP calls: reads may be batched
+where the host permits, but upload, manifest, draft, prepare, and publish
+mutations remain ordered and independently idempotent.
+
+## Prepare the loopback Dashboard bridge
+
+Run the Hermes Dashboard only on `127.0.0.1:9119`. Inject these exact variables
+into both the Dashboard and Gateway processes from one protected environment
+file or secret store:
+
+```text
+HERMES_DASHBOARD_SESSION_TOKEN=<one URL-safe 256-bit secret shared by both processes>
+HERMES_DASHBOARD_PUBLIC_URL=https://hermes.example.com
+```
+
+Generate the shared secret with `python3 -c 'import secrets;
+print(secrets.token_urlsafe(32))'`. Do not print it in service logs, put it in
+Git, or send it to Cuebook.
+
+The public HTTPS origin must reverse-proxy exactly this callback:
+
+```text
+/api/mcp/oauth/callback/cuebook -> http://127.0.0.1:9119
+```
+
+Keep every other Dashboard API route private, disable access logging for the
+callback query string, and never expose port 9119. The callback is the only
+public Dashboard route needed by this bridge. `HERMES_DASHBOARD_PUBLIC_URL`
+must match the public origin exactly; the plugin rejects any authorization URL
+whose `redirect_uri` differs.
+
+## Install the Hermes OAuth plugin
+
+The stable branch uses Hermes' native Git clone installer, which also avoids
+the GitHub REST API:
+
+```bash
+hermes plugins install cuebook-public/cuebook-skills/plugins/hermes/cuebook-auth --enable
+```
+
+Hermes 0.19.1 resolves a repository subdirectory but clones the repository's
+default branch. Maintainers testing the development channel must therefore
+pin an actual `dev` checkout instead of using a misleading `/tree/dev/` URL:
+
+```bash
+mkdir -p "${HOME}/.hermes/plugin-sources"
+git clone --depth 1 --branch dev https://github.com/cuebook-public/cuebook-skills.git \
+  "${HOME}/.hermes/plugin-sources/cuebook-skills-dev"
+hermes plugins install \
+  "file://${HOME}/.hermes/plugin-sources/cuebook-skills-dev#plugins/hermes/cuebook-auth" \
+  --enable
+```
+
+## Start the managed processes
+
+The Dashboard is a foreground, long-lived process and its command does not
+return. An AI installer must never invoke it inline and wait for completion.
+After plugin installation, run the Dashboard under the same service supervisor
+and environment as the Gateway. For a manual setup, the operator—not the
+installer—runs `hermes dashboard --host 127.0.0.1 --port 9119 --skip-build
+--no-open` in a separate terminal and keeps it running.
+
+From the install terminal, verify the authenticated loopback management API
+without printing the shared token:
+
+```bash
+curl --fail --silent --show-error \
+  --header "X-Hermes-Session-Token: ${HERMES_DASHBOARD_SESSION_TOKEN:?not set}" \
+  http://127.0.0.1:9119/api/mcp/servers \
+  >/dev/null
+```
+
+Restart the Gateway after the Dashboard is ready, then verify registration:
+
+```bash
+hermes plugins list
+```
+
+## Authorize from Telegram
+
+Send this explicit command in a private Telegram chat with the Hermes bot:
+
+```text
+/cuebook-auth
+```
+
+The command is handled directly by the plugin without an LLM turn. It is
+rejected outside a Telegram direct message. Concurrent invocations reuse the
+same active flow, and the plugin validates the official Cuebook origin, exact
+`/mcp/authorize` path, PKCE parameters, resource, and callback before returning
+the link.
+
+On a phone with Cuebook installed, the HTTPS authorization link opens the
+Cuebook app for confirmation. On desktop Telegram, the same link opens the
+normal browser flow. After approval, the plugin asks the running Gateway to
+rediscover MCP Tools. Return to Telegram and continue the conversation; do not
+start a second login.
+
+For a local CLI-only Hermes profile without Telegram, the native manual
+fallback remains:
 
 ```bash
 hermes mcp login cuebook
 ```
 
-Hermes auto-reloads MCP configuration, but an in-session reload has a shorter
-timeout than the interactive OAuth flow. The fresh-terminal login keeps one
-authorization attempt alive long enough for browser approval. Reuse its cached
-credential afterward; repeat login only for an explicit authorization
-challenge, scope step-up, or revoked grant.
-
-Do not mark Cuebook as safe for parallel MCP calls. Its read operations can be
-batched where the host permits, but upload, manifest, draft, prepare, and
-publish mutations remain ordered and independently idempotent. A successful
-typed publish result ends the creator flow; do not parse a receipt, reconcile
-history, add an automatic `get_frame` readback, or present a canonical web
-link.
+Do not run it while a `/cuebook-auth` flow is pending.
 
 ## Update
 
-Use Hermes' stored GitHub provenance instead of reinstalling the Skill
-directories:
+Use the stored well-known and Git provenance:
 
 ```bash
 hermes skills check
@@ -77,16 +172,35 @@ hermes skills update query-cuebook
 hermes skills update create-cuebook-content
 hermes skills update author-cuebook-skill
 hermes skills audit
+hermes plugins install \
+  cuebook-public/cuebook-skills/plugins/hermes/cuebook-auth \
+  --force --enable
 hermes skills list --source hub
 ```
 
-A compatible Skill update does not replace `~/.hermes/config.yaml` or its
-cached OAuth token. Do not repeat MCP setup or login. Stop for explicit review
-if an update declares a major, permission, or capability-tier change.
+Hermes 0.19.1 copies a repository subdirectory without its parent `.git`
+directory, so `hermes plugins update cuebook-auth` cannot update this plugin.
+For a development checkout, update the pinned clone and force-reinstall its
+subdirectory:
+
+```bash
+git -C "${HOME}/.hermes/plugin-sources/cuebook-skills-dev" pull --ff-only
+hermes plugins install \
+  "file://${HOME}/.hermes/plugin-sources/cuebook-skills-dev#plugins/hermes/cuebook-auth" \
+  --force --enable
+```
+
+A compatible update does not replace `~/.hermes/config.yaml` or its cached
+OAuth token. Restart the Gateway only when the plugin changes. Stop for
+explicit review if an update declares a major, permission, or capability-tier
+change.
 
 ## Verification
 
-After the server rollout, run the shared [live verification gate](../INSTALL.md#live-verification-gate). Confirm the three Skills with `hermes skills list --source hub`, retain one normal `get_frame_capabilities` result, exercise one no-op `skills check`, and preview a real idea before any explicit test publication.
+After the server rollout, run the shared [live verification gate](../INSTALL.md#live-verification-gate).
+Retain one normal
+`get_frame_capabilities` result, exercise one no-op Skills update check, and
+preview a real idea before any explicit test publication.
 
 ## Official host references
 

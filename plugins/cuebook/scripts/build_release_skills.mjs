@@ -10,7 +10,7 @@
 // `public_entrypoints`) as one spec-conformant, self-contained skill:
 //
 // - the transitive `$skill-name` closure is bundled as non-discoverable
-//   `references/modules/<name>.md` documents plus sibling resource directories;
+//   `references/modules/<name>/MODULE.md` documents beside their resources;
 // - referenced plugin assets are copied to `assets/plugin/` and paths rewritten;
 // - `$skill-name` tokens are rewritten to bundle-root-relative module paths;
 // - the shared `validate_json_schema.mjs` helper is vendored next to every
@@ -22,6 +22,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
+
+import { validateInstance } from "./validate_json_schema.mjs";
 
 const ASSET_REF_SOURCE = "\\.\\./\\.\\./assets/([A-Za-z0-9._/-]+)";
 const FRONTMATTER_PATTERN = /^---\n([\s\S]*?)\n---\n/;
@@ -56,6 +58,8 @@ const MIN_DISCOVERY_REDUCTION_PERCENT = 60;
 // ceiling remains a hard gate against fast-preview bloat.
 const FAST_PREVIEW_BYTE_LIMIT = 112_000;
 const PUBLISH_LANE_BYTE_LIMIT = 40_000;
+const HERMES_INDEX_SCHEMA_VERSION = "cuebook-hermes-skills-index-v1";
+const HERMES_INDEX_SCHEMA_FILE = "hermes-skills-index-v1.schema.json";
 const FAST_PREVIEW_FILES = [
   "SKILL.md",
   "references/frame.schema.json",
@@ -64,7 +68,7 @@ const FAST_PREVIEW_FILES = [
   "references/frame-expression-system.md",
   "references/frame-art-direction.md",
   "references/frame-feed-attention.md",
-  "references/modules/query-cuebook.md",
+  "references/modules/query-cuebook/MODULE.md",
   "references/modules/query-cuebook/references/cuebook-query-request-v1.schema.json",
   "references/modules/query-cuebook/references/cuebook-query-bundle-v1.schema.json",
 ];
@@ -108,25 +112,59 @@ function rglob(root, suffix) {
   return found.sort();
 }
 
-function contentSha256(root) {
-  const files = [];
+function filesUnder(root) {
+  const found = [];
   const walk = (directory) => {
     for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
       const target = path.join(directory, entry.name);
       if (entry.isDirectory()) walk(target);
-      else files.push(target);
+      else if (entry.isFile()) {
+        found.push(path.relative(root, target).split(path.sep).join("/"));
+      }
     }
   };
   walk(root);
+  return found.sort();
+}
+
+function contentSha256(root) {
   const hash = createHash("sha256");
-  for (const file of files.sort()) {
-    const relative = path.relative(root, file).split(path.sep).join("/");
+  for (const relative of filesUnder(root)) {
     hash.update(relative, "utf8");
     hash.update("\0");
-    hash.update(fs.readFileSync(file));
+    hash.update(fs.readFileSync(path.join(root, relative)));
     hash.update("\0");
   }
   return hash.digest("hex");
+}
+
+function frontmatterScalar(value) {
+  const text = String(value ?? "").trim();
+  if (text.startsWith('"') && text.endsWith('"')) return JSON.parse(text);
+  if (text.startsWith("'") && text.endsWith("'")) {
+    return text.slice(1, -1).replaceAll("''", "'");
+  }
+  return text;
+}
+
+function isSafeBundlePath(relativePath) {
+  return (
+    typeof relativePath === "string"
+    && relativePath.length > 0
+    && !relativePath.startsWith("/")
+    && !relativePath.includes("\\")
+    && relativePath.split("/").every((part) => part.length > 0 && part !== "." && part !== "..")
+  );
+}
+
+function isUtf8Text(filePath) {
+  const content = fs.readFileSync(filePath);
+  try {
+    new TextDecoder("utf-8", { fatal: true }).decode(content);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export function copySkillDir(source, target) {
@@ -268,7 +306,7 @@ export function rewriteMarkdown(md, bundleRoot, skillNames, usedAssets) {
     }
     return relativeToBundle(
       bundleRoot,
-      path.join(bundleRoot, "references", "modules", `${name}.md`),
+      path.join(bundleRoot, "references", "modules", name, "MODULE.md"),
     );
   });
   fs.writeFileSync(md, text);
@@ -311,6 +349,62 @@ export function parseFrontmatter(skillMd) {
     }
   }
   return fields;
+}
+
+export function buildHermesIndex(outputDirArg, bundles, metadata, schema, errors = []) {
+  const outputDir = path.resolve(outputDirArg);
+  const skills = bundles.map((bundle) => {
+    const bundleRoot = path.join(outputDir, bundle.skill);
+    const files = filesUnder(bundleRoot);
+    const frontmatter = parseFrontmatter(path.join(bundleRoot, "SKILL.md"));
+    for (const relativePath of files) {
+      if (!isSafeBundlePath(relativePath)) {
+        errors.push(issue(
+          "HERMES_INDEX_FILE_PATH",
+          `${bundle.skill}/${relativePath}`,
+          "A well-known Skill file path must be a safe portable relative path.",
+        ));
+      }
+      if (!isUtf8Text(path.join(bundleRoot, relativePath))) {
+        errors.push(issue(
+          "HERMES_INDEX_TEXT_FILE",
+          `${bundle.skill}/${relativePath}`,
+          "Hermes well-known bundles support UTF-8 text files only.",
+        ));
+      }
+    }
+    if (!files.includes("SKILL.md")) {
+      errors.push(issue(
+        "HERMES_INDEX_SKILL_DOC",
+        bundle.skill,
+        "Every well-known Skill entry must enumerate its root SKILL.md.",
+      ));
+    }
+    return {
+      name: bundle.skill,
+      description: frontmatterScalar(frontmatter.description),
+      files,
+      content_sha256: bundle.content_sha256,
+    };
+  });
+  const index = {
+    schema_version: HERMES_INDEX_SCHEMA_VERSION,
+    catalog_version: metadata.catalog_version ?? null,
+    plugin_version: metadata.plugin_version ?? null,
+    skills,
+  };
+  for (const schemaError of validateInstance(index, schema)) {
+    errors.push(issue(
+      schemaError.code,
+      `index.json:${schemaError.path}`,
+      schemaError.message,
+    ));
+  }
+  fs.writeFileSync(
+    path.join(outputDir, "index.json"),
+    `${JSON.stringify(index, null, 2)}\n`,
+  );
+  return index;
 }
 
 export function checkBundle(bundleRoot, skillNames) {
@@ -530,7 +624,7 @@ export function build(pluginRootArg, outputDirArg) {
       copyModuleResources(source, path.join(modulesRoot, member));
       writeModuleDoc(
         path.join(source, "SKILL.md"),
-        path.join(modulesRoot, `${member}.md`),
+        path.join(modulesRoot, member, "MODULE.md"),
         member,
       );
     }
@@ -578,6 +672,18 @@ export function build(pluginRootArg, outputDirArg) {
   const discoveryBudget = buildDiscoveryBudget(pluginRoot, outputDir, entrypoints, errors);
   const fastPreviewBudget = buildFastPreviewBudget(outputDir, errors);
   const publishLaneBudget = buildPublishLaneBudget(outputDir, errors);
+  const hermesIndexSchemaRef = index.hermes_skills_index_schema_ref
+    ?? `./${HERMES_INDEX_SCHEMA_FILE}`;
+  const hermesIndexSchema = JSON.parse(
+    fs.readFileSync(path.resolve(path.join(pluginRoot, "assets"), hermesIndexSchemaRef), "utf-8"),
+  );
+  const hermesIndex = buildHermesIndex(
+    outputDir,
+    bundles,
+    index,
+    hermesIndexSchema,
+    errors,
+  );
 
   const manifest = {
     schema_version: "cuebook-release-skills-manifest-v2",
@@ -586,6 +692,11 @@ export function build(pluginRootArg, outputDirArg) {
     discovery_budget: discoveryBudget,
     frame_fast_preview_budget: fastPreviewBudget,
     frame_publish_input_budget: publishLaneBudget,
+    hermes_well_known_index: {
+      schema_version: hermesIndex.schema_version,
+      skill_count: hermesIndex.skills.length,
+      file_count: hermesIndex.skills.reduce((sum, skill) => sum + skill.files.length, 0),
+    },
     bundles,
     valid: !errors.length,
     errors,

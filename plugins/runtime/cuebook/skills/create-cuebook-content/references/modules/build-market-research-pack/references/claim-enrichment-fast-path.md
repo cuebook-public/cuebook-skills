@@ -35,7 +35,7 @@ Deduplicate requests across all three publishing candidates. Search or fetch ind
 | `valuation_metric`, `comparison_metric` | `list_filings` | subject, metric, numeric or `N/M` state, numerator, denominator, period, accounting basis, currency treatment, share class, comparability, as-of, source refs, N/M reason |
 | current quote | `get_market_state` | venue, session, quote type, value, currency, observed time |
 | `market_series`, `price_level` | `get_candles` | durable instrument, venue, interval, timezone, sealed/forming state, source refs |
-| derived return, spread, or trigger | `get_candles` + local `references/modules/compute-cuebook-market-indicators.md` | formula, frozen inputs, synchronized window, sealing state, source refs |
+| derived return, spread, or trigger | `get_candles` + local `references/modules/compute-cuebook-market-indicators/MODULE.md` | formula, frozen inputs, synchronized window, sealing state, source refs |
 
 For material current public claims, start the smallest Cuebook pass and one approved Web batch from the same compiled request set; do not wait for either route to fail before starting the other. Use no more than three targeted searches and three primary or authoritative sources. Preserve `retrieved_via`, URL, retrieval time, and route gaps internally, then reconcile once. A search snippet alone is not an evidence anchor, and the creator-facing answer never exposes provider-by-provider coverage.
 

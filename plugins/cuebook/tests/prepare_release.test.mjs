@@ -51,6 +51,7 @@ function fixture(root, { unreleased = "- Added one release feature." } = {}) {
     channel: "development",
     web_origin: "https://cuebook.xyz",
     mcp_url: "https://cuebook.xyz/mcp",
+    skills_base_url: "https://cuebook.xyz/.well-known/skills",
   });
   json(path.join(root, "plugins/cuebook/runtime-template/.mcp.json"), {
     mcpServers: {
@@ -74,6 +75,10 @@ function fixture(root, { unreleased = "- Added one release feature." } = {}) {
     name: "cuebook",
     version: "0.6.0",
   });
+  text(
+    path.join(root, "plugins/hermes/cuebook-auth/__init__.py"),
+    '_OFFICIAL_MCP_URL = "https://cuebook.xyz/mcp"\n_AUTHORIZATION_HOST = "cuebook.xyz"\n',
+  );
   json(path.join(root, ".claude-plugin/marketplace.json"), {
     name: "cuebook",
     plugins: [{ name: "cuebook", source: "./", version: "0.6.0", strict: false }],
@@ -140,6 +145,7 @@ test("prepares every public version surface while preserving catalog version", (
     );
     assert.equal(distribution.channel, "production");
     assert.equal(distribution.mcp_url, "https://cuebook.app/mcp");
+    assert.equal(distribution.skills_base_url, "https://cuebook.app/.well-known/skills");
     const mcp = JSON.parse(
       fs.readFileSync(path.join(root, "plugins/cuebook/runtime-template/.mcp.json")),
     );
@@ -149,6 +155,12 @@ test("prepares every public version surface while preserving catalog version", (
       fs.readFileSync(path.join(root, "plugins/cuebook/assets/mcp-capability-map-v1.json")),
     );
     assert.equal(capabilityMap.server.url, "https://cuebook.app/mcp");
+    const hermesBridge = fs.readFileSync(
+      path.join(root, "plugins/hermes/cuebook-auth/__init__.py"),
+      "utf8",
+    );
+    assert.match(hermesBridge, /_OFFICIAL_MCP_URL = "https:\/\/cuebook\.app\/mcp"/u);
+    assert.match(hermesBridge, /_AUTHORIZATION_HOST = "cuebook\.app"/u);
     const schema = JSON.parse(
       fs.readFileSync(path.join(root, "plugins/cuebook/assets/example-v1.schema.json")),
     );
