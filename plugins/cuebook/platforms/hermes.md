@@ -79,7 +79,7 @@ run the same verified installer once with the migration flag:
 
 ```bash
 "${HOME}/.hermes/hermes-agent/venv/bin/python" \
-  "${HOME}/.hermes/plugin-sources/cuebook-skills-dev/plugins/hermes/install_cuebook_skills.py" \
+  "${HOME}/.hermes/plugin-sources/cuebook-skills-main/plugins/hermes/install_cuebook_skills.py" \
   --migrate-official-channel
 ```
 
