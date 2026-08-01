@@ -369,7 +369,23 @@ test("distribution channels generate one internally consistent OAuth resource", 
     }
     assert.match(
       fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
-      /https:\/\/cuebook\.xyz\/\.well-known\/skills\/query-cuebook/u,
+      /https:\/\/cuebook\.xyz\/\.well-known\/skills/u,
+    );
+    assert.match(
+      fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
+      /--branch dev/u,
+    );
+    assert.match(
+      fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
+      /pull --ff-only origin dev[\s\S]*rev-parse origin\/dev/u,
+    );
+    assert.match(
+      fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
+      /cuebook-skills-dev/u,
+    );
+    assert.doesNotMatch(
+      fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
+      /--branch main|origin main|origin\/main|\/plugin-sources\/cuebook-skills-main/u,
     );
     assert.match(
       fs.readFileSync(
@@ -398,7 +414,23 @@ test("distribution channels generate one internally consistent OAuth resource", 
     }
     assert.match(
       fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
-      /https:\/\/cuebook\.app\/\.well-known\/skills\/query-cuebook/u,
+      /https:\/\/cuebook\.app\/\.well-known\/skills/u,
+    );
+    assert.match(
+      fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
+      /--branch main/u,
+    );
+    assert.match(
+      fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
+      /pull --ff-only origin main[\s\S]*rev-parse origin\/main/u,
+    );
+    assert.match(
+      fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
+      /cuebook-skills-main/u,
+    );
+    assert.doesNotMatch(
+      fs.readFileSync(path.join(pluginRoot, "platforms", "hermes.md"), "utf8"),
+      /--branch dev|origin dev|origin\/dev|\/plugin-sources\/cuebook-skills-dev/u,
     );
     assert.match(
       fs.readFileSync(

@@ -25,6 +25,11 @@ export const DISTRIBUTION_CHANNELS = Object.freeze({
   }),
 });
 
+const HERMES_CHECKOUTS = Object.freeze({
+  development: Object.freeze({ ref: "dev", directory: "cuebook-skills-dev" }),
+  production: Object.freeze({ ref: "main", directory: "cuebook-skills-main" }),
+});
+
 const FILES = Object.freeze({
   manifest: "plugins/cuebook/distribution-channel-v1.json",
   mcp: "plugins/cuebook/runtime-template/.mcp.json",
@@ -138,6 +143,14 @@ export function distributionWrites(rootArg, channelName) {
     for (const candidate of Object.values(DISTRIBUTION_CHANNELS)) {
       text = text.replaceAll(candidate.mcp_url, channel.mcp_url);
       text = text.replaceAll(candidate.skills_base_url, channel.skills_base_url);
+    }
+    if (guideName === "hermes.md") {
+      const checkout = HERMES_CHECKOUTS[channelName];
+      text = text
+        .replace(/--branch (?:dev|main)/gu, `--branch ${checkout.ref}`)
+        .replace(/origin (?:dev|main)/gu, `origin ${checkout.ref}`)
+        .replace(/origin\/(?:dev|main)/gu, `origin/${checkout.ref}`)
+        .replace(/cuebook-skills-(?:dev|main)/gu, checkout.directory);
     }
     writes.set(relativePath, text);
   }
@@ -269,6 +282,31 @@ export function collectDistributionIssues(rootArg, expectedChannel) {
           add(
             relativePath,
             `Hermes guide must not retain the ${candidate.channel} Skill endpoint ${candidate.skills_base_url}.`,
+          );
+        }
+      }
+      const checkout = HERMES_CHECKOUTS[selected.channel];
+      if (
+        !text.includes(`--branch ${checkout.ref}`)
+        || !text.includes(`/plugin-sources/${checkout.directory}`)
+        || !text.includes(`pull --ff-only origin ${checkout.ref}`)
+        || !text.includes(`rev-parse origin/${checkout.ref}`)
+      ) {
+        add(relativePath, `Hermes checkout must use the ${checkout.ref} distribution branch.`);
+      }
+      for (const [channelName, candidate] of Object.entries(HERMES_CHECKOUTS)) {
+        if (
+          channelName !== selected.channel
+          && (
+            text.includes(`--branch ${candidate.ref}`)
+            || text.includes(`/plugin-sources/${candidate.directory}`)
+            || text.includes(`origin ${candidate.ref}`)
+            || text.includes(`origin/${candidate.ref}`)
+          )
+        ) {
+          add(
+            relativePath,
+            `Hermes checkout must not retain the ${candidate.ref} distribution branch.`,
           );
         }
       }
