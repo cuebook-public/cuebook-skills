@@ -417,9 +417,9 @@ def _capture_gateway_context(*, event, **_kwargs) -> None:
 async def _handle_cuebook_auth(raw_args: str) -> str:
     current = _invocation.get()
     if current is None or current.platform != "telegram" or current.chat_type != "dm":
-        return "`/cuebook-auth` is available only in a private Telegram chat with this Hermes bot."
+        return "`/cuebook_auth` is available only in a private Telegram chat with this Hermes bot."
     if raw_args.strip():
-        return "Usage: `/cuebook-auth`"
+        return "Usage: `/cuebook_auth`"
     try:
         flow = await asyncio.to_thread(_get_or_start_flow)
     except CuebookAuthError as exc:
@@ -427,11 +427,12 @@ async def _handle_cuebook_auth(raw_args: str) -> str:
     if flow is None:
         return "Cuebook MCP is already authorized and connected; Hermes Tools are ready."
     return (
-        "Open this Cuebook authorization link. On a phone with Cuebook installed it opens the app; "
-        "on desktop it opens the browser.\n\n"
-        f"{flow.authorization_url}\n\n"
-        "Approve once, then return here. Re-running `/cuebook-auth` while this link is active reuses "
-        "the same authorization flow."
+        "Cuebook is ready.\n\n"
+        f"[Open Cuebook to authorize]({flow.authorization_url})\n\n"
+        "On mobile, this HTTPS link can open the installed Cuebook app. If Telegram keeps it in a "
+        "browser, complete approval there. On desktop, it opens the browser.\n\n"
+        "Approve once, then return here. Tapping Connect Cuebook again while this link is active "
+        "reuses the same authorization flow."
     )
 
 
@@ -440,5 +441,5 @@ def register(ctx) -> None:
     ctx.register_command(
         "cuebook-auth",
         handler=_handle_cuebook_auth,
-        description="Authorize Cuebook MCP from a private Telegram chat.",
+        description="Connect Cuebook",
     )

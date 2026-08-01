@@ -50,8 +50,9 @@ OpenClaw consumes the same sanitized directory as a Codex-compatible bundle.
 Hermes installs the three generated repository-root `skills/` bundles through
 the well-known endpoint and configures the same remote MCP endpoint through its
 native registry. Its separate `plugins/hermes/cuebook-auth/` adapter may expose
-one explicit Telegram DM command that delegates to the native Dashboard OAuth
-flow; it must not implement another MCP client or token store.
+one explicit Telegram DM command-menu entry that delegates to the native
+Dashboard OAuth flow and returns its validated approval link; it must not
+implement another MCP client or token store.
 
 An adapter must never copy or fork the canonical Skill source. It must expose
 exactly the three public entrypoints, keep internal `plugins/cuebook/skills/`
