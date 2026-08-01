@@ -11,6 +11,12 @@
   Skill bundles instead of unauthenticated GitHub REST installation. An
   explicit migration flag now handles user-confirmed switches between the
   official development and production channels while refusing unknown sources.
+- Fixed Hermes Dashboard authorization links becoming stale after five seconds:
+  the official MCP configuration now reserves 315 seconds for browser approval,
+  and the bridge idempotently migrates a missing or shorter Cuebook-only
+  `connect_timeout` only after Hermes confirms OAuth is required. The normal
+  20-second Tool timeout is preserved; initial connection failures may use the
+  longer bound.
 
 ## 0.9.23 — 2026-08-01
 
